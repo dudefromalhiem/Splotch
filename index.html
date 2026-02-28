@@ -39,11 +39,12 @@
       </svg>
     );
 
-    const STORAGE_KEY = "splotch_products_v5";
+    // Bumped version to load the new .jpeg file paths
+    const STORAGE_KEY = "splotch_products_v6";
     const DEFAULT_PRODUCTS = [
       { id:"shirt-1", name:"Terrain Tee 001", cost:"₹450", price:"₹1,299", tag:"New Drop", description:"Urban utility tee with topographic print detail. Oversized fit, 100% organic cotton.", frontImage:"Shirt 1 front.jpeg", backImage:"Shirt 1 back.jpeg", hasBack:true, soldOut:false, category:"T-Shirts" },
       { id:"shirt-2", name:"Grid Tee 002", cost:"₹500", price:"₹1,499", tag:"Limited", description:"Graphic techwear tee from the Grid Zero collaboration. Heavyweight cotton blend.", frontImage:"Shirt 2 front.jpeg", backImage:"Shirt 2 back.jpeg", hasBack:true, soldOut:false, category:"T-Shirts" },
-      { id:"shirt-3", name:"Shadow Tee 003", cost:"₹400", price:"₹1,199", tag:"Last 5", description:"Minimalist dropped-shoulder tee. Shadow Series print, ultra-soft jersey.", frontImage:"Shirt 3 front.jpeg", backImage:"Shirt 3 back.jpeg", hasBack:false, soldOut:false, category:"T-Shirts" },
+      { id:"shirt-3", name:"Shadow Tee 003", cost:"₹400", price:"₹1,199", tag:"Last 5", description:"Minimalist dropped-shoulder tee. Shadow Series print, ultra-soft jersey.", frontImage:"Shirt 3 front.jpeg", backImage:"Shirt 3 back.jpeg", hasBack:true, soldOut:false, category:"T-Shirts" },
     ];
     
     function loadProducts(){ try{ const r=localStorage.getItem(STORAGE_KEY); if(r) return JSON.parse(r); }catch{} return DEFAULT_PRODUCTS; }
@@ -408,7 +409,10 @@
       );
     }
 
-    const ADMIN_PW = "splotch2026";
+    // Base64 Encoded password to obscure it from plain text in GitHub. 
+    // "splotch2026" encodes to "c3Bsb3RjaDIwMjY="
+    const ADMIN_PW_B64 = "c3Bsb3RjaDIwMjY=";
+    
     function AdminPanel({products,setProducts,onClose}){
       const [authed,setAuthed]=useState(false);
       const [pw,setPw]=useState("");
@@ -419,7 +423,17 @@
       const [form,setForm]=useState(blank);
 
       const showToast=(m)=>{ setToast(m); setTimeout(()=>setToast(null),2500); };
-      const login=()=>{ if(pw===ADMIN_PW){setAuthed(true);setPwErr(false);}else{setPwErr(true);setTimeout(()=>setPwErr(false),1500);} };
+      
+      const login=()=>{ 
+        // We encode the user's input to Base64 and compare it to our hidden string
+        if(btoa(pw) === ADMIN_PW_B64){
+          setAuthed(true);
+          setPwErr(false);
+        } else {
+          setPwErr(true);
+          setTimeout(()=>setPwErr(false),1500);
+        } 
+      };
 
       const save=()=>{
         if(!form.name||!form.price){ showToast("Name & price required."); return; }
@@ -570,10 +584,10 @@
     ═══════════════════════════════════════════════════════ */
 
     function Hero(){
-      // Mouse Parallax Logic
       const [pos, setPos] = useState({ x: 0, y: 0 });
+      
       const handleMove = useCallback((e) => {
-        // Limit movement to max 20px off center to keep it subtle and elegant
+        // Subtle parallax movement based on mouse position
         const x = (e.clientX / window.innerWidth - 0.5) * 40;
         const y = (e.clientY / window.innerHeight - 0.5) * 40;
         setPos({ x, y });
@@ -583,9 +597,9 @@
         <section 
           id="home" 
           onMouseMove={handleMove}
-          style={{ position:"relative", width:"100%", height:"80vh", background:"#111", borderBottom:"3px solid #111", overflow:"hidden" }}
+          style={{ position:"relative", width:"100%", height:"80vh", background:"#111", borderBottom:"3px solid #111", overflow:"hidden", display:"grid", placeItems:"center" }}
         >
-          {/* Reactive Background Grid */}
+          {/* Reactive Background */}
           <div 
             className="hero-video-placeholder" 
             style={{ 
@@ -593,13 +607,6 @@
               transition: "transform 0.1s ease-out" 
             }}
           ></div>
-          
-          <div className="hero-sub">
-            <p>Techwear</p>
-            <p>SS'26 Collection</p>
-            <p>splotch.in</p>
-            <span className="hero-badge">New Drop Available</span>
-          </div>
           
           <div className="hero-text-overlay">
             <h1 className="hero-h1 reveal visible">SPLOTCH</h1>
@@ -757,9 +764,9 @@
 
     function Testimonials(){
       const items=[
-        {q:"Splotch doesn't make clothing. They make armour for the urban jungle. The Terrain Vest is the most considered piece I own.",name:" Sayed",role:"Bangalore"},
-        {q:"Ordered three pieces from Drop 001. Every single one exceeded expectations in fit, durability, and pure aesthetic conviction.",name:"Advik",role:"Bangalore"},
-        {q:"The topographic details are obsessively refined. You feel the intention in every seam. This is what Indian streetwear needed.",name:"Shubhum",role:"Bangalore"},
+        {q:"Splotch doesn't make clothing. They make armour for the urban jungle. The Terrain Vest is the most considered piece I own.",name:"Sayed",residence:"Bangalore"},
+        {q:"Ordered three pieces from Drop 001. Every single one exceeded expectations in fit, durability, and pure aesthetic conviction.",name:"Advik",residence:"Bangalore"},
+        {q:"The topographic details are obsessively refined. You feel the intention in every seam. This is what Indian streetwear needed.",name:"Shubhum",residence:"Bangalore"},
       ];
       return(
         <section style={{ background:"#fff",borderBottom:"3px solid #111",padding:"6rem 2rem" }}>
@@ -775,7 +782,7 @@
                 <p style={{ fontSize:14,lineHeight:1.8,color:"rgba(0,0,0,0.62)",marginBottom:"1.8rem",fontStyle:"italic" }}>{t.q}</p>
                 <div style={{ borderTop:"1px solid rgba(0,0,0,0.08)",paddingTop:"1rem" }}>
                   <p style={{ fontWeight:700,fontSize:12,textTransform:"uppercase",letterSpacing:"0.08em" }}>{t.name}</p>
-                  <p style={{ fontSize:10,color:"rgba(0,0,0,0.35)",fontWeight:600,letterSpacing:"0.1em",marginTop:2,textTransform:"uppercase" }}>{t.role}</p>
+                  <p style={{ fontSize:10,color:"rgba(0,0,0,0.35)",fontWeight:600,letterSpacing:"0.1em",marginTop:2,textTransform:"uppercase" }}>{t.residence}</p>
                 </div>
               </div>
             ))}
