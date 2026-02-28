@@ -4,11 +4,111 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Splotch Website</title>
-  <link rel="stylesheet" href="style.css">
   
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js" data-type="module"></script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+    /* =====================================================================
+       🔥 1. ADD YOUR FIREBASE CONFIGURATION HERE 🔥
+       ===================================================================== */
+    const firebaseConfig = {
+      apiKey: "AIzaSyBebrnAnOWS3cKVHJnXqA0FrjUKbLtd8h8",
+      authDomain: "splotchclothing.firebaseapp.com",
+      projectId: "splotchclothing",
+      storageBucket: "splotchclothing.firebasestorage.app",
+      messagingSenderId: "791501370137",
+      appId: "1:791501370137:web:ff4c662c12342d74f8cb88"
+    };
+
+    // Initialize Firebase and expose it safely to the global window 
+    // so our React/Babel code can access it without module scope issues.
+    try {
+      const app = initializeApp(firebaseConfig);
+      window.fbDb = getFirestore(app);
+      window.fbAuth = getAuth(app);
+      window.fbProvider = new GoogleAuthProvider();
+      
+      // Map functions
+      window.fbSignInWithPopup = signInWithPopup;
+      window.fbSignOut = signOut;
+      window.fbOnAuthStateChanged = onAuthStateChanged;
+      window.fbCollection = collection;
+      window.fbAddDoc = addDoc;
+
+      // Dispatch event to let React know Firebase is ready
+      window.dispatchEvent(new Event('firebase-ready'));
+    } catch(err) {
+      console.error("Firebase Initialization Error. Did you add your config?", err);
+    }
+  </script>
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
+    :root { --B: #111111; --W: #FFFFFF; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--W); color: var(--B); font-family: 'Inter', sans-serif; overflow-x: hidden; cursor: crosshair; }
+    ::selection { background: var(--B); color: var(--W); }
+    input, textarea, select, button { font-family: inherit; border-radius: 0 !important; outline: none; }
+
+    /* Hero Styles */
+    .hero-video-placeholder { position: absolute; inset: 0; background: var(--B); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; }
+    .hero-video-placeholder::before { content: ''; position: absolute; inset: -60px; background: repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.04) 39px, rgba(255,255,255,0.04) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.04) 39px, rgba(255,255,255,0.04) 40px); }
+    .hero-text-overlay { position: absolute; z-index: 3; top: 32%; left: -2%; line-height: 0.85; pointer-events: none; -webkit-user-select: none; user-select: none; }
+    .hero-h1 { font-family: 'Inter', sans-serif; font-weight: 900; font-size: clamp(90px, 18vw, 260px); color: var(--W); text-transform: uppercase; letter-spacing: -0.05em; line-height: 0.85; mix-blend-mode: difference; }
+    .hero-sub { position: absolute; z-index: 4; top: 2.5rem; right: 2rem; text-align: right; pointer-events: none; }
+    .hero-sub p { font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--W); line-height: 2; opacity: 0.7; }
+    .hero-badge { display: inline-block; border: 2px solid var(--W); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; padding: 6px 12px; color: var(--W); text-transform: uppercase; margin-top: 1rem; }
+
+    /* Flip Cards & Animations */
+    .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.65s cubic-bezier(0.76, 0, 0.24, 1); transform-style: preserve-3d; }
+    .flipped .flip-inner { transform: rotateY(180deg); }
+    .flip-front, .flip-back { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+    .flip-back { transform: rotateY(180deg); }
+    .reveal { opacity: 0; transform: translateY(44px); transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-d1 { transition-delay: 0.1s; } .reveal-d2 { transition-delay: 0.22s; } .reveal-d3 { transition-delay: 0.34s; } .reveal-d4 { transition-delay: 0.46s; }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* Components */
+    .prod-card { transition: box-shadow 0.25s, transform 0.25s; }
+    .prod-card:hover { box-shadow: 6px 6px 0 #111; transform: translate(-2px, -2px); }
+    .prod-cta-btn, .flip-toggle { transition: background 0.2s, color 0.2s; }
+    .prod-cta-btn:hover, .flip-toggle:hover { background: #111 !important; color: #fff !important; }
+    .hl-card .hl-caption { opacity: 0; transform: translateY(12px); transition: opacity 0.35s ease, transform 0.35s ease; }
+    .hl-card:hover .hl-caption { opacity: 1; transform: translateY(0); }
+    .port-card .port-overlay { opacity: 0; transition: opacity 0.3s ease; }
+    .port-card:hover .port-overlay { opacity: 1; }
+    .port-card .port-text { transform: translateY(10px); opacity: 0; transition: transform 0.4s ease, opacity 0.4s ease; }
+    .port-card:hover .port-text { transform: translateY(0); opacity: 1; }
+    .nl { position: relative; }
+    .nl::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #111; transition: width 0.2s; }
+    .nl:hover::after { width: 100%; }
+    .back-btn { transition: background 0.2s, color 0.2s, transform 0.2s; }
+    .back-btn:hover { background: #111 !important; color: #fff !important; transform: translateX(-3px); }
+    .admin-input:focus, .drop-zone.over { border-color: #111 !important; }
+    .drop-zone.over { background: rgba(0, 0, 0, 0.04) !important; }
+    
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+    ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: #fff; } ::-webkit-scrollbar-thumb { background: #111; }
+
+    @media (max-width: 768px) {
+      .desk-nav { display: none !important; }
+      .mob-ham { display: flex !important; }
+      .product-grid, .port-grid { grid-template-columns: 1fr 1fr !important; }
+      .three-col, .two-col, .footer-grid, .admin-form-grid, .contact-grid, .testi-grid, .about-grid { grid-template-columns: 1fr !important; }
+      .hero-h1 { font-size: clamp(80px, 22vw, 130px); }
+    }
+    @media (min-width: 769px) { .mob-ham, .mob-menu { display: none !important; } }
+  </style>
 </head>
 <body>
   <div id="root"></div>
@@ -19,17 +119,8 @@
     const LOGO_SRC = "splotchnobg.png";
 
     const TopoSVG = ({ color="#111", style={} }) => (
-      <svg viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice"
-        xmlns="http://www.w3.org/2000/svg" style={{ width:"100%",height:"100%",...style }}>
-        {["M0,250 Q150,220 300,250 T600,235 T900,248 T1200,238",
-          "M0,270 Q130,242 260,270 T520,255 T780,268 T1040,252 T1200,265",
-          "M0,230 Q170,202 340,230 T680,217 T1020,228 T1200,220",
-          "M0,290 Q110,264 220,290 T440,276 T660,290 T880,272 T1100,288 T1200,282",
-          "M0,210 Q190,183 380,210 T760,198 T1140,208 T1200,203",
-          "M0,310 Q90,284 180,310 T360,295 T540,311 T720,293 T900,310 T1100,292 T1200,308",
-        ].map((d,i)=>(
-          <path key={i} d={d} fill="none" stroke={color} strokeWidth={i<2?1:0.65}/>
-        ))}
+      <svg viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style={{ width:"100%",height:"100%",...style }}>
+        {["M0,250 Q150,220 300,250 T600,235 T900,248 T1200,238", "M0,270 Q130,242 260,270 T520,255 T780,268 T1040,252 T1200,265", "M0,230 Q170,202 340,230 T680,217 T1020,228 T1200,220", "M0,290 Q110,264 220,290 T440,276 T660,290 T880,272 T1100,288 T1200,282", "M0,210 Q190,183 380,210 T760,198 T1140,208 T1200,203", "M0,310 Q90,284 180,310 T360,295 T540,311 T720,293 T900,310 T1100,292 T1200,308"].map((d,i)=>( <path key={i} d={d} fill="none" stroke={color} strokeWidth={i<2?1:0.65}/> ))}
         <ellipse cx="300" cy="250" rx="240" ry="65" fill="none" stroke={color} strokeWidth="0.75"/>
         <ellipse cx="300" cy="250" rx="160" ry="42" fill="none" stroke={color} strokeWidth="0.75"/>
         <ellipse cx="300" cy="250" rx="80"  ry="20" fill="none" stroke={color} strokeWidth="0.75"/>
@@ -39,52 +130,29 @@
       </svg>
     );
 
-    // Bumped version to load the new .jpeg file paths
     const STORAGE_KEY = "splotch_products_v6";
     const DEFAULT_PRODUCTS = [
       { id:"shirt-1", name:"Terrain Tee 001", cost:"₹450", price:"₹1,299", tag:"New Drop", description:"Urban utility tee with topographic print detail. Oversized fit, 100% organic cotton.", frontImage:"Shirt 1 front.jpeg", backImage:"Shirt 1 back.jpeg", hasBack:true, soldOut:false, category:"T-Shirts" },
       { id:"shirt-2", name:"Grid Tee 002", cost:"₹500", price:"₹1,499", tag:"Limited", description:"Graphic techwear tee from the Grid Zero collaboration. Heavyweight cotton blend.", frontImage:"Shirt 2 front.jpeg", backImage:"Shirt 2 back.jpeg", hasBack:true, soldOut:false, category:"T-Shirts" },
       { id:"shirt-3", name:"Shadow Tee 003", cost:"₹400", price:"₹1,199", tag:"Last 5", description:"Minimalist dropped-shoulder tee. Shadow Series print, ultra-soft jersey.", frontImage:"Shirt 3 front.jpeg", backImage:"Shirt 3 back.jpeg", hasBack:true, soldOut:false, category:"T-Shirts" },
     ];
-    
     function loadProducts(){ try{ const r=localStorage.getItem(STORAGE_KEY); if(r) return JSON.parse(r); }catch{} return DEFAULT_PRODUCTS; }
     function saveProducts(p){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(p)); }catch{} }
 
     const SLabel = ({children,inv=false})=>(
-      <div style={{ fontSize:10,fontWeight:700,letterSpacing:"0.32em",textTransform:"uppercase",
-        marginBottom:"1.8rem",borderLeft:`3px solid ${inv?"#fff":"#111"}`,
-        paddingLeft:10,color:inv?"rgba(255,255,255,0.45)":"rgba(0,0,0,0.45)" }}>{children}</div>
+      <div style={{ fontSize:10,fontWeight:700,letterSpacing:"0.32em",textTransform:"uppercase", marginBottom:"1.8rem",borderLeft:`3px solid ${inv?"#fff":"#111"}`, paddingLeft:10,color:inv?"rgba(255,255,255,0.45)":"rgba(0,0,0,0.45)" }}>{children}</div>
     );
 
     const ImgPlaceholder = ({label,dark=true})=>(
-      <div style={{ width:"100%",height:"100%",background:dark?"#1a1a1a":"#efefef",
-        display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
-        gap:10,position:"relative",overflow:"hidden" }}>
+      <div style={{ width:"100%",height:"100%",background:dark?"#1a1a1a":"#efefef", display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center", gap:10,position:"relative",overflow:"hidden" }}>
         <div style={{ position:"absolute",inset:0,opacity:0.1 }}><TopoSVG color={dark?"#fff":"#111"}/></div>
-        <svg width="40" height="40" viewBox="0 0 40 40" style={{position:"relative",zIndex:1}}>
-          <rect x="4" y="9" width="32" height="24" fill="none" stroke={dark?"rgba(255,255,255,0.25)":"rgba(0,0,0,0.2)"} strokeWidth="1.5"/>
-          <circle cx="14" cy="18" r="3.5" fill="none" stroke={dark?"rgba(255,255,255,0.25)":"rgba(0,0,0,0.2)"} strokeWidth="1.5"/>
-          <path d="M4 27 L13 19 L22 27 L29 21 L36 27" fill="none" stroke={dark?"rgba(255,255,255,0.25)":"rgba(0,0,0,0.2)"} strokeWidth="1.5"/>
-        </svg>
-        <span style={{ fontSize:9,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",
-          color:dark?"rgba(255,255,255,0.2)":"rgba(0,0,0,0.25)",position:"relative",zIndex:1 }}>{label}</span>
+        <span style={{ fontSize:9,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase", color:dark?"rgba(255,255,255,0.2)":"rgba(0,0,0,0.25)",position:"relative",zIndex:1 }}>{label}</span>
       </div>
     );
 
     const BackButton = ({onBack,label="Back"})=>(
-      <button className="back-btn" onClick={onBack} style={{
-        position:"fixed",top:110,left:"1.5rem",zIndex:400,
-        display:"flex",alignItems:"center",gap:10,
-        background:"rgba(255,255,255,0.95)",color:"#111",
-        border:"2px solid #111",padding:"10px 18px",
-        fontSize:10,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",
-        cursor:"crosshair",backdropFilter:"blur(8px)",
-        boxShadow:"3px 3px 0 #111"
-      }}>
-        <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
-          <path d="M5 1L1 5L5 9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="square"/>
-          <line x1="1" y1="5" x2="15" y2="5" stroke="currentColor" strokeWidth="1.8"/>
-        </svg>
+      <button className="back-btn" onClick={onBack} style={{ position:"fixed",top:110,left:"1.5rem",zIndex:400, display:"flex",alignItems:"center",gap:10, background:"rgba(255,255,255,0.95)",color:"#111", border:"2px solid #111",padding:"10px 18px", fontSize:10,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase", cursor:"crosshair",backdropFilter:"blur(8px)", boxShadow:"3px 3px 0 #111" }}>
+        <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M5 1L1 5L5 9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="square"/><line x1="1" y1="5" x2="15" y2="5" stroke="currentColor" strokeWidth="1.8"/></svg>
         {label}
       </button>
     );
@@ -105,15 +173,13 @@
       return(
         <div style={{ background:"#111",height:28,overflow:"hidden",display:"flex",alignItems:"center",borderBottom:"2px solid #222", position: "sticky", top: 56, zIndex: 499 }}>
           <div style={{ display:"flex",animation:"ticker 32s linear infinite",whiteSpace:"nowrap" }}>
-            {d.map((t,i)=>(
-              <span key={i} style={{ marginRight:"2rem",fontSize:9,fontWeight:700,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(255,255,255,0.45)",flexShrink:0 }}>{t}</span>
-            ))}
+            {d.map((t,i)=>(<span key={i} style={{ marginRight:"2rem",fontSize:9,fontWeight:700,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(255,255,255,0.45)",flexShrink:0 }}>{t}</span>))}
           </div>
         </div>
       );
     }
 
-    function Header({cartCount,onCartOpen,onLogoClick,setMobMenu}){
+    function Header({cartCount, onCartOpen, onLogoClick, setMobMenu, user}){
       const [scrolled,setScrolled]=useState(false);
       useEffect(()=>{
         const fn=()=>setScrolled(window.scrollY>30);
@@ -123,51 +189,35 @@
 
       const scrollTo=(id)=>{ document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); };
 
+      const handleAuth = async () => {
+        if(user && window.fbAuth) {
+          try { await window.fbSignOut(window.fbAuth); } catch(err) { console.error(err); }
+        } else if(window.fbAuth && window.fbProvider) {
+          try { await window.fbSignInWithPopup(window.fbAuth, window.fbProvider); } catch(err) { console.error("Login failed or no config."); alert("Login failed. Did you add Firebase Config?"); }
+        }
+      };
+
       return(
-        <header style={{
-          position:"sticky",top:0,zIndex:500,height:56,
-          display:"flex",alignItems:"center",justifyContent:"space-between",
-          padding:"0 1.5rem",
-          background: scrolled?"#fff":"#fff",
-          borderBottom:"2px solid #111",
-          transition:"box-shadow .3s",
-          boxShadow: scrolled?"0 2px 0 #111":"none"
-        }}>
-          {/* LOGO */}
-          <button onClick={onLogoClick} style={{
-            background:"none",border:"none",cursor:"crosshair",
-            display:"flex",alignItems:"center",gap:10,padding:0,
-            position:"relative"
-          }}>
+        <header style={{ position:"sticky",top:0,zIndex:500,height:56, display:"flex",alignItems:"center",justifyContent:"space-between", padding:"0 1.5rem", background: "#fff", borderBottom:"2px solid #111", transition:"box-shadow .3s", boxShadow: scrolled?"0 2px 0 #111":"none" }}>
+          <button onClick={onLogoClick} style={{ background:"none",border:"none",cursor:"crosshair", display:"flex",alignItems:"center",gap:10,padding:0, position:"relative" }}>
             <img src={LOGO_SRC} alt="Splotch" style={{ height:36,width:"auto",display:"block",filter:"invert(0)" }}/>
           </button>
-
-          {/* Desktop Nav */}
           <nav className="desk-nav" style={{ display:"flex",gap:"2rem",alignItems:"center" }}>
             {[["home","Home"],["shop","Shop"],["about","About"],["contact","Contact"]].map(([id,label])=>(
-              <button key={id} onClick={()=>scrollTo(id)} className="nl" style={{
-                background:"none",border:"none",cursor:"crosshair",
-                fontSize:10,fontWeight:700,letterSpacing:"0.18em",
-                textTransform:"uppercase",color:"#111"
-              }}>{label}</button>
+              <button key={id} onClick={()=>scrollTo(id)} className="nl" style={{ background:"none",border:"none",cursor:"crosshair", fontSize:10,fontWeight:700,letterSpacing:"0.18em", textTransform:"uppercase",color:"#111" }}>{label}</button>
             ))}
           </nav>
-
-          {/* Right actions */}
           <div style={{ display:"flex",alignItems:"center",gap:"0.75rem" }}>
-            <button className="mob-ham" onClick={()=>setMobMenu(o=>!o)} style={{
-              background:"none",border:"2px solid #111",
-              width:38,height:38,cursor:"crosshair",
-              flexDirection:"column",alignItems:"center",justifyContent:"center",gap:5
-            }}>
+            <button className="mob-ham" onClick={()=>setMobMenu(o=>!o)} style={{ background:"none",border:"2px solid #111", width:38,height:38,cursor:"crosshair", flexDirection:"column",alignItems:"center",justifyContent:"center",gap:5 }}>
               {[0,1,2].map(i=><span key={i} style={{ display:"block",width:16,height:1.5,background:"#111" }}/>)}
             </button>
-            <button onClick={onCartOpen} style={{
-              background:"#111",color:"#fff",border:"2px solid #111",
-              padding:"8px 14px",fontSize:10,fontWeight:700,
-              letterSpacing:"0.15em",textTransform:"uppercase",cursor:"crosshair",
-              display:"flex",alignItems:"center",gap:6
-            }}>
+            
+            {/* AUTH BUTTON */}
+            <button className="desk-nav" onClick={handleAuth} style={{ background:"transparent",color:"#111",border:"2px solid rgba(0,0,0,0.15)", padding:"8px 14px",fontSize:10,fontWeight:700, letterSpacing:"0.15em",textTransform:"uppercase",cursor:"crosshair", transition: "border .2s" }} onMouseEnter={e=>e.target.style.borderColor="#111"} onMouseLeave={e=>e.target.style.borderColor="rgba(0,0,0,0.15)"}>
+              {user ? `Out (${user.displayName.split(' ')[0]})` : "Login"}
+            </button>
+
+            <button onClick={onCartOpen} style={{ background:"#111",color:"#fff",border:"2px solid #111", padding:"8px 14px",fontSize:10,fontWeight:700, letterSpacing:"0.15em",textTransform:"uppercase",cursor:"crosshair", display:"flex",alignItems:"center",gap:6 }}>
               Cart
               {cartCount>0&&<span style={{ background:"#fff",color:"#111",width:18,height:18,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:900 }}>{cartCount}</span>}
             </button>
@@ -179,25 +229,11 @@
     function MobMenu({open,setOpen}){
       const go=(id)=>{ document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); setOpen(false); };
       return(
-        <div className="mob-menu" style={{
-          position:"fixed",inset:0,zIndex:600,background:"#111",
-          display:"flex",flexDirection:"column",justifyContent:"center",padding:"3rem 2rem",
-          transform:open?"translateX(0)":"translateX(100%)",
-          transition:"transform .4s cubic-bezier(.76,0,.24,1)"
-        }}>
-          <button onClick={()=>setOpen(false)} style={{
-            position:"absolute",top:16,right:16,
-            background:"none",border:"2px solid rgba(255,255,255,0.2)",
-            width:42,height:42,color:"#fff",fontSize:18,fontWeight:700,cursor:"crosshair"
-          }}>✕</button>
+        <div className="mob-menu" style={{ position:"fixed",inset:0,zIndex:600,background:"#111", display:"flex",flexDirection:"column",justifyContent:"center",padding:"3rem 2rem", transform:open?"translateX(0)":"translateX(100%)", transition:"transform .4s cubic-bezier(.76,0,.24,1)" }}>
+          <button onClick={()=>setOpen(false)} style={{ position:"absolute",top:16,right:16, background:"none",border:"2px solid rgba(255,255,255,0.2)", width:42,height:42,color:"#fff",fontSize:18,fontWeight:700,cursor:"crosshair" }}>✕</button>
           <img src={LOGO_SRC} alt="Splotch" style={{ height:48,width:"auto",marginBottom:"2.5rem",opacity:0.9,filter:"invert(1)" }}/>
           {[["home","Home"],["shop","Shop"],["about","About"],["contact","Contact"]].map(([id,label],i)=>(
-            <button key={id} onClick={()=>go(id)} style={{
-              background:"none",border:"none",textAlign:"left",fontFamily:"Inter",fontWeight:900,
-              fontSize:"clamp(38px,10vw,60px)",letterSpacing:"-0.04em",textTransform:"uppercase",
-              color:"#fff",cursor:"crosshair",lineHeight:1.1,
-              borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"0.5rem 0"
-            }}>{label}</button>
+            <button key={id} onClick={()=>go(id)} style={{ background:"none",border:"none",textAlign:"left",fontFamily:"Inter",fontWeight:900, fontSize:"clamp(38px,10vw,60px)",letterSpacing:"-0.04em",textTransform:"uppercase", color:"#fff",cursor:"crosshair",lineHeight:1.1, borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"0.5rem 0" }}>{label}</button>
           ))}
         </div>
       );
@@ -207,7 +243,6 @@
       const [flipped,setFlipped]=useState(false);
       const [added,setAdded]=useState(false);
       const doAdd=(e)=>{ e.stopPropagation(); onAdd(product); setAdded(true); setTimeout(()=>setAdded(false),1800); };
-      
       const frontImg = product.frontImage || null;
       const backImg = product.backImage || null;
 
@@ -215,53 +250,23 @@
         <div className="prod-card" style={{ border:"2px solid #111",background:"#fff",position:"relative" }}>
           {product.tag&&<div style={{ position:"absolute",top:12,left:12,zIndex:10,background:"#111",color:"#fff",fontSize:8,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",padding:"3px 8px" }}>{product.tag}</div>}
           {product.hasBack&&(
-            <button className="flip-toggle" onClick={()=>setFlipped(f=>!f)} style={{
-              position:"absolute",top:12,right:12,zIndex:10,
-              background:flipped?"#111":"rgba(255,255,255,0.92)",
-              color:flipped?"#fff":"#111",
-              border:"1.5px solid #111",fontSize:8,fontWeight:700,
-              letterSpacing:"0.15em",textTransform:"uppercase",
-              padding:"4px 9px",cursor:"crosshair",transition:"all .2s"
-            }}>{flipped?"◀ Front":"Back ▶"}</button>
+            <button className="flip-toggle" onClick={()=>setFlipped(f=>!f)} style={{ position:"absolute",top:12,right:12,zIndex:10, background:flipped?"#111":"rgba(255,255,255,0.92)", color:flipped?"#fff":"#111", border:"1.5px solid #111",fontSize:8,fontWeight:700, letterSpacing:"0.15em",textTransform:"uppercase", padding:"4px 9px",cursor:"crosshair" }}>{flipped?"◀ Front":"Back ▶"}</button>
           )}
           {product.soldOut&&(
-            <div style={{ position:"absolute",inset:0,zIndex:20,background:"rgba(255,255,255,0.9)",display:"flex",alignItems:"center",justifyContent:"center" }}>
-              <span style={{ fontWeight:900,fontSize:16,letterSpacing:"0.1em",textTransform:"uppercase" }}>SOLD OUT</span>
-            </div>
+            <div style={{ position:"absolute",inset:0,zIndex:20,background:"rgba(255,255,255,0.9)",display:"flex",alignItems:"center",justifyContent:"center" }}><span style={{ fontWeight:900,fontSize:16,letterSpacing:"0.1em",textTransform:"uppercase" }}>SOLD OUT</span></div>
           )}
-          
           <div style={{ aspectRatio:"3/4",overflow:"hidden",perspective:"1200px" }} className={flipped?"flipped":""}>
             <div className="flip-inner">
-              <div className="flip-front">
-                {frontImg ? <img src={frontImg} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover",display:"block" }}/> : <ImgPlaceholder label={product.name+" · Front"}/>}
-              </div>
-              {product.hasBack&&(
-                <div className="flip-back">
-                  {backImg ? <img src={backImg} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover",display:"block" }}/> : <ImgPlaceholder label={product.name+" · Back"} dark={false}/>}
-                </div>
-              )}
+              <div className="flip-front">{frontImg ? <img src={frontImg} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover",display:"block" }}/> : <ImgPlaceholder label={product.name+" · Front"}/>}</div>
+              {product.hasBack&&(<div className="flip-back">{backImg ? <img src={backImg} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover",display:"block" }}/> : <ImgPlaceholder label={product.name+" · Back"} dark={false}/>}</div>)}
             </div>
           </div>
-          
-          <button onClick={()=>onQV(product)} style={{
-            position:"absolute",bottom:112,left:0,right:0,zIndex:8,
-            background:"rgba(17,17,17,0.88)",color:"#fff",border:"none",
-            padding:"10px",fontSize:9,fontWeight:700,letterSpacing:"0.22em",
-            textTransform:"uppercase",cursor:"crosshair",
-            opacity:0,transition:"opacity .2s"
-          }} onMouseEnter={e=>e.target.style.opacity=1} onMouseLeave={e=>e.target.style.opacity=0}
-          className="qv-trigger">Quick View ↗</button>
-          
+          <button onClick={()=>onQV(product)} style={{ position:"absolute",bottom:112,left:0,right:0,zIndex:8, background:"rgba(17,17,17,0.88)",color:"#fff",border:"none", padding:"10px",fontSize:9,fontWeight:700,letterSpacing:"0.22em", textTransform:"uppercase",cursor:"crosshair", opacity:0 }} onMouseEnter={e=>e.target.style.opacity=1} onMouseLeave={e=>e.target.style.opacity=0} className="qv-trigger">Quick View ↗</button>
           <div style={{ padding:"1rem 1.2rem",borderTop:"2px solid #111" }}>
             <div style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.3)",marginBottom:3 }}>{product.category}</div>
             <div style={{ fontWeight:900,fontSize:15,textTransform:"uppercase",letterSpacing:"-0.01em",marginBottom:5 }}>{product.name}</div>
             <div style={{ fontWeight:700,fontSize:13,color:"rgba(0,0,0,0.55)",marginBottom:"0.9rem" }}>{product.price}</div>
-            <button className="prod-cta-btn" disabled={product.soldOut} onClick={doAdd} style={{
-              display:"block",width:"100%",background:added?"#111":"#fff",
-              color:added?"#fff":"#111",border:"2px solid #111",
-              padding:"10px",fontSize:10,fontWeight:700,
-              letterSpacing:"0.18em",textTransform:"uppercase",cursor:"crosshair"
-            }}>{added?"✓ Added":"Add to Cart"}</button>
+            <button className="prod-cta-btn" disabled={product.soldOut} onClick={doAdd} style={{ display:"block",width:"100%",background:added?"#111":"#fff", color:added?"#fff":"#111",border:"2px solid #111", padding:"10px",fontSize:10,fontWeight:700, letterSpacing:"0.18em",textTransform:"uppercase",cursor:"crosshair" }}>{added?"✓ Added":"Add to Cart"}</button>
           </div>
         </div>
       );
@@ -271,7 +276,6 @@
       const [flipped,setFlipped]=useState(false);
       const [added,setAdded]=useState(false);
       if(!product) return null;
-      
       const frontImg = product.frontImage || null;
       const backImg = product.backImage || null;
 
@@ -280,23 +284,13 @@
           <div onClick={e=>e.stopPropagation()} style={{ background:"#fff",border:"3px solid #111",maxWidth:860,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",maxHeight:"90vh",overflow:"auto" }}>
             <div style={{ position:"relative",background:"#111",minHeight:400,perspective:"1200px" }} className={flipped?"flipped":""}>
               <div className="flip-inner">
-                <div className="flip-front" style={{ position:"absolute",inset:0 }}>
-                  {frontImg ? <img src={frontImg} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover" }}/> : <ImgPlaceholder label="Front" dark/>}
-                </div>
-                {product.hasBack&&<div className="flip-back" style={{ position:"absolute",inset:0 }}>
-                  {backImg ? <img src={backImg} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover" }}/> : <ImgPlaceholder label="Back" dark={false}/>}
-                </div>}
+                <div className="flip-front" style={{ position:"absolute",inset:0 }}>{frontImg ? <img src={frontImg} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover" }}/> : <ImgPlaceholder label="Front" dark/>}</div>
+                {product.hasBack&&<div className="flip-back" style={{ position:"absolute",inset:0 }}>{backImg ? <img src={backImg} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover" }}/> : <ImgPlaceholder label="Back" dark={false}/>}</div>}
               </div>
               {product.hasBack&&(
                 <div style={{ position:"absolute",bottom:14,left:0,right:0,display:"flex",justifyContent:"center",gap:6,zIndex:10 }}>
                   {["Front","Back"].map((s,i)=>(
-                    <button key={s} onClick={()=>setFlipped(i===1)} style={{
-                      background:(flipped===(i===1))?"#fff":"transparent",
-                      color:(flipped===(i===1))?"#111":"rgba(255,255,255,0.5)",
-                      border:"1.5px solid rgba(255,255,255,0.25)",
-                      padding:"5px 14px",fontSize:9,fontWeight:700,
-                      letterSpacing:"0.18em",textTransform:"uppercase",cursor:"crosshair"
-                    }}>{s}</button>
+                    <button key={s} onClick={()=>setFlipped(i===1)} style={{ background:(flipped===(i===1))?"#fff":"transparent", color:(flipped===(i===1))?"#111":"rgba(255,255,255,0.5)", border:"1.5px solid rgba(255,255,255,0.25)", padding:"5px 14px",fontSize:9,fontWeight:700, letterSpacing:"0.18em",textTransform:"uppercase",cursor:"crosshair" }}>{s}</button>
                   ))}
                 </div>
               )}
@@ -317,12 +311,7 @@
                   ))}
                 </div>
               </div>
-              <button onClick={()=>{ onAdd(product); setAdded(true); setTimeout(()=>setAdded(false),2000); }} style={{
-                background:added?"#444":"#111",color:"#fff",border:"3px solid #111",
-                padding:"15px",fontSize:11,fontWeight:700,
-                letterSpacing:"0.2em",textTransform:"uppercase",cursor:"crosshair",
-                marginTop:"1.5rem",transition:"background .2s"
-              }}>{added?"✓ Added to Cart":"Add to Cart"}</button>
+              <button onClick={()=>{ onAdd(product); setAdded(true); setTimeout(()=>setAdded(false),2000); }} style={{ background:added?"#444":"#111",color:"#fff",border:"3px solid #111", padding:"15px",fontSize:11,fontWeight:700, letterSpacing:"0.2em",textTransform:"uppercase",cursor:"crosshair", marginTop:"1.5rem",transition:"background .2s" }}>{added?"✓ Added to Cart":"Add to Cart"}</button>
             </div>
           </div>
         </div>
@@ -364,7 +353,7 @@
                   <span style={{ fontSize:11,fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase" }}>Total</span>
                   <span style={{ fontSize:17,fontWeight:900,letterSpacing:"-0.02em" }}>₹{total.toLocaleString("en-IN")}</span>
                 </div>
-                <button style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",cursor:"crosshair" }}>Checkout (Coming Soon)</button>
+                <button style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",cursor:"crosshair" }}>Checkout</button>
                 <button onClick={()=>setCart([])} style={{ width:"100%",background:"transparent",color:"rgba(0,0,0,0.35)",border:"none",padding:"8px",fontSize:9,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase",cursor:"crosshair",marginTop:4 }}>Clear Cart</button>
               </div>
             )}
@@ -380,14 +369,7 @@
       return(
         <div>
           <div style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",marginBottom:7 }}>{label}</div>
-          <div className={`drop-zone${drag?" over":""}`}
-            onClick={()=>ref.current?.click()}
-            onDragOver={e=>{e.preventDefault();setDrag(true);}}
-            onDragLeave={()=>setDrag(false)}
-            onDrop={e=>{e.preventDefault();setDrag(false);read(e.dataTransfer.files[0]);}}
-            style={{ border:"2px dashed rgba(0,0,0,0.18)",padding:"0.9rem",cursor:"crosshair",
-              textAlign:"center",background:drag?"rgba(0,0,0,0.03)":"#fafafa",
-              minHeight:110,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8 }}>
+          <div className={`drop-zone${drag?" over":""}`} onClick={()=>ref.current?.click()} onDragOver={e=>{e.preventDefault();setDrag(true);}} onDragLeave={()=>setDrag(false)} onDrop={e=>{e.preventDefault();setDrag(false);read(e.dataTransfer.files[0]);}} style={{ border:"2px dashed rgba(0,0,0,0.18)",padding:"0.9rem",cursor:"crosshair", textAlign:"center",background:drag?"rgba(0,0,0,0.03)":"#fafafa", minHeight:110,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8 }}>
             {value?(
               <React.Fragment>
                 <img src={value} alt="" style={{ maxHeight:90,maxWidth:"100%",objectFit:"contain" }}/>
@@ -395,10 +377,7 @@
               </React.Fragment>
             ):(
               <React.Fragment>
-                <svg width="28" height="28" viewBox="0 0 28 28" style={{ opacity:.3 }}>
-                  <path d="M14 3L14 19M7 10L14 3L21 10" stroke="#111" strokeWidth="1.8" fill="none"/>
-                  <path d="M3 21L3 25L25 25L25 21" stroke="#111" strokeWidth="1.8" fill="none"/>
-                </svg>
+                <svg width="28" height="28" viewBox="0 0 28 28" style={{ opacity:.3 }}><path d="M14 3L14 19M7 10L14 3L21 10" stroke="#111" strokeWidth="1.8" fill="none"/><path d="M3 21L3 25L25 25L25 21" stroke="#111" strokeWidth="1.8" fill="none"/></svg>
                 <span style={{ fontSize:10,fontWeight:600,color:"rgba(0,0,0,0.35)" }}>Click or drag image</span>
                 <span style={{ fontSize:9,color:"rgba(0,0,0,0.22)" }}>JPEG, PNG, WEBP</span>
               </React.Fragment>
@@ -409,10 +388,7 @@
       );
     }
 
-    // Base64 Encoded password to obscure it from plain text in GitHub. 
-    // "splotch2026" encodes to "c3Bsb3RjaDIwMjY="
     const ADMIN_PW_B64 = "c3Bsb3RjaDIwMjY=";
-    
     function AdminPanel({products,setProducts,onClose}){
       const [authed,setAuthed]=useState(false);
       const [pw,setPw]=useState("");
@@ -423,17 +399,7 @@
       const [form,setForm]=useState(blank);
 
       const showToast=(m)=>{ setToast(m); setTimeout(()=>setToast(null),2500); };
-      
-      const login=()=>{ 
-        // We encode the user's input to Base64 and compare it to our hidden string
-        if(btoa(pw) === ADMIN_PW_B64){
-          setAuthed(true);
-          setPwErr(false);
-        } else {
-          setPwErr(true);
-          setTimeout(()=>setPwErr(false),1500);
-        } 
-      };
+      const login=()=>{ if(btoa(pw) === ADMIN_PW_B64){ setAuthed(true); setPwErr(false); }else{ setPwErr(true); setTimeout(()=>setPwErr(false),1500); } };
 
       const save=()=>{
         if(!form.name||!form.price){ showToast("Name & price required."); return; }
@@ -443,12 +409,7 @@
         setProducts(upd); saveProducts(upd); setEditId(null); setForm(blank);
       };
 
-      const remove=(id)=>{
-        const upd=products.filter(p=>p.id!==id);
-        setProducts(upd); saveProducts(upd); showToast("Deleted.");
-        if(editId===id){setEditId(null);setForm(blank);}
-      };
-
+      const remove=(id)=>{ const upd=products.filter(p=>p.id!==id); setProducts(upd); saveProducts(upd); showToast("Deleted."); if(editId===id){setEditId(null);setForm(blank);} };
       const toggle=(id,field)=>{ const upd=products.map(p=>p.id===id?{...p,[field]:!p[field]}:p); setProducts(upd); saveProducts(upd); };
 
       const iSt={ display:"block",width:"100%",border:"2px solid rgba(0,0,0,0.14)",background:"#fff",padding:"10px 12px",fontSize:13,fontFamily:"Inter",transition:"border-color .2s" };
@@ -460,10 +421,7 @@
             <img src={LOGO_SRC} alt="Splotch" style={{ height:44,marginBottom:"1.5rem",filter:"invert(0)" }}/>
             <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:26,marginBottom:"0.4rem" }}>Admin Panel</h2>
             <p style={{ fontSize:12,color:"rgba(0,0,0,0.4)",marginBottom:"1.8rem" }}>Enter password to manage products.</p>
-            <input className="admin-input" type="password" placeholder="Password" value={pw}
-              onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&login()}
-              style={{ ...iSt,marginBottom:"0.9rem",borderColor:pwErr?"#c00":"rgba(0,0,0,0.14)",animation:pwErr?"shake .3s":"none" }}
-              onFocus={e=>e.target.style.borderColor="#111"} onBlur={e=>e.target.style.borderColor=pwErr?"#c00":"rgba(0,0,0,0.14)"}/>
+            <input className="admin-input" type="password" placeholder="Password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&login()} style={{ ...iSt,marginBottom:"0.9rem",borderColor:pwErr?"#c00":"rgba(0,0,0,0.14)",animation:pwErr?"shake .3s":"none" }} onFocus={e=>e.target.style.borderColor="#111"} onBlur={e=>e.target.style.borderColor=pwErr?"#c00":"rgba(0,0,0,0.14)"}/>
             <button onClick={login} style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"13px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",cursor:"crosshair" }}>Unlock</button>
             {pwErr&&<p style={{ color:"#c00",fontSize:11,fontWeight:600,marginTop:7,textAlign:"center",letterSpacing:"0.1em",textTransform:"uppercase" }}>Incorrect password</p>}
           </div>
@@ -474,43 +432,28 @@
         <div style={{ position:"fixed",inset:0,zIndex:1000,background:"#fff",overflow:"auto",animation:"fadeIn .2s" }}>
           {toast&&<div style={{ position:"fixed",bottom:22,left:"50%",transform:"translateX(-50%)",background:"#111",color:"#fff",padding:"11px 22px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",zIndex:1010,animation:"slideUp .3s ease" }}>{toast}</div>}
           <div style={{ background:"#111",padding:"0 1.5rem",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100,borderBottom:"2px solid #333" }}>
-            <div style={{ display:"flex",alignItems:"center",gap:12 }}>
-              <img src={LOGO_SRC} alt="" style={{ height:30,filter:"invert(1)",opacity:.85 }}/>
-              <span style={{ fontFamily:"Inter",fontWeight:700,fontSize:11,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(255,255,255,0.5)" }}>/ Admin</span>
-            </div>
+            <div style={{ display:"flex",alignItems:"center",gap:12 }}><img src={LOGO_SRC} alt="" style={{ height:30,filter:"invert(1)",opacity:.85 }}/><span style={{ fontFamily:"Inter",fontWeight:700,fontSize:11,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(255,255,255,0.5)" }}>/ Admin</span></div>
             <div style={{ display:"flex",gap:"0.75rem" }}>
               <button onClick={()=>{setForm(blank);setEditId("new");}} style={{ background:"#fff",color:"#111",border:"2px solid #fff",padding:"7px 18px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",cursor:"crosshair" }}>+ New Product</button>
               <button onClick={onClose} style={{ background:"transparent",color:"rgba(255,255,255,0.5)",border:"1.5px solid rgba(255,255,255,0.18)",width:38,height:38,fontSize:15,cursor:"crosshair",fontWeight:700 }}>✕</button>
             </div>
           </div>
-
           <div style={{ display:"grid",gridTemplateColumns:editId?"1fr 1.5fr":"1fr",gap:0,minHeight:"calc(100vh - 56px)" }}>
             <div style={{ borderRight:editId?"2px solid #111":"none",padding:"1.5rem" }}>
               <div style={{ fontSize:10,fontWeight:700,letterSpacing:"0.28em",textTransform:"uppercase",color:"rgba(0,0,0,0.3)",marginBottom:"1.2rem",borderLeft:"3px solid #111",paddingLeft:10 }}>{products.length} Product{products.length!==1?"s":""}</div>
               <div style={{ display:"flex",flexDirection:"column",gap:2 }}>
                 {products.map(p=>(
-                  <div key={p.id} onClick={()=>{setForm({...p});setEditId(p.id);}} style={{
-                    display:"flex",alignItems:"center",gap:"0.9rem",border:"2px solid #111",padding:"0.9rem 1rem",
-                    background:editId===p.id?"#111":"#fff",cursor:"crosshair"
-                  }}>
-                    <div style={{ width:52,height:52,background:editId===p.id?"#333":"#f0f0f0",flexShrink:0,overflow:"hidden" }}>
-                      {p.frontImage?<img src={p.frontImage} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover" }}/>:<div style={{ width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,color:editId===p.id?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.12)" }}>◎</div>}
-                    </div>
-                    <div style={{ flex:1,minWidth:0 }}>
-                      <div style={{ fontWeight:700,fontSize:13,textTransform:"uppercase",letterSpacing:"-0.01em",color:editId===p.id?"#fff":"#111",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis" }}>{p.name}</div>
-                      <div style={{ fontSize:11,color:editId===p.id?"rgba(255,255,255,0.4)":"rgba(0,0,0,0.38)",fontWeight:600,marginTop:1 }}>{p.price}</div>
-                    </div>
+                  <div key={p.id} onClick={()=>{setForm({...p});setEditId(p.id);}} style={{ display:"flex",alignItems:"center",gap:"0.9rem",border:"2px solid #111",padding:"0.9rem 1rem", background:editId===p.id?"#111":"#fff",cursor:"crosshair" }}>
+                    <div style={{ width:52,height:52,background:editId===p.id?"#333":"#f0f0f0",flexShrink:0,overflow:"hidden" }}>{p.frontImage?<img src={p.frontImage} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover" }}/>:<div style={{ width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,color:editId===p.id?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.12)" }}>◎</div>}</div>
+                    <div style={{ flex:1,minWidth:0 }}><div style={{ fontWeight:700,fontSize:13,textTransform:"uppercase",letterSpacing:"-0.01em",color:editId===p.id?"#fff":"#111",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis" }}>{p.name}</div><div style={{ fontSize:11,color:editId===p.id?"rgba(255,255,255,0.4)":"rgba(0,0,0,0.38)",fontWeight:600,marginTop:1 }}>{p.price}</div></div>
                     <div style={{ display:"flex",flexDirection:"column",gap:3,flexShrink:0 }}>
                       <button onClick={e=>{e.stopPropagation();toggle(p.id,"soldOut");}} style={{ fontSize:7,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 5px",cursor:"crosshair",background:p.soldOut?"#c00":"transparent",color:p.soldOut?"#fff":editId===p.id?"rgba(255,255,255,0.35)":"rgba(0,0,0,0.28)",border:`1px solid ${p.soldOut?"#c00":editId===p.id?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.12)"}` }}>{p.soldOut?"Sold Out":"In Stock"}</button>
                       <button onClick={e=>{e.stopPropagation();if(window.confirm("Delete?"))remove(p.id);}} style={{ fontSize:7,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 5px",cursor:"crosshair",background:"transparent",color:"rgba(180,0,0,0.55)",border:"1px solid rgba(180,0,0,0.18)" }}>Delete</button>
                     </div>
                   </div>
                 ))}
-                {products.length===0&&<div style={{ textAlign:"center",padding:"3rem",border:"2px dashed rgba(0,0,0,0.12)",color:"rgba(0,0,0,0.25)" }}><div style={{ fontSize:28,marginBottom:10 }}>◎</div><div style={{ fontSize:10,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase" }}>No products</div></div>}
               </div>
             </div>
-
-            {/* Form */}
             {editId&&(
               <div style={{ padding:"1.5rem 2rem",background:"#fafafa",overflow:"auto" }}>
                 <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"1.8rem" }}>
@@ -518,55 +461,16 @@
                   <button onClick={()=>{setEditId(null);setForm(blank);}} style={{ background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:13,cursor:"crosshair",fontWeight:700 }}>✕</button>
                 </div>
                 <div className="admin-form-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"1.3rem" }}>
-                  
-                  <div style={{ gridColumn:"1/-1" }}>
-                    <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Product Name *</label>
-                    <input className="admin-input" value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} placeholder="e.g. Terrain Tee 001" style={iSt} onFocus={e=>e.target.style.borderColor="#111"} onBlur={e=>e.target.style.borderColor="rgba(0,0,0,0.14)"}/>
-                  </div>
-                  
-                  <div style={{ gridColumn:"1/2" }}>
-                    <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Cost</label>
-                    <input className="admin-input" value={form.cost} onChange={e=>setForm(f=>({...f,cost:e.target.value}))} placeholder="₹450" style={iSt} onFocus={e=>e.target.style.borderColor="#111"} onBlur={e=>e.target.style.borderColor="rgba(0,0,0,0.14)"}/>
-                  </div>
-                  <div style={{ gridColumn:"2/4" }}>
-                    <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Price *</label>
-                    <input className="admin-input" value={form.price} onChange={e=>setForm(f=>({...f,price:e.target.value}))} placeholder="₹1,299" style={iSt} onFocus={e=>e.target.style.borderColor="#111"} onBlur={e=>e.target.style.borderColor="rgba(0,0,0,0.14)"}/>
-                  </div>
-                  
-                  <div style={{ gridColumn:"1/3" }}>
-                    <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Tag</label>
-                    <input className="admin-input" value={form.tag} onChange={e=>setForm(f=>({...f,tag:e.target.value}))} placeholder="New Drop / Limited" style={iSt} onFocus={e=>e.target.style.borderColor="#111"} onBlur={e=>e.target.style.borderColor="rgba(0,0,0,0.14)"}/>
-                  </div>
-                  <div style={{ gridColumn:"3/4" }}>
-                    <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Category</label>
-                    <select value={form.category} onChange={e=>setForm(f=>({...f,category:e.target.value}))} style={{ ...iSt,cursor:"crosshair" }}>
-                      {["T-Shirts","Hoodies","Jackets","Cargo Pants","Accessories","Caps"].map(c=><option key={c}>{c}</option>)}
-                    </select>
-                  </div>
-
-                  <div style={{ gridColumn:"1/-1" }}>
-                    <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Description</label>
-                    <textarea className="admin-input" rows={3} value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))} placeholder="Short description..." style={{ ...iSt,resize:"none" }} onFocus={e=>e.target.style.borderColor="#111"} onBlur={e=>e.target.style.borderColor="rgba(0,0,0,0.14)"}/>
-                  </div>
-
-                  <div style={{ gridColumn:"1/-1",display:"flex",gap:"0.8rem",alignItems:"center" }}>
-                    <button onClick={()=>setForm(f=>({...f,hasBack:!f.hasBack,backImage:f.hasBack?null:f.backImage}))} style={{ background:form.hasBack?"#111":"#fff",color:form.hasBack?"#fff":"#111",border:"2px solid #111",padding:"9px 18px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",cursor:"crosshair",transition:"all .2s" }}>{form.hasBack?"✓ Front + Back":"Front Only"}</button>
-                    <span style={{ fontSize:11,color:"rgba(0,0,0,0.35)" }}>Toggle if this product has a back photo</span>
-                  </div>
-
-                  <div style={{ gridColumn:form.hasBack?"1/2":"1/-1" }}>
-                    <ImgUpload value={form.frontImage} onChange={v=>setForm(f=>({...f,frontImage:v}))} label="Front Image *"/>
-                  </div>
+                  <div style={{ gridColumn:"1/-1" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Product Name *</label><input className="admin-input" value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} placeholder="e.g. Terrain Tee 001" style={iSt}/></div>
+                  <div style={{ gridColumn:"1/2" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Cost</label><input className="admin-input" value={form.cost} onChange={e=>setForm(f=>({...f,cost:e.target.value}))} placeholder="₹450" style={iSt}/></div>
+                  <div style={{ gridColumn:"2/4" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Price *</label><input className="admin-input" value={form.price} onChange={e=>setForm(f=>({...f,price:e.target.value}))} placeholder="₹1,299" style={iSt}/></div>
+                  <div style={{ gridColumn:"1/3" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Tag</label><input className="admin-input" value={form.tag} onChange={e=>setForm(f=>({...f,tag:e.target.value}))} placeholder="New Drop / Limited" style={iSt}/></div>
+                  <div style={{ gridColumn:"3/4" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Category</label><select value={form.category} onChange={e=>setForm(f=>({...f,category:e.target.value}))} style={{ ...iSt,cursor:"crosshair" }}>{["T-Shirts","Hoodies","Jackets","Cargo Pants","Accessories","Caps"].map(c=><option key={c}>{c}</option>)}</select></div>
+                  <div style={{ gridColumn:"1/-1" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Description</label><textarea className="admin-input" rows={3} value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))} placeholder="Short description..." style={{ ...iSt,resize:"none" }}/></div>
+                  <div style={{ gridColumn:"1/-1",display:"flex",gap:"0.8rem",alignItems:"center" }}><button onClick={()=>setForm(f=>({...f,hasBack:!f.hasBack,backImage:f.hasBack?null:f.backImage}))} style={{ background:form.hasBack?"#111":"#fff",color:form.hasBack?"#fff":"#111",border:"2px solid #111",padding:"9px 18px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",cursor:"crosshair" }}>{form.hasBack?"✓ Front + Back":"Front Only"}</button><span style={{ fontSize:11,color:"rgba(0,0,0,0.35)" }}>Toggle back photo</span></div>
+                  <div style={{ gridColumn:form.hasBack?"1/2":"1/-1" }}><ImgUpload value={form.frontImage} onChange={v=>setForm(f=>({...f,frontImage:v}))} label="Front Image *"/></div>
                   {form.hasBack&&<div style={{ gridColumn:"2/4" }}><ImgUpload value={form.backImage} onChange={v=>setForm(f=>({...f,backImage:v}))} label="Back Image"/></div>}
-                  
-                  <div style={{ gridColumn:"1/-1" }}>
-                    <label style={{ display:"flex",alignItems:"center",gap:8,cursor:"crosshair" }}>
-                      <div onClick={()=>setForm(f=>({...f,soldOut:!f.soldOut}))} style={{ width:18,height:18,border:"2px solid #111",background:form.soldOut?"#111":"transparent",display:"flex",alignItems:"center",justifyContent:"center",cursor:"crosshair",flexShrink:0 }}>
-                        {form.soldOut&&<span style={{ color:"#fff",fontSize:11,fontWeight:900 }}>✓</span>}
-                      </div>
-                      <span style={{ fontSize:11,fontWeight:700,letterSpacing:"0.08em",textTransform:"uppercase" }}>Mark as Sold Out</span>
-                    </label>
-                  </div>
+                  <div style={{ gridColumn:"1/-1" }}><label style={{ display:"flex",alignItems:"center",gap:8,cursor:"crosshair" }}><div onClick={()=>setForm(f=>({...f,soldOut:!f.soldOut}))} style={{ width:18,height:18,border:"2px solid #111",background:form.soldOut?"#111":"transparent",display:"flex",alignItems:"center",justifyContent:"center",cursor:"crosshair",flexShrink:0 }}>{form.soldOut&&<span style={{ color:"#fff",fontSize:11,fontWeight:900 }}>✓</span>}</div><span style={{ fontSize:11,fontWeight:700,letterSpacing:"0.08em",textTransform:"uppercase" }}>Mark as Sold Out</span></label></div>
                 </div>
                 <div style={{ marginTop:"1.8rem",display:"flex",gap:"0.8rem" }}>
                   <button onClick={save} style={{ background:"#111",color:"#fff",border:"3px solid #111",padding:"13px 36px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",cursor:"crosshair",flex:1 }}>{editId==="new"?"Add Product":"Save Changes"}</button>
@@ -585,29 +489,21 @@
 
     function Hero(){
       const [pos, setPos] = useState({ x: 0, y: 0 });
-      
       const handleMove = useCallback((e) => {
-        // Subtle parallax movement based on mouse position
         const x = (e.clientX / window.innerWidth - 0.5) * 40;
         const y = (e.clientY / window.innerHeight - 0.5) * 40;
         setPos({ x, y });
       }, []);
 
       return(
-        <section 
-          id="home" 
-          onMouseMove={handleMove}
-          style={{ position:"relative", width:"100%", height:"80vh", background:"#111", borderBottom:"3px solid #111", overflow:"hidden", display:"grid", placeItems:"center" }}
-        >
-          {/* Reactive Background */}
-          <div 
-            className="hero-video-placeholder" 
-            style={{ 
-              transform: `translate(${pos.x}px, ${pos.y}px)`, 
-              transition: "transform 0.1s ease-out" 
-            }}
-          ></div>
-          
+        <section id="home" onMouseMove={handleMove} style={{ position:"relative", width:"100%", height:"80vh", background:"#111", borderBottom:"3px solid #111", overflow:"hidden", display:"grid", placeItems:"center" }}>
+          <div className="hero-video-placeholder" style={{ transform: `translate(${pos.x}px, ${pos.y}px)`, transition: "transform 0.1s ease-out" }}></div>
+          <div className="hero-sub">
+            <p>Techwear</p>
+            <p>SS'26 Collection</p>
+            <p>splotch.in</p>
+            <span className="hero-badge">New Drop Available</span>
+          </div>
           <div className="hero-text-overlay">
             <h1 className="hero-h1 reveal visible">SPLOTCH</h1>
           </div>
@@ -629,28 +525,16 @@
           </div>
           <div style={{ borderBottom:"2px solid #111",display:"flex",alignItems:"center",overflowX:"auto" }}>
             {cats.map(c=>(
-              <button key={c} onClick={()=>setFilter(c)} style={{
-                background:filter===c?"#111":"transparent",color:filter===c?"#fff":"rgba(0,0,0,0.4)",
-                border:"none",borderRight:"1px solid rgba(0,0,0,0.08)",
-                padding:"13px 18px",fontSize:10,fontWeight:700,
-                letterSpacing:"0.18em",textTransform:"uppercase",cursor:"crosshair",whiteSpace:"nowrap",transition:"all .2s"
-              }}>{c}</button>
+              <button key={c} onClick={()=>setFilter(c)} style={{ background:filter===c?"#111":"transparent",color:filter===c?"#fff":"rgba(0,0,0,0.4)", border:"none",borderRight:"1px solid rgba(0,0,0,0.08)", padding:"13px 18px",fontSize:10,fontWeight:700, letterSpacing:"0.18em",textTransform:"uppercase",cursor:"crosshair",whiteSpace:"nowrap",transition:"all .2s" }}>{c}</button>
             ))}
             <div style={{ marginLeft:"auto",padding:"0 1rem",fontSize:10,fontWeight:700,letterSpacing:"0.12em",color:"rgba(0,0,0,0.25)",textTransform:"uppercase",whiteSpace:"nowrap" }}>{filtered.length} item{filtered.length!==1?"s":""}</div>
           </div>
           <div style={{ padding:"2.5rem 2rem" }}>
             {filtered.length===0?(
-              <div style={{ textAlign:"center",padding:"5rem",color:"rgba(0,0,0,0.2)" }}>
-                <div style={{ fontSize:40,marginBottom:12 }}>◎</div>
-                <div style={{ fontSize:10,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase" }}>No products in this category</div>
-              </div>
+              <div style={{ textAlign:"center",padding:"5rem",color:"rgba(0,0,0,0.2)" }}><div style={{ fontSize:40,marginBottom:12 }}>◎</div><div style={{ fontSize:10,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase" }}>No products in this category</div></div>
             ):(
               <div className="product-grid" style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:2 }}>
-                {filtered.map((p,i)=>(
-                  <div key={p.id} className={`reveal reveal-d${(i%3)+1}`}>
-                    <ProdCard product={p} onQV={onQV} onAdd={onAdd}/>
-                  </div>
-                ))}
+                {filtered.map((p,i)=>( <div key={p.id} className={`reveal reveal-d${(i%3)+1}`}><ProdCard product={p} onQV={onQV} onAdd={onAdd}/></div> ))}
               </div>
             )}
           </div>
@@ -660,15 +544,9 @@
 
     function TheWork(){
       const works=[
-        {label:"Terrain Vol.001",cat:"Capsule Drop"},
-        {label:"Shadow Protocol",cat:"Collab Series"},
-        {label:"Grid Zero",cat:"Artist Collab"},
-        {label:"Shell Cargo Pants",cat:"Product"},
-        {label:"SS'25 Lookbook",cat:"Editorial"},
-        {label:"Modular Jacket",cat:"Product"},
-        {label:"Topo Cap Series",cat:"Accessories"},
-        {label:"Field Campaign",cat:"Creative Direction"},
-        {label:"Terrain Vol.3",cat:"Upcoming Drop"},
+        {label:"Terrain Vol.001",cat:"Capsule Drop"}, {label:"Shadow Protocol",cat:"Collab Series"}, {label:"Grid Zero",cat:"Artist Collab"},
+        {label:"Shell Cargo Pants",cat:"Product"}, {label:"SS'25 Lookbook",cat:"Editorial"}, {label:"Modular Jacket",cat:"Product"},
+        {label:"Topo Cap Series",cat:"Accessories"}, {label:"Field Campaign",cat:"Creative Direction"}, {label:"Terrain Vol.3",cat:"Upcoming Drop"},
       ];
       return(
         <section id="work" style={{ background:"#fff",borderBottom:"3px solid #111",padding:"6rem 2rem" }}>
@@ -679,9 +557,7 @@
               <div key={i} className={`port-card reveal reveal-d${(i%3)+1}`} style={{ position:"relative",background:"#111",aspectRatio:"1/1",overflow:"hidden",cursor:"crosshair",border:"2px solid #111" }}>
                 <div style={{ position:"absolute",inset:0,opacity:0.13 }}>
                   <svg viewBox="0 0 280 280" width="100%" height="100%">
-                    {[50,80,110,140,170,200,230].map((y,j)=>(
-                      <path key={j} d={`M0,${y} Q70,${y-14} 140,${y} T280,${y-8}`} fill="none" stroke="#fff" strokeWidth="0.75"/>
-                    ))}
+                    {[50,80,110,140,170,200,230].map((y,j)=>( <path key={j} d={`M0,${y} Q70,${y-14} 140,${y} T280,${y-8}`} fill="none" stroke="#fff" strokeWidth="0.75"/> ))}
                     <ellipse cx="140" cy="140" rx={85-i*3} ry={38} fill="none" stroke="#fff" strokeWidth="0.75"/>
                     <ellipse cx="140" cy="140" rx={55-i*2} ry={24} fill="none" stroke="#fff" strokeWidth="0.75"/>
                   </svg>
@@ -693,36 +569,6 @@
                 </div>
               </div>
             ))}
-          </div>
-        </section>
-      );
-    }
-
-    function WhatWeDo(){
-      const items=[
-        {icon:"◈",title:"Curation",desc:"Every fabric, silhouette, and construct is handpicked. Nothing leaves without passing our obsessive quality filter."},
-        {icon:"◉",title:"Design",desc:"Concept-driven apparel built on topographic principles — functional, layered, and unmistakably Splotch."},
-        {icon:"◎",title:"Distribution",desc:"Direct-to-wearer drops, zero retail noise. Limited runs shipped from our Bangalore studio to your doorstep."},
-      ];
-      return(
-        <section id="what-we-do" style={{ background:"#fff",borderBottom:"3px solid #111",padding:"6rem 2rem",position:"relative",overflow:"hidden" }}>
-          <div style={{ position:"absolute",inset:0,opacity:0.04 }}><TopoSVG color="#111"/></div>
-          <div style={{ position:"relative",zIndex:1 }}>
-            <SLabel>How We Operate</SLabel>
-            <h2 className="reveal" style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:"clamp(72px,10vw,150px)",letterSpacing:"-0.04em",lineHeight:0.88,marginBottom:"3.5rem",fontStyle:"italic" }}>What We Do.</h2>
-            <div className="three-col" style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:0 }}>
-              {items.map((s,i)=>(
-                <div key={s.title} className={`reveal reveal-d${i+1}`} style={{
-                  borderLeft:"2px solid #111",borderTop:"2px solid #111",
-                  borderRight:i===2?"2px solid #111":"none",borderBottom:"2px solid #111",
-                  padding:"2.5rem 2rem"
-                }}>
-                  <div style={{ fontSize:26,marginBottom:"1.2rem",color:"rgba(0,0,0,0.5)" }}>{s.icon}</div>
-                  <h3 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:22,marginBottom:"0.8rem" }}>{s.title}</h3>
-                  <p style={{ fontSize:14,lineHeight:1.75,color:"rgba(0,0,0,0.52)" }}>{s.desc}</p>
-                </div>
-              ))}
-            </div>
           </div>
         </section>
       );
@@ -773,51 +619,12 @@
           <SLabel>What People Say</SLabel>
           <div className="testi-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:0 }}>
             {items.map((t,i)=>(
-              <div key={i} className={`reveal reveal-d${i+1}`} style={{
-                borderLeft:"2px solid #111",borderTop:"2px solid #111",
-                borderRight:i===2?"2px solid #111":"none",borderBottom:"2px solid #111",
-                padding:"2.5rem 1.8rem"
-              }}>
+              <div key={i} className={`reveal reveal-d${i+1}`} style={{ borderLeft:"2px solid #111",borderTop:"2px solid #111", borderRight:i===2?"2px solid #111":"none",borderBottom:"2px solid #111", padding:"2.5rem 1.8rem" }}>
                 <div style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:36,color:"#111",marginBottom:"1.2rem",lineHeight:1 }}>"</div>
                 <p style={{ fontSize:14,lineHeight:1.8,color:"rgba(0,0,0,0.62)",marginBottom:"1.8rem",fontStyle:"italic" }}>{t.q}</p>
                 <div style={{ borderTop:"1px solid rgba(0,0,0,0.08)",paddingTop:"1rem" }}>
                   <p style={{ fontWeight:700,fontSize:12,textTransform:"uppercase",letterSpacing:"0.08em" }}>{t.name}</p>
                   <p style={{ fontSize:10,color:"rgba(0,0,0,0.35)",fontWeight:600,letterSpacing:"0.1em",marginTop:2,textTransform:"uppercase" }}>{t.residence}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      );
-    }
-
-    function Highlights(){
-      const tiles=[
-        {label:"VOL.001 — TERRAIN",sub:"The debut collection that mapped urban concrete into wearable topography."},
-        {label:"SHADOW PROTOCOL",sub:"12 pieces. 200 units. Sold out in 4 minutes."},
-        {label:"GRID ZERO DROP",sub:"A collab with three Indian artists redefining what streetwear means for South Asia."},
-      ];
-      return(
-        <section style={{ background:"#fff",borderBottom:"3px solid #111",padding:"6rem 2rem" }}>
-          <SLabel>Editorial — Highlights</SLabel>
-          <div className="three-col reveal" style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:2 }}>
-            {tiles.map((t,i)=>(
-              <div key={i} className="hl-card" style={{ position:"relative",background:"#111",aspectRatio:"3/4",overflow:"hidden",cursor:"crosshair",border:"2px solid #111" }}>
-                <div style={{ position:"absolute",inset:0,opacity:0.11 }}>
-                  <svg viewBox="0 0 280 373" width="100%" height="100%">
-                    {[70,105,140,175,210,245,280,315].map((y,j)=>(
-                      <path key={j} d={`M0,${y} Q70,${y-18} 140,${y} T280,${y-10}`} fill="none" stroke="#fff" strokeWidth="0.75"/>
-                    ))}
-                    <ellipse cx="140" cy="187" rx="95" ry="38" fill="none" stroke="#fff" strokeWidth="0.75"/>
-                    <ellipse cx="140" cy="187" rx="62" ry="24" fill="none" stroke="#fff" strokeWidth="0.75"/>
-                    <ellipse cx="140" cy="187" rx="30" ry="10" fill="none" stroke="#fff" strokeWidth="0.75"/>
-                  </svg>
-                </div>
-                <div style={{ position:"absolute",top:"1.2rem",left:"1.2rem",fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic",fontSize:40,color:"rgba(255,255,255,0.06)",lineHeight:1 }}>0{i+1}</div>
-                <div style={{ position:"absolute",top:"1.2rem",right:"1.2rem",border:"1px solid rgba(255,255,255,0.15)",fontSize:8,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",color:"rgba(255,255,255,0.3)",padding:"3px 7px" }}>Editorial</div>
-                <div className="hl-caption" style={{ position:"absolute",bottom:0,left:0,right:0,background:"#fff",padding:"1.5rem",borderTop:"3px solid #111" }}>
-                  <p style={{ fontWeight:700,fontSize:12,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:"0.4rem" }}>{t.label}</p>
-                  <p style={{ fontSize:12,lineHeight:1.6,color:"rgba(0,0,0,0.55)" }}>{t.sub}</p>
                 </div>
               </div>
             ))}
@@ -846,11 +653,7 @@
             </div>
             <div className="about-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:0 }}>
               {vals.map((v,i)=>(
-                <div key={v.title} className={`reveal reveal-d${i+1}`} style={{
-                  border:"1px solid rgba(255,255,255,0.1)",
-                  borderRight:i<2?"none":"1px solid rgba(255,255,255,0.1)",
-                  padding:"2.5rem 1.8rem"
-                }}>
+                <div key={v.title} className={`reveal reveal-d${i+1}`} style={{ border:"1px solid rgba(255,255,255,0.1)", borderRight:i<2?"none":"1px solid rgba(255,255,255,0.1)", padding:"2.5rem 1.8rem" }}>
                   <div style={{ fontSize:22,color:"rgba(255,255,255,0.4)",marginBottom:"1.2rem" }}>{v.icon}</div>
                   <h3 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:20,color:"#fff",marginBottom:"0.8rem" }}>{v.title}</h3>
                   <p style={{ fontSize:13,lineHeight:1.7,color:"rgba(255,255,255,0.42)" }}>{v.desc}</p>
@@ -865,7 +668,34 @@
     function Contact(){
       const [form,setForm]=useState({name:"",email:"",message:""});
       const [sent,setSent]=useState(false);
-      const submit=()=>{ if(form.name&&form.email&&form.message){ setSent(true); setTimeout(()=>setSent(false),4000); setForm({name:"",email:"",message:""}); } };
+      const [loading, setLoading]=useState(false);
+
+      const submit = async () => {
+        if(form.name && form.email && form.message) { 
+          setLoading(true);
+          try {
+            // Check if Firebase is initialized safely
+            if (window.fbAddDoc && window.fbCollection && window.fbDb) {
+              await window.fbAddDoc(window.fbCollection(window.fbDb, "messages"), {
+                name: form.name,
+                email: form.email,
+                message: form.message,
+                timestamp: new Date()
+              });
+              setSent(true); 
+              setTimeout(()=>setSent(false),4000); 
+              setForm({name:"",email:"",message:""}); 
+            } else {
+              alert("Firebase is not initialized. Please configure API keys.");
+            }
+          } catch (e) {
+            console.error("Error adding doc: ", e);
+            alert("Error sending message. Check console/firebase rules.");
+          }
+          setLoading(false);
+        } 
+      };
+
       const iSt={ display:"block",width:"100%",background:"transparent",border:"none",borderBottom:"2px solid rgba(255,255,255,0.15)",color:"#fff",padding:"13px 0",fontSize:15,fontFamily:"Inter",transition:"border-color .2s",marginBottom:"1.8rem" };
       return(
         <section id="contact" style={{ background:"#111",borderBottom:"3px solid #111",padding:"6rem 2rem",position:"relative",overflow:"hidden" }}>
@@ -882,14 +712,12 @@
                 ):(
                   <React.Fragment>
                     {["name","email"].map(field=>(
-                      <input key={field} type={field==="email"?"email":"text"} placeholder={field.charAt(0).toUpperCase()+field.slice(1)} value={form[field]}
-                        onChange={e=>setForm(f=>({...f,[field]:e.target.value}))} style={iSt}
-                        onFocus={e=>e.target.style.borderColor="rgba(255,255,255,0.7)"} onBlur={e=>e.target.style.borderColor="rgba(255,255,255,0.15)"}/>
+                      <input key={field} type={field==="email"?"email":"text"} placeholder={field.charAt(0).toUpperCase()+field.slice(1)} value={form[field]} onChange={e=>setForm(f=>({...f,[field]:e.target.value}))} style={iSt} onFocus={e=>e.target.style.borderColor="rgba(255,255,255,0.7)"} onBlur={e=>e.target.style.borderColor="rgba(255,255,255,0.15)"}/>
                     ))}
-                    <textarea placeholder="Message" value={form.message} rows={5} onChange={e=>setForm(f=>({...f,message:e.target.value}))} style={{ ...iSt,resize:"none" }}
-                      onFocus={e=>e.target.style.borderColor="rgba(255,255,255,0.7)"} onBlur={e=>e.target.style.borderColor="rgba(255,255,255,0.15)"}/>
-                    <button onClick={submit} style={{ background:"#fff",color:"#111",border:"3px solid #fff",padding:"14px 36px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",cursor:"crosshair",transition:"all .2s" }}
-                      onMouseEnter={e=>{e.target.style.background="transparent";e.target.style.color="#fff";}} onMouseLeave={e=>{e.target.style.background="#fff";e.target.style.color="#111";}}>Send Message →</button>
+                    <textarea placeholder="Message" value={form.message} rows={5} onChange={e=>setForm(f=>({...f,message:e.target.value}))} style={{ ...iSt,resize:"none" }} onFocus={e=>e.target.style.borderColor="rgba(255,255,255,0.7)"} onBlur={e=>e.target.style.borderColor="rgba(255,255,255,0.15)"}/>
+                    <button onClick={submit} disabled={loading} style={{ background:"#fff",color:"#111",border:"3px solid #fff",padding:"14px 36px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",cursor:loading?"wait":"crosshair",transition:"all .2s" }} onMouseEnter={e=>{e.target.style.background="transparent";e.target.style.color="#fff";}} onMouseLeave={e=>{e.target.style.background="#fff";e.target.style.color="#111";}}>
+                      {loading ? "Sending..." : "Send Message →"}
+                    </button>
                   </React.Fragment>
                 )}
               </div>
@@ -915,18 +743,8 @@
         <footer style={{ background:"#111",padding:"5rem 2rem 2.5rem",position:"relative",overflow:"hidden",borderTop:"3px solid #222" }}>
           <div style={{ position:"absolute",inset:0,opacity:0.05 }}><TopoSVG color="#fff"/></div>
           <div style={{ position:"relative",zIndex:1 }}>
-            <div style={{ marginBottom:"3rem" }}>
-              <img src={LOGO_SRC} alt="Splotch" style={{ height:56,filter:"invert(1)",opacity:.8 }}/>
-            </div>
-            <h2 style={{
-              fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic",
-              fontSize:"clamp(72px,8vw,110px)",
-              letterSpacing:"-0.04em",lineHeight:0.88,
-              color:"transparent",WebkitTextStroke:"1.5px rgba(255,255,255,0.4)",
-              marginBottom:"5rem"
-            }}>
-              Predict the future,<br/>you didn't come<br/>this far to stop.
-            </h2>
+            <div style={{ marginBottom:"3rem" }}><img src={LOGO_SRC} alt="Splotch" style={{ height:56,filter:"invert(1)",opacity:.8 }}/></div>
+            <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic", fontSize:"clamp(72px,8vw,110px)", letterSpacing:"-0.04em",lineHeight:0.88, color:"transparent",WebkitTextStroke:"1.5px rgba(255,255,255,0.4)", marginBottom:"5rem" }}>Predict the future,<br/>you didn't come<br/>this far to stop.</h2>
             <div className="footer-grid" style={{ display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr",gap:"2.5rem",borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:"2.5rem",marginBottom:"2.5rem" }}>
               <div>
                 <p style={{ fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic",fontSize:28,color:"#fff",marginBottom:"0.8rem" }}>splotch</p>
@@ -935,41 +753,19 @@
               {[
                 {h:"Quick Links",ls:[["home","Home"],["shop","Shop"],["work","Work"],["about","About"],["contact","Contact"]]},
                 {h:"Collections",ls:[["","Terrain Vol.1"],["","Shadow Protocol"],["","Grid Zero"],["","SS'26 Preview"]]},
-                {h:"Follow",ls:[
-                  ["https://www.instagram.com/splotch_20258?igsh=NGV2cWM0NGM3dWZ2","Instagram"],
-                  ["","Twitter"],
-                  ["","Behance"],
-                  ["","Pinterest"]
-                ]},
+                {h:"Follow",ls:[ ["https://www.instagram.com/splotch_20258?igsh=NGV2cWM0NGM3dWZ2","Instagram"], ["","Twitter"], ["","Behance"], ["","Pinterest"] ]},
               ].map(col=>(
                 <div key={col.h}>
                   <p style={{ fontSize:9,fontWeight:700,letterSpacing:"0.28em",textTransform:"uppercase",color:"rgba(255,255,255,0.22)",marginBottom:"1rem" }}>{col.h}</p>
                   {col.ls.map(([id,label])=>(
-                    <button key={label} onClick={()=>{
-                        if (!id) return;
-                        if (id.startsWith('http')) {
-                          window.open(id, '_blank', 'noopener,noreferrer');
-                        } else {
-                          document.getElementById(id)?.scrollIntoView({behavior:"smooth"});
-                        }
-                      }} style={{
-                      display:"block",width:"100%",textAlign:"left",background:"none",border:"none",
-                      fontSize:12,fontWeight:600,color:"rgba(255,255,255,0.38)",
-                      textDecoration:"none",lineHeight:2.2,textTransform:"uppercase",letterSpacing:"0.06em",
-                      cursor:"crosshair",transition:"color .15s",padding:0
-                    }}
-                      onMouseEnter={e=>e.target.style.color="#fff"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.38)"}>{label}</button>
+                    <button key={label} onClick={()=>{ if(!id)return; if(id.startsWith('http')){ window.open(id,'_blank','noopener,noreferrer'); }else{ document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); } }} style={{ display:"block",width:"100%",textAlign:"left",background:"none",border:"none", fontSize:12,fontWeight:600,color:"rgba(255,255,255,0.38)", textDecoration:"none",lineHeight:2.2,textTransform:"uppercase",letterSpacing:"0.06em", cursor:"crosshair",transition:"color .15s",padding:0 }} onMouseEnter={e=>e.target.style.color="#fff"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.38)"}>{label}</button>
                   ))}
                 </div>
               ))}
             </div>
             <div style={{ borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:"1.5rem",display:"flex",justifyContent:"space-between",flexWrap:"wrap",gap:"0.8rem" }}>
               <p style={{ fontSize:10,fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"rgba(255,255,255,0.15)" }}>© 2026 Splotch — splotch.in</p>
-              <div style={{ display:"flex",gap:"1.5rem" }}>
-                {["Privacy","Terms","Shipping","Returns"].map(l=>(
-                  <a key={l} href="#" style={{ fontSize:9,fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"rgba(255,255,255,0.15)",textDecoration:"none" }}>{l}</a>
-                ))}
-              </div>
+              <div style={{ display:"flex",gap:"1.5rem" }}>{["Privacy","Terms","Shipping","Returns"].map(l=>( <a key={l} href="#" style={{ fontSize:9,fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"rgba(255,255,255,0.15)",textDecoration:"none" }}>{l}</a> ))}</div>
             </div>
           </div>
         </footer>
@@ -990,12 +786,22 @@
       const [showBack,setShowBack]=useState(false);
       const [logoClicks,setLogoClicks]=useState(0);
       const logoTimerRef=useRef(null);
+      const [user, setUser]=useState(null);
+
+      // Listen for Firebase Auth status
+      useEffect(()=>{
+        const handleAuthChange = () => {
+          if (window.fbAuth && window.fbOnAuthStateChanged) {
+            window.fbOnAuthStateChanged(window.fbAuth, (u) => { setUser(u); });
+          }
+        };
+        if (window.fbAuth) { handleAuthChange(); }
+        else { window.addEventListener('firebase-ready', handleAuthChange); }
+        return () => window.removeEventListener('firebase-ready', handleAuthChange);
+      }, []);
 
       useEffect(()=>{
-        const obs=new IntersectionObserver(
-          entries=>entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add("visible"); }),
-          {threshold:0.1}
-        );
+        const obs=new IntersectionObserver( entries=>entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add("visible"); }), {threshold:0.1} );
         document.querySelectorAll(".reveal").forEach(el=>obs.observe(el));
         return ()=>obs.disconnect();
       });
@@ -1010,11 +816,7 @@
         const next=logoClicks+1;
         setLogoClicks(next);
         if(logoTimerRef.current) clearTimeout(logoTimerRef.current);
-        if(next>=6){
-          setAdminOpen(true);
-          setLogoClicks(0);
-          return;
-        }
+        if(next>=6){ setAdminOpen(true); setLogoClicks(0); return; }
         logoTimerRef.current=setTimeout(()=>setLogoClicks(0),3000);
       };
 
@@ -1023,25 +825,15 @@
       return(
         <div style={{ minHeight:"100vh",background:"#fff" }}>
           <ScrollProgress/>
-          <Header
-            cartCount={cart.length}
-            onCartOpen={()=>setCartOpen(true)}
-            onLogoClick={handleLogoClick}
-            setMobMenu={setMobMenu}
-          />
+          <Header cartCount={cart.length} onCartOpen={()=>setCartOpen(true)} onLogoClick={handleLogoClick} setMobMenu={setMobMenu} user={user} />
           <Ticker/>
           <MobMenu open={mobMenu} setOpen={setMobMenu}/>
-
-          {showBack&&(
-            <BackButton onBack={()=>window.scrollTo({top:0,behavior:"smooth"})} label="Top" />
-          )}
+          {showBack&&(<BackButton onBack={()=>window.scrollTo({top:0,behavior:"smooth"})} label="Top" />)}
 
           <Hero/>
           <Shop products={products} onQV={setQV} onAdd={addToCart} filter={filter} setFilter={setFilter}/>
           <TheWork/>
-          <WhatWeDo/>
           <WhySplotch/>
-          <Highlights/>
           <Testimonials/>
           <About/>
           <Contact/>
