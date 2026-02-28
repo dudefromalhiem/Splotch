@@ -14,16 +14,15 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { 
-  getAuth, 
-  signInWithPopup, 
-  GoogleAuthProvider, 
-  onAuthStateChanged, 
-  signOut,
-  createUserWithEmailAndPassword, // Added
-  signInWithEmailAndPassword    // Added
-} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { 
+      getAuth, 
+      signInWithPopup, 
+      GoogleAuthProvider, 
+      onAuthStateChanged, 
+      signOut,
+      createUserWithEmailAndPassword, 
+      signInWithEmailAndPassword    
+    } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
     import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-functions.js";
 
@@ -83,7 +82,7 @@ import {
       padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; transition: box-shadow 0.3s, background 0.3s, backdrop-filter 0.3s;
     }
     .glass-nav {
-      background: rgba(255, 255, 255, 0.65) !important; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 2px 0 #111;
+      background: rgba(255, 255, 255, 0.65) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 2px 0 #111;
     }
     .nav-signin {
       background: #111; color: #fff; border: 2px solid #111; padding: 9px 18px; font-size: 10px; font-weight: 900; 
@@ -274,7 +273,7 @@ import {
 
             <button onClick={onCartOpen} style={{ background:"#111",color:"#fff",border:"2px solid #111", padding:"8px 14px",fontSize:10,fontWeight:700, letterSpacing:"0.15em",textTransform:"uppercase",cursor:"crosshair", display:"flex",alignItems:"center",gap:6 }}>
               Cart
-              {cartCount>0&&<span style={{ background:"fff",color:"#111",width:18,height:18,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:900 }}>{cartCount}</span>}
+              {cartCount>0&&<span style={{ background:"#fff",color:"#111",width:18,height:18,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:900 }}>{cartCount}</span>}
             </button>
           </div>
         </header>
@@ -318,7 +317,7 @@ import {
         <div className="prod-card" style={{ border:"2px solid #111",background:"#fff",position:"relative" }}>
           {product.tag&&<div style={{ position:"absolute",top:12,left:12,zIndex:10,background:"#111",color:"#fff",fontSize:8,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",padding:"3px 8px" }}>{product.tag}</div>}
           {product.hasBack&&(
-            <button className="flip-toggle" onClick={()=>setFlipped(f=>!f)} style={{ position:"absolute",top:12,right:12,zIndex:10, background:flipped?"#111":"rgba(255,255,255,0.92)", color:flipped?"#fff":"#111", border:"1.5px solid #111",fontSize:8,fontWeight:700, letterSpacing:"0.15em",textTransform:"uppercase", padding:"4px 9px",cursor:"crosshair" }}>{flipped?"◀ Front":"Back ▶"}</button>
+            <button className="flip-toggle" onClick={()=>setFlipped(f=>!f)} style={{ position:"absolute",top:12,right:12,zIndex:10, background:flipped?"#111":"rgba(255,255,255,0.92)", color:flipped?"#fff":"#111", border:"1.5px solid #111",fontSize:8,fontWeight:700, letterSpacing:"0.15em",textTransform:"uppercase", padding:"4px 9px",cursor:"crosshair",transition:"all .2s" }}>{flipped?"◀ Front":"Back ▶"}</button>
           )}
           {product.soldOut&&(
             <div style={{ position:"absolute",inset:0,zIndex:20,background:"rgba(255,255,255,0.9)",display:"flex",alignItems:"center",justifyContent:"center" }}><span style={{ fontWeight:900,fontSize:16,letterSpacing:"0.1em",textTransform:"uppercase" }}>SOLD OUT</span></div>
@@ -329,7 +328,7 @@ import {
               {product.hasBack&&(<div className="flip-back">{backImg ? <img src={backImg} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover",display:"block" }}/> : <ImgPlaceholder label={product.name+" · Back"} dark={false}/>}</div>)}
             </div>
           </div>
-          <button onClick={()=>onQV(product)} style={{ position:"absolute",bottom:112,left:0,right:0,zIndex:8, background:"rgba(17,17,17,0.88)",color:"#fff",border:"none", padding:"10px",fontSize:9,fontWeight:700,letterSpacing:"0.22em", textTransform:"uppercase",cursor:"crosshair", opacity:0 }} onMouseEnter={e=>e.target.style.opacity=1} onMouseLeave={e=>e.target.style.opacity=0} className="qv-trigger">Quick View ↗</button>
+          <button onClick={()=>onQV(product)} style={{ position:"absolute",bottom:112,left:0,right:0,zIndex:8, background:"rgba(17,17,17,0.88)",color:"#fff",border:"none", padding:"10px",fontSize:9,fontWeight:700,letterSpacing:"0.22em", textTransform:"uppercase",cursor:"crosshair", opacity:0,transition:"opacity .2s" }} onMouseEnter={e=>e.target.style.opacity=1} onMouseLeave={e=>e.target.style.opacity=0} className="qv-trigger">Quick View ↗</button>
           <div style={{ padding:"1rem 1.2rem",borderTop:"2px solid #111" }}>
             <div style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.3)",marginBottom:3 }}>{product.category}</div>
             <div style={{ fontWeight:900,fontSize:15,textTransform:"uppercase",letterSpacing:"-0.01em",marginBottom:5 }}>{product.name}</div>
@@ -386,9 +385,6 @@ import {
       );
     }
 
-    /* ═══════════════════════════════════════════════════════
-       CART & RAZORPAY CHECKOUT LOGIC
-    ═══════════════════════════════════════════════════════ */
     function CartSidebar({cart,setCart,onClose, user}){
       const total = cart.reduce((s,i)=>s+(parseInt((i.price||"0").replace(/[^0-9]/g,""))||0),0);
       const [loading, setLoading] = useState(false);
@@ -402,12 +398,10 @@ import {
 
         setLoading(true);
         try {
-          // 1. Call Firebase Function to create Razorpay Order
           const createOrder = window.fbHttpsCallable(window.fbFunctions, 'createRzpOrder');
-          const orderRes = await createOrder({ amount: total * 100 }); // Amount in paise
+          const orderRes = await createOrder({ amount: total * 100 }); 
           const { order_id, key } = orderRes.data;
 
-          // 2. Configure & Open Razorpay Modal
           const options = {
             key: key || "YOUR_RAZORPAY_KEY_ID", 
             amount: total * 100, 
@@ -417,7 +411,6 @@ import {
             image: LOGO_SRC,
             order_id: order_id,
             handler: async function (response) {
-              // 3. Verify Payment Signature via Firebase Function
               try {
                 const verifyPayment = window.fbHttpsCallable(window.fbFunctions, 'verifyRzpPayment');
                 const verifyRes = await verifyPayment({
@@ -427,7 +420,6 @@ import {
                 });
 
                 if (verifyRes.data.success) {
-                  // 4. Save Confirmed Order to Firestore
                   await window.fbAddDoc(window.fbCollection(window.fbDb, "orders"), {
                     items: cart,
                     total: total,
