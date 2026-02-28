@@ -9,40 +9,42 @@
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js" data-type="module"></script>
+  
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-functions.js";
 
     /* =====================================================================
-      1. FIREBASE CONFIGURATION HERE
+       🔥 1. ADD YOUR FIREBASE CONFIGURATION HERE 🔥
        ===================================================================== */
     const firebaseConfig = {
-      apiKey: "AIzaSyBebrnAnOWS3cKVHJnXqA0FrjUKbLtd8h8",
-      authDomain: "splotchclothing.firebaseapp.com",
-      projectId: "splotchclothing",
-      storageBucket: "splotchclothing.firebasestorage.app",
-      messagingSenderId: "791501370137",
-      appId: "1:791501370137:web:ff4c662c12342d74f8cb88"
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
     };
 
-    // Initialize Firebase and expose it safely to the global window 
-    // so our React/Babel code can access it without module scope issues.
     try {
       const app = initializeApp(firebaseConfig);
       window.fbDb = getFirestore(app);
       window.fbAuth = getAuth(app);
       window.fbProvider = new GoogleAuthProvider();
+      window.fbFunctions = getFunctions(app);
       
-      // Map functions
+      // Global Exposures for React
       window.fbSignInWithPopup = signInWithPopup;
       window.fbSignOut = signOut;
       window.fbOnAuthStateChanged = onAuthStateChanged;
       window.fbCollection = collection;
       window.fbAddDoc = addDoc;
+      window.fbHttpsCallable = httpsCallable;
 
-      // Dispatch event to let React know Firebase is ready
       window.dispatchEvent(new Event('firebase-ready'));
     } catch(err) {
       console.error("Firebase Initialization Error. Did you add your config?", err);
@@ -56,6 +58,45 @@
     body { background: var(--W); color: var(--B); font-family: 'Inter', sans-serif; overflow-x: hidden; cursor: crosshair; }
     ::selection { background: var(--B); color: var(--W); }
     input, textarea, select, button { font-family: inherit; border-radius: 0 !important; outline: none; }
+
+    /* ═══════ GRAIN OVERLAY ═══════ */
+    .grain-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; 
+      /* Reduced opacity from 0.35 to 0.15 */
+      opacity: 0.15;
+      /* Changed baseFrequency from 0.8 to 1.5 to make grains smaller */
+      background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+    }
+
+    /* ═══════ HEADER & AUTH UI ═══════ */
+    header {
+      position: sticky; top: 0; z-index: 500; height: 56px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; transition: box-shadow 0.3s, background 0.3s, backdrop-filter 0.3s;
+    }
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.65) !important; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 2px 0 #111;
+    }
+    .nav-signin {
+      background: #111; color: #fff; border: 2px solid #111; padding: 9px 18px; font-size: 10px; font-weight: 900; 
+      letter-spacing: 0.18em; text-transform: uppercase; transition: all 0.2s; cursor: crosshair;
+    }
+    .nav-signin:hover { background: transparent; color: #111; }
+    .user-badge {
+      background: #111; color: #fff; border: 2px solid #111; padding: 7px 14px; font-size: 9px; font-weight: 900; 
+      letter-spacing: 0.15em; text-transform: uppercase;
+    }
+    .nav-logout {
+      background: transparent; color: #111; border: none; font-size: 9px; font-weight: 700; letter-spacing: 0.15em; 
+      text-transform: uppercase; cursor: crosshair; text-decoration: underline; text-underline-offset: 3px; transition: opacity 0.2s;
+    }
+    .nav-logout:hover { opacity: 0.5; }
+    .auth-container { display: flex; align-items: center; gap: 1rem; }
+
+    /* ═══════ TOPOGRAPHIC PARALLAX ═══════ */
+    .topo-parallax-wrap {
+      position: absolute; top: -50vh; bottom: -50vh; left: 0; right: 0; pointer-events: none; z-index: 0;
+      transform: translateY(calc(var(--scroll-y, 0) * 0.15px)); will-change: transform;
+    }
 
     /* Hero Styles */
     .hero-video-placeholder { position: absolute; inset: 0; background: var(--B); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; }
@@ -87,6 +128,11 @@
     .port-card:hover .port-overlay { opacity: 1; }
     .port-card .port-text { transform: translateY(10px); opacity: 0; transition: transform 0.4s ease, opacity 0.4s ease; }
     .port-card:hover .port-text { transform: translateY(0); opacity: 1; }
+    .svc-card { transition: background 0.25s, color 0.25s; }
+    .svc-card:hover { background: #111 !important; color: #fff !important; }
+    .svc-card:hover .svc-num { color: rgba(255, 255, 255, 0.07) !important; }
+    .svc-card:hover .svc-tag { color: rgba(255, 255, 255, 0.35) !important; border-color: rgba(255, 255, 255, 0.15) !important; }
+    .svc-card:hover .svc-btn { background: #fff !important; color: #111 !important; border-color: #fff !important; }
     .nl { position: relative; }
     .nl::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #111; transition: width 0.2s; }
     .nl:hover::after { width: 100%; }
@@ -134,7 +180,7 @@
     const DEFAULT_PRODUCTS = [
       { id:"shirt-1", name:"Terrain Tee 001", cost:"₹450", price:"₹1,299", tag:"New Drop", description:"Urban utility tee with topographic print detail. Oversized fit, 100% organic cotton.", frontImage:"Shirt 1 front.jpeg", backImage:"Shirt 1 back.jpeg", hasBack:true, soldOut:false, category:"T-Shirts" },
       { id:"shirt-2", name:"Grid Tee 002", cost:"₹500", price:"₹1,499", tag:"Limited", description:"Graphic techwear tee from the Grid Zero collaboration. Heavyweight cotton blend.", frontImage:"Shirt 2 front.jpeg", backImage:"Shirt 2 back.jpeg", hasBack:true, soldOut:false, category:"T-Shirts" },
-      { id:"shirt-3", name:"Shadow Tee 003", cost:"₹400", price:"₹1,199", tag:"Last 5", description:"Minimalist dropped-shoulder tee. Shadow Series print, ultra-soft jersey.", frontImage:"Shirt 3 front.jpeg", backImage:"Shirt 3 back.jpeg", hasBack:true, soldOut:false, category:"T-Shirts" },
+      { id:"shirt-3", name:"Shadow Tee 003", cost:"₹400", price:"₹1,199", tag:"Last 5", description:"Minimalist dropped-shoulder tee. Shadow Series print, ultra-soft jersey.", frontImage:"Shirt 3 front.jpeg", backImage:"Shirt 3 back.jpeg", hasBack:false, soldOut:false, category:"T-Shirts" },
     ];
     function loadProducts(){ try{ const r=localStorage.getItem(STORAGE_KEY); if(r) return JSON.parse(r); }catch{} return DEFAULT_PRODUCTS; }
     function saveProducts(p){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(p)); }catch{} }
@@ -179,7 +225,7 @@
       );
     }
 
-    function Header({cartCount, onCartOpen, onLogoClick, setMobMenu, user}){
+    function Header({cartCount, onCartOpen, onLogoClick, setMobMenu, user, handleAuth}){
       const [scrolled,setScrolled]=useState(false);
       useEffect(()=>{
         const fn=()=>setScrolled(window.scrollY>30);
@@ -189,44 +235,44 @@
 
       const scrollTo=(id)=>{ document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); };
 
-      const handleAuth = async () => {
-        if(user && window.fbAuth) {
-          try { await window.fbSignOut(window.fbAuth); } catch(err) { console.error(err); }
-        } else if(window.fbAuth && window.fbProvider) {
-          try { await window.fbSignInWithPopup(window.fbAuth, window.fbProvider); } catch(err) { console.error("Login failed or no config."); alert("Login failed. Did you add Firebase Config?"); }
-        }
-      };
-
       return(
-        <header style={{ position:"sticky",top:0,zIndex:500,height:56, display:"flex",alignItems:"center",justifyContent:"space-between", padding:"0 1.5rem", background: "#fff", borderBottom:"2px solid #111", transition:"box-shadow .3s", boxShadow: scrolled?"0 2px 0 #111":"none" }}>
+        <header className={scrolled ? "glass-nav" : ""}>
           <button onClick={onLogoClick} style={{ background:"none",border:"none",cursor:"crosshair", display:"flex",alignItems:"center",gap:10,padding:0, position:"relative" }}>
             <img src={LOGO_SRC} alt="Splotch" style={{ height:36,width:"auto",display:"block",filter:"invert(0)" }}/>
           </button>
+          
           <nav className="desk-nav" style={{ display:"flex",gap:"2rem",alignItems:"center" }}>
             {[["home","Home"],["shop","Shop"],["about","About"],["contact","Contact"]].map(([id,label])=>(
               <button key={id} onClick={()=>scrollTo(id)} className="nl" style={{ background:"none",border:"none",cursor:"crosshair", fontSize:10,fontWeight:700,letterSpacing:"0.18em", textTransform:"uppercase",color:"#111" }}>{label}</button>
             ))}
           </nav>
-          <div style={{ display:"flex",alignItems:"center",gap:"0.75rem" }}>
+          
+          <div style={{ display:"flex",alignItems:"center",gap:"1.2rem" }}>
+            <div className="auth-container desk-nav">
+              {user ? (
+                <React.Fragment>
+                  <div className="user-badge">WELCOME, {user.displayName ? user.displayName.split(' ')[0].toUpperCase() : 'USER'}</div>
+                  <button className="nav-logout" onClick={handleAuth}>LOGOUT</button>
+                </React.Fragment>
+              ) : (
+                <button className="nav-signin" onClick={handleAuth}>SIGN IN</button>
+              )}
+            </div>
+
             <button className="mob-ham" onClick={()=>setMobMenu(o=>!o)} style={{ background:"none",border:"2px solid #111", width:38,height:38,cursor:"crosshair", flexDirection:"column",alignItems:"center",justifyContent:"center",gap:5 }}>
               {[0,1,2].map(i=><span key={i} style={{ display:"block",width:16,height:1.5,background:"#111" }}/>)}
-            </button>
-            
-            {/* AUTH BUTTON */}
-            <button className="desk-nav" onClick={handleAuth} style={{ background:"transparent",color:"#111",border:"2px solid rgba(0,0,0,0.15)", padding:"8px 14px",fontSize:10,fontWeight:700, letterSpacing:"0.15em",textTransform:"uppercase",cursor:"crosshair", transition: "border .2s" }} onMouseEnter={e=>e.target.style.borderColor="#111"} onMouseLeave={e=>e.target.style.borderColor="rgba(0,0,0,0.15)"}>
-              {user ? `Out (${user.displayName.split(' ')[0]})` : "Login"}
             </button>
 
             <button onClick={onCartOpen} style={{ background:"#111",color:"#fff",border:"2px solid #111", padding:"8px 14px",fontSize:10,fontWeight:700, letterSpacing:"0.15em",textTransform:"uppercase",cursor:"crosshair", display:"flex",alignItems:"center",gap:6 }}>
               Cart
-              {cartCount>0&&<span style={{ background:"#fff",color:"#111",width:18,height:18,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:900 }}>{cartCount}</span>}
+              {cartCount>0&&<span style={{ background:"fff",color:"#111",width:18,height:18,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:900 }}>{cartCount}</span>}
             </button>
           </div>
         </header>
       );
     }
 
-    function MobMenu({open,setOpen}){
+    function MobMenu({open, setOpen, user, handleAuth}){
       const go=(id)=>{ document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); setOpen(false); };
       return(
         <div className="mob-menu" style={{ position:"fixed",inset:0,zIndex:600,background:"#111", display:"flex",flexDirection:"column",justifyContent:"center",padding:"3rem 2rem", transform:open?"translateX(0)":"translateX(100%)", transition:"transform .4s cubic-bezier(.76,0,.24,1)" }}>
@@ -235,6 +281,19 @@
           {[["home","Home"],["shop","Shop"],["about","About"],["contact","Contact"]].map(([id,label],i)=>(
             <button key={id} onClick={()=>go(id)} style={{ background:"none",border:"none",textAlign:"left",fontFamily:"Inter",fontWeight:900, fontSize:"clamp(38px,10vw,60px)",letterSpacing:"-0.04em",textTransform:"uppercase", color:"#fff",cursor:"crosshair",lineHeight:1.1, borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"0.5rem 0" }}>{label}</button>
           ))}
+          
+          <div style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem' }}>
+            {user ? (
+              <React.Fragment>
+                <span style={{ color: '#fff', fontSize: 12, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '1rem' }}>
+                    WELCOME, {user.displayName ? user.displayName.split(' ')[0].toUpperCase() : 'USER'}
+                </span>
+                <button onClick={() => { handleAuth(); setOpen(false); }} style={{ background: 'transparent', color: '#fff', border: '1px solid #fff', padding: '10px 20px', fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'crosshair' }}>Logout</button>
+              </React.Fragment>
+            ) : (
+                <button onClick={() => { handleAuth(); setOpen(false); }} style={{ background: '#fff', color: '#111', border: 'none', padding: '12px 24px', fontSize: 11, fontWeight: 900, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'crosshair' }}>Sign In</button>
+            )}
+          </div>
         </div>
       );
     }
@@ -318,8 +377,85 @@
       );
     }
 
-    function CartSidebar({cart,setCart,onClose}){
-      const total=cart.reduce((s,i)=>s+(parseInt((i.price||"0").replace(/[^0-9]/g,""))||0),0);
+    /* ═══════════════════════════════════════════════════════
+       CART & RAZORPAY CHECKOUT LOGIC
+    ═══════════════════════════════════════════════════════ */
+    function CartSidebar({cart,setCart,onClose, user}){
+      const total = cart.reduce((s,i)=>s+(parseInt((i.price||"0").replace(/[^0-9]/g,""))||0),0);
+      const [loading, setLoading] = useState(false);
+
+      const handleCheckout = async () => {
+        if (cart.length === 0) return;
+        if (!window.fbFunctions || !window.fbHttpsCallable) { 
+          alert("Firebase Functions not initialized. Cannot process checkout."); 
+          return; 
+        }
+
+        setLoading(true);
+        try {
+          // 1. Call Firebase Function to create Razorpay Order
+          const createOrder = window.fbHttpsCallable(window.fbFunctions, 'createRzpOrder');
+          const orderRes = await createOrder({ amount: total * 100 }); // Amount in paise
+          const { order_id, key } = orderRes.data;
+
+          // 2. Configure & Open Razorpay Modal
+          const options = {
+            key: key || "YOUR_RAZORPAY_KEY_ID", 
+            amount: total * 100, 
+            currency: "INR",
+            name: "Splotch",
+            description: "Apparel Order",
+            image: LOGO_SRC,
+            order_id: order_id,
+            handler: async function (response) {
+              // 3. Verify Payment Signature via Firebase Function
+              try {
+                const verifyPayment = window.fbHttpsCallable(window.fbFunctions, 'verifyRzpPayment');
+                const verifyRes = await verifyPayment({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature
+                });
+
+                if (verifyRes.data.success) {
+                  // 4. Save Confirmed Order to Firestore
+                  await window.fbAddDoc(window.fbCollection(window.fbDb, "orders"), {
+                    items: cart,
+                    total: total,
+                    paymentId: response.razorpay_payment_id,
+                    orderId: response.razorpay_order_id,
+                    userId: user ? user.uid : "guest",
+                    userEmail: user ? user.email : "guest",
+                    timestamp: new Date()
+                  });
+                  
+                  alert("Payment successful! Order placed.");
+                  setCart([]);
+                  onClose();
+                } else {
+                  alert("Payment verification failed! Please contact support.");
+                }
+              } catch (err) {
+                console.error("Verification Error:", err);
+                alert("Error verifying payment.");
+              }
+            },
+            theme: { color: "#111111" }
+          };
+          
+          const rzp = new window.Razorpay(options);
+          rzp.on('payment.failed', function (response){
+            alert("Payment Failed: " + response.error.description);
+          });
+          rzp.open();
+
+        } catch (err) {
+          console.error("Checkout Request Error:", err);
+          alert("Error initiating checkout. Please ensure Firebase Functions are deployed.");
+        }
+        setLoading(false);
+      };
+
       return(
         <div style={{ position:"fixed",inset:0,zIndex:800 }}>
           <div onClick={onClose} style={{ position:"absolute",inset:0,background:"rgba(17,17,17,0.55)" }}/>
@@ -353,7 +489,7 @@
                   <span style={{ fontSize:11,fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase" }}>Total</span>
                   <span style={{ fontSize:17,fontWeight:900,letterSpacing:"-0.02em" }}>₹{total.toLocaleString("en-IN")}</span>
                 </div>
-                <button style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",cursor:"crosshair" }}>Checkout</button>
+                <button onClick={handleCheckout} disabled={loading} style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",cursor:loading?"wait":"crosshair" }}>{loading ? "Processing..." : "Pay Now"}</button>
                 <button onClick={()=>setCart([])} style={{ width:"100%",background:"transparent",color:"rgba(0,0,0,0.35)",border:"none",padding:"8px",fontSize:9,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase",cursor:"crosshair",marginTop:4 }}>Clear Cart</button>
               </div>
             )}
@@ -388,7 +524,7 @@
       );
     }
 
-    const ADMIN_PW_B64 = "c3Bsb3RjaDIwMjY=";
+    const ADMIN_PW_B64 = "c3Bsb3RjaDIwMjY="; // "splotch2026"
     function AdminPanel({products,setProducts,onClose}){
       const [authed,setAuthed]=useState(false);
       const [pw,setPw]=useState("");
@@ -486,7 +622,6 @@
     /* ═══════════════════════════════════════════════════════
        PAGE SECTIONS
     ═══════════════════════════════════════════════════════ */
-
     function Hero(){
       const [pos, setPos] = useState({ x: 0, y: 0 });
       const handleMove = useCallback((e) => {
@@ -517,7 +652,7 @@
       return(
         <section id="shop" style={{ background:"#fff",borderBottom:"3px solid #111" }}>
           <div style={{ background:"#111",padding:"4rem 2rem 3.5rem",position:"relative",overflow:"hidden",borderBottom:"2px solid #222" }}>
-            <div style={{ position:"absolute",inset:0,opacity:0.07 }}><TopoSVG color="#fff"/></div>
+            <div className="topo-parallax-wrap" style={{ opacity:0.07 }}><TopoSVG color="#fff"/></div>
             <div style={{ position:"relative",zIndex:1 }}>
               <SLabel inv>SS'26 — Limited Run</SLabel>
               <h2 className="reveal" style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:"clamp(54px,9vw,120px)",letterSpacing:"-0.04em",color:"#fff",lineHeight:0.9,fontStyle:"italic" }}>The Collection.</h2>
@@ -584,7 +719,7 @@
       ];
       return(
         <section id="why" style={{ background:"#111",borderBottom:"3px solid #111",padding:"6rem 2rem",position:"relative",overflow:"hidden" }}>
-          <div style={{ position:"absolute",inset:0,opacity:0.08 }}><TopoSVG color="#fff"/></div>
+          <div className="topo-parallax-wrap" style={{ opacity:0.08 }}><TopoSVG color="#fff"/></div>
           <div style={{ position:"relative",zIndex:1,display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4rem",alignItems:"start" }} className="two-col">
             <div>
               <SLabel inv>Why Choose Us</SLabel>
@@ -641,7 +776,7 @@
       ];
       return(
         <section id="about" style={{ background:"#111",borderBottom:"3px solid #111",padding:"6rem 2rem",position:"relative",overflow:"hidden" }}>
-          <div style={{ position:"absolute",inset:0,opacity:0.08 }}><TopoSVG color="#fff"/></div>
+          <div className="topo-parallax-wrap" style={{ opacity:0.08 }}><TopoSVG color="#fff"/></div>
           <div style={{ position:"relative",zIndex:1 }}>
             <SLabel inv>About — Brand Story</SLabel>
             <div className="two-col" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4rem",marginBottom:"4rem",alignItems:"end" }}>
@@ -674,23 +809,14 @@
         if(form.name && form.email && form.message) { 
           setLoading(true);
           try {
-            // Check if Firebase is initialized safely
             if (window.fbAddDoc && window.fbCollection && window.fbDb) {
               await window.fbAddDoc(window.fbCollection(window.fbDb, "messages"), {
-                name: form.name,
-                email: form.email,
-                message: form.message,
-                timestamp: new Date()
+                name: form.name, email: form.email, message: form.message, timestamp: new Date()
               });
-              setSent(true); 
-              setTimeout(()=>setSent(false),4000); 
-              setForm({name:"",email:"",message:""}); 
-            } else {
-              alert("Firebase is not initialized. Please configure API keys.");
-            }
+              setSent(true); setTimeout(()=>setSent(false),4000); setForm({name:"",email:"",message:""}); 
+            } else { alert("Firebase is not initialized. Please configure API keys."); }
           } catch (e) {
-            console.error("Error adding doc: ", e);
-            alert("Error sending message. Check console/firebase rules.");
+            console.error("Error adding doc: ", e); alert("Error sending message. Check console/firebase rules.");
           }
           setLoading(false);
         } 
@@ -699,32 +825,26 @@
       const iSt={ display:"block",width:"100%",background:"transparent",border:"none",borderBottom:"2px solid rgba(255,255,255,0.15)",color:"#fff",padding:"13px 0",fontSize:15,fontFamily:"Inter",transition:"border-color .2s",marginBottom:"1.8rem" };
       return(
         <section id="contact" style={{ background:"#111",borderBottom:"3px solid #111",padding:"6rem 2rem",position:"relative",overflow:"hidden" }}>
-          <div style={{ position:"absolute",inset:0,opacity:0.07 }}><TopoSVG color="#fff"/></div>
+          <div className="topo-parallax-wrap" style={{ opacity:0.07 }}><TopoSVG color="#fff"/></div>
           <div style={{ position:"relative",zIndex:1 }}>
             <SLabel inv>Contact — Get In Touch</SLabel>
             <div className="contact-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"5rem",alignItems:"start" }}>
               <div className="reveal">
                 <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:"clamp(72px,9vw,120px)",letterSpacing:"-0.04em",lineHeight:0.88,color:"#fff",marginBottom:"2.5rem",fontStyle:"italic" }}>Contact Us.</h2>
                 {sent?(
-                  <div style={{ border:"2px solid rgba(255,255,255,0.2)",padding:"2rem",textAlign:"center" }}>
-                    <p style={{ fontWeight:700,letterSpacing:"0.12em",color:"#fff",textTransform:"uppercase",fontSize:12 }}>Message received. We'll be in touch.</p>
-                  </div>
+                  <div style={{ border:"2px solid rgba(255,255,255,0.2)",padding:"2rem",textAlign:"center" }}><p style={{ fontWeight:700,letterSpacing:"0.12em",color:"#fff",textTransform:"uppercase",fontSize:12 }}>Message received. We'll be in touch.</p></div>
                 ):(
                   <React.Fragment>
                     {["name","email"].map(field=>(
                       <input key={field} type={field==="email"?"email":"text"} placeholder={field.charAt(0).toUpperCase()+field.slice(1)} value={form[field]} onChange={e=>setForm(f=>({...f,[field]:e.target.value}))} style={iSt} onFocus={e=>e.target.style.borderColor="rgba(255,255,255,0.7)"} onBlur={e=>e.target.style.borderColor="rgba(255,255,255,0.15)"}/>
                     ))}
                     <textarea placeholder="Message" value={form.message} rows={5} onChange={e=>setForm(f=>({...f,message:e.target.value}))} style={{ ...iSt,resize:"none" }} onFocus={e=>e.target.style.borderColor="rgba(255,255,255,0.7)"} onBlur={e=>e.target.style.borderColor="rgba(255,255,255,0.15)"}/>
-                    <button onClick={submit} disabled={loading} style={{ background:"#fff",color:"#111",border:"3px solid #fff",padding:"14px 36px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",cursor:loading?"wait":"crosshair",transition:"all .2s" }} onMouseEnter={e=>{e.target.style.background="transparent";e.target.style.color="#fff";}} onMouseLeave={e=>{e.target.style.background="#fff";e.target.style.color="#111";}}>
-                      {loading ? "Sending..." : "Send Message →"}
-                    </button>
+                    <button onClick={submit} disabled={loading} style={{ background:"#fff",color:"#111",border:"3px solid #fff",padding:"14px 36px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",cursor:loading?"wait":"crosshair",transition:"all .2s" }} onMouseEnter={e=>{e.target.style.background="transparent";e.target.style.color="#fff";}} onMouseLeave={e=>{e.target.style.background="#fff";e.target.style.color="#111";}}>{loading ? "Sending..." : "Send Message →"}</button>
                   </React.Fragment>
                 )}
               </div>
               <div className="reveal reveal-d2">
-                <p style={{ fontSize:11, lineHeight:1.6, color:"rgba(255,255,255,0.45)", marginBottom:"2rem", paddingBottom:"2rem", borderBottom:"1px solid rgba(255,255,255,0.07)" }}>
-                  Feel free to contact us with any questions or concerns. You can use the form on our website or email us directly. We appreciate your interest and look forward to hearing from you.
-                </p>
+                <p style={{ fontSize:11, lineHeight:1.6, color:"rgba(255,255,255,0.45)", marginBottom:"2rem", paddingBottom:"2rem", borderBottom:"1px solid rgba(255,255,255,0.07)" }}>Feel free to contact us with any questions or concerns. You can use the form on our website or email us directly. We appreciate your interest and look forward to hearing from you.</p>
                 {[{l:"Email",v:"splotchglobal@gmail.com"},{l:"Phone",v:"+91 9900605101"},{l:"Hours",v:"Mon–Fri, 10am–6pm IST"},{l:"Shipping",v:"Bangalore, Karnataka\nPan India Shipping"}].map((item,i)=>(
                   <div key={item.l} style={{ borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"1.2rem 0",display:"flex",justifyContent:"space-between",gap:"1rem" }}>
                     <span style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(255,255,255,0.22)",flexShrink:0 }}>{item.l}</span>
@@ -741,7 +861,7 @@
     function Footer(){
       return(
         <footer style={{ background:"#111",padding:"5rem 2rem 2.5rem",position:"relative",overflow:"hidden",borderTop:"3px solid #222" }}>
-          <div style={{ position:"absolute",inset:0,opacity:0.05 }}><TopoSVG color="#fff"/></div>
+          <div className="topo-parallax-wrap" style={{ opacity:0.05 }}><TopoSVG color="#fff"/></div>
           <div style={{ position:"relative",zIndex:1 }}>
             <div style={{ marginBottom:"3rem" }}><img src={LOGO_SRC} alt="Splotch" style={{ height:56,filter:"invert(1)",opacity:.8 }}/></div>
             <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic", fontSize:"clamp(72px,8vw,110px)", letterSpacing:"-0.04em",lineHeight:0.88, color:"transparent",WebkitTextStroke:"1.5px rgba(255,255,255,0.4)", marginBottom:"5rem" }}>Predict the future,<br/>you didn't come<br/>this far to stop.</h2>
@@ -788,15 +908,19 @@
       const logoTimerRef=useRef(null);
       const [user, setUser]=useState(null);
 
-      // Listen for Firebase Auth status
+      // Global Scroll Listener for Parallax Effects
+      useEffect(() => {
+        const handleScroll = () => { document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}`); };
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+        return () => window.removeEventListener('scroll', handleScroll);
+      }, []);
+
       useEffect(()=>{
         const handleAuthChange = () => {
-          if (window.fbAuth && window.fbOnAuthStateChanged) {
-            window.fbOnAuthStateChanged(window.fbAuth, (u) => { setUser(u); });
-          }
+          if (window.fbAuth && window.fbOnAuthStateChanged) { window.fbOnAuthStateChanged(window.fbAuth, (u) => { setUser(u); }); }
         };
-        if (window.fbAuth) { handleAuthChange(); }
-        else { window.addEventListener('firebase-ready', handleAuthChange); }
+        if (window.fbAuth) { handleAuthChange(); } else { window.addEventListener('firebase-ready', handleAuthChange); }
         return () => window.removeEventListener('firebase-ready', handleAuthChange);
       }, []);
 
@@ -822,12 +946,23 @@
 
       const addToCart=useCallback((item)=>setCart(c=>[...c,item]),[]);
 
+      const handleAuth = async () => {
+        if(user && window.fbAuth) {
+          try { await window.fbSignOut(window.fbAuth); } catch(err) { console.error(err); }
+        } else if(window.fbAuth && window.fbProvider) {
+          try { await window.fbSignInWithPopup(window.fbAuth, window.fbProvider); } catch(err) { console.error("Login failed."); }
+        }
+      };
+
       return(
-        <div style={{ minHeight:"100vh",background:"#fff" }}>
+        <div style={{ minHeight:"100vh",background:"#fff", position:"relative" }}>
+          {/* Global Film Grain */}
+          <div className="grain-overlay"></div>
+          
           <ScrollProgress/>
-          <Header cartCount={cart.length} onCartOpen={()=>setCartOpen(true)} onLogoClick={handleLogoClick} setMobMenu={setMobMenu} user={user} />
+          <Header cartCount={cart.length} onCartOpen={()=>setCartOpen(true)} onLogoClick={handleLogoClick} setMobMenu={setMobMenu} user={user} handleAuth={handleAuth} />
           <Ticker/>
-          <MobMenu open={mobMenu} setOpen={setMobMenu}/>
+          <MobMenu open={mobMenu} setOpen={setMobMenu} user={user} handleAuth={handleAuth}/>
           {showBack&&(<BackButton onBack={()=>window.scrollTo({top:0,behavior:"smooth"})} label="Top" />)}
 
           <Hero/>
@@ -840,7 +975,7 @@
           <Footer/>
 
           {qv&&<QuickView product={qv} onClose={()=>setQV(null)} onAdd={addToCart}/>}
-          {cartOpen&&<CartSidebar cart={cart} setCart={setCart} onClose={()=>setCartOpen(false)}/>}
+          {cartOpen&&<CartSidebar cart={cart} setCart={setCart} onClose={()=>setCartOpen(false)} user={user}/>}
           {adminOpen&&<AdminPanel products={products} setProducts={setProducts} onClose={()=>setAdminOpen(false)}/>}
         </div>
       );
