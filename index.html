@@ -15,22 +15,20 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { 
-      getAuth, 
-      signInWithPopup, 
-      GoogleAuthProvider, 
-      onAuthStateChanged, 
-      signOut,
-      createUserWithEmailAndPassword, 
-      signInWithEmailAndPassword    
+      getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut 
     } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    // ADDED: New Firestore tools for Global Admin
+    import { 
+      getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc 
+    } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
     /* =====================================================================
-        FIREBASE CONFIGURATION 
+       🔥 FIREBASE CONFIGURATION 
        ===================================================================== */
     const firebaseConfig = {
       apiKey: "AIzaSyCeq4FeU1LQKTyZAIJd7HL834rEUqQ0eTQ",
-      authDomain: "splotchclothing.firebaseapp.com",      projectId: "splotchclothing",
+      authDomain: "splotchclothing.firebaseapp.com",      
+      projectId: "splotchclothing",
       storageBucket: "splotchclothing.firebasestorage.app",
       messagingSenderId: "791501370137",
       appId: "1:791501370137:web:4ccc972b997d9d06f8cb88"
@@ -48,10 +46,14 @@
       window.fbOnAuthStateChanged = onAuthStateChanged;
       window.fbCollection = collection;
       window.fbAddDoc = addDoc;
+      window.fbGetDocs = getDocs;
+      window.fbDoc = doc;
+      window.fbSetDoc = setDoc;
+      window.fbDeleteDoc = deleteDoc;
 
       window.dispatchEvent(new Event('firebase-ready'));
     } catch(err) {
-      console.error("Firebase Initialization Error. Did you add your config?", err);
+      console.error("Firebase Initialization Error:", err);
     }
   </script>
 
@@ -63,46 +65,16 @@
     ::selection { background: var(--B); color: var(--W); }
     input, textarea, select, button { font-family: inherit; border-radius: 0 !important; outline: none; }
 
-    /* ═══════ GRAIN OVERLAY ═══════ */
-    .grain-overlay {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; 
-      /* Reduced opacity from 0.35 to 0.15 */
-      opacity: 0.15;
-      /* Changed baseFrequency from 0.8 to 1.5 to make grains smaller */
-      background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
-    }
-
-    /* ═══════ HEADER & AUTH UI ═══════ */
-    header {
-      position: sticky; top: 0; z-index: 500; height: 56px; display: flex; align-items: center; justify-content: space-between;
-      padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; transition: box-shadow 0.3s, background 0.3s, backdrop-filter 0.3s;
-    }
-    .glass-nav {
-      background: rgba(255, 255, 255, 0.65) !important; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 2px 0 #111;
-    }
-    .nav-signin {
-      background: #111; color: #fff; border: 2px solid #111; padding: 9px 18px; font-size: 10px; font-weight: 900; 
-      letter-spacing: 0.18em; text-transform: uppercase; transition: all 0.2s; cursor: crosshair;
-    }
+    .grain-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; opacity: 0.15; background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E'); }
+    header { position: sticky; top: 0; z-index: 500; height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; transition: box-shadow 0.3s, background 0.3s, backdrop-filter 0.3s; }
+    .glass-nav { background: rgba(255, 255, 255, 0.65) !important; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 2px 0 #111; }
+    .nav-signin { background: #111; color: #fff; border: 2px solid #111; padding: 9px 18px; font-size: 10px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; transition: all 0.2s; cursor: crosshair; }
     .nav-signin:hover { background: transparent; color: #111; }
-    .user-badge {
-      background: #111; color: #fff; border: 2px solid #111; padding: 7px 14px; font-size: 9px; font-weight: 900; 
-      letter-spacing: 0.15em; text-transform: uppercase;
-    }
-    .nav-logout {
-      background: transparent; color: #111; border: none; font-size: 9px; font-weight: 700; letter-spacing: 0.15em; 
-      text-transform: uppercase; cursor: crosshair; text-decoration: underline; text-underline-offset: 3px; transition: opacity 0.2s;
-    }
+    .user-badge { background: #111; color: #fff; border: 2px solid #111; padding: 7px 14px; font-size: 9px; font-weight: 900; letter-spacing: 0.15em; text-transform: uppercase; }
+    .nav-logout { background: transparent; color: #111; border: none; font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; cursor: crosshair; text-decoration: underline; text-underline-offset: 3px; transition: opacity 0.2s; }
     .nav-logout:hover { opacity: 0.5; }
     .auth-container { display: flex; align-items: center; gap: 1rem; }
-
-    /* ═══════ TOPOGRAPHIC PARALLAX ═══════ */
-    .topo-parallax-wrap {
-      position: absolute; top: -50vh; bottom: -50vh; left: 0; right: 0; pointer-events: none; z-index: 0;
-      transform: translateY(calc(var(--scroll-y, 0) * 0.15px)); will-change: transform;
-    }
-
-    /* Hero Styles */
+    .topo-parallax-wrap { position: absolute; top: -50vh; bottom: -50vh; left: 0; right: 0; pointer-events: none; z-index: 0; transform: translateY(calc(var(--scroll-y, 0) * 0.15px)); will-change: transform; }
     .hero-video-placeholder { position: absolute; inset: 0; background: var(--B); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; }
     .hero-video-placeholder::before { content: ''; position: absolute; inset: -60px; background: repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.04) 39px, rgba(255,255,255,0.04) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.04) 39px, rgba(255,255,255,0.04) 40px); }
     .hero-text-overlay { position: absolute; z-index: 3; top: 32%; left: -2%; line-height: 0.85; pointer-events: none; -webkit-user-select: none; user-select: none; }
@@ -110,8 +82,6 @@
     .hero-sub { position: absolute; z-index: 4; top: 2.5rem; right: 2rem; text-align: right; pointer-events: none; }
     .hero-sub p { font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--W); line-height: 2; opacity: 0.7; }
     .hero-badge { display: inline-block; border: 2px solid var(--W); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; padding: 6px 12px; color: var(--W); text-transform: uppercase; margin-top: 1rem; }
-
-    /* Flip Cards & Animations */
     .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.65s cubic-bezier(0.76, 0, 0.24, 1); transform-style: preserve-3d; }
     .flipped .flip-inner { transform: rotateY(180deg); }
     .flip-front, .flip-back { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
@@ -120,8 +90,6 @@
     .reveal.visible { opacity: 1; transform: translateY(0); }
     .reveal-d1 { transition-delay: 0.1s; } .reveal-d2 { transition-delay: 0.22s; } .reveal-d3 { transition-delay: 0.34s; } .reveal-d4 { transition-delay: 0.46s; }
     @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-    /* Components */
     .prod-card { transition: box-shadow 0.25s, transform 0.25s; }
     .prod-card:hover { box-shadow: 6px 6px 0 #111; transform: translate(-2px, -2px); }
     .prod-cta-btn, .flip-toggle { transition: background 0.2s, color 0.2s; }
@@ -180,14 +148,12 @@
       </svg>
     );
 
-    const STORAGE_KEY = "splotch_products_v6";
+    // Initial Seed Data - Notice the Funky Pricing!
     const DEFAULT_PRODUCTS = [
-      { id:"shirt-1", name:"Terrain Tee 001", cost:"₹450", price:"₹1,299", tag:"New Drop", description:"Urban utility tee with topographic print detail. Oversized fit, 100% organic cotton.", frontImage:"Shirt 1 front.jpeg", backImage:"Shirt 1 back.jpeg", hasBack:true, soldOut:false, category:"T-Shirts" },
-      { id:"shirt-2", name:"Grid Tee 002", cost:"₹500", price:"₹1,499", tag:"Limited", description:"Graphic techwear tee from the Grid Zero collaboration. Heavyweight cotton blend.", frontImage:"Shirt 2 front.jpeg", backImage:"Shirt 2 back.jpeg", hasBack:true, soldOut:false, category:"T-Shirts" },
-      { id:"shirt-3", name:"Shadow Tee 003", cost:"₹400", price:"₹1,199", tag:"Last 5", description:"Minimalist dropped-shoulder tee. Shadow Series print, ultra-soft jersey.", frontImage:"Shirt 3 front.jpeg", backImage:"Shirt 3 back.jpeg", hasBack:false, soldOut:false, category:"T-Shirts" },
+      { id:"shirt-1", name:"Terrain Tee 001", cost:"₹450", price:"₹1", compareAtPrice:"₹1,299", tag:"New Drop", description:"Urban utility tee with topographic print detail. Oversized fit, 100% organic cotton.", frontImage:"Shirt 1 front.jpeg", backImage:"Shirt 1 back.jpeg", hasBack:true, soldOut:false, category:"T-Shirts" },
+      { id:"shirt-2", name:"Grid Tee 002", cost:"₹500", price:"₹1", compareAtPrice:"₹1,499", tag:"Limited", description:"Graphic techwear tee from the Grid Zero collaboration. Heavyweight cotton blend.", frontImage:"Shirt 2 front.jpeg", backImage:"Shirt 2 back.jpeg", hasBack:true, soldOut:false, category:"T-Shirts" },
+      { id:"shirt-3", name:"Shadow Tee 003", cost:"₹400", price:"₹1", compareAtPrice:"₹1,199", tag:"Last 5", description:"Minimalist dropped-shoulder tee. Shadow Series print, ultra-soft jersey.", frontImage:"Shirt 3 front.jpeg", backImage:"Shirt 3 back.jpeg", hasBack:false, soldOut:false, category:"T-Shirts" },
     ];
-    function loadProducts(){ try{ const r=localStorage.getItem(STORAGE_KEY); if(r) return JSON.parse(r); }catch{} return DEFAULT_PRODUCTS; }
-    function saveProducts(p){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(p)); }catch{} }
 
     const SLabel = ({children,inv=false})=>(
       <div style={{ fontSize:10,fontWeight:700,letterSpacing:"0.32em",textTransform:"uppercase", marginBottom:"1.8rem",borderLeft:`3px solid ${inv?"#fff":"#111"}`, paddingLeft:10,color:inv?"rgba(255,255,255,0.45)":"rgba(0,0,0,0.45)" }}>{children}</div>
@@ -328,7 +294,13 @@
           <div style={{ padding:"1rem 1.2rem",borderTop:"2px solid #111" }}>
             <div style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.3)",marginBottom:3 }}>{product.category}</div>
             <div style={{ fontWeight:900,fontSize:15,textTransform:"uppercase",letterSpacing:"-0.01em",marginBottom:5 }}>{product.name}</div>
-            <div style={{ fontWeight:700,fontSize:13,color:"rgba(0,0,0,0.55)",marginBottom:"0.9rem" }}>{product.price}</div>
+            
+            {/* The Funky Discount Price UI */}
+            <div style={{ fontWeight:700,fontSize:13,color:"rgba(0,0,0,0.55)",marginBottom:"0.9rem" }}>
+              {product.compareAtPrice && <span style={{ textDecoration: "line-through", opacity: 0.6, marginRight: "8px", fontWeight: 600 }}>{product.compareAtPrice}</span>}
+              <span style={{ color: product.compareAtPrice ? "#c00" : "#111", fontWeight: 900 }}>{product.price}</span>
+            </div>
+
             <button className="prod-cta-btn" disabled={product.soldOut} onClick={doAdd} style={{ display:"block",width:"100%",background:added?"#111":"#fff", color:added?"#fff":"#111",border:"2px solid #111", padding:"10px",fontSize:10,fontWeight:700, letterSpacing:"0.18em",textTransform:"uppercase",cursor:"crosshair" }}>{added?"✓ Added":"Add to Cart"}</button>
           </div>
         </div>
@@ -363,7 +335,13 @@
                 <button onClick={onClose} style={{ float:"right",background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,cursor:"crosshair",fontWeight:700 }}>✕</button>
                 <div style={{ fontSize:9,fontWeight:700,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(0,0,0,0.3)",marginBottom:6,clear:"both" }}>{product.category}</div>
                 <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:26,letterSpacing:"-0.02em",marginBottom:"0.6rem" }}>{product.name}</h2>
-                <div style={{ fontWeight:700,fontSize:19,marginBottom:"1.2rem" }}>{product.price}</div>
+                
+                {/* Funky Pricing */}
+                <div style={{ fontWeight:700,fontSize:19,marginBottom:"1.2rem" }}>
+                  {product.compareAtPrice && <span style={{ textDecoration: "line-through", opacity: 0.5, marginRight: "10px", fontSize: "16px" }}>{product.compareAtPrice}</span>}
+                  <span style={{ color: product.compareAtPrice ? "#c00" : "#111" }}>{product.price}</span>
+                </div>
+
                 <p style={{ fontSize:14,lineHeight:1.75,color:"rgba(0,0,0,0.58)",marginBottom:"1.5rem" }}>{product.description}</p>
                 <div style={{ borderTop:"1px solid rgba(0,0,0,0.08)",paddingTop:"1rem" }}>
                   {[["Material","100% Organic Cotton"],["Fit","Oversized"],["Care","Cold wash, hang dry"],["Origin","Made in India"]].map(([k,v])=>(
@@ -381,31 +359,47 @@
       );
     }
 
+    // THE UPGRADED SECURE CART SIDEBAR
     function CartSidebar({cart,setCart,onClose, user}){
       const total = cart.reduce((s,i)=>s+(parseInt((i.price||"0").replace(/[^0-9]/g,""))||0),0);
       const [loading, setLoading] = useState(false);
+      
+      // New State for Secure Checkout Flow
+      const [step, setStep] = useState('cart'); 
+      const [shipping, setShipping] = useState({ phone: "", address: "" });
 
-const handleCheckout = async () => {
-        if (cart.length === 0) return;
+      // Step 1: Enforce Login
+      const initiateCheckout = async () => {
+        if (!user) {
+          try {
+            await window.fbSignInWithPopup(window.fbAuth, window.fbProvider);
+          } catch(e) {
+            console.error("Login required to checkout");
+            return;
+          }
+        }
+        setStep('shipping');
+      };
+
+      // Step 2: Pay and Save Order
+      const processPayment = async () => {
+        if (!shipping.phone || !shipping.address) { alert("Please provide your phone number and address for delivery."); return; }
         setLoading(true);
 
         try {
-          // 1. Ask your free Vercel API to create a Razorpay Order
           const response = await fetch('/api/createOrder', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount: total }) // Sending the total cart amount
+            body: JSON.stringify({ amount: total }) // Rs. 1 gets converted to 100 paise in Vercel
           });
 
           const data = await response.json();
-
           if (!response.ok) throw new Error(data.error || "Failed to fetch order");
 
           const { orderId, keyId } = data;
 
-          // 2. Open the Razorpay Window
           const options = {
-            key: keyId, // Pulled safely from your Vercel Vault, not hardcoded!
+            key: keyId, 
             amount: total * 100, 
             currency: "INR",
             name: "Splotch",
@@ -413,7 +407,6 @@ const handleCheckout = async () => {
             image: LOGO_SRC,
             order_id: orderId,
             handler: async function (rzpRes) {
-              // 3. Save to Firebase Database on Success
               try {
                 if (window.fbAddDoc && window.fbCollection && window.fbDb) {
                   await window.fbAddDoc(window.fbCollection(window.fbDb, "orders"), {
@@ -421,35 +414,35 @@ const handleCheckout = async () => {
                     total: total,
                     paymentId: rzpRes.razorpay_payment_id,
                     orderId: rzpRes.razorpay_order_id,
-                    userId: user ? user.uid : "guest",
-                    userEmail: user ? user.email : "guest",
-                    timestamp: new Date()
+                    userId: user.uid,
+                    userEmail: user.email,
+                    userName: user.displayName,
+                    shippingPhone: shipping.phone,
+                    shippingAddress: shipping.address,
+                    timestamp: new Date(),
+                    status: "Processing"
                   });
                 }
                 
-                alert("Payment successful! Order placed.");
+                alert("Payment successful! Order placed securely.");
                 setCart([]);
                 onClose();
               } catch (dbErr) {
                 console.error("Database save failed:", dbErr);
-                alert("Paid, but order save failed. Contact admin.");
+                alert("Paid, but order save failed. Please contact Splotch support.");
               }
             },
-            prefill: {
-              email: user ? user.email : ""
-            },
+            prefill: { email: user.email, contact: shipping.phone },
             theme: { color: "#111111" }
           };
           
           const rzp = new window.Razorpay(options);
-          rzp.on('payment.failed', function (rzpRes){
-            alert("Payment Failed: " + rzpRes.error.description);
-          });
+          rzp.on('payment.failed', function (rzpRes){ alert("Payment Failed: " + rzpRes.error.description); });
           rzp.open();
 
         } catch (err) {
           console.error("Checkout Error:", err);
-          alert("Error initiating checkout. Are you viewing this on the live Vercel link?");
+          alert("Error initiating checkout. Please try again.");
         }
         setLoading(false);
       };
@@ -458,39 +451,67 @@ const handleCheckout = async () => {
         <div style={{ position:"fixed",inset:0,zIndex:800 }}>
           <div onClick={onClose} style={{ position:"absolute",inset:0,background:"rgba(17,17,17,0.55)" }}/>
           <div style={{ position:"absolute",top:0,right:0,bottom:0,width:"100%",maxWidth:390,background:"#fff",borderLeft:"3px solid #111",display:"flex",flexDirection:"column" }}>
+            
+            {/* Header */}
             <div style={{ padding:"1.2rem 1.8rem",borderBottom:"2px solid #111",display:"flex",justifyContent:"space-between",alignItems:"center" }}>
-              <span style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:20,letterSpacing:"-0.01em" }}>Cart ({cart.length})</span>
+              <span style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:20,letterSpacing:"-0.01em" }}>
+                {step === 'cart' ? `Cart (${cart.length})` : "Shipping Info"}
+              </span>
               <button onClick={onClose} style={{ background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,cursor:"crosshair",fontWeight:700 }}>✕</button>
             </div>
-            <div style={{ flex:1,overflow:"auto",padding:"0.8rem 1.8rem" }}>
-              {cart.length===0?(
-                <div style={{ textAlign:"center",padding:"4rem 0",color:"rgba(0,0,0,0.25)" }}>
-                  <img src={LOGO_SRC} alt="" style={{ height:40,opacity:.15,marginBottom:12 }}/>
-                  <div style={{ fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase" }}>Your cart is empty</div>
+
+            {/* Cart View */}
+            {step === 'cart' && (
+              <React.Fragment>
+                <div style={{ flex:1,overflow:"auto",padding:"0.8rem 1.8rem" }}>
+                  {cart.length===0?(
+                    <div style={{ textAlign:"center",padding:"4rem 0",color:"rgba(0,0,0,0.25)" }}>
+                      <img src={LOGO_SRC} alt="" style={{ height:40,opacity:.15,marginBottom:12 }}/>
+                      <div style={{ fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase" }}>Your cart is empty</div>
+                    </div>
+                  ):cart.map((item,i)=>(
+                    <div key={i} style={{ display:"flex",gap:"1rem",alignItems:"center",borderBottom:"1px solid rgba(0,0,0,0.07)",padding:"0.9rem 0" }}>
+                      <div style={{ width:58,height:58,background:"#111",flexShrink:0,overflow:"hidden" }}>
+                        {item.frontImage?<img src={item.frontImage} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover" }}/>:<div style={{ width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,0.15)",fontSize:18 }}>◎</div>}
+                      </div>
+                      <div style={{ flex:1,minWidth:0 }}>
+                        <div style={{ fontWeight:700,fontSize:12,textTransform:"uppercase",letterSpacing:"0.03em",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis" }}>{item.name}</div>
+                        <div style={{ fontSize:12,fontWeight:600,color:"#c00",marginTop:2 }}>{item.price}</div>
+                      </div>
+                      <button onClick={()=>setCart(c=>c.filter((_,j)=>j!==i))} style={{ background:"none",border:"1px solid rgba(0,0,0,0.12)",width:26,height:26,fontSize:11,cursor:"crosshair",flexShrink:0 }}>✕</button>
+                    </div>
+                  ))}
                 </div>
-              ):cart.map((item,i)=>(
-                <div key={i} style={{ display:"flex",gap:"1rem",alignItems:"center",borderBottom:"1px solid rgba(0,0,0,0.07)",padding:"0.9rem 0" }}>
-                  <div style={{ width:58,height:58,background:"#111",flexShrink:0,overflow:"hidden" }}>
-                    {item.frontImage?<img src={item.frontImage} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover" }}/>:<div style={{ width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,0.15)",fontSize:18 }}>◎</div>}
+                {cart.length>0&&(
+                  <div style={{ padding:"1.2rem 1.8rem",borderTop:"2px solid #111" }}>
+                    <div style={{ display:"flex",justifyContent:"space-between",marginBottom:"0.9rem" }}>
+                      <span style={{ fontSize:11,fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase" }}>Total</span>
+                      <span style={{ fontSize:17,fontWeight:900,letterSpacing:"-0.02em" }}>₹{total.toLocaleString("en-IN")}</span>
+                    </div>
+                    <button onClick={initiateCheckout} style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",cursor:"crosshair" }}>Secure Checkout →</button>
+                    <button onClick={()=>setCart([])} style={{ width:"100%",background:"transparent",color:"rgba(0,0,0,0.35)",border:"none",padding:"8px",fontSize:9,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase",cursor:"crosshair",marginTop:4 }}>Clear Cart</button>
                   </div>
-                  <div style={{ flex:1,minWidth:0 }}>
-                    <div style={{ fontWeight:700,fontSize:12,textTransform:"uppercase",letterSpacing:"0.03em",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis" }}>{item.name}</div>
-                    <div style={{ fontSize:12,fontWeight:600,color:"rgba(0,0,0,0.45)",marginTop:2 }}>{item.price}</div>
-                  </div>
-                  <button onClick={()=>setCart(c=>c.filter((_,j)=>j!==i))} style={{ background:"none",border:"1px solid rgba(0,0,0,0.12)",width:26,height:26,fontSize:11,cursor:"crosshair",flexShrink:0 }}>✕</button>
+                )}
+              </React.Fragment>
+            )}
+
+            {/* Shipping View */}
+            {step === 'shipping' && (
+              <div style={{ flex:1, display:"flex", flexDirection:"column" }}>
+                <div style={{ flex:1, overflow:"auto", padding:"1.5rem 1.8rem" }}>
+                  <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6 }}>Phone Number *</label>
+                  <input type="tel" placeholder="+91" value={shipping.phone} onChange={e=>setShipping(s=>({...s, phone: e.target.value}))} style={{ display:"block",width:"100%",border:"2px solid rgba(0,0,0,0.14)",background:"#f9f9f9",padding:"12px",fontSize:13,fontFamily:"Inter",marginBottom:"1.5rem" }} />
+                  
+                  <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6 }}>Full Delivery Address *</label>
+                  <textarea rows={5} placeholder="House/Flat No, Street, City, Pincode" value={shipping.address} onChange={e=>setShipping(s=>({...s, address: e.target.value}))} style={{ display:"block",width:"100%",border:"2px solid rgba(0,0,0,0.14)",background:"#f9f9f9",padding:"12px",fontSize:13,fontFamily:"Inter",resize:"none" }} />
                 </div>
-              ))}
-            </div>
-            {cart.length>0&&(
-              <div style={{ padding:"1.2rem 1.8rem",borderTop:"2px solid #111" }}>
-                <div style={{ display:"flex",justifyContent:"space-between",marginBottom:"0.9rem" }}>
-                  <span style={{ fontSize:11,fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase" }}>Total</span>
-                  <span style={{ fontSize:17,fontWeight:900,letterSpacing:"-0.02em" }}>₹{total.toLocaleString("en-IN")}</span>
+                <div style={{ padding:"1.2rem 1.8rem",borderTop:"2px solid #111" }}>
+                  <button onClick={processPayment} disabled={loading} style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",cursor:loading?"wait":"crosshair", marginBottom:8 }}>{loading ? "Processing..." : `Pay ₹${total} Now`}</button>
+                  <button onClick={()=>setStep('cart')} style={{ width:"100%",background:"transparent",color:"#111",border:"2px solid rgba(0,0,0,0.2)",padding:"10px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",cursor:"crosshair" }}>← Back to Cart</button>
                 </div>
-                <button onClick={handleCheckout} disabled={loading} style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",cursor:loading?"wait":"crosshair" }}>{loading ? "Processing..." : "Pay Now"}</button>
-                <button onClick={()=>setCart([])} style={{ width:"100%",background:"transparent",color:"rgba(0,0,0,0.35)",border:"none",padding:"8px",fontSize:9,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase",cursor:"crosshair",marginTop:4 }}>Clear Cart</button>
               </div>
             )}
+
           </div>
         </div>
       );
@@ -523,28 +544,70 @@ const handleCheckout = async () => {
     }
 
     const ADMIN_PW_B64 = "c3Bsb3RjaDIwMjY="; // "splotch2026"
+    
+    // UPGRADED GLOBAL ADMIN PANEL (SAVES TO FIREBASE)
     function AdminPanel({products,setProducts,onClose}){
       const [authed,setAuthed]=useState(false);
       const [pw,setPw]=useState("");
       const [pwErr,setPwErr]=useState(false);
       const [editId,setEditId]=useState(null);
       const [toast,setToast]=useState(null);
-      const blank={ name:"", cost:"", price:"", tag:"", description:"", category:"T-Shirts", frontImage:null, backImage:null, hasBack:false, soldOut:false };
+      // Added compareAtPrice for Funky Discount editing
+      const blank={ name:"", cost:"", price:"₹1", compareAtPrice:"₹1,100", tag:"", description:"", category:"T-Shirts", frontImage:null, backImage:null, hasBack:false, soldOut:false };
       const [form,setForm]=useState(blank);
 
       const showToast=(m)=>{ setToast(m); setTimeout(()=>setToast(null),2500); };
       const login=()=>{ if(btoa(pw) === ADMIN_PW_B64){ setAuthed(true); setPwErr(false); }else{ setPwErr(true); setTimeout(()=>setPwErr(false),1500); } };
 
-      const save=()=>{
+      const save = async () => {
         if(!form.name||!form.price){ showToast("Name & price required."); return; }
-        let upd;
-        if(editId==="new"){ upd=[...products,{...form,id:"prod-"+Date.now()}]; showToast("Product added!"); }
-        else{ upd=products.map(p=>p.id===editId?{...form,id:editId}:p); showToast("Saved!"); }
-        setProducts(upd); saveProducts(upd); setEditId(null); setForm(blank);
+        const newId = editId === "new" ? "prod-"+Date.now() : editId;
+        const updatedProduct = {...form, id: newId};
+        
+        try {
+          if (window.fbSetDoc && window.fbDb) {
+            await window.fbSetDoc(window.fbDoc(window.fbDb, "products", newId), updatedProduct);
+            
+            let upd;
+            if(editId==="new"){ upd=[...products, updatedProduct]; showToast("Product added Globally!"); }
+            else{ upd=products.map(p=>p.id===editId?updatedProduct:p); showToast("Saved Globally!"); }
+            
+            setProducts(upd); 
+            setEditId(null); setForm(blank);
+          } else {
+            alert("Firebase disconnected.");
+          }
+        } catch (err) {
+          console.error("Save failed:", err);
+          alert("Error saving to database.");
+        }
       };
 
-      const remove=(id)=>{ const upd=products.filter(p=>p.id!==id); setProducts(upd); saveProducts(upd); showToast("Deleted."); if(editId===id){setEditId(null);setForm(blank);} };
-      const toggle=(id,field)=>{ const upd=products.map(p=>p.id===id?{...p,[field]:!p[field]}:p); setProducts(upd); saveProducts(upd); };
+      const remove = async (id)=>{ 
+        if(window.confirm("Delete globally?")) {
+          try {
+            await window.fbDeleteDoc(window.fbDoc(window.fbDb, "products", id));
+            const upd=products.filter(p=>p.id!==id); 
+            setProducts(upd); 
+            showToast("Deleted."); 
+            if(editId===id){setEditId(null);setForm(blank);} 
+          } catch(err) {
+            alert("Delete failed.");
+          }
+        }
+      };
+
+      const toggle = async (id,field)=>{ 
+        const target = products.find(p=>p.id===id);
+        const updatedProduct = {...target, [field]: !target[field]};
+        try {
+          await window.fbSetDoc(window.fbDoc(window.fbDb, "products", id), updatedProduct);
+          const upd=products.map(p=>p.id===id?updatedProduct:p); 
+          setProducts(upd); 
+        } catch (err) {
+          alert("Update failed.");
+        }
+      };
 
       const iSt={ display:"block",width:"100%",border:"2px solid rgba(0,0,0,0.14)",background:"#fff",padding:"10px 12px",fontSize:13,fontFamily:"Inter",transition:"border-color .2s" };
 
@@ -554,7 +617,7 @@ const handleCheckout = async () => {
             <button onClick={onClose} style={{ position:"absolute",top:14,right:14,background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,cursor:"crosshair",fontWeight:700 }}>✕</button>
             <img src={LOGO_SRC} alt="Splotch" style={{ height:44,marginBottom:"1.5rem",filter:"invert(0)" }}/>
             <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:26,marginBottom:"0.4rem" }}>Admin Panel</h2>
-            <p style={{ fontSize:12,color:"rgba(0,0,0,0.4)",marginBottom:"1.8rem" }}>Enter password to manage products.</p>
+            <p style={{ fontSize:12,color:"rgba(0,0,0,0.4)",marginBottom:"1.8rem" }}>Enter password to manage products globally.</p>
             <input className="admin-input" type="password" placeholder="Password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&login()} style={{ ...iSt,marginBottom:"0.9rem",borderColor:pwErr?"#c00":"rgba(0,0,0,0.14)",animation:pwErr?"shake .3s":"none" }} onFocus={e=>e.target.style.borderColor="#111"} onBlur={e=>e.target.style.borderColor=pwErr?"#c00":"rgba(0,0,0,0.14)"}/>
             <button onClick={login} style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"13px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",cursor:"crosshair" }}>Unlock</button>
             {pwErr&&<p style={{ color:"#c00",fontSize:11,fontWeight:600,marginTop:7,textAlign:"center",letterSpacing:"0.1em",textTransform:"uppercase" }}>Incorrect password</p>}
@@ -566,7 +629,7 @@ const handleCheckout = async () => {
         <div style={{ position:"fixed",inset:0,zIndex:1000,background:"#fff",overflow:"auto",animation:"fadeIn .2s" }}>
           {toast&&<div style={{ position:"fixed",bottom:22,left:"50%",transform:"translateX(-50%)",background:"#111",color:"#fff",padding:"11px 22px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",zIndex:1010,animation:"slideUp .3s ease" }}>{toast}</div>}
           <div style={{ background:"#111",padding:"0 1.5rem",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100,borderBottom:"2px solid #333" }}>
-            <div style={{ display:"flex",alignItems:"center",gap:12 }}><img src={LOGO_SRC} alt="" style={{ height:30,filter:"invert(1)",opacity:.85 }}/><span style={{ fontFamily:"Inter",fontWeight:700,fontSize:11,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(255,255,255,0.5)" }}>/ Admin</span></div>
+            <div style={{ display:"flex",alignItems:"center",gap:12 }}><img src={LOGO_SRC} alt="" style={{ height:30,filter:"invert(1)",opacity:.85 }}/><span style={{ fontFamily:"Inter",fontWeight:700,fontSize:11,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(255,255,255,0.5)" }}>/ Admin (Global Sync Active)</span></div>
             <div style={{ display:"flex",gap:"0.75rem" }}>
               <button onClick={()=>{setForm(blank);setEditId("new");}} style={{ background:"#fff",color:"#111",border:"2px solid #fff",padding:"7px 18px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",cursor:"crosshair" }}>+ New Product</button>
               <button onClick={onClose} style={{ background:"transparent",color:"rgba(255,255,255,0.5)",border:"1.5px solid rgba(255,255,255,0.18)",width:38,height:38,fontSize:15,cursor:"crosshair",fontWeight:700 }}>✕</button>
@@ -579,10 +642,10 @@ const handleCheckout = async () => {
                 {products.map(p=>(
                   <div key={p.id} onClick={()=>{setForm({...p});setEditId(p.id);}} style={{ display:"flex",alignItems:"center",gap:"0.9rem",border:"2px solid #111",padding:"0.9rem 1rem", background:editId===p.id?"#111":"#fff",cursor:"crosshair" }}>
                     <div style={{ width:52,height:52,background:editId===p.id?"#333":"#f0f0f0",flexShrink:0,overflow:"hidden" }}>{p.frontImage?<img src={p.frontImage} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover" }}/>:<div style={{ width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,color:editId===p.id?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.12)" }}>◎</div>}</div>
-                    <div style={{ flex:1,minWidth:0 }}><div style={{ fontWeight:700,fontSize:13,textTransform:"uppercase",letterSpacing:"-0.01em",color:editId===p.id?"#fff":"#111",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis" }}>{p.name}</div><div style={{ fontSize:11,color:editId===p.id?"rgba(255,255,255,0.4)":"rgba(0,0,0,0.38)",fontWeight:600,marginTop:1 }}>{p.price}</div></div>
+                    <div style={{ flex:1,minWidth:0 }}><div style={{ fontWeight:700,fontSize:13,textTransform:"uppercase",letterSpacing:"-0.01em",color:editId===p.id?"#fff":"#111",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis" }}>{p.name}</div><div style={{ fontSize:11,color:editId===p.id?"rgba(255,255,255,0.4)":"#c00",fontWeight:600,marginTop:1 }}>{p.price}</div></div>
                     <div style={{ display:"flex",flexDirection:"column",gap:3,flexShrink:0 }}>
                       <button onClick={e=>{e.stopPropagation();toggle(p.id,"soldOut");}} style={{ fontSize:7,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 5px",cursor:"crosshair",background:p.soldOut?"#c00":"transparent",color:p.soldOut?"#fff":editId===p.id?"rgba(255,255,255,0.35)":"rgba(0,0,0,0.28)",border:`1px solid ${p.soldOut?"#c00":editId===p.id?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.12)"}` }}>{p.soldOut?"Sold Out":"In Stock"}</button>
-                      <button onClick={e=>{e.stopPropagation();if(window.confirm("Delete?"))remove(p.id);}} style={{ fontSize:7,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 5px",cursor:"crosshair",background:"transparent",color:"rgba(180,0,0,0.55)",border:"1px solid rgba(180,0,0,0.18)" }}>Delete</button>
+                      <button onClick={e=>{e.stopPropagation(); remove(p.id);}} style={{ fontSize:7,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 5px",cursor:"crosshair",background:"transparent",color:"rgba(180,0,0,0.55)",border:"1px solid rgba(180,0,0,0.18)" }}>Delete</button>
                     </div>
                   </div>
                 ))}
@@ -596,8 +659,8 @@ const handleCheckout = async () => {
                 </div>
                 <div className="admin-form-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"1.3rem" }}>
                   <div style={{ gridColumn:"1/-1" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Product Name *</label><input className="admin-input" value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} placeholder="e.g. Terrain Tee 001" style={iSt}/></div>
-                  <div style={{ gridColumn:"1/2" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Cost</label><input className="admin-input" value={form.cost} onChange={e=>setForm(f=>({...f,cost:e.target.value}))} placeholder="₹450" style={iSt}/></div>
-                  <div style={{ gridColumn:"2/4" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Price *</label><input className="admin-input" value={form.price} onChange={e=>setForm(f=>({...f,price:e.target.value}))} placeholder="₹1,299" style={iSt}/></div>
+                  <div style={{ gridColumn:"1/2" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Old Price (Strikethrough)</label><input className="admin-input" value={form.compareAtPrice || ""} onChange={e=>setForm(f=>({...f,compareAtPrice:e.target.value}))} placeholder="₹1,100" style={iSt}/></div>
+                  <div style={{ gridColumn:"2/4" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Active Price *</label><input className="admin-input" value={form.price} onChange={e=>setForm(f=>({...f,price:e.target.value}))} placeholder="₹1" style={iSt}/></div>
                   <div style={{ gridColumn:"1/3" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Tag</label><input className="admin-input" value={form.tag} onChange={e=>setForm(f=>({...f,tag:e.target.value}))} placeholder="New Drop / Limited" style={iSt}/></div>
                   <div style={{ gridColumn:"3/4" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Category</label><select value={form.category} onChange={e=>setForm(f=>({...f,category:e.target.value}))} style={{ ...iSt,cursor:"crosshair" }}>{["T-Shirts","Hoodies","Jackets","Cargo Pants","Accessories","Caps"].map(c=><option key={c}>{c}</option>)}</select></div>
                   <div style={{ gridColumn:"1/-1" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Description</label><textarea className="admin-input" rows={3} value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))} placeholder="Short description..." style={{ ...iSt,resize:"none" }}/></div>
@@ -894,7 +957,8 @@ const handleCheckout = async () => {
        ROOT APP
     ═══════════════════════════════════════════════════════ */
     function App(){
-      const [products,setProducts]=useState(loadProducts);
+      // UPGRADED: Products now fetch from Firebase
+      const [products,setProducts]=useState([]); 
       const [cart,setCart]=useState([]);
       const [qv,setQV]=useState(null);
       const [adminOpen,setAdminOpen]=useState(false);
@@ -906,7 +970,7 @@ const handleCheckout = async () => {
       const logoTimerRef=useRef(null);
       const [user, setUser]=useState(null);
 
-      // Global Scroll Listener for Parallax Effects
+      // Global Scroll Listener
       useEffect(() => {
         const handleScroll = () => { document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}`); };
         window.addEventListener('scroll', handleScroll, { passive: true });
@@ -914,6 +978,34 @@ const handleCheckout = async () => {
         return () => window.removeEventListener('scroll', handleScroll);
       }, []);
 
+      // Fetch Products from Firestore
+      useEffect(() => {
+        const fetchProducts = async () => {
+          if (!window.fbDb || !window.fbGetDocs) return;
+          try {
+            const snapshot = await window.fbGetDocs(window.fbCollection(window.fbDb, "products"));
+            if (snapshot.empty) {
+              // If Database is empty, seed it with Rs 1 Default Products
+              DEFAULT_PRODUCTS.forEach(async (p) => {
+                 await window.fbSetDoc(window.fbDoc(window.fbDb, "products", p.id), p);
+              });
+              setProducts(DEFAULT_PRODUCTS);
+            } else {
+              const fetched = [];
+              snapshot.forEach(doc => fetched.push(doc.data()));
+              setProducts(fetched);
+            }
+          } catch(e) {
+            console.error("Failed to load products:", e);
+          }
+        };
+        
+        if (window.fbDb) { fetchProducts(); } 
+        else { window.addEventListener('firebase-ready', fetchProducts); }
+        return () => window.removeEventListener('firebase-ready', fetchProducts);
+      }, []);
+
+      // Handle Authentication changes
       useEffect(()=>{
         const handleAuthChange = () => {
           if (window.fbAuth && window.fbOnAuthStateChanged) { window.fbOnAuthStateChanged(window.fbAuth, (u) => { setUser(u); }); }
@@ -954,9 +1046,7 @@ const handleCheckout = async () => {
 
       return(
         <div style={{ minHeight:"100vh",background:"#fff", position:"relative" }}>
-          {/* Global Film Grain */}
           <div className="grain-overlay"></div>
-          
           <ScrollProgress/>
           <Header cartCount={cart.length} onCartOpen={()=>setCartOpen(true)} onLogoClick={handleLogoClick} setMobMenu={setMobMenu} user={user} handleAuth={handleAuth} />
           <Ticker/>
