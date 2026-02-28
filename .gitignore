@@ -1,0 +1,15 @@
+# Node dependencies
+node_modules/
+
+# Security and Keys
+.env
+.env.local
+firebase-config.js
+
+# Leftover Firebase files
+.firebase/
+firebase.json
+.firebaserc
+
+# Mac system files (if applicable)
+.DS_Store

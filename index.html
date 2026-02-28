@@ -24,10 +24,9 @@
       signInWithEmailAndPassword    
     } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-    import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-functions.js";
 
     /* =====================================================================
-       🔥 1. ADD YOUR FIREBASE CONFIGURATION HERE 🔥
+        FIREBASE CONFIGURATION 
        ===================================================================== */
     const firebaseConfig = {
       apiKey: "AIzaSyCeq4FeU1LQKTyZAIJd7HL834rEUqQ0eTQ",
@@ -42,7 +41,6 @@
       window.fbDb = getFirestore(app);
       window.fbAuth = getAuth(app);
       window.fbProvider = new GoogleAuthProvider();
-      window.fbFunctions = getFunctions(app);
       
       // Global Exposures for React
       window.fbSignInWithPopup = signInWithPopup;
@@ -50,7 +48,6 @@
       window.fbOnAuthStateChanged = onAuthStateChanged;
       window.fbCollection = collection;
       window.fbAddDoc = addDoc;
-      window.fbHttpsCallable = httpsCallable;
 
       window.dispatchEvent(new Event('firebase-ready'));
     } catch(err) {
@@ -388,70 +385,71 @@
       const total = cart.reduce((s,i)=>s+(parseInt((i.price||"0").replace(/[^0-9]/g,""))||0),0);
       const [loading, setLoading] = useState(false);
 
-      const handleCheckout = async () => {
+const handleCheckout = async () => {
         if (cart.length === 0) return;
-        if (!window.fbFunctions || !window.fbHttpsCallable) { 
-          alert("Firebase Functions not initialized. Cannot process checkout."); 
-          return; 
-        }
-
         setLoading(true);
-        try {
-          const createOrder = window.fbHttpsCallable(window.fbFunctions, 'createRzpOrder');
-          const orderRes = await createOrder({ amount: total * 100 }); 
-          const { order_id, key } = orderRes.data;
 
+        try {
+          // 1. Ask your free Vercel API to create a Razorpay Order
+          const response = await fetch('/api/createOrder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount: total }) // Sending the total cart amount
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) throw new Error(data.error || "Failed to fetch order");
+
+          const { orderId, keyId } = data;
+
+          // 2. Open the Razorpay Window
           const options = {
-            key: key || "rzp_live_SLbrYh2DUHAC9w", 
+            key: keyId, // Pulled safely from your Vercel Vault, not hardcoded!
             amount: total * 100, 
             currency: "INR",
             name: "Splotch",
             description: "Apparel Order",
             image: LOGO_SRC,
-            order_id: order_id,
-            handler: async function (response) {
+            order_id: orderId,
+            handler: async function (rzpRes) {
+              // 3. Save to Firebase Database on Success
               try {
-                const verifyPayment = window.fbHttpsCallable(window.fbFunctions, 'verifyRzpPayment');
-                const verifyRes = await verifyPayment({
-                  razorpay_order_id: response.razorpay_order_id,
-                  razorpay_payment_id: response.razorpay_payment_id,
-                  razorpay_signature: response.razorpay_signature
-                });
-
-                if (verifyRes.data.success) {
+                if (window.fbAddDoc && window.fbCollection && window.fbDb) {
                   await window.fbAddDoc(window.fbCollection(window.fbDb, "orders"), {
                     items: cart,
                     total: total,
-                    paymentId: response.razorpay_payment_id,
-                    orderId: response.razorpay_order_id,
+                    paymentId: rzpRes.razorpay_payment_id,
+                    orderId: rzpRes.razorpay_order_id,
                     userId: user ? user.uid : "guest",
                     userEmail: user ? user.email : "guest",
                     timestamp: new Date()
                   });
-                  
-                  alert("Payment successful! Order placed.");
-                  setCart([]);
-                  onClose();
-                } else {
-                  alert("Payment verification failed! Please contact support.");
                 }
-              } catch (err) {
-                console.error("Verification Error:", err);
-                alert("Error verifying payment.");
+                
+                alert("Payment successful! Order placed.");
+                setCart([]);
+                onClose();
+              } catch (dbErr) {
+                console.error("Database save failed:", dbErr);
+                alert("Paid, but order save failed. Contact admin.");
               }
+            },
+            prefill: {
+              email: user ? user.email : ""
             },
             theme: { color: "#111111" }
           };
           
           const rzp = new window.Razorpay(options);
-          rzp.on('payment.failed', function (response){
-            alert("Payment Failed: " + response.error.description);
+          rzp.on('payment.failed', function (rzpRes){
+            alert("Payment Failed: " + rzpRes.error.description);
           });
           rzp.open();
 
         } catch (err) {
-          console.error("Checkout Request Error:", err);
-          alert("Error initiating checkout. Please ensure Firebase Functions are deployed.");
+          console.error("Checkout Error:", err);
+          alert("Error initiating checkout. Are you viewing this on the live Vercel link?");
         }
         setLoading(false);
       };
