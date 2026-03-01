@@ -394,7 +394,7 @@
       return(
         <header className={scrolled ? "glass-nav" : ""} style={{ overflow:"visible" }}>
           <button onClick={onLogoClick} style={{ background:"none",border:"none",display:"flex",alignItems:"center",gap:10,padding:0,position:"relative",paddingLeft:"10px" }}>
-            <img src={LOGO_SRC} alt="Splotch" style={{ height:32,width:"auto",display:"block",filter:"invert(0)",transform:"scale(2.2)",transformOrigin:"left center" }}/>
+            <img src={LOGO_SRC} alt="Splotch" style={{ height:32,width:"auto",display:"block",filter:"invert(0)",transform:"scale(3)",transformOrigin:"left center" }}/>
           </button>
           <nav className="desk-nav" style={{ display:"flex",gap:"2.5rem",alignItems:"center" }}>
             <button onClick={()=>scrollTo('home')} className="nl" style={{ background:"none",border:"none" }}>HOME</button>
@@ -1122,7 +1122,7 @@
 
     function TheWork(){
       const works=[
-        {label:"Terrain Vol.001",cat:"Capsule Drop"},{label:"Shadow Protocol",cat:"Collab Series"},{label:"Grid Zero",cat:"Artist Collab"},
+        {label:"Terrain Vol.001",cat:"Capsule Drop"},{label:"Shadow Protocol",cat:"Collab Series"},{label:"Grid Zero",cat:"Original Designs"},
         {label:"Shell Jackets",cat:"Product"},{label:"SS'25 Lookbook",cat:"Editorial"},{label:"Modular Jacket",cat:"Product"}
       ];
       return(
