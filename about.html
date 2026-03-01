@@ -10,13 +10,14 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <style>
-    /* CUSTOM CURSOR SYSTEM */
+    /* CUSTOM ELASTIC CURSOR SYSTEM */
     body, button, a, input, textarea, select { cursor: none !important; }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
     
     :root { --B: #111111; --W: #FFFFFF; }
     html { scroll-behavior: smooth; }
     body { background: var(--W); color: var(--B); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    ::selection { background: var(--B); color: var(--W); }
 
     .cursor-dot {
       position: fixed; top: 0; left: 0; width: 28px; height: 28px; border: 2px solid #fff;
@@ -24,7 +25,7 @@
       z-index: 99999; mix-blend-mode: difference;
       transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), height 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .cursor-dot.pulse { width: 12px; height: 12px; background-color: #fff; }
+    .cursor-dot.pulse { width: 10px; height: 10px; background-color: #fff; }
 
     /* DYNAMIC TITLES */
     .dyn-title { display: inline-block; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), text-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1); }
@@ -32,9 +33,14 @@
 
     /* HEADER */
     header { position: sticky; top: 0; z-index: 500; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; }
-    .nav-link { position: relative; color: #111; text-decoration: none; font-weight: 700; font-size: 10px; letter-spacing: 0.18em; background: none; border: none; }
-    .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #111; transition: width 0.2s; }
-    .nav-link:hover::after { width: 100%; }
+    .glass-nav { background: rgba(255, 255, 255, 0.65) !important; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 2px 0 #111; }
+    
+    .nav-signin { background: #111; color: #fff; border: 2px solid #111; padding: 6px 14px; font-size: 9px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; transition: all 0.2s; text-decoration: none; }
+    .nav-signin:hover { background: transparent; color: #111; }
+
+    .nl { position: relative; color: #111; text-decoration: none; font-weight: 700; font-size: 10px; letter-spacing: 0.18em; }
+    .nl::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #111; transition: width 0.2s; }
+    .nl:hover::after { width: 100%; }
 
     .grain-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9998; opacity: 0.15; background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E'); }
     
@@ -42,7 +48,12 @@
     .manifesto-box { border: 2px solid #111; padding: 3rem; background: #fafafa; position: relative; }
     .manifesto-box::before { content: 'MANIFESTO'; position: absolute; top: -10px; left: 20px; background: #111; color: #fff; font-size: 8px; font-weight: 900; padding: 2px 8px; letter-spacing: 0.2em; }
 
-    @media (max-width: 768px) { .content-grid { grid-template-columns: 1fr; gap: 2rem; } }
+    ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: #fff; } ::-webkit-scrollbar-thumb { background: #111; }
+
+    @media (max-width: 768px) { 
+      .content-grid { grid-template-columns: 1fr; gap: 2rem; } 
+      .desk-nav { display: none !important; }
+    }
   </style>
 </head>
 <body>
@@ -73,28 +84,44 @@
     );
 
     function AboutPage() {
+      const [scrolled,setScrolled]=useState(false);
+      useEffect(()=>{
+        const fn=()=>setScrolled(window.scrollY>30);
+        window.addEventListener("scroll",fn,{passive:true});
+        return ()=>window.removeEventListener("scroll",fn);
+      },[]);
+
       return (
         <div style={{ minHeight: '100vh', background: '#fff' }}>
           <CustomCursor />
           <div className="grain-overlay"></div>
           
-          <header>
-            <a href="/" style={{ overflow: 'visible', paddingLeft: '10px' }}>
-              <img src="SplotchPlainLogo-removebg.png" alt="Splotch" style={{ height: 32, transform: "scale(1.8)", transformOrigin: "left center" }}/>
+          <header className={scrolled ? "glass-nav" : ""} style={{ overflow:"visible" }}>
+            <a href="/" style={{ background:"none", border:"none", display:"flex", alignItems:"center", padding:0, position:"relative", paddingLeft:"10px", textDecoration:"none" }}>
+              <img src="SplotchPlainLogo-removebg.png" alt="Splotch" style={{ height:32, width:"auto", display:"block", transform:"scale(2.2)", transformOrigin:"left center" }}/>
             </a>
-            <nav style={{ display: 'flex', gap: '2rem' }}>
-              <a href="/" className="nav-link">HOME</a>
-              <a href="/#shop" className="nav-link">SHOP</a>
-              <a href="/#contact" className="nav-link">CONTACT</a>
+            
+            <nav className="desk-nav" style={{ display:"flex", gap:"2.5rem", alignItems:"center" }}>
+              <a href="/" className="nl">HOME</a>
+              <a href="/#shop" className="nl">SHOP</a>
+              <a href="/about.html" className="nl">ABOUT</a>
+              <a href="/#contact" className="nl">CONTACT</a>
             </nav>
+            
+            <div style={{ display:"flex", alignItems:"center", gap:"1.2rem" }}>
+              <a href="/" className="nav-signin desk-nav">SIGN IN</a>
+              <a href="/#shop" style={{ textDecoration:"none", background:"#111", color:"#fff", border:"2px solid #111", padding:"7px 14px", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase" }}>
+                CART
+              </a>
+            </div>
           </header>
 
           <section style={{ position: 'relative', padding: '8rem 2rem', background: '#111', color: '#fff', overflow: 'hidden' }}>
             <TopoSVG color="#fff" />
-            <h1 className="dyn-title" style={{ fontFamily: 'Playfair Display', fontSize: 'clamp(60px, 12vw, 180px)', fontStyle: 'italic', lineHeight: 0.85 }}>
+            <h1 className="dyn-title" style={{ fontFamily: 'Playfair Display', fontSize: 'clamp(60px, 12vw, 180px)', fontStyle: 'italic', lineHeight: 0.85, position: 'relative', zIndex: 1 }}>
               We Chart <br/> New Ground.
             </h1>
-            <p style={{ marginTop: '2rem', fontSize: '14px', letterSpacing: '0.3em', fontWeight: 900, color: 'rgba(255,255,255,0.4)' }}>EST. 2023 // BANGALORE, IN</p>
+            <p style={{ marginTop: '2rem', fontSize: '14px', letterSpacing: '0.3em', fontWeight: 900, color: 'rgba(255,255,255,0.4)', position: 'relative', zIndex: 1 }}>EST. 2023 // BANGALORE, IN</p>
           </section>
 
           <section className="content-grid">
@@ -109,18 +136,19 @@
               </p>
             </div>
             <div className="manifesto-box">
-              <p style={{ fontFamily: 'Playfair Display', fontSize: '24px', fontStyle: 'italic', lineHeight: 1.5 }}>
+              <p style={{ fontFamily: 'Playfair Display', fontSize: '24px', fontStyle: 'italic', lineHeight: 1.5, color: '#111' }}>
                 "Two colors. Zero compromise. Complexity lives in the structure, not the palette. We don't make products—we make statements."
               </p>
               <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem' }}>
                  <div style={{ width: '40px', height: '2px', background: '#111', alignSelf: 'center' }}></div>
-                 <span style={{ fontSize: '10px', fontWeight: 900, letterSpacing: '0.1em' }}>SPLOTCH DESIGN LAB</span>
+                 <span style={{ fontSize: '10px', fontWeight: 900, letterSpacing: '0.1em', color: '#111' }}>SPLOTCH DESIGN LAB</span>
               </div>
             </div>
           </section>
 
-          <section style={{ padding: '6rem 2rem', textAlign: 'center' }}>
-             <h2 className="dyn-title" style={{ fontFamily: 'Playfair Display', fontSize: 'clamp(40px, 6vw, 80px)', marginBottom: '4rem' }}>The Principles.</h2>
+          {/* We end the page right here with the Principles section. No footer. */}
+          <section style={{ padding: '6rem 2rem', textAlign: 'center', paddingBottom: '8rem' }}>
+             <h2 className="dyn-title" style={{ fontFamily: 'Playfair Display', fontSize: 'clamp(40px, 6vw, 80px)', marginBottom: '4rem', color: '#111' }}>The Principles.</h2>
              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2px', background: '#111', border: '2px solid #111' }}>
                 {[
                   { t: "INTENTION", d: "Every stitch is deliberate. If a feature doesn't serve a purpose, it doesn't exist." },
@@ -135,13 +163,6 @@
              </div>
           </section>
 
-          <footer style={{ padding: "4rem 2rem", background: "#111", color: "#fff", textAlign: "center" }}>
-            <h2 className="dyn-title" style={{ fontFamily: "Playfair Display", fontSize: "clamp(50px,8vw,100px)", color: "transparent", WebkitTextStroke: "1px #555", marginBottom: "3rem" }}>Predict the future,<br/>don't stop now.</h2>
-            <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(255,255,255,0.15)" }}>
-              © 2026 Splotch. 
-              <span style={{ color: "#111", marginLeft: "10px" }}>// Created by dudefromalhiem</span>
-            </p>
-          </footer>
         </div>
       );
     }
