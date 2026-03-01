@@ -226,29 +226,58 @@
        7. FOOTER ANIMATIONS
        ========================================================================== */
     .footer-animated-bg {
-      background: linear-gradient(-45deg, #050505, #151515, #0a0a0a, #111111);
-      background-size: 400% 400%;
-      animation: cyberScan 15s ease infinite;
+      background-color: #050505;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: gridScroll 3s linear infinite;
+      position: relative;
     }
-    @keyframes cyberScan { 
-      0% { background-position: 0% 50% } 
-      50% { background-position: 100% 50% } 
-      100% { background-position: 0% 50% } 
+    @keyframes gridScroll { 
+      0% { background-position: 0px 0px; } 
+      100% { background-position: 0px 40px; } 
     }
     
+    .footer-animated-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center 30%, transparent 10%, #111 80%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .cyber-text-container {
+      perspective: 1000px;
+      display: inline-block;
+      position: relative;
+      z-index: 2;
+    }
     .cyber-text {
       color: transparent;
       -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.2);
-      animation: textPulse 4s infinite alternate;
-      transition: all 0.3s ease;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.8) 50%, transparent 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: textShine 5s linear infinite;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: crosshair;
+      position: relative;
+      display: inline-block;
+    }
+    @keyframes textShine {
+      0% { background-position: 200% center; }
+      100% { background-position: -200% center; }
     }
     .cyber-text:hover { 
+      transform: translateZ(40px) rotateX(15deg) skewX(-5deg);
       -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9); 
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-    }
-    @keyframes textPulse {
-      0% { -webkit-text-stroke-color: rgba(255, 255, 255, 0.15); text-shadow: 0 0 0px rgba(255, 255, 255, 0); }
-      100% { -webkit-text-stroke-color: rgba(255, 255, 255, 0.4); text-shadow: 0 0 15px rgba(255, 255, 255, 0.05); }
+      text-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.5),
+        -3px 3px 0 rgba(200, 0, 0, 0.8),
+        3px -3px 0 rgba(0, 200, 255, 0.8);
     }
     
     .ghost-credit {
@@ -295,7 +324,7 @@
 
   <script type="text/babel">
     /* ==========================================================================
-       TABLE OF CONTENTS (Search these tags to find components)
+       TABLE OF CONTENTS
        --------------------------------------------------------------------------
        [HELPERS]        - Math, Stock checking, Canvas Compression, Timeout
        [DATA]           - Default fallback products & portfolio items
@@ -613,7 +642,6 @@
             const fetchedOrders = [];
             snap.forEach(doc => fetchedOrders.push({ id: doc.id, ...doc.data() }));
             
-            // Sort locally to avoid needing Firebase Composite Indexes
             fetchedOrders.sort((a,b) => b.timestamp?.seconds - a.timestamp?.seconds);
             setOrders(fetchedOrders);
           } catch(err) { 
@@ -1643,17 +1671,18 @@
     function Footer() {
       return (
         <footer className="footer-animated-bg" style={{padding:"6rem 2rem 3rem",position:"relative",overflow:"hidden"}}>
-          <div className="topo-parallax-wrap" style={{opacity:0.04}}><TopoSVG color="#fff"/></div>
           <div style={{position:"relative",zIndex:1,textAlign:"center"}}>
             <img src={LOGO_SRC} alt="Splotch" style={{height:140,width:"auto",filter:"invert(1)",opacity:0.8,marginBottom:"3rem",display:"inline-block"}}/>
             <br/>
             
-            <h2 className="dyn-title cyber-text" style={{fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic",fontSize:"clamp(40px,7vw,96px)",letterSpacing:"-0.04em",lineHeight:0.92,marginBottom:"4rem",display:"inline-block"}}>
-              Predict the future,<br/>you didn't come<br/>this far to stop.
-            </h2>
+            <div className="cyber-text-container">
+              <h2 className="cyber-text" style={{fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic",fontSize:"clamp(40px,7vw,96px)",letterSpacing:"-0.04em",lineHeight:0.92,marginBottom:"4rem",margin:"0"}}>
+                Predict the future,<br/>you didn't come<br/>this far to stop.
+              </h2>
+            </div>
 
             {/* --- THE SEO MANIFESTO BLOCK --- */}
-            <div style={{maxWidth: "600px", margin: "0 auto 4rem auto", padding: "2rem 0", borderTop: "1px solid rgba(255,255,255,0.08)", borderBottom: "1px solid rgba(255,255,255,0.08)"}}>
+            <div style={{maxWidth: "600px", margin: "4rem auto", padding: "2rem 0", borderTop: "1px solid rgba(255,255,255,0.08)", borderBottom: "1px solid rgba(255,255,255,0.08)"}}>
               <p style={{fontSize: "9px", fontWeight: 600, color: "rgba(255,255,255,0.35)", lineHeight: 1.8, letterSpacing: "0.15em", textTransform: "uppercase"}}>
                 Splotch is an independent streetwear brand engineered in Bangalore, India. 
                 Developing premium oversized t-shirts, limited-drop techwear, and utility clothing 
