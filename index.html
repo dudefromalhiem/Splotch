@@ -4,15 +4,17 @@
   <meta name="title" content="Splotch | Urban Techwear & Streetwear India">
   <meta name="description" content="Engineering the next frontier of Indian streetwear. Limited drop techwear, oversized tees, and urban utility gear. Made in Bangalore.">
   <meta name="keywords" content="streetwear India, techwear, oversized t-shirts, Splotch clothing, Bangalore fashion">
+
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://splotch.vercel.app/">
   <meta property="og:title" content="Splotch | Urban Techwear">
   <meta property="og:description" content="Style beyond seasons. Explore the SS'26 Terrain Collection.">
   <meta property="og:image" content="https://splotch.vercel.app/splotch-og-image.jpg">
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Splotch</title>
-
+  <title>Splotch Website</title>
+  
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -21,31 +23,39 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc, getDoc, updateDoc, increment, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { 
+      getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut,
+      createUserWithEmailAndPassword, signInWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { 
+      getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc, getDoc, updateDoc, increment, query, orderBy
+    } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCeq4FeU1LQKTyZAIJd7HL834rEUqQ0eTQ",
-      authDomain: "splotchclothing.firebaseapp.com",
+      authDomain: "splotchclothing.firebaseapp.com",      
       projectId: "splotchclothing",
       storageBucket: "splotchclothing.firebasestorage.app",
       messagingSenderId: "791501370137",
       appId: "1:791501370137:web:4ccc972b997d9d06f8cb88"
     };
+
     try {
       const app = initializeApp(firebaseConfig);
       window.fbDb = getFirestore(app);
       window.fbAuth = getAuth(app);
       window.fbProvider = new GoogleAuthProvider();
+      
       window.fbSignInWithPopup = signInWithPopup;
       window.fbSignOut = signOut;
       window.fbOnAuthStateChanged = onAuthStateChanged;
       window.fbCreateUserWithEmailAndPassword = createUserWithEmailAndPassword;
       window.fbSignInWithEmailAndPassword = signInWithEmailAndPassword;
+
       window.fbCollection = collection;
       window.fbAddDoc = addDoc;
       window.fbGetDocs = getDocs;
-      window.fbGetDoc = getDoc;
+      window.fbGetDoc = getDoc; 
       window.fbDoc = doc;
       window.fbSetDoc = setDoc;
       window.fbDeleteDoc = deleteDoc;
@@ -53,38 +63,48 @@
       window.fbIncrement = increment;
       window.fbQuery = query;
       window.fbOrderBy = orderBy;
+
       window.dispatchEvent(new Event('firebase-ready'));
     } catch(err) { console.error("Firebase Init Error:", err); }
   </script>
 
   <style>
-    body, button, a, input, textarea, select { cursor: none !important; }
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
+    /* 1. BASE STYLES */
     :root { --B: #111111; --W: #FFFFFF; }
     html { scroll-behavior: smooth; }
-    body { background: var(--W); color: var(--B); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    body { background: var(--W); color: var(--B); font-family: 'Inter', sans-serif; overflow-x: hidden; margin: 0; padding: 0; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
     ::selection { background: var(--B); color: var(--W); }
     input, textarea, select, button { font-family: inherit; border-radius: 0 !important; outline: none; }
-    img { cursor: none !important; -webkit-user-select: none; user-select: none; }
+    img { -webkit-user-select: none; user-select: none; }
 
-    /* ── CURSOR ── */
+    /* 2. CUSTOM ELASTIC CURSOR (Desktop Only via JS body class) */
+    body.custom-cursor-active, 
+    body.custom-cursor-active button, 
+    body.custom-cursor-active a, 
+    body.custom-cursor-active input, 
+    body.custom-cursor-active textarea, 
+    body.custom-cursor-active select, 
+    body.custom-cursor-active img, 
+    body.custom-cursor-active .prod-card,
+    body.custom-cursor-active * { cursor: none !important; }
+
     .cursor-dot {
       position: fixed; top: 0; left: 0; width: 28px; height: 28px;
       border: 2px solid #fff; border-radius: 50% !important;
       transform: translate(-50%, -50%); pointer-events: none;
       z-index: 99999; mix-blend-mode: difference;
-      transition: width 0.3s cubic-bezier(0.175,0.885,0.32,1.275),
-                  height 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
+      transition: width 0.3s cubic-bezier(0.175,0.885,0.32,1.275), height 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
     }
     .cursor-dot.pulse { width: 10px; height: 10px; background-color: #fff; }
 
-    /* ── DYNAMIC TITLES (no shadow — transform only) ── */
+    /* 3. DYNAMIC TITLES (Transform only) */
     .dyn-title { display: inline-block; transition: transform 0.3s cubic-bezier(0.25,1,0.5,1); }
     .dyn-title:hover { transform: translate(-4px,-4px); }
     .outline-text { color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,0.35); }
     .outline-text:hover { -webkit-text-stroke: 1.5px rgba(255,255,255,0.75); }
 
-    /* ── HERO H1 — 3D extruded: highlight above, red→black shadow below ── */
+    /* 4. HERO H1 3D EXTRUSION */
     .hero-h1 {
       font-family: 'Inter', sans-serif; font-weight: 900;
       font-size: clamp(90px, 18vw, 260px); color: #fff;
@@ -104,7 +124,6 @@
         15px 15px 24px rgba(0,0,0,0.6);
     }
 
-    /* Mobile: slow cinematic light orbit */
     @keyframes splotch3d {
       0%   { text-shadow: -2px -3px 0 rgba(255,255,255,0.6),-4px -6px 0 rgba(255,255,255,0.25), 3px 3px 0 rgba(220,28,28,0.98), 7px 7px 0 rgba(170,0,0,0.8), 12px 12px 0 rgba(80,0,0,0.45), 16px 16px 22px rgba(0,0,0,0.55); }
       25%  { text-shadow:  3px -2px 0 rgba(255,255,255,0.6), 5px -4px 0 rgba(255,255,255,0.25),-3px 4px 0 rgba(220,28,28,0.98),-7px 8px 0 rgba(170,0,0,0.8),-12px 13px 0 rgba(80,0,0,0.45),-16px 16px 22px rgba(0,0,0,0.55); }
@@ -116,7 +135,7 @@
       .hero-h1 { animation: splotch3d 11s cubic-bezier(0.45,0,0.55,1) infinite; }
     }
 
-    /* ── HEADER ── */
+    /* 5. HEADER */
     header { position: sticky; top: 0; z-index: 500; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; transition: box-shadow 0.3s, background 0.3s; }
     .glass-nav { background: rgba(255,255,255,0.68) !important; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 2px 0 #111; }
     .user-menu-container { position: relative; }
@@ -129,59 +148,55 @@
     .nav-signin { background: #111; color: #fff; border: 2px solid #111; padding: 6px 14px; font-size: 9px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; transition: all 0.2s; }
     .nav-signin:hover { background: transparent; color: #111; }
 
-    /* ── SIZE BTNS ── */
+    /* 6. SIZE BTNS */
     .size-btn { background: transparent; color: #111; border: 1.5px solid #111; padding: 6px 0; width: 34px; text-align: center; font-size: 10px; font-weight: 700; transition: all 0.2s; }
     .size-btn.active { background: #111; color: #fff; }
     .size-btn.soldout { opacity: 0.28; text-decoration: line-through; }
 
-    /* ── GRAIN / TOPO ── */
+    /* 7. GRAIN / TOPO */
     .grain-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9998; opacity: 0.15; background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E'); }
     .topo-parallax-wrap { position: absolute; top: -50vh; bottom: -50vh; left: 0; right: 0; pointer-events: none; z-index: 0; will-change: transform; }
 
-    /* ── HERO LAYOUT ── */
+    /* 8. HERO LAYOUT */
     .hero-text-overlay { position: absolute; z-index: 5; top: 32%; left: -2%; line-height: 0.85; pointer-events: none; -webkit-user-select: none; user-select: none; }
     .hero-sub { position: absolute; z-index: 4; top: 2.5rem; right: 2rem; text-align: right; pointer-events: none; }
     .hero-sub p { font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #fff; line-height: 2; opacity: 0.7; }
     .hero-badge { display: inline-block; border: 2px solid #fff; font-size: 10px; font-weight: 700; letter-spacing: 0.2em; padding: 6px 12px; color: #fff; text-transform: uppercase; margin-top: 1rem; }
 
-    /* ── FLIP CARDS ── */
+    /* 9. FLIP CARDS */
     .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.65s cubic-bezier(0.76,0,0.24,1); transform-style: preserve-3d; }
     .flipped .flip-inner { transform: rotateY(180deg); }
     .flip-front, .flip-back { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
     .flip-back { transform: rotateY(180deg); }
 
-    /* ── SCROLL REVEAL ── */
+    /* 10. SCROLL REVEAL */
     .reveal { opacity: 0; transform: translateY(44px); transition: opacity 0.78s cubic-bezier(0.22,1,0.36,1), transform 0.78s cubic-bezier(0.22,1,0.36,1); }
     .reveal.visible { opacity: 1; transform: translateY(0); }
     .reveal-d1 { transition-delay: 0.08s; } .reveal-d2 { transition-delay: 0.2s; } .reveal-d3 { transition-delay: 0.32s; } .reveal-d4 { transition-delay: 0.44s; }
 
-    /* ── TICKER ── */
     @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-    /* ── CARDS ── */
+    /* 11. CARDS */
     .prod-card { transition: box-shadow 0.25s, transform 0.25s; }
     .prod-card:hover { box-shadow: 6px 6px 0 #111; transform: translate(-2px,-2px); }
     .prod-cta-btn, .flip-toggle { transition: background 0.2s, color 0.2s; }
     .prod-cta-btn:hover, .flip-toggle:hover { background: #111 !important; color: #fff !important; }
 
-    /* ── PORTFOLIO CARDS ── */
     .port-card .port-overlay { opacity: 0; transition: opacity 0.3s ease; }
     .port-card:hover .port-overlay { opacity: 1; }
     .port-card .port-text { transform: translateY(10px); opacity: 0; transition: transform 0.4s ease, opacity 0.4s ease; }
     .port-card:hover .port-text { transform: translateY(0); opacity: 1; }
 
-    /* ── NAV LINKS ── */
-    .nl { position: relative; color: #111; text-decoration: none; font-weight: 700; font-size: 10px; letter-spacing: 0.18em; cursor: none; }
+    .nl { position: relative; color: #111; text-decoration: none; font-weight: 700; font-size: 10px; letter-spacing: 0.18em; }
     .nl::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #111; transition: width 0.2s; }
     .nl:hover::after { width: 100%; }
 
-    /* ── MISC ── */
     .admin-input:focus, .drop-zone.over { border-color: #111 !important; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: #fff; } ::-webkit-scrollbar-thumb { background: #111; }
 
-    /* ── RESPONSIVE ── */
+    /* 12. RESPONSIVE */
     @media (max-width: 768px) {
       .desk-nav { display: none !important; }
       .mob-ham { display: flex !important; }
@@ -207,8 +222,7 @@
     // HELPERS
     // ────────────────────────────────────────────────────────────────────────────
     const getTotalStock = (p) => {
-      if (p.sizeStock && typeof p.sizeStock === 'object')
-        return Object.values(p.sizeStock).reduce((a,b)=>a+(parseInt(b)||0),0);
+      if (p.sizeStock && typeof p.sizeStock === 'object') return Object.values(p.sizeStock).reduce((a,b)=>a+(parseInt(b)||0),0);
       return parseInt(p.stock)||0;
     };
     const getSizeStock = (p, size) => {
@@ -216,7 +230,7 @@
       return parseInt(p.stock)||0;
     };
 
-    // Canvas-based image compression — keeps base64 under ~200KB so Firestore is happy
+    // Canvas-based image compression
     const compressImage = (dataUrl, maxDim=900, quality=0.72) =>
       new Promise(resolve => {
         const img = new Image();
@@ -228,7 +242,7 @@
           canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
           resolve(canvas.toDataURL('image/jpeg', quality));
         };
-        img.onerror = () => resolve(dataUrl); // fallback
+        img.onerror = () => resolve(dataUrl);
         img.src = dataUrl;
       });
 
@@ -251,17 +265,14 @@
     ];
 
     // ────────────────────────────────────────────────────────────────────────────
-    // UI PRIMITIVES
+    // UI COMPONENTS
     // ────────────────────────────────────────────────────────────────────────────
     const SLabel = ({children, inv=false}) => (
-      <div style={{ fontSize:10, fontWeight:700, letterSpacing:"0.32em", textTransform:"uppercase",
-        marginBottom:"1.8rem", borderLeft:`3px solid ${inv?"#fff":"#111"}`, paddingLeft:10,
-        color:inv?"rgba(255,255,255,0.45)":"rgba(0,0,0,0.45)" }}>{children}</div>
+      <div style={{ fontSize:10, fontWeight:700, letterSpacing:"0.32em", textTransform:"uppercase", marginBottom:"1.8rem", borderLeft:`3px solid ${inv?"#fff":"#111"}`, paddingLeft:10, color:inv?"rgba(255,255,255,0.45)":"rgba(0,0,0,0.45)" }}>{children}</div>
     );
 
     const TopoSVG = ({color="#111", style={}}) => (
-      <svg viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"
-        style={{width:"100%",height:"100%",...style}}>
+      <svg viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style={{width:"100%",height:"100%",...style}}>
         {["M0,250 Q150,220 300,250 T600,235 T900,248 T1200,238","M0,270 Q130,242 260,270 T520,255 T780,268 T1040,252 T1200,265","M0,230 Q170,202 340,230 T680,217 T1020,228 T1200,220","M0,290 Q110,264 220,290 T440,276 T660,290 T880,272 T1100,288 T1200,282","M0,210 Q190,183 380,210 T760,198 T1140,208 T1200,203"].map((d,i)=>(
           <path key={i} d={d} fill="none" stroke={color} strokeWidth={i<2?1:0.65}/>
         ))}
@@ -273,18 +284,50 @@
     );
 
     const ImgPlaceholder = ({label, dark=true}) => (
-      <div style={{ width:"100%",height:"100%",background:dark?"#1a1a1a":"#efefef",
-        display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
-        gap:10,position:"relative",overflow:"hidden" }}>
+      <div style={{ width:"100%",height:"100%",background:dark?"#1a1a1a":"#efefef", display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center", gap:10,position:"relative",overflow:"hidden" }}>
         <div style={{position:"absolute",inset:0,opacity:0.1}}><TopoSVG color={dark?"#fff":"#111"}/></div>
-        <span style={{ fontSize:9,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",
-          color:dark?"rgba(255,255,255,0.2)":"rgba(0,0,0,0.25)",position:"relative",zIndex:1 }}>{label}</span>
+        <span style={{ fontSize:9,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase", color:dark?"rgba(255,255,255,0.2)":"rgba(0,0,0,0.25)",position:"relative",zIndex:1 }}>{label}</span>
       </div>
     );
 
     // ────────────────────────────────────────────────────────────────────────────
-    // SCROLL PROGRESS
+    // MOBILE-FRIENDLY CURSOR
     // ────────────────────────────────────────────────────────────────────────────
+    function CustomCursor() {
+      const [pulse, setPulse] = useState(false);
+      const [pos, setPos] = useState({ x: -100, y: -100 });
+      const [isTouch, setIsTouch] = useState(false);
+
+      useEffect(() => {
+        // If they touch the screen, disable the custom cursor globally
+        const handleTouchStart = () => {
+          setIsTouch(true);
+          document.body.classList.remove('custom-cursor-active');
+        };
+        const handleMouseMove = (e) => {
+          if (isTouch) return; // Don't track if touch device
+          document.body.classList.add('custom-cursor-active');
+          setPos({ x: e.clientX, y: e.clientY });
+        };
+        const down = () => { if(!isTouch) setPulse(true); };
+        const up = () => { if(!isTouch) setPulse(false); };
+
+        window.addEventListener('touchstart', handleTouchStart);
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mousedown', down);
+        window.addEventListener('mouseup', up);
+        return () => { 
+          window.removeEventListener('touchstart', handleTouchStart);
+          window.removeEventListener('mousemove', handleMouseMove); 
+          window.removeEventListener('mousedown', down); 
+          window.removeEventListener('mouseup', up); 
+        };
+      }, [isTouch]);
+
+      if (isTouch) return null;
+      return <div className={`cursor-dot ${pulse ? 'pulse' : ''}`} style={{ left: `${pos.x}px`, top: `${pos.y}px` }}></div>;
+    }
+
     function ScrollProgress() {
       const [w, setW] = useState(0);
       useEffect(() => {
@@ -295,9 +338,6 @@
       return <div style={{position:"fixed",top:0,left:0,height:3,width:w+"%",background:"#111",zIndex:999,transition:"width .1s linear"}}/>;
     }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // TICKER
-    // ────────────────────────────────────────────────────────────────────────────
     function Ticker() {
       const items = ["STYLE BEYOND SEASONS","—","NEW DROP: TERRAIN SERIES","—","MADE IN INDIA","—","LIMITED RUNS. NO RESTOCKS.","—","splotch.in","—"];
       const d = [...items,...items];
@@ -764,14 +804,12 @@
         const newId = editId==="new"?"prod-"+Date.now():editId;
         const updated = {...form, id:newId};
         try {
-          if(!window.fbDb||!window.fbSetDoc) throw new Error("Firebase not connected. Check Firestore rules.");
+          if(!window.fbDb||!window.fbSetDoc) throw new Error("Firebase not connected.");
           await window.fbSetDoc(window.fbDoc(window.fbDb,"products",newId), updated);
           setProducts(editId==="new"?[...products,updated]:products.map(p=>p.id===editId?updated:p));
           setEditId(null); setForm(blankProduct);
           alert("✓ Product saved to Firebase!");
-        }catch(err){
-          alert("Save failed: "+err.message+"\n\nMake sure your Firestore rules allow writes:\nrules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /{document=**} {\n      allow read, write: if true;\n    }\n  }\n}");
-        }
+        }catch(err){ alert("Save failed: "+err.message); }
         setSaving(false);
       };
 
@@ -828,7 +866,7 @@
           <div style={{background:"#111",padding:"0 1.5rem",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100,borderBottom:"2px solid #333"}}>
             <div style={{display:"flex",alignItems:"center",gap:12}}>
               <img src={LOGO_SRC} alt="" style={{height:30,filter:"invert(1)",opacity:.85}}/>
-              <span style={{fontFamily:"Inter",fontWeight:700,fontSize:11,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(255,255,255,0.5)"}}>/ Admin</span>
+              <span style={{fontFamily:"Inter",fontWeight:700,fontSize:11,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(255,255,255,0.5)"}} className="desk-nav">/ Admin</span>
             </div>
             <div style={{display:"flex",gap:"0.6rem"}}>
               {["products","portfolio","orders"].map(t=>(
@@ -838,10 +876,8 @@
             </div>
           </div>
 
-          {/* Image Storage Notice */}
           <div style={{background:"#fffbe6",borderBottom:"2px solid #e6c000",padding:"10px 2rem",fontSize:11,color:"#7a6000",fontWeight:600}}>
-            ⚠️ Images are compressed &amp; stored as base64 in Firestore (max ~800KB per image). Keep product images under 2MB when uploading.
-            &nbsp;|&nbsp; If saves fail: go to Firebase Console → Firestore → Rules and set <code>allow read, write: if true;</code>
+            ⚠️ Images are compressed & stored as base64 in Firestore.
           </div>
 
           <div style={{padding:"2rem"}}>
@@ -853,7 +889,7 @@
                   {products.map(p=>{
                     const ts=getTotalStock(p);
                     return (
-                      <div key={p.id} onClick={()=>{setForm({...p,sizeStock:p.sizeStock||{S:10,M:10,L:10,XL:10}});setEditId(p.id);}} style={{display:"flex",alignItems:"center",gap:"0.9rem",border:"2px solid #111",padding:"0.9rem 1rem",background:editId===p.id?"#111":"#fff",color:editId===p.id?"#fff":"#111",marginBottom:"4px"}}>
+                      <div key={p.id} onClick={()=>{setForm({...p,sizeStock:p.sizeStock||{S:10,M:10,L:10,XL:10}});setEditId(p.id);}} style={{display:"flex",alignItems:"center",gap:"0.9rem",border:"2px solid #111",padding:"0.9rem 1rem",background:editId===p.id?"#111":"#fff",color:editId===p.id?"#fff":"#111",marginBottom:"4px", cursor:"pointer"}}>
                         <div style={{width:52,height:52,background:"#333",flexShrink:0,overflow:"hidden"}}>{p.frontImage?<img src={p.frontImage} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,color:"rgba(255,255,255,0.15)"}}>◎</div>}</div>
                         <div style={{flex:1,minWidth:0}}>
                           <div style={{fontWeight:700,fontSize:13,textTransform:"uppercase",letterSpacing:"-0.01em",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{p.name}</div>
@@ -874,11 +910,11 @@
                       <h3 style={{fontFamily:"Playfair Display",fontWeight:700,fontSize:22}}>{editId==="new"?"New Product":"Edit Product"}</h3>
                       <button onClick={()=>{setEditId(null);setForm(blankProduct);}} style={{background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:13,fontWeight:700}}>✕</button>
                     </div>
-                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"1.3rem"}}>
+                    <div className="admin-form-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"1.3rem"}}>
                       <div style={{gridColumn:"1/-1"}}><label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6}}>Product Name *</label><input className="admin-input" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Terrain Tee 001" style={iSt}/></div>
-                      <div><label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6}}>Old Price</label><input className="admin-input" value={form.compareAtPrice||""} onChange={e=>setForm({...form,compareAtPrice:e.target.value})} placeholder="₹1,100" style={iSt}/></div>
-                      <div><label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6}}>Active Price *</label><input className="admin-input" value={form.price} onChange={e=>setForm({...form,price:e.target.value})} placeholder="₹1" style={iSt}/></div>
-                      <div><label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6}}>Tag</label><input className="admin-input" value={form.tag} onChange={e=>setForm({...form,tag:e.target.value})} placeholder="New Drop" style={iSt}/></div>
+                      <div style={{gridColumn:"1/2"}}><label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6}}>Old Price</label><input className="admin-input" value={form.compareAtPrice||""} onChange={e=>setForm({...form,compareAtPrice:e.target.value})} placeholder="₹1,100" style={iSt}/></div>
+                      <div style={{gridColumn:"2/3"}}><label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6}}>Active Price *</label><input className="admin-input" value={form.price} onChange={e=>setForm({...form,price:e.target.value})} placeholder="₹1" style={iSt}/></div>
+                      <div style={{gridColumn:"3/4"}}><label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6}}>Tag</label><input className="admin-input" value={form.tag} onChange={e=>setForm({...form,tag:e.target.value})} placeholder="New Drop" style={iSt}/></div>
                       <div style={{gridColumn:"1/-1"}}><label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6}}>Category</label><input className="admin-input" value={form.category} onChange={e=>setForm({...form,category:e.target.value})} placeholder="T-Shirts" style={iSt}/></div>
                       <div style={{gridColumn:"1/-1"}}>
                         <label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6}}>Sizes (comma-separated)</label>
@@ -922,13 +958,11 @@
                 <div>
                   <button onClick={()=>{setPortForm({...blankPort,order:portfolio.length});setPortEditId("new");}} style={{width:"100%",padding:"15px",background:"#111",color:"#fff",fontWeight:900,marginBottom:"1rem"}}>+ ADD PORTFOLIO ITEM</button>
                   {portfolio.map(p=>(
-                    <div key={p.id} onClick={()=>{setPortForm(p);setPortEditId(p.id);}} style={{display:"flex",alignItems:"center",gap:"0.9rem",border:"2px solid #111",padding:"0.9rem 1rem",background:portEditId===p.id?"#111":"#fff",color:portEditId===p.id?"#fff":"#111",marginBottom:"4px"}}>
-                      <div style={{width:52,height:52,background:"#333",flexShrink:0,overflow:"hidden"}}>
-                        {p.image?<img src={p.image} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,color:"rgba(255,255,255,0.15)"}}>◎</div>}
-                      </div>
+                    <div key={p.id} onClick={()=>{setPortForm(p);setPortEditId(p.id);}} style={{display:"flex",alignItems:"center",gap:"0.9rem",border:"2px solid #111",padding:"0.9rem 1rem",background:portEditId===p.id?"#111":"#fff",color:portEditId===p.id?"#fff":"#111",marginBottom:"4px",cursor:"pointer"}}>
+                      <div style={{width:52,height:52,background:"#333",flexShrink:0,overflow:"hidden"}}>{p.image?<img src={p.image} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,color:"rgba(255,255,255,0.15)"}}>◎</div>}</div>
                       <div style={{flex:1,minWidth:0}}>
                         <div style={{fontWeight:700,fontSize:13,textTransform:"uppercase",letterSpacing:"-0.01em",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{p.label||"Untitled"}</div>
-                        <div style={{fontSize:11,color:"rgba(0,0,0,0.4)",marginTop:1}}>{p.cat}</div>
+                        <div style={{fontSize:11,color:portEditId===p.id?"rgba(255,255,255,0.7)":"rgba(0,0,0,0.4)",marginTop:1}}>{p.cat}</div>
                       </div>
                       <button onClick={e=>{e.stopPropagation();removePortItem(p.id);}} style={{fontSize:7,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 5px",background:"transparent",color:"rgba(180,0,0,0.55)",border:"1px solid rgba(180,0,0,0.18)",flexShrink:0}}>Delete</button>
                     </div>
@@ -1161,7 +1195,7 @@
     }
 
     // ────────────────────────────────────────────────────────────────────────────
-    // TESTIMONIALS — 3 reviews
+    // TESTIMONIALS
     // ────────────────────────────────────────────────────────────────────────────
     function Testimonials() {
       const items=[
@@ -1261,7 +1295,8 @@
           <div className="topo-parallax-wrap" style={{opacity:0.05}}><TopoSVG color="#fff"/></div>
           <div style={{position:"relative",zIndex:1,textAlign:"center"}}>
             <img src={LOGO_SRC} alt="Splotch" style={{height:160,width:"auto",filter:"invert(1)",opacity:0.9,marginBottom:"2.5rem",display:"inline-block"}}/>
-            <h2 className="dyn-title outline-text" style={{fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic",fontSize:"clamp(40px,7vw,96px)",letterSpacing:"-0.04em",lineHeight:0.92,marginBottom:"5rem",display:"block",WebkitTextStroke:"1.5px rgba(255,255,255,0.25)"}}>
+            <br/>
+            <h2 className="dyn-title outline-text" style={{fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic",fontSize:"clamp(40px,7vw,96px)",letterSpacing:"-0.04em",lineHeight:0.92,marginBottom:"5rem",display:"inline-block",WebkitTextStroke:"1.5px rgba(255,255,255,0.25)"}}>
               Predict the future,<br/>you didn't come<br/>this far to stop.
             </h2>
             <div style={{borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:"1.5rem",display:"flex",justifyContent:"space-between",flexWrap:"wrap",gap:"0.8rem"}}>
@@ -1276,28 +1311,11 @@
     }
 
     // ────────────────────────────────────────────────────────────────────────────
-    // CUSTOM CURSOR
-    // ────────────────────────────────────────────────────────────────────────────
-    function CustomCursor() {
-      const [pulse,setPulse]=useState(false);
-      const [pos,setPos]=useState({x:0,y:0});
-      useEffect(()=>{
-        const move=e=>setPos({x:e.clientX,y:e.clientY});
-        const down=()=>setPulse(true); const up=()=>setPulse(false);
-        window.addEventListener('mousemove',move);
-        window.addEventListener('mousedown',down);
-        window.addEventListener('mouseup',up);
-        return()=>{window.removeEventListener('mousemove',move);window.removeEventListener('mousedown',down);window.removeEventListener('mouseup',up);};
-      },[]);
-      return <div className={`cursor-dot ${pulse?'pulse':''}`} style={{left:`${pos.x}px`,top:`${pos.y}px`}}/>;
-    }
-
-    // ────────────────────────────────────────────────────────────────────────────
     // APP
     // ────────────────────────────────────────────────────────────────────────────
     function App() {
       const [products,setProducts]=useState([]);
-      const [portfolio,setPortfolio]=useState(DEFAULT_PORTFOLIO);
+      const [portfolio,setPortfolio]=useState([]);
       const [cart,setCart]=useState(()=>{const d=localStorage.getItem('splotch_cart_v1');return d?JSON.parse(d):[];});
       const [qv,setQV]=useState(null);
       const [adminOpen,setAdminOpen]=useState(false);
@@ -1311,40 +1329,32 @@
 
       useEffect(()=>{localStorage.setItem('splotch_cart_v1',JSON.stringify(cart));},[cart]);
 
-      // Load products from Firestore
+      // Load products & portfolio from Firestore
       useEffect(()=>{
         const initData=async()=>{
           if(!window.fbDb||!window.fbGetDocs) return;
           try{
+            // Products
             const snap=await window.fbGetDocs(window.fbCollection(window.fbDb,"products"));
             if(snap.empty){
-              DEFAULT_PRODUCTS.forEach(p=>window.fbSetDoc(window.fbDoc(window.fbDb,"products",p.id),p));
+              DEFAULT_PRODUCTS.forEach(p=>window.fbSetDoc(window.fbDoc(window.fbDb,"products",p.id),p).catch(e=>console.warn(e)));
               setProducts(DEFAULT_PRODUCTS);
             }else{
               const fetched=[];snap.forEach(d=>fetched.push(d.data()));setProducts(fetched);
             }
-          }catch(e){console.error("Products load error:",e);setProducts(DEFAULT_PRODUCTS);}
+            // Portfolio
+            const portSnap=await window.fbGetDocs(window.fbCollection(window.fbDb,"portfolio"));
+            if(portSnap.empty){
+              DEFAULT_PORTFOLIO.forEach(p=>window.fbSetDoc(window.fbDoc(window.fbDb,"portfolio",p.id),p).catch(e=>console.warn(e)));
+              setPortfolio(DEFAULT_PORTFOLIO);
+            }else{
+              const fetchedPort=[];portSnap.forEach(d=>fetchedPort.push(d.data()));setPortfolio(fetchedPort);
+            }
+          }catch(e){console.error("Data load error:",e);setProducts(DEFAULT_PRODUCTS);setPortfolio(DEFAULT_PORTFOLIO);}
         };
         if(window.fbDb)initData();
         else window.addEventListener('firebase-ready',initData);
         return()=>window.removeEventListener('firebase-ready',initData);
-      },[]);
-
-      // Load portfolio from Firestore
-      useEffect(()=>{
-        const initPortfolio=async()=>{
-          if(!window.fbDb||!window.fbGetDocs) return;
-          try{
-            const snap=await window.fbGetDocs(window.fbCollection(window.fbDb,"portfolio"));
-            if(!snap.empty){
-              const fetched=[];snap.forEach(d=>fetched.push(d.data()));
-              setPortfolio(fetched.sort((a,b)=>(a.order||0)-(b.order||0)));
-            }
-          }catch(e){console.error("Portfolio load error:",e);}
-        };
-        if(window.fbDb)initPortfolio();
-        else window.addEventListener('firebase-ready',initPortfolio);
-        return()=>window.removeEventListener('firebase-ready',initPortfolio);
       },[]);
 
       useEffect(()=>{
