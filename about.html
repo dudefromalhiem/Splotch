@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About | Splotch Urban Techwear</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    /* CUSTOM CURSOR SYSTEM */
+    body, button, a, input, textarea, select { cursor: none !important; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
+    
+    :root { --B: #111111; --W: #FFFFFF; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--W); color: var(--B); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+    .cursor-dot {
+      position: fixed; top: 0; left: 0; width: 28px; height: 28px; border: 2px solid #fff;
+      border-radius: 50% !important; transform: translate(-50%, -50%); pointer-events: none;
+      z-index: 99999; mix-blend-mode: difference;
+      transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), height 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .cursor-dot.pulse { width: 12px; height: 12px; background-color: #fff; }
+
+    /* DYNAMIC TITLES */
+    .dyn-title { display: inline-block; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), text-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1); }
+    .dyn-title:hover { transform: translate(-4px, -4px); text-shadow: 4px 4px 0 #c00; }
+
+    /* HEADER */
+    header { position: sticky; top: 0; z-index: 500; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; }
+    .nav-link { position: relative; color: #111; text-decoration: none; font-weight: 700; font-size: 10px; letter-spacing: 0.18em; background: none; border: none; }
+    .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #111; transition: width 0.2s; }
+    .nav-link:hover::after { width: 100%; }
+
+    .grain-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9998; opacity: 0.15; background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E'); }
+    
+    .content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; padding: 6rem 2rem; border-bottom: 2px solid #111; }
+    .manifesto-box { border: 2px solid #111; padding: 3rem; background: #fafafa; position: relative; }
+    .manifesto-box::before { content: 'MANIFESTO'; position: absolute; top: -10px; left: 20px; background: #111; color: #fff; font-size: 8px; font-weight: 900; padding: 2px 8px; letter-spacing: 0.2em; }
+
+    @media (max-width: 768px) { .content-grid { grid-template-columns: 1fr; gap: 2rem; } }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function CustomCursor() {
+      const [pulse, setPulse] = useState(false);
+      const [pos, setPos] = useState({ x: 0, y: 0 });
+      useEffect(() => {
+        const move = (e) => setPos({ x: e.clientX, y: e.clientY });
+        const down = () => setPulse(true);
+        const up = () => setPulse(false);
+        window.addEventListener('mousemove', move);
+        window.addEventListener('mousedown', down);
+        window.addEventListener('mouseup', up);
+        return () => { window.removeEventListener('mousemove', move); window.removeEventListener('mousedown', down); window.removeEventListener('mouseup', up); };
+      }, []);
+      return ( <div className={`cursor-dot ${pulse ? 'pulse' : ''}`} style={{ left: `${pos.x}px`, top: `${pos.y}px` }}></div> );
+    }
+
+    const TopoSVG = ({ color="#111" }) => (
+      <svg viewBox="0 0 1200 500" style={{ position:'absolute', top:0, left:0, width:'100%', opacity:0.07, pointerEvents:'none' }}>
+        {["M0,250 Q150,220 300,250 T600,235 T900,248 T1200,238", "M0,270 Q130,242 260,270 T520,255 T780,268 T1040,252 T1200,265"].map((d,i)=>( <path key={i} d={d} fill="none" stroke={color} strokeWidth={0.65}/> ))}
+      </svg>
+    );
+
+    function AboutPage() {
+      return (
+        <div style={{ minHeight: '100vh', background: '#fff' }}>
+          <CustomCursor />
+          <div className="grain-overlay"></div>
+          
+          <header>
+            <a href="/" style={{ overflow: 'visible', paddingLeft: '10px' }}>
+              <img src="SplotchPlainLogo-removebg.png" alt="Splotch" style={{ height: 32, transform: "scale(1.8)", transformOrigin: "left center" }}/>
+            </a>
+            <nav style={{ display: 'flex', gap: '2rem' }}>
+              <a href="/" className="nav-link">HOME</a>
+              <a href="/#shop" className="nav-link">SHOP</a>
+              <a href="/#contact" className="nav-link">CONTACT</a>
+            </nav>
+          </header>
+
+          <section style={{ position: 'relative', padding: '8rem 2rem', background: '#111', color: '#fff', overflow: 'hidden' }}>
+            <TopoSVG color="#fff" />
+            <h1 className="dyn-title" style={{ fontFamily: 'Playfair Display', fontSize: 'clamp(60px, 12vw, 180px)', fontStyle: 'italic', lineHeight: 0.85 }}>
+              We Chart <br/> New Ground.
+            </h1>
+            <p style={{ marginTop: '2rem', fontSize: '14px', letterSpacing: '0.3em', fontWeight: 900, color: 'rgba(255,255,255,0.4)' }}>EST. 2023 // BANGALORE, IN</p>
+          </section>
+
+          <section className="content-grid">
+            <div>
+              <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.3em', color: '#c00', marginBottom: '1.5rem' }}>THE ORIGIN</div>
+              <h2 className="dyn-title" style={{ fontFamily: 'Playfair Display', fontSize: '42px', marginBottom: '2rem' }}>Utility for the <br/>Urban Jungle.</h2>
+              <p style={{ lineHeight: 1.8, color: '#555', marginBottom: '1.5rem' }}>
+                Splotch was born from a single obsession: what does truly functional Indian streetwear look like? We moved away from chasing Western trends to focus on the terrain of our own cities.
+              </p>
+              <p style={{ lineHeight: 1.8, color: '#555' }}>
+                Every piece is engineered in our Bangalore studio. We don't just design clothes; we conceive systems—interconnected garments built for endurance, versatility, and aesthetic restraint.
+              </p>
+            </div>
+            <div className="manifesto-box">
+              <p style={{ fontFamily: 'Playfair Display', fontSize: '24px', fontStyle: 'italic', lineHeight: 1.5 }}>
+                "Two colors. Zero compromise. Complexity lives in the structure, not the palette. We don't make products—we make statements."
+              </p>
+              <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem' }}>
+                 <div style={{ width: '40px', height: '2px', background: '#111', alignSelf: 'center' }}></div>
+                 <span style={{ fontSize: '10px', fontWeight: 900, letterSpacing: '0.1em' }}>SPLOTCH DESIGN LAB</span>
+              </div>
+            </div>
+          </section>
+
+          <section style={{ padding: '6rem 2rem', textAlign: 'center' }}>
+             <h2 className="dyn-title" style={{ fontFamily: 'Playfair Display', fontSize: 'clamp(40px, 6vw, 80px)', marginBottom: '4rem' }}>The Principles.</h2>
+             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2px', background: '#111', border: '2px solid #111' }}>
+                {[
+                  { t: "INTENTION", d: "Every stitch is deliberate. If a feature doesn't serve a purpose, it doesn't exist." },
+                  { t: "LIMITED RUNS", d: "No mass production. We drop in limited quantities to ensure quality and exclusivity." },
+                  { t: "TERRITORY", d: "Inspired by topographic maps and urban blueprints. Charting new aesthetic territory." }
+                ].map(p => (
+                  <div key={p.t} style={{ background: '#fff', padding: '3rem 2rem', textAlign: 'left' }}>
+                    <h3 style={{ fontWeight: 900, fontSize: '12px', letterSpacing: '0.2em', marginBottom: '1rem', color: '#c00' }}>{p.t}</h3>
+                    <p style={{ fontSize: '14px', lineHeight: 1.6, color: '#666' }}>{p.d}</p>
+                  </div>
+                ))}
+             </div>
+          </section>
+
+          <footer style={{ padding: "4rem 2rem", background: "#111", color: "#fff", textAlign: "center" }}>
+            <h2 className="dyn-title" style={{ fontFamily: "Playfair Display", fontSize: "clamp(50px,8vw,100px)", color: "transparent", WebkitTextStroke: "1px #555", marginBottom: "3rem" }}>Predict the future,<br/>don't stop now.</h2>
+            <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(255,255,255,0.15)" }}>
+              © 2026 Splotch. 
+              <span style={{ color: "#111", marginLeft: "10px" }}>// Created by dudefromalhiem</span>
+            </p>
+          </footer>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<AboutPage />);
+  </script>
+</body>
+</html>
