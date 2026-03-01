@@ -69,7 +69,7 @@
   </script>
 
   <style>
-    /* CUSTOM ELASTIC CURSOR SYSTEM */
+    /* 1. CUSTOM ELASTIC CURSOR */
     body, button, a, input, textarea, select { cursor: none !important; }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
     
@@ -79,89 +79,45 @@
     ::selection { background: var(--B); color: var(--W); }
 
     .cursor-dot {
-      position: fixed; top: 0; left: 0;
-      width: 28px; height: 28px;
-      border: 2px solid #fff;
-      border-radius: 50% !important;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      z-index: 99999;
-      mix-blend-mode: difference;
+      position: fixed; top: 0; left: 0; width: 28px; height: 28px; border: 2px solid #fff;
+      border-radius: 50% !important; transform: translate(-50%, -50%); pointer-events: none;
+      z-index: 99999; mix-blend-mode: difference;
       transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), height 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .cursor-dot.pulse { width: 10px; height: 10px; background-color: #fff; }
-    .grain-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9998; opacity: 0.15; background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E'); }
-    
-    /* DYNAMIC TITLES CSS */
-    .dyn-title {
-      display: inline-block;
-      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), text-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-      width: fit-content;
-    }
-    .dyn-text-dark:hover { transform: translate(-4px, -4px); text-shadow: 4px 4px 0 #c00; }
-    .dyn-text-light:hover { transform: translate(-4px, -4px); text-shadow: 4px 4px 0 #c00; }
-    .dyn-text-outline:hover { transform: translate(-4px, -4px); text-shadow: 4px 4px 0 #c00; -webkit-text-stroke: 1.5px #fff !important; }
+    .cursor-dot.pulse { width: 12px; height: 12px; background-color: #fff; }
 
-    /* HEADER */
-    header { position: sticky; top: 0; z-index: 500; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; transition: box-shadow 0.3s, background 0.3s; }
+    /* DYNAMIC TITLES */
+    .dyn-title {
+      display: inline-block; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), text-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .dyn-title:hover { transform: translate(-4px, -4px); text-shadow: 4px 4px 0 #c00; }
+    .outline-text:hover { -webkit-text-stroke: 1.5px #fff !important; }
+
+    /* HEADER SYSTEM */
+    header { position: sticky; top: 0; z-index: 500; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; }
     .glass-nav { background: rgba(255, 255, 255, 0.65) !important; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
     
-    /* DROPDOWN MENU */
     .user-menu-container { position: relative; }
-    .user-badge { background: #111; color: #fff; border: 2px solid #111; padding: 5px 12px; font-size: 9px; font-weight: 900; letter-spacing: 0.15em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; transition: background 0.2s, color 0.2s; }
-    .user-menu-container:hover .user-badge { background: transparent; color: #111; }
-    .user-dropdown { position: absolute; top: 100%; right: 0; background: #fff; border: 2px solid #111; border-top: none; display: none; flex-direction: column; min-width: 100%; box-shadow: 3px 3px 0 rgba(0,0,0,1); z-index: 1001; }
+    .user-badge { background: #111; color: #fff; border: 2px solid #111; padding: 6px 14px; font-size: 9px; font-weight: 900; letter-spacing: 0.15em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+    .user-dropdown { position: absolute; top: 100%; right: 0; background: #fff; border: 2px solid #111; border-top: none; display: none; flex-direction: column; min-width: 130px; box-shadow: 4px 4px 0 #000; }
     .user-menu-container:hover .user-dropdown { display: flex; }
-    .user-dropdown-btn { background: transparent; color: #111; border: none; padding: 12px 16px; font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; text-align: left; }
+    .user-dropdown-btn { background: transparent; color: #111; border: none; padding: 12px 16px; font-size: 9px; font-weight: 700; text-transform: uppercase; text-align: left; }
     .user-dropdown-btn:hover { background: #111; color: #fff; }
 
-    .nav-signin { background: #111; color: #fff; border: 2px solid #111; padding: 5px 12px; font-size: 9px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; transition: all 0.2s; }
-    .nav-signin:hover { background: transparent; color: #111; }
-    
-    /* SIZE SELECTOR */
-    .size-btn { background: transparent; color: #111; border: 1.5px solid #111; padding: 5px 0; width: 32px; text-align: center; font-size: 10px; font-weight: 700; transition: all 0.2s; }
+    .nav-signin { background: #111; color: #fff; border: 2px solid #111; padding: 6px 14px; font-size: 9px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; }
+    .size-btn { background: transparent; color: #111; border: 1.5px solid #111; width: 34px; height: 34px; font-size: 10px; font-weight: 700; transition: all 0.2s; }
     .size-btn.active { background: #111; color: #fff; }
 
-    .topo-parallax-wrap { position: absolute; top: -50vh; bottom: -50vh; left: 0; right: 0; pointer-events: none; z-index: 0; transform: translateY(calc(var(--scroll-y, 0) * 0.15px)); will-change: transform; }
-    .hero-video-placeholder { position: absolute; inset: 0; background: var(--B); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; }
-    .hero-video-placeholder::before { content: ''; position: absolute; inset: -60px; background: repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.04) 39px, rgba(255,255,255,0.04) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.04) 39px, rgba(255,255,255,0.04) 40px); }
-    .hero-text-overlay { position: absolute; z-index: 3; top: 32%; left: -2%; line-height: 0.85; pointer-events: none; -webkit-user-select: none; user-select: none; }
+    .grain-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9998; opacity: 0.15; background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E'); }
     .hero-h1 { font-family: 'Inter', sans-serif; font-weight: 900; font-size: clamp(90px, 18vw, 260px); color: var(--W); text-transform: uppercase; letter-spacing: -0.05em; line-height: 0.85; mix-blend-mode: difference; }
-    .hero-sub { position: absolute; z-index: 4; top: 2.5rem; right: 2rem; text-align: right; pointer-events: none; }
-    .hero-sub p { font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--W); line-height: 2; opacity: 0.7; }
-    .hero-badge { display: inline-block; border: 2px solid var(--W); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; padding: 6px 12px; color: var(--W); text-transform: uppercase; margin-top: 1rem; }
-    .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.65s cubic-bezier(0.76, 0, 0.24, 1); transform-style: preserve-3d; }
-    .flipped .flip-inner { transform: rotateY(180deg); }
-    .flip-front, .flip-back { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
-    .flip-back { transform: rotateY(180deg); }
-    .reveal { opacity: 0; transform: translateY(44px); transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1); }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-    .reveal-d1 { transition-delay: 0.1s; } .reveal-d2 { transition-delay: 0.22s; } .reveal-d3 { transition-delay: 0.34s; } .reveal-d4 { transition-delay: 0.46s; }
-    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-    .prod-card { transition: box-shadow 0.25s, transform 0.25s; }
-    .prod-card:hover { box-shadow: 6px 6px 0 #111; transform: translate(-2px, -2px); }
-    .prod-cta-btn, .flip-toggle { transition: background 0.2s, color 0.2s; }
-    .prod-cta-btn:hover, .flip-toggle:hover { background: #111 !important; color: #fff !important; }
-    .hl-card .hl-caption { opacity: 0; transform: translateY(12px); transition: opacity 0.35s ease, transform 0.35s ease; }
-    .hl-card:hover .hl-caption { opacity: 1; transform: translateY(0); }
-    .port-card .port-overlay { opacity: 0; transition: opacity 0.3s ease; }
-    .port-card:hover .port-overlay { opacity: 1; }
-    .port-card .port-text { transform: translateY(10px); opacity: 0; transition: transform 0.4s ease, opacity 0.4s ease; }
-    .port-card:hover .port-text { transform: translateY(0); opacity: 1; }
-    .svc-card { transition: background 0.25s, color 0.25s; }
-    .svc-card:hover { background: #111 !important; color: #fff !important; }
-    .svc-card:hover .svc-num { color: rgba(255, 255, 255, 0.07) !important; }
-    .svc-card:hover .svc-tag { color: rgba(255, 255, 255, 0.35) !important; border-color: rgba(255, 255, 255, 0.15) !important; }
-    .svc-card:hover .svc-btn { background: #fff !important; color: #111 !important; border-color: #fff !important; }
-    .nl { position: relative; color: #111; text-decoration: none; }
+    .nl { position: relative; color: #111; text-decoration: none; font-weight: 700; font-size: 10px; letter-spacing: 0.18em; }
     .nl::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #111; transition: width 0.2s; }
     .nl:hover::after { width: 100%; }
-    .admin-input:focus, .drop-zone.over { border-color: #111 !important; }
-    
+
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: #fff; } ::-webkit-scrollbar-thumb { background: #111; }
-    @media (max-width: 768px) { .desk-nav { display: none !important; } .mob-ham { display: flex !important; } .product-grid { grid-template-columns: 1fr 1fr !important; } }
+    @media (max-width: 768px) { .desk-nav { display: none !important; } .product-grid { grid-template-columns: 1fr 1fr !important; } }
   </style>
 </head>
 <body>
@@ -169,13 +125,11 @@
 
   <script type="text/babel">
     const { useState, useEffect, useRef, useCallback } = React;
-    const LOGO_SRC = "SplotchPlainLogo-removebg.png";
+    const LOGO_SRC = "splotchnobg.png";
 
-    // ELASTIC CURSOR COMPONENT
     function CustomCursor() {
       const [pulse, setPulse] = useState(false);
       const [pos, setPos] = useState({ x: 0, y: 0 });
-
       useEffect(() => {
         const move = (e) => setPos({ x: e.clientX, y: e.clientY });
         const down = () => setPulse(true);
@@ -188,28 +142,15 @@
       return ( <div className={`cursor-dot ${pulse ? 'pulse' : ''}`} style={{ left: `${pos.x}px`, top: `${pos.y}px` }}></div> );
     }
 
-    const TopoSVG = ({ color="#111", style={} }) => (
-      <svg viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style={{ width:"100%",height:"100%",...style }}>
-        {["M0,250 Q150,220 300,250 T600,235 T900,248 T1200,238", "M0,270 Q130,242 260,270 T520,255 T780,268 T1040,252 T1200,265", "M0,230 Q170,202 340,230 T680,217 T1020,228 T1200,220", "M0,290 Q110,264 220,290 T440,276 T660,290 T880,272 T1100,288 T1200,282"].map((d,i)=>( <path key={i} d={d} fill="none" stroke={color} strokeWidth={0.65}/> ))}
-      </svg>
-    );
-
-    const DEFAULT_PRODUCTS = [
-      { id:"shirt-1", name:"Terrain Tee 000", cost:"₹450", price:"₹1", compareAtPrice:"₹1,299", tag:"New Drop", description:"Urban utility tee with topographic print detail. Oversized fit, 100% organic cotton.", frontImage:"Shirt 1 front.jpeg", backImage:"Shirt 1 back.jpeg", hasBack:true, stock: 15, sizes: "S, M, L, XL", category:"T-Shirts" },
-      { id:"shirt-2", name:"Grid Tee 000", cost:"₹500", price:"₹1", compareAtPrice:"₹1,499", tag:"Limited", description:"Graphic techwear tee from the Grid Zero collaboration. Heavyweight cotton blend.", frontImage:"Shirt 2 front.jpeg", backImage:"Shirt 2 back.jpeg", hasBack:true, stock: 10, sizes: "S, M, L, XL", category:"T-Shirts" },
-      { id:"shirt-3", name:"Shadow Tee 000", cost:"₹400", price:"₹1", compareAtPrice:"₹1,199", tag:"Last 5", description:"Minimalist dropped-shoulder tee. Shadow Series print, ultra-soft jersey.", frontImage:"Shirt 3 front.jpeg", backImage:"Shirt 3 back.jpeg", hasBack:false, stock: 5, sizes: "S, M, L, XL", category:"T-Shirts" },
-    ];
-
-    const SLabel = ({children,inv=false})=>(
-      <div style={{ fontSize:10,fontWeight:700,letterSpacing:"0.32em",textTransform:"uppercase", marginBottom:"1.8rem",borderLeft:`3px solid ${inv?"#fff":"#111"}`, paddingLeft:10,color:inv?"rgba(255,255,255,0.45)":"rgba(0,0,0,0.45)" }}>{children}</div>
-    );
-
-    const ImgPlaceholder = ({label,dark=true})=>(
-      <div style={{ width:"100%",height:"100%",background:dark?"#1a1a1a":"#efefef", display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center", gap:10,position:"relative",overflow:"hidden" }}>
-        <div style={{ position:"absolute",inset:0,opacity:0.1 }}><TopoSVG color={dark?"#fff":"#111"}/></div>
-        <span style={{ fontSize:9,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase", color:dark?"rgba(255,255,255,0.2)":"rgba(0,0,0,0.25)",position:"relative",zIndex:1 }}>{label}</span>
-      </div>
-    );
+    function ScrollProgress(){
+      const [w,setW]=useState(0);
+      useEffect(()=>{
+        const fn=()=>setW((window.scrollY/(document.body.scrollHeight-window.innerHeight))*100);
+        window.addEventListener("scroll",fn);
+        return ()=>window.removeEventListener("scroll",fn);
+      },[]);
+      return <div style={{ position:"fixed",top:0,left:0,height:3,width:w+"%",background:"#111",zIndex:999 }}/>;
+    }
 
     function Ticker(){
       const d=["STYLE BEYOND SEASONS","—","NEW DROP: TERRAIN SERIES","—","MADE IN INDIA","—","LIMITED RUNS. NO RESTOCKS.","—"];
@@ -222,72 +163,29 @@
       );
     }
 
-    function AuthModal({ onClose, onSuccess }) {
-      const [isLogin, setIsLogin] = useState(true);
-      const [email, setEmail] = useState("");
-      const [pw, setPw] = useState("");
-      const [err, setErr] = useState("");
-      const [loading, setLoading] = useState(false);
-
-      const handleEmailAuth = async (e) => {
-        e.preventDefault();
-        setLoading(true); setErr("");
-        try {
-          if (isLogin) await window.fbSignInWithEmailAndPassword(window.fbAuth, email, pw);
-          else await window.fbCreateUserWithEmailAndPassword(window.fbAuth, email, pw);
-          onSuccess();
-        } catch (error) { setErr(error.message.replace("Firebase: ", "")); }
-        finally { setLoading(false); }
-      };
-
-      const handleGoogle = async () => {
-         try { await window.fbSignInWithPopup(window.fbAuth, window.fbProvider); onSuccess(); } catch(e) { setErr(e.message); }
-      };
-
-      const iSt = { display:"block", width:"100%", border:"2px solid rgba(0,0,0,0.14)", padding:"12px", fontSize:12, fontFamily:"Inter", marginBottom:"1rem" };
-      return (
-        <div style={{ position:"fixed", inset:0, zIndex:1000, background:"rgba(17,17,17,0.85)", display:"flex", alignItems:"center", justifyContent:"center" }}>
-          <div style={{ background:"#fff", border:"3px solid #111", width:"100%", maxWidth:400, padding:"2.5rem", position:"relative" }}>
-            <button onClick={onClose} style={{ position:"absolute", top:14, right:14, background:"none", border:"1.5px solid #111", width:34, height:34, fontWeight:700 }}>✕</button>
-            <h2 style={{ fontFamily:"Playfair Display", fontWeight:700, fontSize:28, marginBottom:"0.5rem" }}>{isLogin ? "Welcome Back." : "Join Splotch."}</h2>
-            {err && <div style={{ background:"#c00", color:"#fff", padding:"10px", fontSize:10, fontWeight:700, textTransform:"uppercase", marginBottom:"1.5rem" }}>{err}</div>}
-            <form onSubmit={handleEmailAuth}>
-              <input type="email" placeholder="Email Address" value={email} onChange={e=>setEmail(e.target.value)} style={iSt} required/>
-              <input type="password" placeholder="Password" value={pw} onChange={e=>setPw(e.target.value)} style={iSt} required/>
-              <button type="submit" disabled={loading} style={{ width:"100%", background:"#111", color:"#fff", border:"3px solid #111", padding:"14px", fontSize:11, fontWeight:700, letterSpacing:"0.2em", textTransform:"uppercase", marginBottom:"1rem" }}>
-                {loading ? "..." : (isLogin ? "Log In" : "Sign Up")}
-              </button>
-            </form>
-            <button onClick={handleGoogle} style={{ width:"100%", background:"#fff", color:"#111", border:"2px solid rgba(0,0,0,0.2)", padding:"12px", fontSize:11, fontWeight:700, textTransform:"uppercase" }}>Google Login</button>
-            <div style={{ textAlign:"center", marginTop:"2rem" }}><button onClick={() => setIsLogin(!isLogin)} style={{ background:"none", border:"none", fontSize:11, fontWeight:600, textDecoration:"underline" }}>{isLogin ? "Create an account" : "Already have an account?"}</button></div>
-          </div>
-        </div>
-      );
-    }
-
     function Header({cartCount, onCartOpen, onLogoClick, user, onAuthClick, handleLogout}){
       const safeName = user ? (user.displayName || user.email || 'USER').split('@')[0].toUpperCase() : '';
       return(
-        <header>
+        <header className="glass-nav">
           <button onClick={onLogoClick} style={{ background:"none", border:"none", overflow:"visible", paddingLeft: "10px" }}>
-            <img src={LOGO_SRC} alt="Splotch" style={{ height:32, transform:"scale(1.8)", transformOrigin:"left center" }}/>
+            <img src="SplotchPlainLogo-removebg.png" alt="Splotch" style={{ height:32, transform:"scale(1.8)", transformOrigin:"left center" }}/>
           </button>
-          <nav className="desk-nav" style={{ display:"flex", gap:"2rem" }}>
-            <button onClick={()=>document.getElementById("home")?.scrollIntoView({behavior:"smooth"})} className="nl" style={{background:"none",border:"none",fontSize:10,fontWeight:700,letterSpacing:"0.18em"}}>HOME</button>
-            <button onClick={()=>document.getElementById("shop")?.scrollIntoView({behavior:"smooth"})} className="nl" style={{background:"none",border:"none",fontSize:10,fontWeight:700,letterSpacing:"0.18em"}}>SHOP</button>
-            <a href="/about" className="nl" style={{fontSize:10,fontWeight:700,letterSpacing:"0.18em"}}>ABOUT</a>
-            <button onClick={()=>document.getElementById("contact")?.scrollIntoView({behavior:"smooth"})} className="nl" style={{background:"none",border:"none",fontSize:10,fontWeight:700,letterSpacing:"0.18em"}}>CONTACT</button>
+          <nav className="desk-nav" style={{ display:"flex", gap:"2.5rem" }}>
+            <button onClick={()=>document.getElementById("home")?.scrollIntoView({behavior:"smooth"})} className="nl" style={{background:"none",border:"none"}}>HOME</button>
+            <button onClick={()=>document.getElementById("shop")?.scrollIntoView({behavior:"smooth"})} className="nl" style={{background:"none",border:"none"}}>SHOP</button>
+            <a href="/about" className="nl">ABOUT</a>
+            <button onClick={()=>document.getElementById("contact")?.scrollIntoView({behavior:"smooth"})} className="nl" style={{background:"none",border:"none"}}>CONTACT</button>
           </nav>
           <div style={{ display:"flex", alignItems:"center", gap:"1rem" }}>
             {user ? (
-              <div className="user-menu-container desk-nav">
+              <div className="user-menu-container">
                 <div className="user-badge">{safeName} ▼</div>
                 <div className="user-dropdown">
                   <button className="user-dropdown-btn" onClick={handleLogout}>Logout</button>
                 </div>
               </div>
-            ) : ( <button className="nav-signin desk-nav" onClick={onAuthClick}>SIGN IN</button> )}
-            <button onClick={onCartOpen} style={{ background:"#111", color:"#fff", padding:"7px 14px", fontSize:9, fontWeight:900, display:"flex", gap:6, alignItems:"center", border:"2px solid #111" }}>
+            ) : ( <button className="nav-signin" onClick={onAuthClick}>SIGN IN</button> )}
+            <button onClick={onCartOpen} style={{ background:"#111", color:"#fff", padding:"7px 16px", fontSize:9, fontWeight:900, display:"flex", gap:6, border:"2px solid #111" }}>
               CART {cartCount>0 && <span style={{background:"#fff",color:"#111",padding:"0 4px"}}>{cartCount}</span>}
             </button>
           </div>
@@ -299,32 +197,21 @@
       const isSoldOut = product.stock <= 0; 
       const sizeArray = product.sizes ? product.sizes.split(',').map(s=>s.trim()) : ["OS"];
       const [selSize, setSelSize] = useState(sizeArray[0]);
-
-      const doAdd=(e)=>{ 
-        e.stopPropagation(); 
-        onAdd({...product, selectedSize: selSize}); 
-      };
-
       return(
         <div className="prod-card" style={{ border:"2px solid #111", background:"#fff", position:"relative", display:"flex", flexDirection:"column" }}>
-          {product.tag&&<div style={{ position:"absolute",top:12,left:12,zIndex:10,background:"#111",color:"#fff",fontSize:8,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",padding:"3px 8px" }}>{product.tag}</div>}
-          {isSoldOut&&<div style={{ position:"absolute",inset:0,zIndex:20,background:"rgba(255,255,255,0.85)",display:"flex",alignItems:"center",justifyContent:"center" }}><span style={{ fontWeight:900,fontSize:16,color:"#c00" }}>SOLD OUT</span></div>}
-          <div style={{ aspectRatio:"3/4", overflow:"hidden", background:"#f4f4f4" }}>
-            {product.frontImage ? <img src={product.frontImage} style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : <ImgPlaceholder label={product.name}/>}
+          {isSoldOut&&<div style={{ position:"absolute",inset:0,zIndex:20,background:"rgba(255,255,255,0.85)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,color:"#c00" }}>SOLD OUT</div>}
+          <div style={{ aspectRatio:"3/4", overflow:"hidden" }}>
+            <img src={product.frontImage} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
           </div>
-          <div style={{ padding:"1rem 1.2rem", borderTop:"2px solid #111", flex:1, display:"flex", flexDirection:"column" }}>
-            <div style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.3)",marginBottom:3 }}>{product.category}</div>
-            <div style={{ fontWeight:900,fontSize:15,textTransform:"uppercase",marginBottom:5 }}>{product.name}</div>
-            <div style={{ fontWeight:700,fontSize:13,marginBottom:"0.9rem" }}>
-              {product.compareAtPrice && <span style={{ textDecoration: "line-through", opacity: 0.5, marginRight: "8px" }}>{product.compareAtPrice}</span>}
-              <span style={{ color: product.compareAtPrice ? "#c00" : "#111", fontWeight: 900 }}>{product.price}</span>
-            </div>
-            <div style={{ display:"flex", gap:"5px", marginBottom:"1rem", flexWrap:"wrap" }}>
+          <div style={{ padding:"1.2rem", borderTop:"2px solid #111" }}>
+            <div style={{ fontWeight:900,fontSize:15,textTransform:"uppercase" }}>{product.name}</div>
+            <div style={{ fontWeight:700,fontSize:13,margin:"5px 0 12px" }}>{product.price}</div>
+            <div style={{ display:"flex", gap:"5px", marginBottom:"1rem" }}>
               {sizeArray.map(s => (
                 <button key={s} onClick={()=>setSelSize(s)} className={`size-btn ${selSize===s?'active':''}`}>{s}</button>
               ))}
             </div>
-            <button className="prod-cta-btn" disabled={isSoldOut} onClick={doAdd} style={{ marginTop:"auto", width:"100%", background:"#fff", color:"#111", border:"2px solid #111", padding:"10px", fontSize:10, fontWeight:700, textTransform:"uppercase" }}>ADD TO CART</button>
+            <button className="prod-cta-btn" disabled={isSoldOut} onClick={()=>onAdd({...product, selectedSize: selSize})} style={{ width:"100%", background:"#fff", color:"#111", border:"2px solid #111", padding:"10px", fontSize:10, fontWeight:900 }}>ADD TO CART</button>
           </div>
         </div>
       );
@@ -337,28 +224,19 @@
       const [shipping, setShipping] = useState({ phone: "", address: "", city: "", state: "", pincode: "" });
 
       const processPayment = async () => {
-        if (!shipping.phone || !shipping.address || !shipping.city || !shipping.state || !shipping.pincode) { alert("Fill all details."); return; }
+        if (!shipping.phone || !shipping.address) { alert("Fill all details."); return; }
         setLoading(true);
         try {
           const response = await fetch('/api/createOrder', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount: total }) });
           const data = await response.json();
-          if (!response.ok) throw new Error(data.error);
-
           const options = {
-            key: data.keyId, amount: total * 100, currency: "INR", name: "Splotch",
-            order_id: data.orderId,
+            key: data.keyId, amount: total * 100, currency: "INR", name: "Splotch", order_id: data.orderId,
             handler: async function (rzpRes) {
-              try {
-                await window.fbAddDoc(window.fbCollection(window.fbDb, "orders"), {
-                  items: cart, total, paymentId: rzpRes.razorpay_payment_id, orderId: rzpRes.razorpay_order_id,
-                  userId: user.uid, userEmail: user.email, userName: user.displayName || "User",
-                  shipping, timestamp: new Date(), status: "Processing"
-                });
-                for (const item of cart) {
-                  if(item.id) await window.fbUpdateDoc(window.fbDoc(window.fbDb, "products", item.id), { stock: window.fbIncrement(-1) });
-                }
-                alert("Order placed securely."); setCart([]); onClose();
-              } catch (dbErr) { alert("Paid, but save failed."); }
+              await window.fbAddDoc(window.fbCollection(window.fbDb, "orders"), { items: cart, total, shipping, timestamp: new Date() });
+              for (const item of cart) {
+                if(item.id) await window.fbUpdateDoc(window.fbDoc(window.fbDb, "products", item.id), { stock: window.fbIncrement(-1) });
+              }
+              alert("Order placed!"); setCart([]); onClose();
             },
             prefill: { email: user.email }, theme: { color: "#111111" }
           };
@@ -366,57 +244,32 @@
         } catch (err) { alert(err.message); } finally { setLoading(false); }
       };
 
-      const iSt = { display:"block",width:"100%",border:"2px solid rgba(0,0,0,0.14)",background:"#f9f9f9",padding:"12px",fontSize:13,fontFamily:"Inter" };
-
       return(
         <div style={{ position:"fixed",inset:0,zIndex:800 }}>
           <div onClick={onClose} style={{ position:"absolute",inset:0,background:"rgba(17,17,17,0.55)" }}/>
           <div style={{ position:"absolute",top:0,right:0,bottom:0,width:"100%",maxWidth:400,background:"#fff",borderLeft:"3px solid #111",display:"flex",flexDirection:"column" }}>
-            <div style={{ padding:"1.2rem 1.8rem",borderBottom:"2px solid #111",display:"flex",justifyContent:"space-between",alignItems:"center" }}>
-              <span style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:20 }}>{step === 'cart' ? `Cart (${cart.length})` : "Shipping Info"}</span>
-              <button onClick={onClose} style={{ background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700 }}>✕</button>
+            <div style={{ padding:"1.2rem 1.8rem",borderBottom:"2px solid #111",display:"flex",justifyContent:"space-between" }}>
+              <span style={{ fontWeight:900 }}>{step === 'cart' ? 'CART' : 'SHIPPING'}</span>
+              <button onClick={onClose} style={{ background:"none",border:"none",fontWeight:900 }}>✕</button>
             </div>
-            {step === 'cart' && (
-              <React.Fragment>
-                <div style={{ flex:1,overflow:"auto",padding:"0.8rem 1.8rem" }}>
-                  {cart.length===0?<div style={{textAlign:"center",padding:"4rem 0",fontSize:11,fontWeight:700}}>Empty Cart</div> : 
-                    cart.map((item,i)=>(
-                    <div key={i} style={{ display:"flex",gap:"1rem",alignItems:"center",borderBottom:"1px solid #eee",padding:"0.9rem 0" }}>
-                      <div style={{ width:58,height:58,background:"#111" }}><img src={item.frontImage} style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
-                      <div style={{ flex:1 }}>
-                        <div style={{ fontWeight:700,fontSize:12,textTransform:"uppercase" }}>{item.name}</div>
-                        <div style={{ fontSize:10,color:"#666",marginTop:2 }}>SIZE: {item.selectedSize}</div>
-                        <div style={{ fontSize:12,fontWeight:600,color:"#c00",marginTop:2 }}>{item.price}</div>
-                      </div>
-                      <button onClick={()=>setCart(c=>c.filter((_,j)=>j!==i))} style={{ background:"none",border:"1px solid #ddd",width:26,height:26 }}>✕</button>
+            {step === 'cart' ? (
+              <div style={{ flex:1, overflow:"auto", padding:"1rem" }}>
+                {cart.map((item,i)=>(
+                  <div key={i} style={{ display:"flex",gap:"1rem",padding:"10px 0",borderBottom:"1px solid #eee" }}>
+                    <div style={{flex:1}}>
+                      <div style={{fontWeight:900,fontSize:12}}>{item.name}</div>
+                      <div style={{fontSize:10}}>SIZE: {item.selectedSize}</div>
                     </div>
-                  ))}
-                </div>
-                {cart.length>0&&(
-                  <div style={{ padding:"1.2rem 1.8rem",borderTop:"2px solid #111" }}>
-                    <div style={{ display:"flex",justifyContent:"space-between",marginBottom:"0.9rem" }}>
-                      <span style={{ fontSize:11,fontWeight:700 }}>Total</span><span style={{ fontSize:17,fontWeight:900 }}>₹{total.toLocaleString("en-IN")}</span>
-                    </div>
-                    <button onClick={()=>{user ? setStep('shipping') : onAuthClick()}} style={{ width:"100%",background:"#111",color:"#fff",padding:"14px",fontWeight:700 }}>CHECKOUT →</button>
+                    <button onClick={()=>setCart(c=>c.filter((_,j)=>j!==i))}>✕</button>
                   </div>
-                )}
-              </React.Fragment>
-            )}
-            {step === 'shipping' && (
-              <div style={{ flex:1, display:"flex", flexDirection:"column" }}>
-                <div style={{ flex:1, overflow:"auto", padding:"1.5rem 1.8rem" }}>
-                  <input type="tel" placeholder="Phone +91" value={shipping.phone} onChange={e=>setShipping(s=>({...s, phone: e.target.value}))} style={{...iSt, marginBottom:"1rem"}} />
-                  <input type="text" placeholder="Address" value={shipping.address} onChange={e=>setShipping(s=>({...s, address: e.target.value}))} style={{...iSt, marginBottom:"1rem"}} />
-                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"1rem", marginBottom:"1rem" }}>
-                    <input type="text" placeholder="City" value={shipping.city} onChange={e=>setShipping(s=>({...s, city: e.target.value}))} style={iSt} />
-                    <input type="text" placeholder="State" value={shipping.state} onChange={e=>setShipping(s=>({...s, state: e.target.value}))} style={iSt} />
-                  </div>
-                  <input type="text" placeholder="Pincode" value={shipping.pincode} onChange={e=>setShipping(s=>({...s, pincode: e.target.value}))} style={{...iSt, marginBottom:"1rem"}} />
-                </div>
-                <div style={{ padding:"1.2rem 1.8rem",borderTop:"2px solid #111" }}>
-                  <button onClick={processPayment} disabled={loading} style={{ width:"100%",background:"#111",color:"#fff",padding:"14px",fontWeight:700, marginBottom:8 }}>{loading ? "..." : `PAY ₹${total}`}</button>
-                  <button onClick={()=>setStep('cart')} style={{ width:"100%",background:"transparent",border:"2px solid #ddd",padding:"10px",fontWeight:700 }}>BACK</button>
-                </div>
+                ))}
+                {cart.length > 0 && <button onClick={()=>user ? setStep('shipping') : onAuthClick()} style={{width:"100%",background:"#111",color:"#fff",padding:"15px",marginTop:"2rem",fontWeight:900}}>CHECKOUT →</button>}
+              </div>
+            ) : (
+              <div style={{ padding:"1.5rem" }}>
+                <input placeholder="Phone" onChange={e=>setShipping({...shipping, phone:e.target.value})} style={{width:"100%",padding:"12px",marginBottom:"1rem",border:"2px solid #111"}}/>
+                <input placeholder="Address" onChange={e=>setShipping({...shipping, address:e.target.value})} style={{width:"100%",padding:"12px",marginBottom:"1rem",border:"2px solid #111"}}/>
+                <button onClick={processPayment} disabled={loading} style={{width:"100%",background:"#111",color:"#fff",padding:"15px",fontWeight:900}}>{loading ? "..." : "PAY NOW"}</button>
               </div>
             )}
           </div>
@@ -424,112 +277,79 @@
       );
     }
 
-    function AdminPanel({products,setProducts,onClose}){
+    function AdminPanel({products,onClose}){
       const [authed,setAuthed]=useState(false);
-      const [creds, setCreds] = useState({email:"", pw:""});
+      const [creds,setCreds]=useState({email:"",pw:""});
+      const [tab,setTab]=useState("products");
+      const [orders,setOrders]=useState([]);
       const [editId,setEditId]=useState(null);
-      const [tab, setTab] = useState("products");
-      const [orders, setOrders] = useState([]);
-      const [form,setForm]=useState({name:"", price:"₹1", stock:10, description:"", category:"T-Shirts", frontImage:null, sizes: "S, M, L, XL"});
+      const [form,setForm]=useState({name:"",price:"₹1,200",stock:10,sizes:"S,M,L,XL",frontImage:""});
 
       useEffect(() => {
-        if(authed && tab === "orders") {
-          window.fbGetDocs(window.fbQuery(window.fbCollection(window.fbDb, "orders"), window.fbOrderBy("timestamp", "desc"))).then(snap => {
-            const ords = []; snap.forEach(d => ords.push({id: d.id, ...d.data()})); setOrders(ords);
-          });
-        }
+        if(authed && tab==="orders") window.fbGetDocs(window.fbCollection(window.fbDb,"orders")).then(s=>{
+          const o=[]; s.forEach(d=>o.push(d.data())); setOrders(o);
+        });
       }, [authed, tab]);
 
-      const login = async () => {
+      const login=async()=>{
         try {
           const res = await window.fbSignInWithEmailAndPassword(window.fbAuth, creds.email, creds.pw);
-          if (res.user.email === "splotchglobal@gmail.com") setAuthed(true);
-          else { alert("Unauthorized"); await window.fbSignOut(window.fbAuth); }
-        } catch (e) { alert(e.message); }
+          if(res.user.email === "splotchglobal@gmail.com") setAuthed(true);
+        } catch(e){alert(e.message);}
       };
 
-      const save = async () => {
-        const id = editId === "new" ? "prod-"+Date.now() : editId;
-        try {
-          await window.fbSetDoc(window.fbDoc(window.fbDb, "products", id), { ...form, id });
-          alert("Saved Successfully!");
-          onClose();
-          window.location.reload(); 
-        } catch (e) { alert("Rule Error: " + e.message); }
+      const save=async()=>{
+        const id = editId==="new" ? "p-"+Date.now() : editId;
+        try { await window.fbSetDoc(window.fbDoc(window.fbDb,"products",id), {...form, id}); alert("Saved!"); window.location.reload(); }
+        catch(e){alert(e.message);}
       };
 
       if(!authed) return (
-        <div style={{ position:"fixed", inset:0, zIndex:2000, background:"#111", display:"flex", alignItems:"center", justifyContent:"center" }}>
-           <div style={{ background:"#fff", padding:"2rem", border:"3px solid #111", width:350 }}>
-              <h2>Admin Login</h2>
-              <input type="email" placeholder="Admin Email" onChange={e=>setCreds({...creds, email:e.target.value})} style={{ width:"100%", padding:"10px", margin:"10px 0" }}/>
-              <input type="password" placeholder="Password" onChange={e=>setCreds({...creds, pw:e.target.value})} style={{ width:"100%", padding:"10px", margin:"10px 0" }}/>
-              <button onClick={login} style={{ width:"100%", padding:"10px", background:"#111", color:"#fff" }}>UNLOCK</button>
+        <div style={{ position:"fixed",inset:0,zIndex:2000,background:"#111",display:"flex",alignItems:"center",justifyContent:"center" }}>
+           <div style={{ background:"#fff",padding:"2rem",border:"3px solid #111",width:350 }}>
+              <h2 style={{fontFamily:"Playfair Display"}}>Admin Access</h2>
+              <input type="email" placeholder="Email" onChange={e=>setCreds({...creds,email:e.target.value})} style={{width:"100%",padding:"10px",margin:"10px 0",border:"2px solid #111"}}/>
+              <input type="password" placeholder="Password" onChange={e=>setCreds({...creds,pw:e.target.value})} style={{width:"100%",padding:"10px",margin:"10px 0",border:"2px solid #111"}}/>
+              <button onClick={login} style={{width:"100%",padding:"12px",background:"#111",color:"#fff",fontWeight:900}}>UNLOCK</button>
            </div>
         </div>
       );
 
       return (
-        <div style={{ position:"fixed", inset:0, zIndex:2000, background:"#fff", padding:"2rem", overflow:"auto" }}>
-          <div style={{display:"flex", justifyContent:"space-between", marginBottom:"2rem", borderBottom:"2px solid #111", paddingBottom:"1rem"}}>
-            <div style={{display:"flex", gap:"1rem"}}>
-              <button onClick={()=>setTab("products")} style={{background:tab==="products"?"#111":"#fff", color:tab==="products"?"#fff":"#111", border:"2px solid #111", padding:"5px 15px", fontWeight:700}}>PRODUCTS</button>
-              <button onClick={()=>setTab("orders")} style={{background:tab==="orders"?"#111":"#fff", color:tab==="orders"?"#fff":"#111", border:"2px solid #111", padding:"5px 15px", fontWeight:700}}>ORDERS</button>
-            </div>
-            <button onClick={onClose} style={{ fontWeight:900, background:"none", border:"none" }}>✕ CLOSE</button>
+        <div style={{ position:"fixed",inset:0,zIndex:2000,background:"#fff",overflow:"auto",padding:"2rem" }}>
+          <div style={{display:"flex",gap:"1rem",borderBottom:"2px solid #111",paddingBottom:"1rem",marginBottom:"2rem"}}>
+            <button onClick={()=>setTab("products")} style={{fontWeight:900}}>PRODUCTS</button>
+            <button onClick={()=>setTab("orders")} style={{fontWeight:900}}>ORDERS</button>
+            <button onClick={onClose} style={{marginLeft:"auto"}}>CLOSE</button>
           </div>
-
-          <div style={{ display:"grid", gridTemplateColumns: tab==="products" && editId ? "1fr 1fr" : "1fr", gap:"2rem" }}>
-             {tab === "products" && (
+          {tab==="products" ? (
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"2rem"}}>
                <div>
-                  <button onClick={()=>{setForm({}); setEditId("new");}} style={{ width:"100%", padding:"10px", background:"#111", color:"#fff", fontWeight:900, marginBottom:"10px" }}>+ NEW PRODUCT</button>
-                  {products.map(p=>(
-                    <div key={p.id} onClick={()=>{setForm(p); setEditId(p.id);}} style={{ border:"1px solid #ddd", padding:"15px", marginBottom:"5px", cursor:"crosshair", background: editId === p.id ? "#f0f0f0" : "#fff" }}>
-                      <div style={{fontWeight:900}}>{p.name}</div>
-                      <div style={{fontSize:12, color:"#666"}}>Stock: {p.stock} | Sizes: {p.sizes}</div>
-                    </div>
-                  ))}
+                  {products.map(p=>(<div key={p.id} onClick={()=>{setForm(p);setEditId(p.id)}} style={{padding:"10px",border:"1px solid #ddd",marginBottom:"5px"}}>{p.name}</div>))}
+                  <button onClick={()=>{setForm({});setEditId("new")}} style={{marginTop:"1rem",fontWeight:900}}>+ ADD NEW</button>
                </div>
-             )}
-             
-             {tab === "products" && editId && (
-               <div style={{ border:"2px solid #111", padding:"2rem", background:"#fafafa" }}>
-                  <input placeholder="Name" value={form.name||''} onChange={e=>setForm({...form, name:e.target.value})} style={{ width:"100%", padding:"10px", marginBottom:"10px" }}/>
-                  <input placeholder="Price (e.g. ₹1,200)" value={form.price||''} onChange={e=>setForm({...form, price:e.target.value})} style={{ width:"100%", padding:"10px", marginBottom:"10px" }}/>
-                  <input type="number" placeholder="Stock Qty" value={form.stock||0} onChange={e=>setForm({...form, stock:parseInt(e.target.value)})} style={{ width:"100%", padding:"10px", marginBottom:"10px" }}/>
-                  <input placeholder="Sizes (comma separated: S, M, L)" value={form.sizes||''} onChange={e=>setForm({...form, sizes:e.target.value})} style={{ width:"100%", padding:"10px", marginBottom:"10px" }}/>
-                  <input placeholder="Image URL" value={form.frontImage||''} onChange={e=>setForm({...form, frontImage:e.target.value})} style={{ width:"100%", padding:"10px", marginBottom:"10px" }}/>
-                  <button onClick={save} style={{ width:"100%", padding:"15px", background:"#111", color:"#fff", fontWeight:900 }}>SAVE CHANGES</button>
-               </div>
-             )}
-
-             {tab === "orders" && (
-              <div>
-                {orders.length===0 ? <p>No orders yet.</p> : orders.map(o => (
-                  <div key={o.id} style={{border:"2px solid #111", padding:"1.5rem", marginBottom:"1rem", background:"#fafafa"}}>
-                    <div style={{display:"flex", justifyContent:"space-between", borderBottom:"1px solid #ddd", paddingBottom:"10px", marginBottom:"10px"}}>
-                      <strong>ORDER: {o.orderId}</strong>
-                      <span style={{color:"#c00", fontWeight:900}}>₹{o.total}</span>
-                    </div>
-                    <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"1rem", fontSize:"12px"}}>
-                      <div>
-                        <strong>Customer:</strong> {o.userName} <br/>
-                        <strong>Email:</strong> {o.userEmail} <br/>
-                        <strong>Phone:</strong> {o.shipping?.phone}
-                      </div>
-                      <div>
-                        <strong>Address:</strong> {o.shipping?.address}<br/>
-                        {o.shipping?.city}, {o.shipping?.state} - {o.shipping?.pincode}
-                      </div>
-                    </div>
-                    <div style={{marginTop:"10px", padding:"10px", background:"#111", color:"#fff", fontSize:"11px"}}>
-                      <strong>ITEMS:</strong> {o.items.map(i => `${i.name} (Size: ${i.selectedSize})`).join(' | ')}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+               {editId && (
+                 <div style={{border:"2px solid #111",padding:"1.5rem"}}>
+                    <input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Name" style={{width:"100%",padding:"10px",marginBottom:"10px"}}/>
+                    <input value={form.price} onChange={e=>setForm({...form,price:e.target.value})} placeholder="Price" style={{width:"100%",padding:"10px",marginBottom:"10px"}}/>
+                    <input type="number" value={form.stock} onChange={e=>setForm({...form,stock:parseInt(e.target.value)})} placeholder="Stock" style={{width:"100%",padding:"10px",marginBottom:"10px"}}/>
+                    <input value={form.sizes} onChange={e=>setForm({...form,sizes:e.target.value})} placeholder="Sizes (S, M, L)" style={{width:"100%",padding:"10px",marginBottom:"10px"}}/>
+                    <input value={form.frontImage} onChange={e=>setForm({...form,frontImage:e.target.value})} placeholder="Image URL" style={{width:"100%",padding:"10px",marginBottom:"10px"}}/>
+                    <button onClick={save} style={{width:"100%",background:"#111",color:"#fff",padding:"12px",fontWeight:900}}>SAVE CHANGES</button>
+                 </div>
+               )}
+            </div>
+          ) : (
+            <div>
+              {orders.map((o,i)=>(
+                <div key={i} style={{border:"2px solid #111",padding:"1rem",marginBottom:"1rem"}}>
+                  <strong>{o.userName} - ₹{o.total}</strong><br/>
+                  {o.shipping?.address}, {o.shipping?.city} | {o.shipping?.phone}<br/>
+                  <small>{o.items.map(it=>`${it.name}(${it.selectedSize})`).join(", ")}</small>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       );
     }
@@ -544,45 +364,59 @@
 
       useEffect(() => {
         window.fbOnAuthStateChanged(window.fbAuth, u => setUser(u));
-        const fetch = async () => {
-          const snap = await window.fbGetDocs(window.fbCollection(window.fbDb, "products"));
-          const fetched = []; snap.forEach(d => fetched.push(d.data()));
-          setProducts(fetched);
-        };
-        fetch();
+        window.fbGetDocs(window.fbCollection(window.fbDb,"products")).then(s=>{
+          const p=[]; s.forEach(d=>p.push(d.data())); setProducts(p);
+        });
       }, []);
 
+      const submitMsg = async (e) => {
+        e.preventDefault();
+        const f = e.target;
+        try {
+          await window.fbAddDoc(window.fbCollection(window.fbDb,"messages"), {name:f.nm.value, email:f.em.value, msg:f.ms.value});
+          alert("Sent!"); f.reset();
+        } catch(e){alert(e.message);}
+      };
+
       return(
-        <div style={{ minHeight:"100vh", position:"relative" }}>
-          <CustomCursor />
-          <ScrollProgress />
+        <div style={{ minHeight:"100vh" }}>
+          <CustomCursor /><ScrollProgress />
           <Header cartCount={cart.length} onCartOpen={()=>setCartOpen(true)} onLogoClick={()=>setAdminOpen(true)} user={user} onAuthClick={()=>setAuthOpen(true)} handleLogout={()=>window.fbSignOut(window.fbAuth)} />
           <Ticker/>
           
-          <Hero/>
-          
-          <section id="shop" style={{ padding:"6rem 2rem", background:"#fff" }}>
-            <SLabel>SS'26 — Limited Run</SLabel>
-            <h2 className="dyn-title dyn-text-dark" style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:"clamp(54px,9vw,120px)",letterSpacing:"-0.04em",marginBottom:"3rem" }}>The Collection.</h2>
-            <div className="product-grid" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"20px" }}>
+          <section id="home" style={{ height:"80vh", background:"#111", display:"grid", placeItems:"center" }}>
+            <h1 className="hero-h1">SPLOTCH</h1>
+          </section>
+
+          <section id="shop" style={{ padding:"6rem 2rem" }}>
+            <SLabel>SS'26 COLLECTION</SLabel>
+            <h2 className="dyn-title" style={{ fontFamily:"Playfair Display", fontSize:"clamp(50px,8vw,100px)", marginBottom:"3rem" }}>The Collection.</h2>
+            <div className="product-grid" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"2rem" }}>
               {products.map(p => <ProdCard key={p.id} product={p} onAdd={i=>setCart([...cart, i])}/>)}
             </div>
           </section>
 
-          <TheWork/>
-          <WhySplotch/>
-          <Testimonials/>
-          <Contact />
+          <section id="work" style={{ padding:"6rem 2rem", background:"#f9f9f9" }}>
+             <SLabel>PORTFOLIO</SLabel>
+             <h2 className="dyn-title" style={{ fontFamily:"Playfair Display", fontSize:"clamp(40px,6vw,80px)", marginBottom:"3rem" }}>The Work.</h2>
+             <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:"10px"}}>
+                {[1,2,3,4,5,6].map(i=>(<div key={i} style={{aspectRatio:"1/1", background:"#eee", border:"2px solid #111"}}></div>))}
+             </div>
+          </section>
+
+          <section id="contact" style={{ padding:"6rem 2rem", background:"#111", color:"#fff" }}>
+            <h2 className="dyn-title" style={{ fontSize:60, marginBottom:"2rem", fontStyle:"italic" }}>Contact.</h2>
+            <form onSubmit={submitMsg} style={{maxWidth:600}}>
+              <input name="nm" placeholder="NAME" style={{width:"100%",background:"none",border:"none",borderBottom:"2px solid #333",padding:"15px",color:"#fff"}}/>
+              <input name="em" placeholder="EMAIL" style={{width:"100%",background:"none",border:"none",borderBottom:"2px solid #333",padding:"15px",color:"#fff"}}/>
+              <textarea name="ms" placeholder="MESSAGE" style={{width:"100%",background:"none",border:"none",borderBottom:"2px solid #333",padding:"15px",color:"#fff",marginTop:"1rem"}}/>
+              <button type="submit" style={{marginTop:"2rem",padding:"15px 40px",background:"#fff",color:"#111",fontWeight:900}}>SEND →</button>
+            </form>
+          </section>
 
           <footer style={{ padding:"4rem 2rem", background:"#111", color:"#fff", textAlign:"center" }}>
-            <img src={LOGO_SRC} style={{ height:140, marginBottom:"2rem", filter:"invert(1)" }}/>
-            <h2 className="dyn-title dyn-text-outline" style={{ fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic", fontSize:"clamp(72px,8vw,110px)", letterSpacing:"-0.04em",lineHeight:0.88, color:"transparent",WebkitTextStroke:"1.5px rgba(255,255,255,0.4)", marginBottom:"3rem" }}>Predict the future,<br/>you didn't come<br/>this far to stop.</h2>
-            <p style={{ fontSize:10,fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"rgba(255,255,255,0.15)" }}>
-              © 2026 Splotch. 
-              <span style={{ color:"#111", marginLeft: "10px", transition: "color 0.4s", cursor:"none", userSelect:"none" }} onMouseEnter={e => e.target.style.color = "rgba(255,255,255,0.2)"} onMouseLeave={e => e.target.style.color = "#111"}>
-                // Created by dudefromalhiem
-              </span>
-            </p>
+            <h2 className="dyn-title outline-text" style={{ fontFamily:"Playfair Display", fontSize:"clamp(50px,8vw,100px)", color:"transparent", WebkitTextStroke:"1px #555", marginBottom:"3rem" }}>Predict the future,<br/>don't stop now.</h2>
+            <p>© 2026 Splotch. // Created by dudefromalhiem</p>
           </footer>
 
           {authOpen && <AuthModal onClose={()=>setAuthOpen(false)} onSuccess={()=>setAuthOpen(false)}/>}
