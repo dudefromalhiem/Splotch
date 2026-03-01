@@ -16,7 +16,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Splotch</title>
 
+  <link rel="icon" type="image/x-icon" href="SplotchPlainLogo-removebg.ico">
+  <link rel="apple-touch-icon" href="SplotchPlainLogo-removebg.ico">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js" data-type="module"></script>
@@ -25,7 +28,6 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script type="text/javascript">
     (function() {
-      // REPLACE THIS WITH YOUR ACTUAL EMAILJS PUBLIC KEY
       emailjs.init("5_7QdMYStCw47SxHL"); 
     })();
   </script>
@@ -35,7 +37,7 @@
     import { 
       getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, 
       createUserWithEmailAndPassword, signInWithEmailAndPassword, 
-      RecaptchaVerifier, linkWithPhoneNumber // ADDED FOR OTP
+      RecaptchaVerifier, linkWithPhoneNumber 
     } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { 
       getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc, getDoc, 
@@ -63,7 +65,6 @@
       window.fbCreateUserWithEmailAndPassword = createUserWithEmailAndPassword;
       window.fbSignInWithEmailAndPassword = signInWithEmailAndPassword;
       
-      // Exporting Phone Auth Tools for React to use
       window.fbRecaptchaVerifier = RecaptchaVerifier;
       window.fbLinkWithPhoneNumber = linkWithPhoneNumber;
 
@@ -85,9 +86,6 @@
   </script>
 
   <style>
-    /* ==========================================================================
-       1. BASE STYLES & GLOBALS
-       ========================================================================== */
     :root { --B: #111111; --W: #FFFFFF; }
     html { scroll-behavior: smooth; }
     body { background: var(--W); color: var(--B); font-family: 'Inter', sans-serif; overflow-x: hidden; margin: 0; padding: 0; }
@@ -96,9 +94,6 @@
     input, textarea, select, button { font-family: inherit; border-radius: 0 !important; outline: none; }
     img { -webkit-user-select: none; user-select: none; }
 
-    /* ==========================================================================
-       2. CUSTOM CURSOR
-       ========================================================================== */
     @media (pointer: fine) {
       body, button, a, input, textarea, select, img, .prod-card { cursor: none !important; }
       *, *::before, *::after { cursor: none !important; }
@@ -126,15 +121,11 @@
     }
     .cursor-dot.pulse { width: 10px; height: 10px; background-color: #fff; }
 
-    /* ==========================================================================
-       3. TYPOGRAPHY & TITLES
-       ========================================================================== */
     .dyn-title { display: inline-block; transition: transform 0.3s cubic-bezier(0.25,1,0.5,1); }
     .dyn-title:hover { transform: translate(-4px,-4px); }
     .outline-text { color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,0.35); transition: all 0.3s; }
     .outline-text:hover { -webkit-text-stroke: 1.5px #fff; }
 
-    /* 3D HERO TITLE */
     .hero-h1 {
       font-family: 'Inter', sans-serif; font-weight: 900;
       font-size: clamp(90px, 18vw, 260px); color: #fff;
@@ -155,9 +146,6 @@
       .hero-h1 { animation: splotch3d 11s cubic-bezier(0.45,0,0.55,1) infinite; }
     }
 
-    /* ==========================================================================
-       4. HEADER & NAV
-       ========================================================================== */
     header { position: sticky; top: 0; z-index: 500; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; transition: box-shadow 0.3s, background 0.3s; }
     .glass-nav { background: rgba(255,255,255,0.68) !important; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 2px 0 #111; }
     
@@ -176,9 +164,6 @@
     .nl::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #111; transition: width 0.2s; }
     .nl:hover::after { width: 100%; }
 
-    /* ==========================================================================
-       5. COMPONENTS & CARDS
-       ========================================================================== */
     .size-btn { background: transparent; color: #111; border: 1.5px solid #111; padding: 6px 0; width: 34px; text-align: center; font-size: 10px; font-weight: 700; transition: all 0.2s; }
     .size-btn.active { background: #111; color: #fff; }
     .size-btn.soldout { opacity: 0.28; text-decoration: line-through; }
@@ -198,9 +183,6 @@
     .flip-front, .flip-back { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
     .flip-back { transform: rotateY(180deg); }
 
-    /* ==========================================================================
-       6. UTILITIES, ANIMATIONS & BACKGROUNDS
-       ========================================================================== */
     .grain-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9998; opacity: 0.15; background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E'); }
     .topo-parallax-wrap { position: absolute; top: -50vh; bottom: -50vh; left: 0; right: 0; pointer-events: none; z-index: 0; will-change: transform; }
 
@@ -217,22 +199,59 @@
 
     @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
     .admin-input:focus, .drop-zone.over { border-color: #111 !important; }
     ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: #fff; } ::-webkit-scrollbar-thumb { background: #111; }
 
-    /* ==========================================================================
-       7. MOBILE RESPONSIVE
-       ========================================================================== */
+    /* FOOTER ANIMATIONS */
+    .footer-animated-bg {
+      background: linear-gradient(-45deg, #050505, #111, #0a0a0a, #1a1a1a);
+      background-size: 400% 400%;
+      animation: cyberScan 12s ease infinite;
+    }
+    @keyframes cyberScan { 
+      0% { background-position: 0% 50% } 
+      50% { background-position: 100% 50% } 
+      100% { background-position: 0% 50% } 
+    }
+    
+    .cyber-text {
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(255,255,255,0.3);
+      animation: textPulse 4s infinite alternate;
+    }
+    .cyber-text:hover { -webkit-text-stroke: 1.5px #fff; }
+    @keyframes textPulse {
+      0% { -webkit-text-stroke-color: rgba(255,255,255,0.2); text-shadow: 0 0 0px rgba(255,255,255,0); }
+      100% { -webkit-text-stroke-color: rgba(255,255,255,0.5); text-shadow: 0 0 15px rgba(255,255,255,0.1); }
+    }
+    
+    .ghost-credit {
+      opacity: 0.02;
+      transition: opacity 0.5s ease;
+      cursor: crosshair;
+    }
+    .ghost-credit:hover { opacity: 1; }
+    
+    .social-link {
+      color: rgba(255,255,255,0.3);
+      text-decoration: none;
+      transition: color 0.3s;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: none;
+    }
+    .social-link:hover { color: #fff; }
+
     @media (max-width: 768px) {
       .desk-nav { display: none !important; }
-      
       .mob-ham { 
         display: flex !important; background: none; border: 2px solid #111; width: 34px; height: 34px; 
         flex-direction: column; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; 
       }
       .mob-ham span { display: block; width: 14px; height: 1.5px; background: #111; flex-shrink: 0; }
-
       .product-grid, .port-grid, .two-col, .testi-grid { grid-template-columns: 1fr 1fr !important; }
       .contact-grid { grid-template-columns: 1fr !important; }
       .hero-h1 { font-size: clamp(80px, 22vw, 130px); }
@@ -249,7 +268,7 @@
 
   <script type="text/babel">
     /* ==========================================================================
-       TABLE OF CONTENTS (Search these tags to find components)
+       TABLE OF CONTENTS
        --------------------------------------------------------------------------
        [HELPERS]        - Math, Stock checking, Canvas Compression, Timeout
        [DATA]           - Default fallback products & portfolio items
@@ -259,7 +278,7 @@
        [AUTH_MODAL]     - User Login / Signup component
        [HEADER_MENU]    - Header Navbar and Mobile Overlay Menu
        [USER_ORDERS]    - UserOrdersModal (View past purchases)
-       [CART]           - CartSidebar (With Item Selection System, OTP & Checkout)
+       [CART]           - CartSidebar (Item Selection, Fallback OTP & Checkout)
        [PRODUCT]        - ProdCard & QuickView Modal
        [ADMIN]          - AdminPanel & ImgUpload components
        [SECTIONS]       - Hero, Shop, TheWork, WhySplotch, Testimonials, Contact
@@ -269,9 +288,7 @@
     const { useState, useEffect, useRef, useCallback, useMemo } = React;
     const LOGO_SRC = "SplotchPlainLogo-removebg.png";
 
-    // ==========================================================================
-    // [HELPERS]
-    // ==========================================================================
+    // --- [HELPERS] ---
     const getTotalStock = (p) => {
       if (p.sizeStock && typeof p.sizeStock === 'object') return Object.values(p.sizeStock).reduce((a,b)=>a+(parseInt(b)||0),0);
       return parseInt(p.stock)||0;
@@ -304,9 +321,7 @@
         img.src = dataUrl;
       });
 
-    // ==========================================================================
-    // [DATA]
-    // ==========================================================================
+    // --- [DATA] ---
     const DEFAULT_PRODUCTS = [
       { id:"shirt-1", name:"Terrain Tee 000", cost:"₹450", price:"₹1", compareAtPrice:"₹1,299", tag:"New Drop", description:"Urban utility tee with topographic print detail. Oversized fit.", frontImage:"Shirt 1 front.jpeg", backImage:"Shirt 1 back.jpeg", hasBack:true, sizeStock:{S:5,M:5,L:3,XL:2}, sizes:"S, M, L, XL", category:"T-Shirts" },
       { id:"shirt-2", name:"Grid Tee 000",    cost:"₹500", price:"₹1", compareAtPrice:"₹1,499", tag:"Limited",  description:"Graphic techwear tee from the Grid Zero collaboration.", frontImage:"Shirt 2 front.jpeg", backImage:"Shirt 2 back.jpeg", hasBack:true, sizeStock:{S:2,M:4,L:3,XL:1}, sizes:"S, M, L, XL", category:"T-Shirts" },
@@ -322,9 +337,7 @@
       { id:"port-6", label:"Modular Jacket",   cat:"Product",        image:null, order:5 },
     ];
 
-    // ==========================================================================
-    // [UI_PRIMITIVES]
-    // ==========================================================================
+    // --- [UI_PRIMITIVES] ---
     const SLabel = ({children, inv=false}) => (
       <div style={{ fontSize:10, fontWeight:700, letterSpacing:"0.32em", textTransform:"uppercase", marginBottom:"1.8rem", borderLeft:`3px solid ${inv?"#fff":"#111"}`, paddingLeft:10, color:inv?"rgba(255,255,255,0.45)":"rgba(0,0,0,0.45)" }}>
         {children}
@@ -350,9 +363,7 @@
       </div>
     );
 
-    // ==========================================================================
-    // [CURSOR]
-    // ==========================================================================
+    // --- [CURSOR] ---
     function CustomCursor() {
       const [pulse, setPulse] = useState(false);
       const [pos, setPos] = useState({ x: -100, y: -100 });
@@ -387,9 +398,7 @@
       return <div className={`cursor-dot ${pulse ? 'pulse' : ''}`} style={{ left: `${pos.x}px`, top: `${pos.y}px` }}></div>;
     }
 
-    // ==========================================================================
-    // [SCROLL_TICKER]
-    // ==========================================================================
+    // --- [SCROLL_TICKER] ---
     function ScrollProgress() {
       const [w, setW] = useState(0);
       useEffect(() => {
@@ -412,9 +421,7 @@
       );
     }
 
-    // ==========================================================================
-    // [AUTH_MODAL]
-    // ==========================================================================
+    // --- [AUTH_MODAL] ---
     function AuthModal({onClose, onSuccess}) {
       const [isLogin, setIsLogin] = useState(true);
       const [email, setEmail] = useState(""); 
@@ -478,9 +485,7 @@
       );
     }
 
-    // ==========================================================================
-    // [HEADER_MENU]
-    // ==========================================================================
+    // --- [HEADER_MENU] ---
     function Header({cartCount, onCartOpen, onLogoClick, setMobMenu, user, onAuthClick, handleLogout, openUserOrders}) {
       const [scrolled, setScrolled] = useState(false);
       
@@ -566,9 +571,7 @@
       );
     }
 
-    // ==========================================================================
-    // [USER_ORDERS]
-    // ==========================================================================
+    // --- [USER_ORDERS] ---
     function UserOrdersModal({ user, onClose }) {
       const [orders, setOrders] = useState([]);
       const [loading, setLoading] = useState(true);
@@ -637,18 +640,15 @@
       );
     }
 
-    // ==========================================================================
-    // [CART] (With Item Selection System, OTP & Checkout)
-    // ==========================================================================
+    // --- [CART] ---
     function CartSidebar({cart, setCart, onClose, user, onAuthClick}) {
+      const ENABLE_OTP_VERIFICATION = true; 
+
       const [loading, setLoading] = useState(false);
-      const [step, setStep] = useState('cart'); // 'cart' -> 'shipping' -> 'otp'
+      const [step, setStep] = useState('cart'); 
       const [shipping, setShipping] = useState({name:"", phone:"", address:"", city:"", state:"", pincode:""});
       
-      // Track which cart items are selected for checkout
       const [selectedIds, setSelectedIds] = useState(cart.map(i => i.cartItemId));
-      
-      // OTP States
       const [otp, setOtp] = useState("");
       const [confirmationResult, setConfirmationResult] = useState(null);
 
@@ -660,9 +660,8 @@
         });
       }, [cart.length]);
 
-      // Initialize Recaptcha specifically when entering the shipping step
       useEffect(() => {
-        if (step === 'shipping') {
+        if (step === 'shipping' && ENABLE_OTP_VERIFICATION) {
            if(window.recaptchaVerifier) {
                window.recaptchaVerifier.clear();
                window.recaptchaVerifier = null;
@@ -686,47 +685,46 @@
         setStep('shipping'); 
       };
 
-      // OTP REQUEST FUNCTION
       const requestOTP = async () => {
         if(!shipping.name || shipping.phone.length !== 10 || !shipping.address || !shipping.city || !shipping.state || !shipping.pincode){
           alert("Please fill in all shipping details. Ensure phone number is exactly 10 digits.");
           return;
         }
 
-        // Failsafe: if Firebase phone auth errors, just let them pay to not lose the sale.
+        if (!ENABLE_OTP_VERIFICATION) {
+          processPayment();
+          return;
+        }
+
         setLoading(true);
         try {
           const phoneNumber = "+91" + shipping.phone;
           const appVerifier = window.recaptchaVerifier;
           
-          // Try to link the phone number to the current Google/Email user session
           const confResult = await window.fbLinkWithPhoneNumber(user, phoneNumber, appVerifier);
           setConfirmationResult(confResult);
-          setStep('otp'); // Move to OTP input screen
+          setStep('otp');
           alert("OTP sent to " + phoneNumber);
         } catch (error) {
-          console.warn("OTP Error:", error);
+          console.warn("OTP Error (Quota reached or other issue):", error);
           if (error.code === 'auth/credential-already-in-use') {
-             // Number already belongs to another account. Bypass to avoid friction.
              alert("Phone number recognized. Proceeding to secure gateway...");
              processPayment();
           } else {
-             // Fallback for general errors so we don't block the purchase completely
-             alert("Phone verification system error. Proceeding directly to secure gateway...");
+             alert("Phone verification skipped. Proceeding directly to secure gateway...");
              processPayment();
           }
         }
         setLoading(false);
       };
 
-      // OTP VERIFY FUNCTION
       const verifyOTP = async () => {
         if (otp.length < 6) { alert("Enter a valid 6-digit OTP"); return; }
         setLoading(true);
         try {
           await confirmationResult.confirm(otp);
           alert("Phone verified successfully! Proceeding to payment...");
-          processPayment(); // Start Razorpay
+          processPayment();
         } catch (error) {
           alert("Invalid OTP. Please try again.");
           setLoading(false);
@@ -746,7 +744,6 @@
               try {
                 if(!window.fbDb) throw new Error("Firebase DB not available.");
                 
-                // Save Order
                 await window.fbAddDoc(window.fbCollection(window.fbDb,"orders"),{
                   items: selectedCartItems, 
                   total,paymentId:rzpRes.razorpay_payment_id,orderId:rzpRes.razorpay_order_id,
@@ -754,7 +751,6 @@
                   shipping,timestamp:new Date(),status:"Processing"
                 });
                 
-                // Decrement Stock
                 for(const item of selectedCartItems){
                   if(item.id){
                     try{ await window.fbUpdateDoc(window.fbDoc(window.fbDb,"products",item.id),{[`sizeStock.${item.selectedSize}`]:window.fbIncrement(-1)}); }
@@ -762,7 +758,6 @@
                   }
                 }
                 
-                // EmailJS
                 if (window.emailjs) {
                   const itemList = selectedCartItems.map(i => `${i.name} (Size: ${i.selectedSize})`).join('\n');
                   try {
@@ -805,7 +800,6 @@
               <button onClick={onClose} style={{background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700}}>✕</button>
             </div>
             
-            {/* INVISIBLE RECAPTCHA CONTAINER FOR OTP */}
             <div id="recaptcha-container"></div>
 
             {step==='cart'&&(
@@ -868,7 +862,9 @@
                   <input type="text" placeholder="6-digit Pincode" value={shipping.pincode} onChange={e=>setShipping(s=>({...s,pincode:e.target.value}))} style={{...iSt,marginBottom:"1.5rem"}}/>
                 </div>
                 <div style={{padding:"1.2rem 1.8rem",borderTop:"2px solid #111"}}>
-                  <button onClick={requestOTP} disabled={loading} style={{width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:8}}>{loading?"Processing...":`Send OTP & Pay ₹${total}`}</button>
+                  <button onClick={requestOTP} disabled={loading} style={{width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:8}}>
+                    {loading ? "Processing..." : (ENABLE_OTP_VERIFICATION ? `Send OTP & Pay ₹${total}` : `Pay ₹${total} Now`)}
+                  </button>
                   <button onClick={()=>setStep('cart')} style={{width:"100%",background:"transparent",color:"#111",border:"2px solid rgba(0,0,0,0.2)",padding:"10px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase"}}>← Back to Cart</button>
                 </div>
               </div>
@@ -892,9 +888,7 @@
       );
     }
 
-    // ==========================================================================
-    // [PRODUCT]
-    // ==========================================================================
+    // --- [PRODUCT] ---
     function QuickView({product, onClose, onAdd}) {
       const [flipped, setFlipped] = useState(false);
       const [added, setAdded] = useState(false);
@@ -1018,10 +1012,7 @@
       );
     }
 
-
-    // ==========================================================================
-    // [ADMIN] - ImgUpload & AdminPanel
-    // ==========================================================================
+    // --- [ADMIN] ---
     function ImgUpload({value, onChange, label}) {
       const ref = useRef();
       const [drag, setDrag] = useState(false);
@@ -1180,7 +1171,6 @@
 
       return (
         <div style={{position:"fixed",inset:0,zIndex:1000,background:"#fff",overflow:"auto",animation:"fadeIn .2s"}}>
-          {/* Admin Header */}
           <div style={{background:"#111",padding:"0 1.5rem",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100,borderBottom:"2px solid #333"}}>
             <div style={{display:"flex",alignItems:"center",gap:12}}>
               <img src={LOGO_SRC} alt="" style={{height:30,filter:"invert(1)",opacity:.85}}/>
@@ -1356,10 +1346,7 @@
       );
     }
 
-
-    // ==========================================================================
-    // [SECTIONS]
-    // ==========================================================================
+    // --- [SECTIONS] ---
     function Hero() {
       const rafRef = useRef(null);
       const targetRef = useRef({x:0,y:0});
@@ -1566,23 +1553,17 @@
             })
           );
 
-          // --- EMAILJS CONTACT US NOTIFICATION ---
           if (window.emailjs) {
             try {
               await window.emailjs.send(
-                "YOUR_SERVICE_ID", // REPLACE WITH YOUR EMAILJS SERVICE ID
+                "service_wm633dr", 
                 "template_igjj8ga",
-                {
-                  name: form.name,
-                  email: form.email,
-                  message: form.message
-                }
+                { name: form.name, email: form.email, message: form.message }
               );
             } catch(emailErr) {
               console.warn("EmailJS failed, but message saved to DB:", emailErr);
             }
           }
-          // ---------------------------------------
 
           setSent(true); setTimeout(()=>setSent(false),5000); setForm({name:"",email:"",message:""});
         }catch(err){
@@ -1632,19 +1613,32 @@
 
     function Footer() {
       return (
-        <footer style={{background:"#111",padding:"5rem 2rem 2.5rem",position:"relative",overflow:"hidden"}}>
+        <footer className="footer-animated-bg" style={{padding:"5rem 2rem 2.5rem",position:"relative",overflow:"hidden"}}>
           <div className="topo-parallax-wrap" style={{opacity:0.05}}><TopoSVG color="#fff"/></div>
           <div style={{position:"relative",zIndex:1,textAlign:"center"}}>
             <img src={LOGO_SRC} alt="Splotch" style={{height:160,width:"auto",filter:"invert(1)",opacity:0.9,marginBottom:"2.5rem",display:"inline-block"}}/>
             <br/>
-            <h2 className="dyn-title outline-text" style={{fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic",fontSize:"clamp(40px,7vw,96px)",letterSpacing:"-0.04em",lineHeight:0.92,marginBottom:"5rem",display:"inline-block",WebkitTextStroke:"1.5px rgba(255,255,255,0.25)"}}>
+            
+            {/* ANIMATED FOOTER TITLE */}
+            <h2 className="dyn-title cyber-text" style={{fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic",fontSize:"clamp(40px,7vw,96px)",letterSpacing:"-0.04em",lineHeight:0.92,marginBottom:"5rem",display:"inline-block"}}>
               Predict the future,<br/>you didn't come<br/>this far to stop.
             </h2>
-            <div style={{borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:"1.5rem",display:"flex",justifyContent:"space-between",flexWrap:"wrap",gap:"0.8rem"}}>
-              <p style={{fontSize:10,fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"rgba(255,255,255,0.15)"}}>
+            
+            <div style={{borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:"1.5rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1rem"}}>
+              
+              {/* SOCIAL LINKS */}
+              <div style={{display:"flex",gap:"1.5rem"}}>
+                <a href="https://www.instagram.com/splotchglobal?igsh=c2Y5aDFiZWVoanVj" target="_blank" className="social-link">Instagram</a>
+                <a href="#" className="social-link">Twitter</a>
+                <a href="#" className="social-link">Pinterest</a>
+              </div>
+
+              {/* GHOST CREDIT */}
+              <p style={{fontSize:10,fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"rgba(255,255,255,0.15)",margin:0}}>
                 © 2026 Splotch.
-                <span style={{color:"#111",marginLeft:"10px",transition:"color 0.4s"}} onMouseEnter={e=>e.target.style.color="rgba(255,255,255,0.2)"} onMouseLeave={e=>e.target.style.color="#111"}>// Created by dudefromalhiem</span>
+                <span className="ghost-credit" style={{marginLeft:"10px"}}>// Created by dudefromalhiem</span>
               </p>
+
             </div>
           </div>
         </footer>
@@ -1652,9 +1646,7 @@
     }
 
 
-    // ==========================================================================
-    // [MAIN_APP]
-    // ==========================================================================
+    // --- [MAIN_APP] ---
     function App() {
       const [products,setProducts]=useState([]);
       const [portfolio,setPortfolio]=useState([]);
@@ -1670,14 +1662,22 @@
       const logoTimerRef=useRef(null);
       const [user,setUser]=useState(null);
 
+      // --- [TERMINAL EASTER EGG] ---
+      useEffect(() => {
+        console.log(
+          "%c[SYSTEM_ROOT] ACCESS GRANTED\n%c // ENGINEERED BY DUDEFROMALHIEM \n%c WELCOME TO THE NEXT FRONTIER OF STREETWEAR. Z E R O  C O M P R O M I S E.",
+          "color: #c00; font-size: 20px; font-weight: 900;",
+          "color: #fff; font-size: 13px; font-weight: 700; background: #111; padding: 4px; margin-top: 5px; display: inline-block;",
+          "color: #666; font-size: 11px; font-style: italic; margin-top: 5px; display: inline-block;"
+        );
+      }, []);
+
       useEffect(()=>{localStorage.setItem('splotch_cart_v1',JSON.stringify(cart));},[cart]);
 
-      // Load products & portfolio
       useEffect(()=>{
         const initData=async()=>{
           if(!window.fbDb||!window.fbGetDocs) return;
           try{
-            // Products
             const snap=await window.fbGetDocs(window.fbCollection(window.fbDb,"products"));
             if(snap.empty){
               DEFAULT_PRODUCTS.forEach(p=>window.fbSetDoc(window.fbDoc(window.fbDb,"products",p.id),p).catch(e=>console.warn(e)));
@@ -1686,7 +1686,6 @@
               const fetched=[];snap.forEach(d=>fetched.push(d.data()));setProducts(fetched);
             }
             
-            // Portfolio
             const portSnap=await window.fbGetDocs(window.fbCollection(window.fbDb,"portfolio"));
             if(portSnap.empty){
               DEFAULT_PORTFOLIO.forEach(p=>window.fbSetDoc(window.fbDoc(window.fbDb,"portfolio",p.id),p).catch(e=>console.warn(e)));
