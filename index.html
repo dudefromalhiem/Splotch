@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="title" content="Splotch | Urban Techwear & Streetwear India">
+  <meta name="description" content="Engineering the next frontier of Indian streetwear. Limited drop techwear, oversized tees, and urban utility gear. Made in Bangalore.">
+  <meta name="keywords" content="streetwear India, techwear, oversized t-shirts, Splotch clothing, Bangalore fashion">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://splotch.vercel.app/">
+  <meta property="og:title" content="Splotch | Urban Techwear">
+  <meta property="og:description" content="Style beyond seasons. Explore the SS'26 Terrain Collection.">
+  <meta property="og:image" content="https://splotch.vercel.app/splotch-og-image.jpg">
+
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="Splotch | Urban Techwear">
+  <meta property="twitter:description" content="Limited runs. No restocks. Indian Techwear.">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Splotch Website</title>
@@ -15,11 +28,11 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { 
-      getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut 
+      getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut,
+      createUserWithEmailAndPassword, signInWithEmailAndPassword
     } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    // ADDED: New Firestore tools for Global Admin
     import { 
-      getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc 
+      getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc, getDoc 
     } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
     /* =====================================================================
@@ -44,9 +57,13 @@
       window.fbSignInWithPopup = signInWithPopup;
       window.fbSignOut = signOut;
       window.fbOnAuthStateChanged = onAuthStateChanged;
+      window.fbCreateUserWithEmailAndPassword = createUserWithEmailAndPassword;
+      window.fbSignInWithEmailAndPassword = signInWithEmailAndPassword;
+
       window.fbCollection = collection;
       window.fbAddDoc = addDoc;
       window.fbGetDocs = getDocs;
+      window.fbGetDoc = getDoc; 
       window.fbDoc = doc;
       window.fbSetDoc = setDoc;
       window.fbDeleteDoc = deleteDoc;
@@ -66,7 +83,9 @@
     input, textarea, select, button { font-family: inherit; border-radius: 0 !important; outline: none; }
 
     .grain-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; opacity: 0.15; background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E'); }
-    header { position: sticky; top: 0; z-index: 500; height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; transition: box-shadow 0.3s, background 0.3s, backdrop-filter 0.3s; }
+    
+    /* UPGRADED HEADER: Taller to support massive logo */
+    header { position: sticky; top: 0; z-index: 500; height: 86px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; transition: box-shadow 0.3s, background 0.3s, backdrop-filter 0.3s; }
     .glass-nav { background: rgba(255, 255, 255, 0.65) !important; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 2px 0 #111; }
     .nav-signin { background: #111; color: #fff; border: 2px solid #111; padding: 9px 18px; font-size: 10px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; transition: all 0.2s; cursor: crosshair; }
     .nav-signin:hover { background: transparent; color: #111; }
@@ -148,11 +167,10 @@
       </svg>
     );
 
-    // Initial Seed Data - Notice the Funky Pricing!
     const DEFAULT_PRODUCTS = [
-      { id:"shirt-1", name:"Terrain Tee 001", cost:"₹450", price:"₹1", compareAtPrice:"₹1,299", tag:"New Drop", description:"Urban utility tee with topographic print detail. Oversized fit, 100% organic cotton.", frontImage:"Shirt 1 front.jpeg", backImage:"Shirt 1 back.jpeg", hasBack:true, soldOut:false, category:"T-Shirts" },
-      { id:"shirt-2", name:"Grid Tee 002", cost:"₹500", price:"₹1", compareAtPrice:"₹1,499", tag:"Limited", description:"Graphic techwear tee from the Grid Zero collaboration. Heavyweight cotton blend.", frontImage:"Shirt 2 front.jpeg", backImage:"Shirt 2 back.jpeg", hasBack:true, soldOut:false, category:"T-Shirts" },
-      { id:"shirt-3", name:"Shadow Tee 003", cost:"₹400", price:"₹1", compareAtPrice:"₹1,199", tag:"Last 5", description:"Minimalist dropped-shoulder tee. Shadow Series print, ultra-soft jersey.", frontImage:"Shirt 3 front.jpeg", backImage:"Shirt 3 back.jpeg", hasBack:false, soldOut:false, category:"T-Shirts" },
+      { id:"shirt-1", name:"Terrain Tee 000", cost:"₹450", price:"₹1", compareAtPrice:"₹1,299", tag:"New Drop", description:"Urban utility tee with topographic print detail. Oversized fit, 100% organic cotton.", frontImage:"Shirt 1 front.jpeg", backImage:"Shirt 1 back.jpeg", hasBack:true, soldOut:false, category:"T-Shirts" },
+      { id:"shirt-2", name:"Grid Tee 000", cost:"₹500", price:"₹1", compareAtPrice:"₹1,499", tag:"Limited", description:"Graphic techwear tee from the Grid Zero collaboration. Heavyweight cotton blend.", frontImage:"Shirt 2 front.jpeg", backImage:"Shirt 2 back.jpeg", hasBack:true, soldOut:false, category:"T-Shirts" },
+      { id:"shirt-3", name:"Shadow Tee 000", cost:"₹400", price:"₹1", compareAtPrice:"₹1,199", tag:"Last 5", description:"Minimalist dropped-shoulder tee. Shadow Series print, ultra-soft jersey.", frontImage:"Shirt 3 front.jpeg", backImage:"Shirt 3 back.jpeg", hasBack:false, soldOut:false, category:"T-Shirts" },
     ];
 
     const SLabel = ({children,inv=false})=>(
@@ -167,7 +185,7 @@
     );
 
     const BackButton = ({onBack,label="Back"})=>(
-      <button className="back-btn" onClick={onBack} style={{ position:"fixed",top:110,left:"1.5rem",zIndex:400, display:"flex",alignItems:"center",gap:10, background:"rgba(255,255,255,0.95)",color:"#111", border:"2px solid #111",padding:"10px 18px", fontSize:10,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase", cursor:"crosshair",backdropFilter:"blur(8px)", boxShadow:"3px 3px 0 #111" }}>
+      <button className="back-btn" onClick={onBack} style={{ position:"fixed",top:120,left:"1.5rem",zIndex:400, display:"flex",alignItems:"center",gap:10, background:"rgba(255,255,255,0.95)",color:"#111", border:"2px solid #111",padding:"10px 18px", fontSize:10,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase", cursor:"crosshair",backdropFilter:"blur(8px)", boxShadow:"3px 3px 0 #111" }}>
         <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M5 1L1 5L5 9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="square"/><line x1="1" y1="5" x2="15" y2="5" stroke="currentColor" strokeWidth="1.8"/></svg>
         {label}
       </button>
@@ -187,7 +205,7 @@
       const items=["STYLE BEYOND SEASONS","—","NEW DROP: TERRAIN SERIES","—","MADE IN INDIA","—","LIMITED RUNS. NO RESTOCKS.","—","splotch.in","—"];
       const d=[...items,...items];
       return(
-        <div style={{ background:"#111",height:28,overflow:"hidden",display:"flex",alignItems:"center",borderBottom:"2px solid #222", position: "sticky", top: 56, zIndex: 499 }}>
+        <div style={{ background:"#111",height:28,overflow:"hidden",display:"flex",alignItems:"center",borderBottom:"2px solid #222", position: "sticky", top: 86, zIndex: 499 }}>
           <div style={{ display:"flex",animation:"ticker 32s linear infinite",whiteSpace:"nowrap" }}>
             {d.map((t,i)=>(<span key={i} style={{ marginRight:"2rem",fontSize:9,fontWeight:700,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(255,255,255,0.45)",flexShrink:0 }}>{t}</span>))}
           </div>
@@ -195,7 +213,79 @@
       );
     }
 
-    function Header({cartCount, onCartOpen, onLogoClick, setMobMenu, user, handleAuth}){
+    // THE NEW AUTHENTICATION MODAL (Email + Google)
+    function AuthModal({ onClose, onSuccess }) {
+      const [isLogin, setIsLogin] = useState(true);
+      const [email, setEmail] = useState("");
+      const [pw, setPw] = useState("");
+      const [err, setErr] = useState("");
+      const [loading, setLoading] = useState(false);
+
+      const handleEmailAuth = async (e) => {
+        e.preventDefault();
+        if (!email || !pw) { setErr("Email and password required"); return; }
+        setLoading(true); setErr("");
+        try {
+          if (isLogin) {
+            await window.fbSignInWithEmailAndPassword(window.fbAuth, email, pw);
+          } else {
+            await window.fbCreateUserWithEmailAndPassword(window.fbAuth, email, pw);
+          }
+          onSuccess();
+        } catch (error) {
+          setErr(error.message.replace("Firebase: ", ""));
+        }
+        setLoading(false);
+      };
+
+      const handleGoogle = async () => {
+         try {
+           await window.fbSignInWithPopup(window.fbAuth, window.fbProvider);
+           onSuccess();
+         } catch(e) { setErr(e.message); }
+      };
+
+      const iSt = { display:"block", width:"100%", border:"2px solid rgba(0,0,0,0.14)", padding:"12px", fontSize:12, fontFamily:"Inter", marginBottom:"1rem" };
+
+      return (
+        <div style={{ position:"fixed", inset:0, zIndex:1000, background:"rgba(17,17,17,0.85)", display:"flex", alignItems:"center", justifyContent:"center", animation:"fadeIn .2s ease" }}>
+          <div style={{ background:"#fff", border:"3px solid #111", width:"100%", maxWidth:400, position:"relative", padding:"2.5rem" }}>
+            <button onClick={onClose} style={{ position:"absolute", top:14, right:14, background:"none", border:"1.5px solid #111", width:34, height:34, fontSize:14, cursor:"crosshair", fontWeight:700 }}>✕</button>
+            <h2 style={{ fontFamily:"Playfair Display", fontWeight:700, fontSize:28, marginBottom:"0.5rem" }}>{isLogin ? "Welcome Back." : "Join Splotch."}</h2>
+            <p style={{ fontSize:12, color:"rgba(0,0,0,0.5)", marginBottom:"2rem" }}>Secure your access to exclusive drops.</p>
+
+            {err && <div style={{ background:"#c00", color:"#fff", padding:"10px", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:"1.5rem" }}>{err}</div>}
+
+            <form onSubmit={handleEmailAuth}>
+              <input type="email" placeholder="Email Address" value={email} onChange={e=>setEmail(e.target.value)} style={iSt} required/>
+              <input type="password" placeholder="Password (Min 6 characters)" value={pw} onChange={e=>setPw(e.target.value)} style={iSt} required/>
+              <button type="submit" disabled={loading} style={{ width:"100%", background:"#111", color:"#fff", border:"3px solid #111", padding:"14px", fontSize:11, fontWeight:700, letterSpacing:"0.2em", textTransform:"uppercase", cursor:loading?"wait":"crosshair", marginBottom:"1rem" }}>
+                {loading ? "Processing..." : (isLogin ? "Log In" : "Sign Up")}
+              </button>
+            </form>
+
+            <div style={{ display:"flex", alignItems:"center", gap:"1rem", margin:"1.5rem 0" }}>
+              <div style={{ flex:1, height:1, background:"rgba(0,0,0,0.1)" }}></div>
+              <span style={{ fontSize:9, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"rgba(0,0,0,0.3)" }}>OR</span>
+              <div style={{ flex:1, height:1, background:"rgba(0,0,0,0.1)" }}></div>
+            </div>
+
+            <button onClick={handleGoogle} style={{ width:"100%", background:"#fff", color:"#111", border:"2px solid rgba(0,0,0,0.2)", padding:"12px", fontSize:11, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", cursor:"crosshair", display:"flex", justifyContent:"center", alignItems:"center", gap:"10px" }}>
+              <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+              Continue with Google
+            </button>
+
+            <div style={{ textAlign:"center", marginTop:"2rem" }}>
+              <button onClick={() => setIsLogin(!isLogin)} style={{ background:"none", border:"none", fontSize:11, fontWeight:600, color:"#111", textDecoration:"underline", cursor:"crosshair" }}>
+                {isLogin ? "Need an account? Sign up." : "Already have an account? Log in."}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function Header({cartCount, onCartOpen, onLogoClick, setMobMenu, user, onAuthClick, handleLogout}){
       const [scrolled,setScrolled]=useState(false);
       useEffect(()=>{
         const fn=()=>setScrolled(window.scrollY>30);
@@ -208,7 +298,8 @@
       return(
         <header className={scrolled ? "glass-nav" : ""}>
           <button onClick={onLogoClick} style={{ background:"none",border:"none",cursor:"crosshair", display:"flex",alignItems:"center",gap:10,padding:0, position:"relative" }}>
-            <img src={LOGO_SRC} alt="Splotch" style={{ height:36,width:"auto",display:"block",filter:"invert(0)" }}/>
+            {/* UPGRADED: Massive Navigation Logo */}
+            <img src={LOGO_SRC} alt="Splotch" style={{ height:64,width:"auto",display:"block",filter:"invert(0)" }}/>
           </button>
           
           <nav className="desk-nav" style={{ display:"flex",gap:"2rem",alignItems:"center" }}>
@@ -221,11 +312,11 @@
             <div className="auth-container desk-nav">
               {user ? (
                 <React.Fragment>
-                  <div className="user-badge">WELCOME, {user.displayName ? user.displayName.split(' ')[0].toUpperCase() : 'USER'}</div>
-                  <button className="nav-logout" onClick={handleAuth}>LOGOUT</button>
+                  <div className="user-badge">WELCOME, {(user.displayName || user.email).split('@')[0].toUpperCase()}</div>
+                  <button className="nav-logout" onClick={handleLogout}>LOGOUT</button>
                 </React.Fragment>
               ) : (
-                <button className="nav-signin" onClick={handleAuth}>SIGN IN</button>
+                <button className="nav-signin" onClick={onAuthClick}>SIGN IN</button>
               )}
             </div>
 
@@ -233,7 +324,7 @@
               {[0,1,2].map(i=><span key={i} style={{ display:"block",width:16,height:1.5,background:"#111" }}/>)}
             </button>
 
-            <button onClick={onCartOpen} style={{ background:"#111",color:"#fff",border:"2px solid #111", padding:"8px 14px",fontSize:10,fontWeight:700, letterSpacing:"0.15em",textTransform:"uppercase",cursor:"crosshair", display:"flex",alignItems:"center",gap:6 }}>
+            <button onClick={onCartOpen} style={{ background:"#111",color:"#fff",border:"2px solid #111", padding:"10px 16px",fontSize:10,fontWeight:700, letterSpacing:"0.15em",textTransform:"uppercase",cursor:"crosshair", display:"flex",alignItems:"center",gap:6 }}>
               Cart
               {cartCount>0&&<span style={{ background:"#fff",color:"#111",width:18,height:18,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:900 }}>{cartCount}</span>}
             </button>
@@ -242,7 +333,7 @@
       );
     }
 
-    function MobMenu({open, setOpen, user, handleAuth}){
+    function MobMenu({open, setOpen, user, onAuthClick, handleLogout}){
       const go=(id)=>{ document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); setOpen(false); };
       return(
         <div className="mob-menu" style={{ position:"fixed",inset:0,zIndex:600,background:"#111", display:"flex",flexDirection:"column",justifyContent:"center",padding:"3rem 2rem", transform:open?"translateX(0)":"translateX(100%)", transition:"transform .4s cubic-bezier(.76,0,.24,1)" }}>
@@ -256,12 +347,12 @@
             {user ? (
               <React.Fragment>
                 <span style={{ color: '#fff', fontSize: 12, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '1rem' }}>
-                    WELCOME, {user.displayName ? user.displayName.split(' ')[0].toUpperCase() : 'USER'}
+                    WELCOME, {(user.displayName || user.email).split('@')[0].toUpperCase()}
                 </span>
-                <button onClick={() => { handleAuth(); setOpen(false); }} style={{ background: 'transparent', color: '#fff', border: '1px solid #fff', padding: '10px 20px', fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'crosshair' }}>Logout</button>
+                <button onClick={() => { handleLogout(); setOpen(false); }} style={{ background: 'transparent', color: '#fff', border: '1px solid #fff', padding: '10px 20px', fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'crosshair' }}>Logout</button>
               </React.Fragment>
             ) : (
-                <button onClick={() => { handleAuth(); setOpen(false); }} style={{ background: '#fff', color: '#111', border: 'none', padding: '12px 24px', fontSize: 11, fontWeight: 900, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'crosshair' }}>Sign In</button>
+                <button onClick={() => { onAuthClick(); setOpen(false); }} style={{ background: '#fff', color: '#111', border: 'none', padding: '12px 24px', fontSize: 11, fontWeight: 900, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'crosshair' }}>Sign In</button>
             )}
           </div>
         </div>
@@ -295,7 +386,6 @@
             <div style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.3)",marginBottom:3 }}>{product.category}</div>
             <div style={{ fontWeight:900,fontSize:15,textTransform:"uppercase",letterSpacing:"-0.01em",marginBottom:5 }}>{product.name}</div>
             
-            {/* The Funky Discount Price UI */}
             <div style={{ fontWeight:700,fontSize:13,color:"rgba(0,0,0,0.55)",marginBottom:"0.9rem" }}>
               {product.compareAtPrice && <span style={{ textDecoration: "line-through", opacity: 0.6, marginRight: "8px", fontWeight: 600 }}>{product.compareAtPrice}</span>}
               <span style={{ color: product.compareAtPrice ? "#c00" : "#111", fontWeight: 900 }}>{product.price}</span>
@@ -336,7 +426,6 @@
                 <div style={{ fontSize:9,fontWeight:700,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(0,0,0,0.3)",marginBottom:6,clear:"both" }}>{product.category}</div>
                 <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:26,letterSpacing:"-0.02em",marginBottom:"0.6rem" }}>{product.name}</h2>
                 
-                {/* Funky Pricing */}
                 <div style={{ fontWeight:700,fontSize:19,marginBottom:"1.2rem" }}>
                   {product.compareAtPrice && <span style={{ textDecoration: "line-through", opacity: 0.5, marginRight: "10px", fontSize: "16px" }}>{product.compareAtPrice}</span>}
                   <span style={{ color: product.compareAtPrice ? "#c00" : "#111" }}>{product.price}</span>
@@ -359,38 +448,34 @@
       );
     }
 
-    // THE UPGRADED SECURE CART SIDEBAR
-    function CartSidebar({cart,setCart,onClose, user}){
+    // THE UPGRADED SECURE CART SIDEBAR WITH DETAILED SHIPPING
+    function CartSidebar({cart,setCart,onClose, user, onAuthClick}){
       const total = cart.reduce((s,i)=>s+(parseInt((i.price||"0").replace(/[^0-9]/g,""))||0),0);
       const [loading, setLoading] = useState(false);
       
-      // New State for Secure Checkout Flow
       const [step, setStep] = useState('cart'); 
-      const [shipping, setShipping] = useState({ phone: "", address: "" });
+      const [shipping, setShipping] = useState({ phone: "", address: "", city: "", state: "", pincode: "" });
 
-      // Step 1: Enforce Login
-      const initiateCheckout = async () => {
+      const initiateCheckout = () => {
         if (!user) {
-          try {
-            await window.fbSignInWithPopup(window.fbAuth, window.fbProvider);
-          } catch(e) {
-            console.error("Login required to checkout");
-            return;
-          }
+          onAuthClick(); // Pops up the Email/Google Auth Modal
+          return;
         }
         setStep('shipping');
       };
 
-      // Step 2: Pay and Save Order
       const processPayment = async () => {
-        if (!shipping.phone || !shipping.address) { alert("Please provide your phone number and address for delivery."); return; }
+        if (!shipping.phone || !shipping.address || !shipping.city || !shipping.state || !shipping.pincode) { 
+          alert("Please fill in all shipping details."); 
+          return; 
+        }
         setLoading(true);
 
         try {
           const response = await fetch('/api/createOrder', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount: total }) // Rs. 1 gets converted to 100 paise in Vercel
+            body: JSON.stringify({ amount: total }) 
           });
 
           const data = await response.json();
@@ -416,9 +501,12 @@
                     orderId: rzpRes.razorpay_order_id,
                     userId: user.uid,
                     userEmail: user.email,
-                    userName: user.displayName,
+                    userName: user.displayName || "Email User",
                     shippingPhone: shipping.phone,
                     shippingAddress: shipping.address,
+                    shippingCity: shipping.city,
+                    shippingState: shipping.state,
+                    shippingPincode: shipping.pincode,
                     timestamp: new Date(),
                     status: "Processing"
                   });
@@ -447,12 +535,13 @@
         setLoading(false);
       };
 
+      const iSt = { display:"block",width:"100%",border:"2px solid rgba(0,0,0,0.14)",background:"#f9f9f9",padding:"12px",fontSize:13,fontFamily:"Inter" };
+
       return(
         <div style={{ position:"fixed",inset:0,zIndex:800 }}>
           <div onClick={onClose} style={{ position:"absolute",inset:0,background:"rgba(17,17,17,0.55)" }}/>
-          <div style={{ position:"absolute",top:0,right:0,bottom:0,width:"100%",maxWidth:390,background:"#fff",borderLeft:"3px solid #111",display:"flex",flexDirection:"column" }}>
+          <div style={{ position:"absolute",top:0,right:0,bottom:0,width:"100%",maxWidth:400,background:"#fff",borderLeft:"3px solid #111",display:"flex",flexDirection:"column" }}>
             
-            {/* Header */}
             <div style={{ padding:"1.2rem 1.8rem",borderBottom:"2px solid #111",display:"flex",justifyContent:"space-between",alignItems:"center" }}>
               <span style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:20,letterSpacing:"-0.01em" }}>
                 {step === 'cart' ? `Cart (${cart.length})` : "Shipping Info"}
@@ -460,7 +549,6 @@
               <button onClick={onClose} style={{ background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,cursor:"crosshair",fontWeight:700 }}>✕</button>
             </div>
 
-            {/* Cart View */}
             {step === 'cart' && (
               <React.Fragment>
                 <div style={{ flex:1,overflow:"auto",padding:"0.8rem 1.8rem" }}>
@@ -495,15 +583,29 @@
               </React.Fragment>
             )}
 
-            {/* Shipping View */}
             {step === 'shipping' && (
               <div style={{ flex:1, display:"flex", flexDirection:"column" }}>
                 <div style={{ flex:1, overflow:"auto", padding:"1.5rem 1.8rem" }}>
                   <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6 }}>Phone Number *</label>
-                  <input type="tel" placeholder="+91" value={shipping.phone} onChange={e=>setShipping(s=>({...s, phone: e.target.value}))} style={{ display:"block",width:"100%",border:"2px solid rgba(0,0,0,0.14)",background:"#f9f9f9",padding:"12px",fontSize:13,fontFamily:"Inter",marginBottom:"1.5rem" }} />
+                  <input type="tel" placeholder="+91" value={shipping.phone} onChange={e=>setShipping(s=>({...s, phone: e.target.value}))} style={{...iSt, marginBottom:"1.5rem"}} />
                   
-                  <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6 }}>Full Delivery Address *</label>
-                  <textarea rows={5} placeholder="House/Flat No, Street, City, Pincode" value={shipping.address} onChange={e=>setShipping(s=>({...s, address: e.target.value}))} style={{ display:"block",width:"100%",border:"2px solid rgba(0,0,0,0.14)",background:"#f9f9f9",padding:"12px",fontSize:13,fontFamily:"Inter",resize:"none" }} />
+                  <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6 }}>House/Flat No. & Street *</label>
+                  <input type="text" placeholder="Address Line 1" value={shipping.address} onChange={e=>setShipping(s=>({...s, address: e.target.value}))} style={{...iSt, marginBottom:"1rem"}} />
+                  
+                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"1rem", marginBottom:"1rem" }}>
+                    <div>
+                      <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6 }}>City *</label>
+                      <input type="text" placeholder="City" value={shipping.city} onChange={e=>setShipping(s=>({...s, city: e.target.value}))} style={iSt} />
+                    </div>
+                    <div>
+                      <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6 }}>State *</label>
+                      <input type="text" placeholder="State" value={shipping.state} onChange={e=>setShipping(s=>({...s, state: e.target.value}))} style={iSt} />
+                    </div>
+                  </div>
+
+                  <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6 }}>Pincode *</label>
+                  <input type="text" placeholder="6-digit Pincode" value={shipping.pincode} onChange={e=>setShipping(s=>({...s, pincode: e.target.value}))} style={{...iSt, marginBottom:"1.5rem"}} />
+
                 </div>
                 <div style={{ padding:"1.2rem 1.8rem",borderTop:"2px solid #111" }}>
                   <button onClick={processPayment} disabled={loading} style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",cursor:loading?"wait":"crosshair", marginBottom:8 }}>{loading ? "Processing..." : `Pay ₹${total} Now`}</button>
@@ -545,14 +647,12 @@
 
     const ADMIN_PW_B64 = "c3Bsb3RjaDIwMjY="; // "splotch2026"
     
-    // UPGRADED GLOBAL ADMIN PANEL (SAVES TO FIREBASE)
     function AdminPanel({products,setProducts,onClose}){
       const [authed,setAuthed]=useState(false);
       const [pw,setPw]=useState("");
       const [pwErr,setPwErr]=useState(false);
       const [editId,setEditId]=useState(null);
       const [toast,setToast]=useState(null);
-      // Added compareAtPrice for Funky Discount editing
       const blank={ name:"", cost:"", price:"₹1", compareAtPrice:"₹1,100", tag:"", description:"", category:"T-Shirts", frontImage:null, backImage:null, hasBack:false, soldOut:false };
       const [form,setForm]=useState(blank);
 
@@ -658,11 +758,11 @@
                   <button onClick={()=>{setEditId(null);setForm(blank);}} style={{ background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:13,cursor:"crosshair",fontWeight:700 }}>✕</button>
                 </div>
                 <div className="admin-form-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"1.3rem" }}>
-                  <div style={{ gridColumn:"1/-1" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Product Name *</label><input className="admin-input" value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} placeholder="e.g. Terrain Tee 001" style={iSt}/></div>
+                  <div style={{ gridColumn:"1/-1" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Product Name *</label><input className="admin-input" value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} placeholder="Terrain Tee 001" style={iSt}/></div>
                   <div style={{ gridColumn:"1/2" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Old Price (Strikethrough)</label><input className="admin-input" value={form.compareAtPrice || ""} onChange={e=>setForm(f=>({...f,compareAtPrice:e.target.value}))} placeholder="₹1,100" style={iSt}/></div>
                   <div style={{ gridColumn:"2/4" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Active Price *</label><input className="admin-input" value={form.price} onChange={e=>setForm(f=>({...f,price:e.target.value}))} placeholder="₹1" style={iSt}/></div>
                   <div style={{ gridColumn:"1/3" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Tag</label><input className="admin-input" value={form.tag} onChange={e=>setForm(f=>({...f,tag:e.target.value}))} placeholder="New Drop / Limited" style={iSt}/></div>
-                  <div style={{ gridColumn:"3/4" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Category</label><select value={form.category} onChange={e=>setForm(f=>({...f,category:e.target.value}))} style={{ ...iSt,cursor:"crosshair" }}>{["T-Shirts","Hoodies","Jackets","Cargo Pants","Accessories","Caps"].map(c=><option key={c}>{c}</option>)}</select></div>
+                  <div style={{ gridColumn:"3/4" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Category</label><select value={form.category} onChange={e=>setForm(f=>({...f,category:e.target.value}))} style={{ ...iSt,cursor:"crosshair" }}>{["T-Shirts","Hoodies","Jackets"].map(c=><option key={c}>{c}</option>)}</select></div>
                   <div style={{ gridColumn:"1/-1" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Description</label><textarea className="admin-input" rows={3} value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))} placeholder="Short description..." style={{ ...iSt,resize:"none" }}/></div>
                   <div style={{ gridColumn:"1/-1",display:"flex",gap:"0.8rem",alignItems:"center" }}><button onClick={()=>setForm(f=>({...f,hasBack:!f.hasBack,backImage:f.hasBack?null:f.backImage}))} style={{ background:form.hasBack?"#111":"#fff",color:form.hasBack?"#fff":"#111",border:"2px solid #111",padding:"9px 18px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",cursor:"crosshair" }}>{form.hasBack?"✓ Front + Back":"Front Only"}</button><span style={{ fontSize:11,color:"rgba(0,0,0,0.35)" }}>Toggle back photo</span></div>
                   <div style={{ gridColumn:form.hasBack?"1/2":"1/-1" }}><ImgUpload value={form.frontImage} onChange={v=>setForm(f=>({...f,frontImage:v}))} label="Front Image *"/></div>
@@ -741,8 +841,8 @@
     function TheWork(){
       const works=[
         {label:"Terrain Vol.001",cat:"Capsule Drop"}, {label:"Shadow Protocol",cat:"Collab Series"}, {label:"Grid Zero",cat:"Artist Collab"},
-        {label:"Shell Cargo Pants",cat:"Product"}, {label:"SS'25 Lookbook",cat:"Editorial"}, {label:"Modular Jacket",cat:"Product"},
-        {label:"Topo Cap Series",cat:"Accessories"}, {label:"Field Campaign",cat:"Creative Direction"}, {label:"Terrain Vol.3",cat:"Upcoming Drop"},
+        {label:"Shell Jackets",cat:"Product"}, {label:"SS'25 Lookbook",cat:"Editorial"}, {label:"Modular Jacket",cat:"Product"},
+        {label:"Top Dog Series",cat:"Accessories"}, {label:"Field Campaign",cat:"Creative Direction"}, {label:"Terrain Vol.3",cat:"Upcoming Drop"},
       ];
       return(
         <section id="work" style={{ background:"#fff",borderBottom:"3px solid #111",padding:"6rem 2rem" }}>
@@ -924,7 +1024,8 @@
         <footer style={{ background:"#111",padding:"5rem 2rem 2.5rem",position:"relative",overflow:"hidden",borderTop:"3px solid #222" }}>
           <div className="topo-parallax-wrap" style={{ opacity:0.05 }}><TopoSVG color="#fff"/></div>
           <div style={{ position:"relative",zIndex:1 }}>
-            <div style={{ marginBottom:"3rem" }}><img src={LOGO_SRC} alt="Splotch" style={{ height:56,filter:"invert(1)",opacity:.8 }}/></div>
+            {/* UPGRADED: Massive Footer Logo */}
+            <div style={{ marginBottom:"3.5rem" }}><img src={LOGO_SRC} alt="Splotch" style={{ height:140,filter:"invert(1)",opacity:.85 }}/></div>
             <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic", fontSize:"clamp(72px,8vw,110px)", letterSpacing:"-0.04em",lineHeight:0.88, color:"transparent",WebkitTextStroke:"1.5px rgba(255,255,255,0.4)", marginBottom:"5rem" }}>Predict the future,<br/>you didn't come<br/>this far to stop.</h2>
             <div className="footer-grid" style={{ display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr",gap:"2.5rem",borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:"2.5rem",marginBottom:"2.5rem" }}>
               <div>
@@ -957,12 +1058,18 @@
        ROOT APP
     ═══════════════════════════════════════════════════════ */
     function App(){
-      // UPGRADED: Products now fetch from Firebase
       const [products,setProducts]=useState([]); 
-      const [cart,setCart]=useState([]);
+      
+      // UPGRADED: Load cart from Device Memory immediately
+      const [cart,setCart]=useState(() => {
+        const localData = localStorage.getItem('splotch_cart_v1');
+        return localData ? JSON.parse(localData) : [];
+      });
+      
       const [qv,setQV]=useState(null);
       const [adminOpen,setAdminOpen]=useState(false);
       const [cartOpen,setCartOpen]=useState(false);
+      const [authOpen,setAuthOpen]=useState(false); // NEW: Controls the unified login modal
       const [mobMenu,setMobMenu]=useState(false);
       const [filter,setFilter]=useState("All");
       const [showBack,setShowBack]=useState(false);
@@ -970,13 +1077,48 @@
       const logoTimerRef=useRef(null);
       const [user, setUser]=useState(null);
 
-      // Global Scroll Listener
+      // 1. PERSISTENCE: Save to Device Memory whenever cart changes
       useEffect(() => {
-        const handleScroll = () => { document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}`); };
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll();
-        return () => window.removeEventListener('scroll', handleScroll);
-      }, []);
+        localStorage.setItem('splotch_cart_v1', JSON.stringify(cart));
+      }, [cart]);
+
+      // 2. CLOUD SYNC: Pull cart from Firestore when user logs in
+      useEffect(() => {
+        const syncFromCloud = async () => {
+          if (user && window.fbDb && window.fbGetDoc) {
+            try {
+              const docRef = window.fbDoc(window.fbDb, "userCarts", user.uid);
+              const docSnap = await window.fbGetDoc(docRef);
+              
+              if (docSnap.exists()) {
+                const cloudItems = docSnap.data().items || [];
+                setCart(prev => {
+                  const combined = [...prev, ...cloudItems];
+                  // Remove duplicates based on unique cartItemId to prevent double-adding
+                  return Array.from(new Map(combined.map(item => [item.cartItemId, item])).values());
+                });
+              }
+            } catch (e) { console.error("Cloud sync error:", e); }
+          }
+        };
+        syncFromCloud();
+      }, [user]);
+
+      // 3. CLOUD BACKUP: Save cart to Firestore when it changes
+      useEffect(() => {
+        const backupToCloud = async () => {
+          if (user && window.fbDb && window.fbSetDoc) {
+            try {
+              await window.fbSetDoc(window.fbDoc(window.fbDb, "userCarts", user.uid), {
+                items: cart,
+                updatedAt: new Date()
+              });
+            } catch (e) { console.error("Backup failed:", e); }
+          }
+        };
+        const timer = setTimeout(backupToCloud, 2000); 
+        return () => clearTimeout(timer);
+      }, [cart, user]);
 
       // Fetch Products from Firestore
       useEffect(() => {
@@ -985,9 +1127,8 @@
           try {
             const snapshot = await window.fbGetDocs(window.fbCollection(window.fbDb, "products"));
             if (snapshot.empty) {
-              // If Database is empty, seed it with Rs 1 Default Products
               DEFAULT_PRODUCTS.forEach(async (p) => {
-                 await window.fbSetDoc(window.fbDoc(window.fbDb, "products", p.id), p);
+                await window.fbSetDoc(window.fbDoc(window.fbDb, "products", p.id), p);
               });
               setProducts(DEFAULT_PRODUCTS);
             } else {
@@ -1034,13 +1175,14 @@
         logoTimerRef.current=setTimeout(()=>setLogoClicks(0),3000);
       };
 
-      const addToCart=useCallback((item)=>setCart(c=>[...c,item]),[]);
+      // Added unique cartItemId so dual-sync doesn't accidentally squash identical products
+      const addToCart = useCallback((item) => {
+        setCart(c => [...c, { ...item, cartItemId: Date.now() + Math.random() }]);
+      }, []);
 
-      const handleAuth = async () => {
+      const handleLogout = async () => {
         if(user && window.fbAuth) {
           try { await window.fbSignOut(window.fbAuth); } catch(err) { console.error(err); }
-        } else if(window.fbAuth && window.fbProvider) {
-          try { await window.fbSignInWithPopup(window.fbAuth, window.fbProvider); } catch(err) { console.error("Login failed."); }
         }
       };
 
@@ -1048,9 +1190,10 @@
         <div style={{ minHeight:"100vh",background:"#fff", position:"relative" }}>
           <div className="grain-overlay"></div>
           <ScrollProgress/>
-          <Header cartCount={cart.length} onCartOpen={()=>setCartOpen(true)} onLogoClick={handleLogoClick} setMobMenu={setMobMenu} user={user} handleAuth={handleAuth} />
+          
+          <Header cartCount={cart.length} onCartOpen={()=>setCartOpen(true)} onLogoClick={handleLogoClick} setMobMenu={setMobMenu} user={user} onAuthClick={()=>setAuthOpen(true)} handleLogout={handleLogout} />
           <Ticker/>
-          <MobMenu open={mobMenu} setOpen={setMobMenu} user={user} handleAuth={handleAuth}/>
+          <MobMenu open={mobMenu} setOpen={setMobMenu} user={user} onAuthClick={()=>setAuthOpen(true)} handleLogout={handleLogout}/>
           {showBack&&(<BackButton onBack={()=>window.scrollTo({top:0,behavior:"smooth"})} label="Top" />)}
 
           <Hero/>
@@ -1063,8 +1206,9 @@
           <Footer/>
 
           {qv&&<QuickView product={qv} onClose={()=>setQV(null)} onAdd={addToCart}/>}
-          {cartOpen&&<CartSidebar cart={cart} setCart={setCart} onClose={()=>setCartOpen(false)} user={user}/>}
+          {cartOpen&&<CartSidebar cart={cart} setCart={setCart} onClose={()=>setCartOpen(false)} user={user} onAuthClick={()=>setAuthOpen(true)}/>}
           {adminOpen&&<AdminPanel products={products} setProducts={setProducts} onClose={()=>setAdminOpen(false)}/>}
+          {authOpen&&<AuthModal onClose={()=>setAuthOpen(false)} onSuccess={()=>setAuthOpen(false)}/>}
         </div>
       );
     }
