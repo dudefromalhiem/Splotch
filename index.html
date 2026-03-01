@@ -11,9 +11,6 @@
   <meta property="og:description" content="Style beyond seasons. Explore the SS'26 Terrain Collection.">
   <meta property="og:image" content="https://splotch.vercel.app/splotch-og-image.jpg">
 
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:title" content="Splotch | Urban Techwear">
-  <meta property="twitter:description" content="Limited runs. No restocks. Indian Techwear.">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Splotch Website</title>
@@ -22,7 +19,6 @@
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js" data-type="module"></script>
-  
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
   <script type="module">
@@ -32,7 +28,7 @@
       createUserWithEmailAndPassword, signInWithEmailAndPassword
     } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { 
-      getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc, getDoc, updateDoc, increment
+      getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc, getDoc, updateDoc, increment, query, orderBy
     } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -65,15 +61,15 @@
       window.fbDeleteDoc = deleteDoc;
       window.fbUpdateDoc = updateDoc;
       window.fbIncrement = increment;
+      window.fbQuery = query;
+      window.fbOrderBy = orderBy;
 
       window.dispatchEvent(new Event('firebase-ready'));
-    } catch(err) {
-      console.error("Firebase Initialization Error:", err);
-    }
+    } catch(err) { console.error("Firebase Init Error:", err); }
   </script>
 
   <style>
-    /* CUSTOM CURSOR SYSTEM */
+    /* CUSTOM ELASTIC CURSOR SYSTEM */
     body, button, a, input, textarea, select { cursor: none !important; }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
     
@@ -81,41 +77,51 @@
     html { scroll-behavior: smooth; }
     body { background: var(--W); color: var(--B); font-family: 'Inter', sans-serif; overflow-x: hidden; }
     ::selection { background: var(--B); color: var(--W); }
-    input, textarea, select, button { font-family: inherit; border-radius: 0 !important; outline: none; }
 
-    /* ELASTIC CURSOR ANIMATIONS */
     .cursor-dot {
-      width: 24px; height: 24px;
+      position: fixed; top: 0; left: 0;
+      width: 28px; height: 28px;
       border: 2px solid #fff;
-      border-radius: 50%;
+      border-radius: 50% !important;
       transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 99999;
+      mix-blend-mode: difference;
+      transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), height 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .cursor-dot.pulse {
-      animation: pulseElastic 0.5s cubic-bezier(0.5, 2.5, 0.4, 0.8) forwards;
-    }
-    @keyframes pulseElastic {
-      0% { transform: translate(-50%, -50%) scale(1); }
-      30% { transform: translate(-50%, -50%) scale(0.4); background-color: #fff; }
-      100% { transform: translate(-50%, -50%) scale(1); background-color: transparent; }
-    }
-
-    .grain-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; opacity: 0.15; background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E'); }
+    .cursor-dot.pulse { width: 10px; height: 10px; background-color: #fff; }
+    .grain-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9998; opacity: 0.15; background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E'); }
     
-    header { position: sticky; top: 0; z-index: 500; height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; transition: box-shadow 0.3s, background 0.3s, backdrop-filter 0.3s; }
-    .glass-nav { background: rgba(255, 255, 255, 0.65) !important; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 2px 0 #111; }
-    .nav-signin { background: #111; color: #fff; border: 2px solid #111; padding: 9px 18px; font-size: 10px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; transition: all 0.2s; }
-    .nav-signin:hover { background: transparent; color: #111; }
+    /* DYNAMIC TITLES CSS */
+    .dyn-title {
+      display: inline-block;
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), text-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      width: fit-content;
+    }
+    .dyn-text-dark:hover { transform: translate(-4px, -4px); text-shadow: 4px 4px 0 #c00; }
+    .dyn-text-light:hover { transform: translate(-4px, -4px); text-shadow: 4px 4px 0 #c00; }
+    .dyn-text-outline:hover { transform: translate(-4px, -4px); text-shadow: 4px 4px 0 #c00; -webkit-text-stroke: 1.5px #fff !important; }
+
+    /* HEADER */
+    header { position: sticky; top: 0; z-index: 500; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; transition: box-shadow 0.3s, background 0.3s; }
+    .glass-nav { background: rgba(255, 255, 255, 0.65) !important; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
     
     /* DROPDOWN MENU */
     .user-menu-container { position: relative; }
-    .user-badge { background: #111; color: #fff; border: 2px solid #111; padding: 7px 14px; font-size: 9px; font-weight: 900; letter-spacing: 0.15em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; transition: background 0.2s, color 0.2s; }
+    .user-badge { background: #111; color: #fff; border: 2px solid #111; padding: 5px 12px; font-size: 9px; font-weight: 900; letter-spacing: 0.15em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; transition: background 0.2s, color 0.2s; }
     .user-menu-container:hover .user-badge { background: transparent; color: #111; }
-    .user-dropdown { position: absolute; top: 100%; right: 0; background: #fff; border: 2px solid #111; border-top: none; display: none; flex-direction: column; min-width: 100%; box-shadow: 3px 3px 0 rgba(0,0,0,1); z-index: 1000; }
-    .user-menu-container:hover .user-dropdown { display: flex; animation: fadeIn 0.2s; }
-    .user-dropdown-btn { background: transparent; color: #111; border: none; padding: 12px 16px; font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; text-align: left; transition: background 0.2s, color 0.2s; }
+    .user-dropdown { position: absolute; top: 100%; right: 0; background: #fff; border: 2px solid #111; border-top: none; display: none; flex-direction: column; min-width: 100%; box-shadow: 3px 3px 0 rgba(0,0,0,1); z-index: 1001; }
+    .user-menu-container:hover .user-dropdown { display: flex; }
+    .user-dropdown-btn { background: transparent; color: #111; border: none; padding: 12px 16px; font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; text-align: left; }
     .user-dropdown-btn:hover { background: #111; color: #fff; }
 
-    .auth-container { display: flex; align-items: center; gap: 1rem; }
+    .nav-signin { background: #111; color: #fff; border: 2px solid #111; padding: 5px 12px; font-size: 9px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; transition: all 0.2s; }
+    .nav-signin:hover { background: transparent; color: #111; }
+    
+    /* SIZE SELECTOR */
+    .size-btn { background: transparent; color: #111; border: 1.5px solid #111; padding: 5px 0; width: 32px; text-align: center; font-size: 10px; font-weight: 700; transition: all 0.2s; }
+    .size-btn.active { background: #111; color: #fff; }
+
     .topo-parallax-wrap { position: absolute; top: -50vh; bottom: -50vh; left: 0; right: 0; pointer-events: none; z-index: 0; transform: translateY(calc(var(--scroll-y, 0) * 0.15px)); will-change: transform; }
     .hero-video-placeholder { position: absolute; inset: 0; background: var(--B); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; }
     .hero-video-placeholder::before { content: ''; position: absolute; inset: -60px; background: repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.04) 39px, rgba(255,255,255,0.04) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.04) 39px, rgba(255,255,255,0.04) 40px); }
@@ -147,25 +153,15 @@
     .svc-card:hover .svc-num { color: rgba(255, 255, 255, 0.07) !important; }
     .svc-card:hover .svc-tag { color: rgba(255, 255, 255, 0.35) !important; border-color: rgba(255, 255, 255, 0.15) !important; }
     .svc-card:hover .svc-btn { background: #fff !important; color: #111 !important; border-color: #fff !important; }
-    .nl { position: relative; }
+    .nl { position: relative; color: #111; text-decoration: none; }
     .nl::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #111; transition: width 0.2s; }
     .nl:hover::after { width: 100%; }
     .admin-input:focus, .drop-zone.over { border-color: #111 !important; }
-    .drop-zone.over { background: rgba(0, 0, 0, 0.04) !important; }
     
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
     ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: #fff; } ::-webkit-scrollbar-thumb { background: #111; }
-
-    @media (max-width: 768px) {
-      .desk-nav { display: none !important; }
-      .mob-ham { display: flex !important; }
-      .product-grid, .port-grid { grid-template-columns: 1fr 1fr !important; }
-      .three-col, .two-col, .footer-grid, .admin-form-grid, .contact-grid, .testi-grid, .about-grid { grid-template-columns: 1fr !important; }
-      .hero-h1 { font-size: clamp(80px, 22vw, 130px); }
-    }
-    @media (min-width: 769px) { .mob-ham, .mob-menu { display: none !important; } }
+    @media (max-width: 768px) { .desk-nav { display: none !important; } .mob-ham { display: flex !important; } .product-grid { grid-template-columns: 1fr 1fr !important; } }
   </style>
 </head>
 <body>
@@ -173,25 +169,35 @@
 
   <script type="text/babel">
     const { useState, useEffect, useRef, useCallback } = React;
+    const LOGO_SRC = "SplotchPlainLogo-removebg.png";
 
-    const LOGO_SRC = "splotchnobg.png";
+    // ELASTIC CURSOR COMPONENT
+    function CustomCursor() {
+      const [pulse, setPulse] = useState(false);
+      const [pos, setPos] = useState({ x: 0, y: 0 });
+
+      useEffect(() => {
+        const move = (e) => setPos({ x: e.clientX, y: e.clientY });
+        const down = () => setPulse(true);
+        const up = () => setPulse(false);
+        window.addEventListener('mousemove', move);
+        window.addEventListener('mousedown', down);
+        window.addEventListener('mouseup', up);
+        return () => { window.removeEventListener('mousemove', move); window.removeEventListener('mousedown', down); window.removeEventListener('mouseup', up); };
+      }, []);
+      return ( <div className={`cursor-dot ${pulse ? 'pulse' : ''}`} style={{ left: `${pos.x}px`, top: `${pos.y}px` }}></div> );
+    }
 
     const TopoSVG = ({ color="#111", style={} }) => (
       <svg viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style={{ width:"100%",height:"100%",...style }}>
-        {["M0,250 Q150,220 300,250 T600,235 T900,248 T1200,238", "M0,270 Q130,242 260,270 T520,255 T780,268 T1040,252 T1200,265", "M0,230 Q170,202 340,230 T680,217 T1020,228 T1200,220", "M0,290 Q110,264 220,290 T440,276 T660,290 T880,272 T1100,288 T1200,282", "M0,210 Q190,183 380,210 T760,198 T1140,208 T1200,203", "M0,310 Q90,284 180,310 T360,295 T540,311 T720,293 T900,310 T1100,292 T1200,308"].map((d,i)=>( <path key={i} d={d} fill="none" stroke={color} strokeWidth={i<2?1:0.65}/> ))}
-        <ellipse cx="300" cy="250" rx="240" ry="65" fill="none" stroke={color} strokeWidth="0.75"/>
-        <ellipse cx="300" cy="250" rx="160" ry="42" fill="none" stroke={color} strokeWidth="0.75"/>
-        <ellipse cx="300" cy="250" rx="80"  ry="20" fill="none" stroke={color} strokeWidth="0.75"/>
-        <ellipse cx="900" cy="245" rx="200" ry="55" fill="none" stroke={color} strokeWidth="0.75"/>
-        <ellipse cx="900" cy="245" rx="130" ry="35" fill="none" stroke={color} strokeWidth="0.75"/>
-        <ellipse cx="900" cy="245" rx="60"  ry="16" fill="none" stroke={color} strokeWidth="0.75"/>
+        {["M0,250 Q150,220 300,250 T600,235 T900,248 T1200,238", "M0,270 Q130,242 260,270 T520,255 T780,268 T1040,252 T1200,265", "M0,230 Q170,202 340,230 T680,217 T1020,228 T1200,220", "M0,290 Q110,264 220,290 T440,276 T660,290 T880,272 T1100,288 T1200,282"].map((d,i)=>( <path key={i} d={d} fill="none" stroke={color} strokeWidth={0.65}/> ))}
       </svg>
     );
 
     const DEFAULT_PRODUCTS = [
-      { id:"shirt-1", name:"Terrain Tee 000", cost:"₹450", price:"₹1", compareAtPrice:"₹1,299", tag:"New Drop", description:"Urban utility tee with topographic print detail. Oversized fit, 100% organic cotton.", frontImage:"Shirt 1 front.jpeg", backImage:"Shirt 1 back.jpeg", hasBack:true, stock: 15, category:"T-Shirts" },
-      { id:"shirt-2", name:"Grid Tee 000", cost:"₹500", price:"₹1", compareAtPrice:"₹1,499", tag:"Limited", description:"Graphic techwear tee from the Grid Zero collaboration. Heavyweight cotton blend.", frontImage:"Shirt 2 front.jpeg", backImage:"Shirt 2 back.jpeg", hasBack:true, stock: 10, category:"T-Shirts" },
-      { id:"shirt-3", name:"Shadow Tee 000", cost:"₹400", price:"₹1", compareAtPrice:"₹1,199", tag:"Last 5", description:"Minimalist dropped-shoulder tee. Shadow Series print, ultra-soft jersey.", frontImage:"Shirt 3 front.jpeg", backImage:"Shirt 3 back.jpeg", hasBack:false, stock: 5, category:"T-Shirts" },
+      { id:"shirt-1", name:"Terrain Tee 000", cost:"₹450", price:"₹1", compareAtPrice:"₹1,299", tag:"New Drop", description:"Urban utility tee with topographic print detail. Oversized fit, 100% organic cotton.", frontImage:"Shirt 1 front.jpeg", backImage:"Shirt 1 back.jpeg", hasBack:true, stock: 15, sizes: "S, M, L, XL", category:"T-Shirts" },
+      { id:"shirt-2", name:"Grid Tee 000", cost:"₹500", price:"₹1", compareAtPrice:"₹1,499", tag:"Limited", description:"Graphic techwear tee from the Grid Zero collaboration. Heavyweight cotton blend.", frontImage:"Shirt 2 front.jpeg", backImage:"Shirt 2 back.jpeg", hasBack:true, stock: 10, sizes: "S, M, L, XL", category:"T-Shirts" },
+      { id:"shirt-3", name:"Shadow Tee 000", cost:"₹400", price:"₹1", compareAtPrice:"₹1,199", tag:"Last 5", description:"Minimalist dropped-shoulder tee. Shadow Series print, ultra-soft jersey.", frontImage:"Shirt 3 front.jpeg", backImage:"Shirt 3 back.jpeg", hasBack:false, stock: 5, sizes: "S, M, L, XL", category:"T-Shirts" },
     ];
 
     const SLabel = ({children,inv=false})=>(
@@ -205,54 +211,12 @@
       </div>
     );
 
-    // ELASTIC CUSTOM CURSOR COMPONENT
-    function CustomCursor() {
-      const [pulse, setPulse] = useState(false);
-      const [visible, setVisible] = useState(false);
-
-      useEffect(() => {
-        const wrapper = document.getElementById('cursor-wrapper');
-        const move = (e) => {
-           setVisible(true);
-           if(wrapper) wrapper.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-        };
-        const click = () => {
-           setPulse(false);
-           setTimeout(() => setPulse(true), 10);
-        };
-        window.addEventListener('mousemove', move);
-        window.addEventListener('mousedown', click);
-        return () => { 
-          window.removeEventListener('mousemove', move); 
-          window.removeEventListener('mousedown', click); 
-        };
-      }, []);
-
-      return (
-        <div id="cursor-wrapper" style={{position:'fixed', top:0, left:0, pointerEvents:'none', zIndex:99999, mixBlendMode: 'difference', opacity: visible ? 1 : 0}}>
-          <div className={`cursor-dot ${pulse ? 'pulse' : ''}`}></div>
-        </div>
-      );
-    }
-
-    // SCROLL PROGRESS BAR (RESTORED)
-    function ScrollProgress(){
-      const [w,setW]=useState(0);
-      useEffect(()=>{
-        const fn=()=>setW((window.scrollY/(document.body.scrollHeight-window.innerHeight))*100);
-        window.addEventListener("scroll",fn,{passive:true});
-        return ()=>window.removeEventListener("scroll",fn);
-      },[]);
-      return <div style={{ position:"fixed",top:0,left:0,height:3,width:w+"%",background:"#111",zIndex:999,transition:"width .1s linear" }}/>;
-    }
-
     function Ticker(){
-      const items=["STYLE BEYOND SEASONS","—","NEW DROP: TERRAIN SERIES","—","MADE IN INDIA","—","LIMITED RUNS. NO RESTOCKS.","—","splotch.in","—"];
-      const d=[...items,...items];
+      const d=["STYLE BEYOND SEASONS","—","NEW DROP: TERRAIN SERIES","—","MADE IN INDIA","—","LIMITED RUNS. NO RESTOCKS.","—"];
       return(
-        <div style={{ background:"#111",height:28,overflow:"hidden",display:"flex",alignItems:"center",borderBottom:"2px solid #222", position: "sticky", top: 56, zIndex: 499 }}>
+        <div style={{ background:"#111",height:28,overflow:"hidden",display:"flex",alignItems:"center",borderBottom:"2px solid #222", position: "sticky", top: 48, zIndex: 499 }}>
           <div style={{ display:"flex",animation:"ticker 32s linear infinite",whiteSpace:"nowrap" }}>
-            {d.map((t,i)=>(<span key={i} style={{ marginRight:"2rem",fontSize:9,fontWeight:700,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(255,255,255,0.45)",flexShrink:0 }}>{t}</span>))}
+            {[...d,...d,...d].map((t,i)=>(<span key={i} style={{ marginRight:"2rem",fontSize:9,fontWeight:700,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(255,255,255,0.45)",flexShrink:0 }}>{t}</span>))}
           </div>
         </div>
       );
@@ -267,238 +231,100 @@
 
       const handleEmailAuth = async (e) => {
         e.preventDefault();
-        if (!email || !pw) { setErr("Email and password required"); return; }
         setLoading(true); setErr("");
         try {
-          if (isLogin) {
-            await window.fbSignInWithEmailAndPassword(window.fbAuth, email, pw);
-          } else {
-            await window.fbCreateUserWithEmailAndPassword(window.fbAuth, email, pw);
-          }
+          if (isLogin) await window.fbSignInWithEmailAndPassword(window.fbAuth, email, pw);
+          else await window.fbCreateUserWithEmailAndPassword(window.fbAuth, email, pw);
           onSuccess();
-        } catch (error) {
-          setErr(error.message.replace("Firebase: ", ""));
-        } finally {
-          setLoading(false);
-        }
+        } catch (error) { setErr(error.message.replace("Firebase: ", "")); }
+        finally { setLoading(false); }
       };
 
       const handleGoogle = async () => {
-         try {
-           await window.fbSignInWithPopup(window.fbAuth, window.fbProvider);
-           onSuccess();
-         } catch(e) { setErr(e.message); }
+         try { await window.fbSignInWithPopup(window.fbAuth, window.fbProvider); onSuccess(); } catch(e) { setErr(e.message); }
       };
 
       const iSt = { display:"block", width:"100%", border:"2px solid rgba(0,0,0,0.14)", padding:"12px", fontSize:12, fontFamily:"Inter", marginBottom:"1rem" };
-
       return (
-        <div style={{ position:"fixed", inset:0, zIndex:1000, background:"rgba(17,17,17,0.85)", display:"flex", alignItems:"center", justifyContent:"center", animation:"fadeIn .2s ease" }}>
-          <div style={{ background:"#fff", border:"3px solid #111", width:"100%", maxWidth:400, position:"relative", padding:"2.5rem" }}>
-            <button onClick={onClose} style={{ position:"absolute", top:14, right:14, background:"none", border:"1.5px solid #111", width:34, height:34, fontSize:14, fontWeight:700 }}>✕</button>
+        <div style={{ position:"fixed", inset:0, zIndex:1000, background:"rgba(17,17,17,0.85)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+          <div style={{ background:"#fff", border:"3px solid #111", width:"100%", maxWidth:400, padding:"2.5rem", position:"relative" }}>
+            <button onClick={onClose} style={{ position:"absolute", top:14, right:14, background:"none", border:"1.5px solid #111", width:34, height:34, fontWeight:700 }}>✕</button>
             <h2 style={{ fontFamily:"Playfair Display", fontWeight:700, fontSize:28, marginBottom:"0.5rem" }}>{isLogin ? "Welcome Back." : "Join Splotch."}</h2>
-            <p style={{ fontSize:12, color:"rgba(0,0,0,0.5)", marginBottom:"2rem" }}>Secure your access to exclusive drops.</p>
-
-            {err && <div style={{ background:"#c00", color:"#fff", padding:"10px", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:"1.5rem" }}>{err}</div>}
-
+            {err && <div style={{ background:"#c00", color:"#fff", padding:"10px", fontSize:10, fontWeight:700, textTransform:"uppercase", marginBottom:"1.5rem" }}>{err}</div>}
             <form onSubmit={handleEmailAuth}>
               <input type="email" placeholder="Email Address" value={email} onChange={e=>setEmail(e.target.value)} style={iSt} required/>
-              <input type="password" placeholder="Password (Min 6 characters)" value={pw} onChange={e=>setPw(e.target.value)} style={iSt} required/>
+              <input type="password" placeholder="Password" value={pw} onChange={e=>setPw(e.target.value)} style={iSt} required/>
               <button type="submit" disabled={loading} style={{ width:"100%", background:"#111", color:"#fff", border:"3px solid #111", padding:"14px", fontSize:11, fontWeight:700, letterSpacing:"0.2em", textTransform:"uppercase", marginBottom:"1rem" }}>
-                {loading ? "Processing..." : (isLogin ? "Log In" : "Sign Up")}
+                {loading ? "..." : (isLogin ? "Log In" : "Sign Up")}
               </button>
             </form>
-
-            <div style={{ display:"flex", alignItems:"center", gap:"1rem", margin:"1.5rem 0" }}>
-              <div style={{ flex:1, height:1, background:"rgba(0,0,0,0.1)" }}></div>
-              <span style={{ fontSize:9, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"rgba(0,0,0,0.3)" }}>OR</span>
-              <div style={{ flex:1, height:1, background:"rgba(0,0,0,0.1)" }}></div>
-            </div>
-
-            <button onClick={handleGoogle} style={{ width:"100%", background:"#fff", color:"#111", border:"2px solid rgba(0,0,0,0.2)", padding:"12px", fontSize:11, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", display:"flex", justifyContent:"center", alignItems:"center", gap:"10px" }}>
-              <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-              Continue with Google
-            </button>
-
-            <div style={{ textAlign:"center", marginTop:"2rem" }}>
-              <button onClick={() => setIsLogin(!isLogin)} style={{ background:"none", border:"none", fontSize:11, fontWeight:600, color:"#111", textDecoration:"underline" }}>
-                {isLogin ? "Need an account? Sign up." : "Already have an account? Log in."}
-              </button>
-            </div>
+            <button onClick={handleGoogle} style={{ width:"100%", background:"#fff", color:"#111", border:"2px solid rgba(0,0,0,0.2)", padding:"12px", fontSize:11, fontWeight:700, textTransform:"uppercase" }}>Google Login</button>
+            <div style={{ textAlign:"center", marginTop:"2rem" }}><button onClick={() => setIsLogin(!isLogin)} style={{ background:"none", border:"none", fontSize:11, fontWeight:600, textDecoration:"underline" }}>{isLogin ? "Create an account" : "Already have an account?"}</button></div>
           </div>
         </div>
       );
     }
 
-    function Header({cartCount, onCartOpen, onLogoClick, setMobMenu, user, onAuthClick, handleLogout}){
-      const [scrolled,setScrolled]=useState(false);
-      useEffect(()=>{
-        const fn=()=>setScrolled(window.scrollY>30);
-        window.addEventListener("scroll",fn,{passive:true});
-        return ()=>window.removeEventListener("scroll",fn);
-      },[]);
-
-      const scrollTo=(id)=>{ document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); };
-      
+    function Header({cartCount, onCartOpen, onLogoClick, user, onAuthClick, handleLogout}){
       const safeName = user ? (user.displayName || user.email || 'USER').split('@')[0].toUpperCase() : '';
-
       return(
-        <header className={scrolled ? "glass-nav" : ""} style={{ overflow:"visible" }}>
-          <button onClick={onLogoClick} style={{ background:"none",border:"none", display:"flex",alignItems:"center",gap:10,padding:0, position:"relative" }}>
-            <img src="SplotchPlainLogo-removebg.png" alt="Splotch" style={{ height:46,width:"auto",display:"block",filter:"invert(0)", transform:"scale(2.2)", transformOrigin:"left center" }}/>
+        <header>
+          <button onClick={onLogoClick} style={{ background:"none", border:"none", overflow:"visible", paddingLeft: "10px" }}>
+            <img src={LOGO_SRC} alt="Splotch" style={{ height:32, transform:"scale(1.8)", transformOrigin:"left center" }}/>
           </button>
-          
-          <nav className="desk-nav" style={{ display:"flex",gap:"2rem",alignItems:"center" }}>
-            {[["home","Home"],["shop","Shop"],["about","About"],["contact","Contact"]].map(([id,label])=>(
-              <button key={id} onClick={()=>scrollTo(id)} className="nl" style={{ background:"none",border:"none", fontSize:10,fontWeight:700,letterSpacing:"0.18em", textTransform:"uppercase",color:"#111" }}>{label}</button>
-            ))}
+          <nav className="desk-nav" style={{ display:"flex", gap:"2rem" }}>
+            <button onClick={()=>document.getElementById("home")?.scrollIntoView({behavior:"smooth"})} className="nl" style={{background:"none",border:"none",fontSize:10,fontWeight:700,letterSpacing:"0.18em"}}>HOME</button>
+            <button onClick={()=>document.getElementById("shop")?.scrollIntoView({behavior:"smooth"})} className="nl" style={{background:"none",border:"none",fontSize:10,fontWeight:700,letterSpacing:"0.18em"}}>SHOP</button>
+            <a href="/about" className="nl" style={{fontSize:10,fontWeight:700,letterSpacing:"0.18em"}}>ABOUT</a>
+            <button onClick={()=>document.getElementById("contact")?.scrollIntoView({behavior:"smooth"})} className="nl" style={{background:"none",border:"none",fontSize:10,fontWeight:700,letterSpacing:"0.18em"}}>CONTACT</button>
           </nav>
-          
-          <div style={{ display:"flex",alignItems:"center",gap:"1.2rem" }}>
-            <div className="auth-container desk-nav">
-              {user ? (
-                <div className="user-menu-container">
-                  <div className="user-badge">
-                    WELCOME, {safeName}
-                    <span style={{ fontSize: '7px', opacity: 0.6 }}>▼</span>
-                  </div>
-                  <div className="user-dropdown">
-                    <button className="user-dropdown-btn" onClick={handleLogout}>Logout</button>
-                  </div>
+          <div style={{ display:"flex", alignItems:"center", gap:"1rem" }}>
+            {user ? (
+              <div className="user-menu-container desk-nav">
+                <div className="user-badge">{safeName} ▼</div>
+                <div className="user-dropdown">
+                  <button className="user-dropdown-btn" onClick={handleLogout}>Logout</button>
                 </div>
-              ) : (
-                <button className="nav-signin" onClick={onAuthClick}>SIGN IN</button>
-              )}
-            </div>
-
-            <button className="mob-ham" onClick={()=>setMobMenu(o=>!o)} style={{ background:"none",border:"2px solid #111", width:38,height:38, flexDirection:"column",alignItems:"center",justifyContent:"center",gap:5 }}>
-              {[0,1,2].map(i=><span key={i} style={{ display:"block",width:16,height:1.5,background:"#111" }}/>)}
-            </button>
-
-            <button onClick={onCartOpen} style={{ background:"#111",color:"#fff",border:"2px solid #111", padding:"8px 14px",fontSize:10,fontWeight:700, letterSpacing:"0.15em",textTransform:"uppercase", display:"flex",alignItems:"center",gap:6 }}>
-              Cart
-              {cartCount>0&&<span style={{ background:"#fff",color:"#111",width:18,height:18,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:900 }}>{cartCount}</span>}
+              </div>
+            ) : ( <button className="nav-signin desk-nav" onClick={onAuthClick}>SIGN IN</button> )}
+            <button onClick={onCartOpen} style={{ background:"#111", color:"#fff", padding:"7px 14px", fontSize:9, fontWeight:900, display:"flex", gap:6, alignItems:"center", border:"2px solid #111" }}>
+              CART {cartCount>0 && <span style={{background:"#fff",color:"#111",padding:"0 4px"}}>{cartCount}</span>}
             </button>
           </div>
         </header>
       );
     }
 
-    function MobMenu({open, setOpen, user, onAuthClick, handleLogout}){
-      const go=(id)=>{ document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); setOpen(false); };
-      const safeName = user ? (user.displayName || user.email || 'USER').split('@')[0].toUpperCase() : '';
-      
-      return(
-        <div className="mob-menu" style={{ position:"fixed",inset:0,zIndex:600,background:"#111", display:"flex",flexDirection:"column",justifyContent:"center",padding:"3rem 2rem", transform:open?"translateX(0)":"translateX(100%)", transition:"transform .4s cubic-bezier(.76,0,.24,1)" }}>
-          <button onClick={()=>setOpen(false)} style={{ position:"absolute",top:16,right:16, background:"none",border:"2px solid rgba(255,255,255,0.2)", width:42,height:42,color:"#fff",fontSize:18,fontWeight:700 }}>✕</button>
-          <img src={LOGO_SRC} alt="Splotch" style={{ height:48,width:"auto",marginBottom:"2.5rem",opacity:0.9,filter:"invert(1)" }}/>
-          {[["home","Home"],["shop","Shop"],["about","About"],["contact","Contact"]].map(([id,label],i)=>(
-            <button key={id} onClick={()=>go(id)} style={{ background:"none",border:"none",textAlign:"left",fontFamily:"Inter",fontWeight:900, fontSize:"clamp(38px,10vw,60px)",letterSpacing:"-0.04em",textTransform:"uppercase", color:"#fff",lineHeight:1.1, borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"0.5rem 0" }}>{label}</button>
-          ))}
-          
-          <div style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem' }}>
-            {user ? (
-              <React.Fragment>
-                <span style={{ color: '#fff', fontSize: 12, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '1rem' }}>
-                    WELCOME, {safeName}
-                </span>
-                <button onClick={() => { handleLogout(); setOpen(false); }} style={{ background: 'transparent', color: '#fff', border: '1px solid #fff', padding: '10px 20px', fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase' }}>Logout</button>
-              </React.Fragment>
-            ) : (
-                <button onClick={() => { onAuthClick(); setOpen(false); }} style={{ background: '#fff', color: '#111', border: 'none', padding: '12px 24px', fontSize: 11, fontWeight: 900, letterSpacing: '0.15em', textTransform: 'uppercase' }}>Sign In</button>
-            )}
-          </div>
-        </div>
-      );
-    }
-
-    function ProdCard({product,onQV,onAdd}){
-      const [flipped,setFlipped]=useState(false);
-      const [added,setAdded]=useState(false);
+    function ProdCard({product,onAdd}){
       const isSoldOut = product.stock <= 0; 
-      
-      const doAdd=(e)=>{ e.stopPropagation(); onAdd(product); setAdded(true); setTimeout(()=>setAdded(false),1800); };
-      const frontImg = product.frontImage || null;
-      const backImg = product.backImage || null;
+      const sizeArray = product.sizes ? product.sizes.split(',').map(s=>s.trim()) : ["OS"];
+      const [selSize, setSelSize] = useState(sizeArray[0]);
+
+      const doAdd=(e)=>{ 
+        e.stopPropagation(); 
+        onAdd({...product, selectedSize: selSize}); 
+      };
 
       return(
-        <div className="prod-card" style={{ border:"2px solid #111",background:"#fff",position:"relative" }}>
+        <div className="prod-card" style={{ border:"2px solid #111", background:"#fff", position:"relative", display:"flex", flexDirection:"column" }}>
           {product.tag&&<div style={{ position:"absolute",top:12,left:12,zIndex:10,background:"#111",color:"#fff",fontSize:8,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",padding:"3px 8px" }}>{product.tag}</div>}
-          {product.hasBack&&(
-            <button className="flip-toggle" onClick={()=>setFlipped(f=>!f)} style={{ position:"absolute",top:12,right:12,zIndex:10, background:flipped?"#111":"rgba(255,255,255,0.92)", color:flipped?"#fff":"#111", border:"1.5px solid #111",fontSize:8,fontWeight:700, letterSpacing:"0.15em",textTransform:"uppercase", padding:"4px 9px",transition:"all .2s" }}>{flipped?"◀ Front":"Back ▶"}</button>
-          )}
-          {isSoldOut&&(
-            <div style={{ position:"absolute",inset:0,zIndex:20,background:"rgba(255,255,255,0.9)",display:"flex",alignItems:"center",justifyContent:"center" }}><span style={{ fontWeight:900,fontSize:16,letterSpacing:"0.1em",textTransform:"uppercase",color:"#c00" }}>SOLD OUT</span></div>
-          )}
-          <div style={{ aspectRatio:"3/4",overflow:"hidden",perspective:"1200px" }} className={flipped?"flipped":""}>
-            <div className="flip-inner">
-              <div className="flip-front">{frontImg ? <img src={frontImg} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover",display:"block" }}/> : <ImgPlaceholder label={product.name+" · Front"}/>}</div>
-              {product.hasBack&&(<div className="flip-back">{backImg ? <img src={backImg} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover",display:"block" }}/> : <ImgPlaceholder label={product.name+" · Back"} dark={false}/>}</div>)}
-            </div>
+          {isSoldOut&&<div style={{ position:"absolute",inset:0,zIndex:20,background:"rgba(255,255,255,0.85)",display:"flex",alignItems:"center",justifyContent:"center" }}><span style={{ fontWeight:900,fontSize:16,color:"#c00" }}>SOLD OUT</span></div>}
+          <div style={{ aspectRatio:"3/4", overflow:"hidden", background:"#f4f4f4" }}>
+            {product.frontImage ? <img src={product.frontImage} style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : <ImgPlaceholder label={product.name}/>}
           </div>
-          <button onClick={()=>onQV(product)} style={{ position:"absolute",bottom:112,left:0,right:0,zIndex:8, background:"rgba(17,17,17,0.88)",color:"#fff",border:"none", padding:"10px",fontSize:9,fontWeight:700,letterSpacing:"0.22em", textTransform:"uppercase", opacity:0,transition:"opacity .2s" }} onMouseEnter={e=>e.target.style.opacity=1} onMouseLeave={e=>e.target.style.opacity=0} className="qv-trigger">Quick View ↗</button>
-          <div style={{ padding:"1rem 1.2rem",borderTop:"2px solid #111" }}>
+          <div style={{ padding:"1rem 1.2rem", borderTop:"2px solid #111", flex:1, display:"flex", flexDirection:"column" }}>
             <div style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.3)",marginBottom:3 }}>{product.category}</div>
-            <div style={{ fontWeight:900,fontSize:15,textTransform:"uppercase",letterSpacing:"-0.01em",marginBottom:5 }}>{product.name}</div>
-            
-            <div style={{ fontWeight:700,fontSize:13,color:"rgba(0,0,0,0.55)",marginBottom:"0.9rem" }}>
-              {product.compareAtPrice && <span style={{ textDecoration: "line-through", opacity: 0.6, marginRight: "8px", fontWeight: 600 }}>{product.compareAtPrice}</span>}
+            <div style={{ fontWeight:900,fontSize:15,textTransform:"uppercase",marginBottom:5 }}>{product.name}</div>
+            <div style={{ fontWeight:700,fontSize:13,marginBottom:"0.9rem" }}>
+              {product.compareAtPrice && <span style={{ textDecoration: "line-through", opacity: 0.5, marginRight: "8px" }}>{product.compareAtPrice}</span>}
               <span style={{ color: product.compareAtPrice ? "#c00" : "#111", fontWeight: 900 }}>{product.price}</span>
             </div>
-
-            <button className="prod-cta-btn" disabled={isSoldOut} onClick={doAdd} style={{ display:"block",width:"100%",background:added?"#111":"#fff", color:added?"#fff":"#111",border:"2px solid #111", padding:"10px",fontSize:10,fontWeight:700, letterSpacing:"0.18em",textTransform:"uppercase", opacity:isSoldOut?0.5:1 }}>{added?"✓ Added":"Add to Cart"}</button>
-          </div>
-        </div>
-      );
-    }
-
-    function QuickView({product,onClose,onAdd}){
-      const [flipped,setFlipped]=useState(false);
-      const [added,setAdded]=useState(false);
-      if(!product) return null;
-      const frontImg = product.frontImage || null;
-      const backImg = product.backImage || null;
-      const isSoldOut = product.stock <= 0;
-
-      return(
-        <div onClick={onClose} style={{ position:"fixed",inset:0,zIndex:900,background:"rgba(17,17,17,0.8)",display:"flex",alignItems:"center",justifyContent:"center",padding:"2rem",animation:"fadeIn .2s ease" }}>
-          <div onClick={e=>e.stopPropagation()} style={{ background:"#fff",border:"3px solid #111",maxWidth:860,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",maxHeight:"90vh",overflow:"auto" }}>
-            <div style={{ position:"relative",background:"#111",minHeight:400,perspective:"1200px" }} className={flipped?"flipped":""}>
-              <div className="flip-inner">
-                <div className="flip-front" style={{ position:"absolute",inset:0 }}>{frontImg ? <img src={frontImg} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover" }}/> : <ImgPlaceholder label="Front" dark/>}</div>
-                {product.hasBack&&<div className="flip-back" style={{ position:"absolute",inset:0 }}>{backImg ? <img src={backImg} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover" }}/> : <ImgPlaceholder label="Back" dark={false}/>}</div>}
-              </div>
-              {product.hasBack&&(
-                <div style={{ position:"absolute",bottom:14,left:0,right:0,display:"flex",justifyContent:"center",gap:6,zIndex:10 }}>
-                  {["Front","Back"].map((s,i)=>(
-                    <button key={s} onClick={()=>setFlipped(i===1)} style={{ background:(flipped===(i===1))?"#fff":"transparent", color:(flipped===(i===1))?"#111":"rgba(255,255,255,0.5)", border:"1.5px solid rgba(255,255,255,0.25)", padding:"5px 14px",fontSize:9,fontWeight:700, letterSpacing:"0.18em",textTransform:"uppercase" }}>{s}</button>
-                  ))}
-                </div>
-              )}
+            <div style={{ display:"flex", gap:"5px", marginBottom:"1rem", flexWrap:"wrap" }}>
+              {sizeArray.map(s => (
+                <button key={s} onClick={()=>setSelSize(s)} className={`size-btn ${selSize===s?'active':''}`}>{s}</button>
+              ))}
             </div>
-            <div style={{ padding:"2.5rem 2rem",display:"flex",flexDirection:"column",justifyContent:"space-between" }}>
-              <div>
-                <button onClick={onClose} style={{ float:"right",background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700 }}>✕</button>
-                <div style={{ fontSize:9,fontWeight:700,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(0,0,0,0.3)",marginBottom:6,clear:"both" }}>{product.category}</div>
-                <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:26,letterSpacing:"-0.02em",marginBottom:"0.6rem" }}>{product.name}</h2>
-                
-                <div style={{ fontWeight:700,fontSize:19,marginBottom:"1.2rem" }}>
-                  {product.compareAtPrice && <span style={{ textDecoration: "line-through", opacity: 0.5, marginRight: "10px", fontSize: "16px" }}>{product.compareAtPrice}</span>}
-                  <span style={{ color: product.compareAtPrice ? "#c00" : "#111" }}>{product.price}</span>
-                </div>
-
-                <p style={{ fontSize:14,lineHeight:1.75,color:"rgba(0,0,0,0.58)",marginBottom:"1.5rem" }}>{product.description}</p>
-                <div style={{ borderTop:"1px solid rgba(0,0,0,0.08)",paddingTop:"1rem" }}>
-                  {[["Material","100% Organic Cotton"],["Fit","Oversized"],["Care","Cold wash, hang dry"],["Origin","Made in India"]].map(([k,v])=>(
-                    <div key={k} style={{ display:"flex",justifyContent:"space-between",padding:"7px 0",borderBottom:"1px solid rgba(0,0,0,0.05)" }}>
-                      <span style={{ fontSize:10,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:"rgba(0,0,0,0.3)" }}>{k}</span>
-                      <span style={{ fontSize:12,fontWeight:600,color:"rgba(0,0,0,0.65)" }}>{v}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <button disabled={isSoldOut} onClick={()=>{ onAdd(product); setAdded(true); setTimeout(()=>setAdded(false),2000); }} style={{ background:added?"#444":"#111",color:"#fff",border:"3px solid #111", padding:"15px",fontSize:11,fontWeight:700, letterSpacing:"0.2em",textTransform:"uppercase", marginTop:"1.5rem",transition:"background .2s", opacity:isSoldOut?0.5:1 }}>{isSoldOut ? "Sold Out" : (added?"✓ Added to Cart":"Add to Cart")}</button>
-            </div>
+            <button className="prod-cta-btn" disabled={isSoldOut} onClick={doAdd} style={{ marginTop:"auto", width:"100%", background:"#fff", color:"#111", border:"2px solid #111", padding:"10px", fontSize:10, fontWeight:700, textTransform:"uppercase" }}>ADD TO CART</button>
           </div>
         </div>
       );
@@ -507,99 +333,37 @@
     function CartSidebar({cart,setCart,onClose, user, onAuthClick}){
       const total = cart.reduce((s,i)=>s+(parseInt((i.price||"0").replace(/[^0-9]/g,""))||0),0);
       const [loading, setLoading] = useState(false);
-      
       const [step, setStep] = useState('cart'); 
       const [shipping, setShipping] = useState({ phone: "", address: "", city: "", state: "", pincode: "" });
 
-      const initiateCheckout = () => {
-        if (!user) {
-          onAuthClick(); 
-          return;
-        }
-        setStep('shipping');
-      };
-
       const processPayment = async () => {
-        if (!shipping.phone || !shipping.address || !shipping.city || !shipping.state || !shipping.pincode) { 
-          alert("Please fill in all shipping details."); 
-          return; 
-        }
+        if (!shipping.phone || !shipping.address || !shipping.city || !shipping.state || !shipping.pincode) { alert("Fill all details."); return; }
         setLoading(true);
-
         try {
-          const response = await fetch('/api/createOrder', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount: total }) 
-          });
-
+          const response = await fetch('/api/createOrder', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount: total }) });
           const data = await response.json();
-          if (!response.ok) throw new Error(data.error || "Failed to fetch order");
-
-          const { orderId, keyId } = data;
+          if (!response.ok) throw new Error(data.error);
 
           const options = {
-            key: keyId, 
-            amount: total * 100, 
-            currency: "INR",
-            name: "Splotch",
-            description: "Apparel Order",
-            image: LOGO_SRC,
-            order_id: orderId,
+            key: data.keyId, amount: total * 100, currency: "INR", name: "Splotch",
+            order_id: data.orderId,
             handler: async function (rzpRes) {
               try {
-                if (window.fbAddDoc && window.fbCollection && window.fbDb) {
-                  await window.fbAddDoc(window.fbCollection(window.fbDb, "orders"), {
-                    items: cart,
-                    total: total,
-                    paymentId: rzpRes.razorpay_payment_id,
-                    orderId: rzpRes.razorpay_order_id,
-                    userId: user.uid,
-                    userEmail: user.email,
-                    userName: user.displayName || "Email User",
-                    shippingPhone: shipping.phone,
-                    shippingAddress: shipping.address,
-                    shippingCity: shipping.city,
-                    shippingState: shipping.state,
-                    shippingPincode: shipping.pincode,
-                    timestamp: new Date(),
-                    status: "Processing"
-                  });
-
-                  for (const item of cart) {
-                    if(item.id) {
-                      const prodRef = window.fbDoc(window.fbDb, "products", item.id);
-                      try {
-                        await window.fbUpdateDoc(prodRef, { stock: window.fbIncrement(-1) });
-                      } catch (e) {
-                        console.error(`Failed to decrement stock for ${item.id}`, e);
-                      }
-                    }
-                  }
+                await window.fbAddDoc(window.fbCollection(window.fbDb, "orders"), {
+                  items: cart, total, paymentId: rzpRes.razorpay_payment_id, orderId: rzpRes.razorpay_order_id,
+                  userId: user.uid, userEmail: user.email, userName: user.displayName || "User",
+                  shipping, timestamp: new Date(), status: "Processing"
+                });
+                for (const item of cart) {
+                  if(item.id) await window.fbUpdateDoc(window.fbDoc(window.fbDb, "products", item.id), { stock: window.fbIncrement(-1) });
                 }
-                
-                alert("Payment successful! Order placed securely.");
-                setCart([]);
-                onClose();
-              } catch (dbErr) {
-                console.error("Database save failed:", dbErr);
-                alert("Paid, but order save failed. Please contact Splotch support.");
-              }
+                alert("Order placed securely."); setCart([]); onClose();
+              } catch (dbErr) { alert("Paid, but save failed."); }
             },
-            prefill: { email: user.email, contact: shipping.phone },
-            theme: { color: "#111111" }
+            prefill: { email: user.email }, theme: { color: "#111111" }
           };
-          
-          const rzp = new window.Razorpay(options);
-          rzp.on('payment.failed', function (rzpRes){ alert("Payment Failed: " + rzpRes.error.description); });
-          rzp.open();
-
-        } catch (err) {
-          console.error("Checkout Error:", err);
-          alert("Error initiating checkout. Please try again.");
-        } finally {
-          setLoading(false);
-        }
+          new window.Razorpay(options).open();
+        } catch (err) { alert(err.message); } finally { setLoading(false); }
       };
 
       const iSt = { display:"block",width:"100%",border:"2px solid rgba(0,0,0,0.14)",background:"#f9f9f9",padding:"12px",fontSize:13,fontFamily:"Inter" };
@@ -608,675 +372,222 @@
         <div style={{ position:"fixed",inset:0,zIndex:800 }}>
           <div onClick={onClose} style={{ position:"absolute",inset:0,background:"rgba(17,17,17,0.55)" }}/>
           <div style={{ position:"absolute",top:0,right:0,bottom:0,width:"100%",maxWidth:400,background:"#fff",borderLeft:"3px solid #111",display:"flex",flexDirection:"column" }}>
-            
             <div style={{ padding:"1.2rem 1.8rem",borderBottom:"2px solid #111",display:"flex",justifyContent:"space-between",alignItems:"center" }}>
-              <span style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:20,letterSpacing:"-0.01em" }}>
-                {step === 'cart' ? `Cart (${cart.length})` : "Shipping Info"}
-              </span>
+              <span style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:20 }}>{step === 'cart' ? `Cart (${cart.length})` : "Shipping Info"}</span>
               <button onClick={onClose} style={{ background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700 }}>✕</button>
             </div>
-
             {step === 'cart' && (
               <React.Fragment>
                 <div style={{ flex:1,overflow:"auto",padding:"0.8rem 1.8rem" }}>
-                  {cart.length===0?(
-                    <div style={{ textAlign:"center",padding:"4rem 0",color:"rgba(0,0,0,0.25)" }}>
-                      <img src={LOGO_SRC} alt="" style={{ height:40,opacity:.15,marginBottom:12 }}/>
-                      <div style={{ fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase" }}>Your cart is empty</div>
-                    </div>
-                  ):cart.map((item,i)=>(
-                    <div key={i} style={{ display:"flex",gap:"1rem",alignItems:"center",borderBottom:"1px solid rgba(0,0,0,0.07)",padding:"0.9rem 0" }}>
-                      <div style={{ width:58,height:58,background:"#111",flexShrink:0,overflow:"hidden" }}>
-                        {item.frontImage?<img src={item.frontImage} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover" }}/>:<div style={{ width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,0.15)",fontSize:18 }}>◎</div>}
-                      </div>
-                      <div style={{ flex:1,minWidth:0 }}>
-                        <div style={{ fontWeight:700,fontSize:12,textTransform:"uppercase",letterSpacing:"0.03em",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis" }}>{item.name}</div>
+                  {cart.length===0?<div style={{textAlign:"center",padding:"4rem 0",fontSize:11,fontWeight:700}}>Empty Cart</div> : 
+                    cart.map((item,i)=>(
+                    <div key={i} style={{ display:"flex",gap:"1rem",alignItems:"center",borderBottom:"1px solid #eee",padding:"0.9rem 0" }}>
+                      <div style={{ width:58,height:58,background:"#111" }}><img src={item.frontImage} style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
+                      <div style={{ flex:1 }}>
+                        <div style={{ fontWeight:700,fontSize:12,textTransform:"uppercase" }}>{item.name}</div>
+                        <div style={{ fontSize:10,color:"#666",marginTop:2 }}>SIZE: {item.selectedSize}</div>
                         <div style={{ fontSize:12,fontWeight:600,color:"#c00",marginTop:2 }}>{item.price}</div>
                       </div>
-                      <button onClick={()=>setCart(c=>c.filter((_,j)=>j!==i))} style={{ background:"none",border:"1px solid rgba(0,0,0,0.12)",width:26,height:26,fontSize:11,flexShrink:0 }}>✕</button>
+                      <button onClick={()=>setCart(c=>c.filter((_,j)=>j!==i))} style={{ background:"none",border:"1px solid #ddd",width:26,height:26 }}>✕</button>
                     </div>
                   ))}
                 </div>
                 {cart.length>0&&(
                   <div style={{ padding:"1.2rem 1.8rem",borderTop:"2px solid #111" }}>
                     <div style={{ display:"flex",justifyContent:"space-between",marginBottom:"0.9rem" }}>
-                      <span style={{ fontSize:11,fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase" }}>Total</span>
-                      <span style={{ fontSize:17,fontWeight:900,letterSpacing:"-0.02em" }}>₹{total.toLocaleString("en-IN")}</span>
+                      <span style={{ fontSize:11,fontWeight:700 }}>Total</span><span style={{ fontSize:17,fontWeight:900 }}>₹{total.toLocaleString("en-IN")}</span>
                     </div>
-                    <button onClick={initiateCheckout} style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase" }}>Secure Checkout →</button>
-                    <button onClick={()=>setCart([])} style={{ width:"100%",background:"transparent",color:"rgba(0,0,0,0.35)",border:"none",padding:"8px",fontSize:9,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase",marginTop:4 }}>Clear Cart</button>
+                    <button onClick={()=>{user ? setStep('shipping') : onAuthClick()}} style={{ width:"100%",background:"#111",color:"#fff",padding:"14px",fontWeight:700 }}>CHECKOUT →</button>
                   </div>
                 )}
               </React.Fragment>
             )}
-
             {step === 'shipping' && (
               <div style={{ flex:1, display:"flex", flexDirection:"column" }}>
                 <div style={{ flex:1, overflow:"auto", padding:"1.5rem 1.8rem" }}>
-                  <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6 }}>Phone Number *</label>
-                  <input type="tel" placeholder="+91" value={shipping.phone} onChange={e=>setShipping(s=>({...s, phone: e.target.value}))} style={{...iSt, marginBottom:"1.5rem"}} />
-                  
-                  <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6 }}>House/Flat No. & Street *</label>
-                  <input type="text" placeholder="Address Line 1" value={shipping.address} onChange={e=>setShipping(s=>({...s, address: e.target.value}))} style={{...iSt, marginBottom:"1rem"}} />
-                  
+                  <input type="tel" placeholder="Phone +91" value={shipping.phone} onChange={e=>setShipping(s=>({...s, phone: e.target.value}))} style={{...iSt, marginBottom:"1rem"}} />
+                  <input type="text" placeholder="Address" value={shipping.address} onChange={e=>setShipping(s=>({...s, address: e.target.value}))} style={{...iSt, marginBottom:"1rem"}} />
                   <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"1rem", marginBottom:"1rem" }}>
-                    <div>
-                      <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6 }}>City *</label>
-                      <input type="text" placeholder="City" value={shipping.city} onChange={e=>setShipping(s=>({...s, city: e.target.value}))} style={iSt} />
-                    </div>
-                    <div>
-                      <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6 }}>State *</label>
-                      <input type="text" placeholder="State" value={shipping.state} onChange={e=>setShipping(s=>({...s, state: e.target.value}))} style={iSt} />
-                    </div>
+                    <input type="text" placeholder="City" value={shipping.city} onChange={e=>setShipping(s=>({...s, city: e.target.value}))} style={iSt} />
+                    <input type="text" placeholder="State" value={shipping.state} onChange={e=>setShipping(s=>({...s, state: e.target.value}))} style={iSt} />
                   </div>
-
-                  <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6 }}>Pincode *</label>
-                  <input type="text" placeholder="6-digit Pincode" value={shipping.pincode} onChange={e=>setShipping(s=>({...s, pincode: e.target.value}))} style={{...iSt, marginBottom:"1.5rem"}} />
-
+                  <input type="text" placeholder="Pincode" value={shipping.pincode} onChange={e=>setShipping(s=>({...s, pincode: e.target.value}))} style={{...iSt, marginBottom:"1rem"}} />
                 </div>
                 <div style={{ padding:"1.2rem 1.8rem",borderTop:"2px solid #111" }}>
-                  <button onClick={processPayment} disabled={loading} style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase", marginBottom:8 }}>{loading ? "Processing..." : `Pay ₹${total} Now`}</button>
-                  <button onClick={()=>setStep('cart')} style={{ width:"100%",background:"transparent",color:"#111",border:"2px solid rgba(0,0,0,0.2)",padding:"10px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase" }}>← Back to Cart</button>
+                  <button onClick={processPayment} disabled={loading} style={{ width:"100%",background:"#111",color:"#fff",padding:"14px",fontWeight:700, marginBottom:8 }}>{loading ? "..." : `PAY ₹${total}`}</button>
+                  <button onClick={()=>setStep('cart')} style={{ width:"100%",background:"transparent",border:"2px solid #ddd",padding:"10px",fontWeight:700 }}>BACK</button>
                 </div>
               </div>
             )}
-
           </div>
         </div>
       );
     }
 
-    function ImgUpload({value,onChange,label}){
-      const ref=useRef();
-      const [drag,setDrag]=useState(false);
-      const read=(file)=>{ if(!file) return; const r=new FileReader(); r.onload=e=>onChange(e.target.result); r.readAsDataURL(file); };
-      return(
-        <div>
-          <div style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",marginBottom:7 }}>{label}</div>
-          <div className={`drop-zone${drag?" over":""}`} onClick={()=>ref.current?.click()} onDragOver={e=>{e.preventDefault();setDrag(true);}} onDragLeave={()=>setDrag(false)} onDrop={e=>{e.preventDefault();setDrag(false);read(e.dataTransfer.files[0]);}} style={{ border:"2px dashed rgba(0,0,0,0.18)",padding:"0.9rem", textAlign:"center",background:drag?"rgba(0,0,0,0.03)":"#fafafa", minHeight:110,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8 }}>
-            {value?(
-              <React.Fragment>
-                <img src={value} alt="" style={{ maxHeight:90,maxWidth:"100%",objectFit:"contain" }}/>
-                <button onClick={e=>{e.stopPropagation();onChange(null);}} style={{ background:"#111",color:"#fff",border:"none",fontSize:8,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",padding:"3px 9px" }}>Remove</button>
-              </React.Fragment>
-            ):(
-              <React.Fragment>
-                <svg width="28" height="28" viewBox="0 0 28 28" style={{ opacity:.3 }}><path d="M14 3L14 19M7 10L14 3L21 10" stroke="#111" strokeWidth="1.8" fill="none"/><path d="M3 21L3 25L25 25L25 21" stroke="#111" strokeWidth="1.8" fill="none"/></svg>
-                <span style={{ fontSize:10,fontWeight:600,color:"rgba(0,0,0,0.35)" }}>Click or drag image</span>
-                <span style={{ fontSize:9,color:"rgba(0,0,0,0.22)" }}>JPEG, PNG, WEBP</span>
-              </React.Fragment>
-            )}
-            <input ref={ref} type="file" accept="image/*" style={{ display:"none" }} onChange={e=>read(e.target.files[0])}/>
-          </div>
-        </div>
-      );
-    }
-    
     function AdminPanel({products,setProducts,onClose}){
       const [authed,setAuthed]=useState(false);
-      const [email, setEmail] = useState("");
-      const [pw, setPw] = useState("");
-      const [pwErr,setPwErr]=useState(false);
+      const [creds, setCreds] = useState({email:"", pw:""});
       const [editId,setEditId]=useState(null);
-      const [toast,setToast]=useState(null);
-      
-      const blank={ name:"", cost:"", price:"₹1", compareAtPrice:"₹1,100", tag:"", description:"", category:"T-Shirts", frontImage:null, backImage:null, hasBack:false, stock: 10 };
-      const [form,setForm]=useState(blank);
+      const [tab, setTab] = useState("products");
+      const [orders, setOrders] = useState([]);
+      const [form,setForm]=useState({name:"", price:"₹1", stock:10, description:"", category:"T-Shirts", frontImage:null, sizes: "S, M, L, XL"});
 
-      const showToast=(m)=>{ setToast(m); setTimeout(()=>setToast(null),2500); };
-      
+      useEffect(() => {
+        if(authed && tab === "orders") {
+          window.fbGetDocs(window.fbQuery(window.fbCollection(window.fbDb, "orders"), window.fbOrderBy("timestamp", "desc"))).then(snap => {
+            const ords = []; snap.forEach(d => ords.push({id: d.id, ...d.data()})); setOrders(ords);
+          });
+        }
+      }, [authed, tab]);
+
       const login = async () => {
         try {
-          const res = await window.fbSignInWithEmailAndPassword(window.fbAuth, email, pw);
-          if (res.user.email === "splotchglobal@gmail.com") {
-            setAuthed(true); setPwErr(false);
-          } else {
-            setPwErr("Not authorized as Admin.");
-            await window.fbSignOut(window.fbAuth);
-          }
-        } catch (err) {
-          setPwErr(err.message.replace("Firebase: ", ""));
-        }
+          const res = await window.fbSignInWithEmailAndPassword(window.fbAuth, creds.email, creds.pw);
+          if (res.user.email === "splotchglobal@gmail.com") setAuthed(true);
+          else { alert("Unauthorized"); await window.fbSignOut(window.fbAuth); }
+        } catch (e) { alert(e.message); }
       };
 
       const save = async () => {
+        const id = editId === "new" ? "prod-"+Date.now() : editId;
         try {
-          if(!form.name||!form.price){ showToast("Name & price required."); return; }
-          const newId = editId === "new" ? "prod-"+Date.now() : editId;
-          const updatedProduct = {...form, id: newId};
-          
-          if (!window.fbDb || !window.fbSetDoc) throw new Error("Firebase missing");
-          await window.fbSetDoc(window.fbDoc(window.fbDb, "products", newId), updatedProduct);
-          
-          let upd;
-          if(editId==="new"){ upd=[...products, updatedProduct]; showToast("Product added Globally!"); }
-          else{ upd=products.map(p=>p.id===editId?updatedProduct:p); showToast("Saved Globally!"); }
-          setProducts(upd); 
-          setEditId(null); setForm(blank);
-        } catch (err) { 
-          console.error("Save failed:", err); 
-          alert("Error saving to database: \n\n" + err.message + "\n\n(Did you update your Firebase Rules?)"); 
-        }
+          await window.fbSetDoc(window.fbDoc(window.fbDb, "products", id), { ...form, id });
+          alert("Saved Successfully!");
+          onClose();
+          window.location.reload(); 
+        } catch (e) { alert("Rule Error: " + e.message); }
       };
 
-      const remove = async (id)=>{ 
-        if(window.confirm("Delete globally?")) {
-          try {
-            await window.fbDeleteDoc(window.fbDoc(window.fbDb, "products", id));
-            setProducts(products.filter(p=>p.id!==id)); 
-            showToast("Deleted."); 
-            if(editId===id){setEditId(null);setForm(blank);} 
-          } catch(err) { 
-            alert("Delete failed: " + err.message); 
-          }
-        }
-      };
-
-      const iSt={ display:"block",width:"100%",border:"2px solid rgba(0,0,0,0.14)",background:"#fff",padding:"10px 12px",fontSize:13,fontFamily:"Inter",transition:"border-color .2s" };
-
-      if(!authed) return(
-        <div style={{ position:"fixed",inset:0,zIndex:1000,background:"#111",display:"flex",alignItems:"center",justifyContent:"center",animation:"fadeIn .2s" }}>
-          <div style={{ background:"#fff",border:"3px solid #111",padding:"2.5rem",width:"100%",maxWidth:380,position:"relative" }}>
-            <button onClick={onClose} style={{ position:"absolute",top:14,right:14,background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700 }}>✕</button>
-            <img src={LOGO_SRC} alt="Splotch" style={{ height:44,marginBottom:"1.5rem",filter:"invert(0)" }}/>
-            <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:26,marginBottom:"0.4rem" }}>Admin Portal</h2>
-            <p style={{ fontSize:12,color:"rgba(0,0,0,0.4)",marginBottom:"1.8rem" }}>Please authenticate to access the global backend.</p>
-            
-            <input className="admin-input" type="email" placeholder="Admin Email" value={email} onChange={e=>setEmail(e.target.value)} style={{...iSt, marginBottom:"0.5rem"}}/>
-            <input className="admin-input" type="password" placeholder="Password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&login()} style={{ ...iSt,marginBottom:"0.9rem",borderColor:pwErr?"#c00":"rgba(0,0,0,0.14)",animation:pwErr?"shake .3s":"none" }} onFocus={e=>e.target.style.borderColor="#111"} onBlur={e=>e.target.style.borderColor=pwErr?"#c00":"rgba(0,0,0,0.14)"}/>
-            
-            <button onClick={login} style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"13px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase" }}>Secure Unlock</button>
-            {pwErr&&<p style={{ color:"#c00",fontSize:10,fontWeight:700,marginTop:10,textAlign:"center",letterSpacing:"0.05em",textTransform:"uppercase" }}>{pwErr}</p>}
-          </div>
+      if(!authed) return (
+        <div style={{ position:"fixed", inset:0, zIndex:2000, background:"#111", display:"flex", alignItems:"center", justifyContent:"center" }}>
+           <div style={{ background:"#fff", padding:"2rem", border:"3px solid #111", width:350 }}>
+              <h2>Admin Login</h2>
+              <input type="email" placeholder="Admin Email" onChange={e=>setCreds({...creds, email:e.target.value})} style={{ width:"100%", padding:"10px", margin:"10px 0" }}/>
+              <input type="password" placeholder="Password" onChange={e=>setCreds({...creds, pw:e.target.value})} style={{ width:"100%", padding:"10px", margin:"10px 0" }}/>
+              <button onClick={login} style={{ width:"100%", padding:"10px", background:"#111", color:"#fff" }}>UNLOCK</button>
+           </div>
         </div>
       );
 
-      return(
-        <div style={{ position:"fixed",inset:0,zIndex:1000,background:"#fff",overflow:"auto",animation:"fadeIn .2s" }}>
-          {toast&&<div style={{ position:"fixed",bottom:22,left:"50%",transform:"translateX(-50%)",background:"#111",color:"#fff",padding:"11px 22px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",zIndex:1010,animation:"slideUp .3s ease" }}>{toast}</div>}
-          <div style={{ background:"#111",padding:"0 1.5rem",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100,borderBottom:"2px solid #333" }}>
-            <div style={{ display:"flex",alignItems:"center",gap:12 }}><img src={LOGO_SRC} alt="" style={{ height:30,filter:"invert(1)",opacity:.85 }}/><span style={{ fontFamily:"Inter",fontWeight:700,fontSize:11,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(255,255,255,0.5)" }}>/ Admin (Global Sync Active)</span></div>
-            <div style={{ display:"flex",gap:"0.75rem" }}>
-              <button onClick={()=>{setForm(blank);setEditId("new");}} style={{ background:"#fff",color:"#111",border:"2px solid #fff",padding:"7px 18px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase" }}>+ New Product</button>
-              <button onClick={onClose} style={{ background:"transparent",color:"rgba(255,255,255,0.5)",border:"1.5px solid rgba(255,255,255,0.18)",width:38,height:38,fontSize:15,fontWeight:700 }}>✕</button>
+      return (
+        <div style={{ position:"fixed", inset:0, zIndex:2000, background:"#fff", padding:"2rem", overflow:"auto" }}>
+          <div style={{display:"flex", justifyContent:"space-between", marginBottom:"2rem", borderBottom:"2px solid #111", paddingBottom:"1rem"}}>
+            <div style={{display:"flex", gap:"1rem"}}>
+              <button onClick={()=>setTab("products")} style={{background:tab==="products"?"#111":"#fff", color:tab==="products"?"#fff":"#111", border:"2px solid #111", padding:"5px 15px", fontWeight:700}}>PRODUCTS</button>
+              <button onClick={()=>setTab("orders")} style={{background:tab==="orders"?"#111":"#fff", color:tab==="orders"?"#fff":"#111", border:"2px solid #111", padding:"5px 15px", fontWeight:700}}>ORDERS</button>
             </div>
+            <button onClick={onClose} style={{ fontWeight:900, background:"none", border:"none" }}>✕ CLOSE</button>
           </div>
-          <div style={{ display:"grid",gridTemplateColumns:editId?"1fr 1.5fr":"1fr",gap:0,minHeight:"calc(100vh - 56px)" }}>
-            <div style={{ borderRight:editId?"2px solid #111":"none",padding:"1.5rem" }}>
-              <div style={{ fontSize:10,fontWeight:700,letterSpacing:"0.28em",textTransform:"uppercase",color:"rgba(0,0,0,0.3)",marginBottom:"1.2rem",borderLeft:"3px solid #111",paddingLeft:10 }}>{products.length} Product{products.length!==1?"s":""}</div>
-              <div style={{ display:"flex",flexDirection:"column",gap:2 }}>
-                {products.map(p=>(
-                  <div key={p.id} onClick={()=>{setForm({...p});setEditId(p.id);}} style={{ display:"flex",alignItems:"center",gap:"0.9rem",border:"2px solid #111",padding:"0.9rem 1rem", background:editId===p.id?"#111":"#fff" }}>
-                    <div style={{ width:52,height:52,background:editId===p.id?"#333":"#f0f0f0",flexShrink:0,overflow:"hidden" }}>{p.frontImage?<img src={p.frontImage} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover" }}/>:<div style={{ width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,color:editId===p.id?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.12)" }}>◎</div>}</div>
-                    <div style={{ flex:1,minWidth:0 }}><div style={{ fontWeight:700,fontSize:13,textTransform:"uppercase",letterSpacing:"-0.01em",color:editId===p.id?"#fff":"#111",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis" }}>{p.name}</div><div style={{ fontSize:11,color:editId===p.id?"rgba(255,255,255,0.4)":"#c00",fontWeight:600,marginTop:1 }}>{p.price}</div></div>
-                    <div style={{ display:"flex",flexDirection:"column",gap:3,flexShrink:0,alignItems:"flex-end" }}>
-                      <span style={{ fontSize:8,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 5px",background:p.stock<=0?"#c00":"transparent",color:p.stock<=0?"#fff":editId===p.id?"rgba(255,255,255,0.4)":"rgba(0,0,0,0.4)",border:`1px solid ${p.stock<=0?"#c00":editId===p.id?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.12)"}` }}>
-                        {p.stock <= 0 ? "Sold Out" : `Stock: ${p.stock}`}
-                      </span>
-                      <button onClick={e=>{e.stopPropagation(); remove(p.id);}} style={{ fontSize:7,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 5px",background:"transparent",color:"rgba(180,0,0,0.55)",border:"1px solid rgba(180,0,0,0.18)" }}>Delete</button>
+
+          <div style={{ display:"grid", gridTemplateColumns: tab==="products" && editId ? "1fr 1fr" : "1fr", gap:"2rem" }}>
+             {tab === "products" && (
+               <div>
+                  <button onClick={()=>{setForm({}); setEditId("new");}} style={{ width:"100%", padding:"10px", background:"#111", color:"#fff", fontWeight:900, marginBottom:"10px" }}>+ NEW PRODUCT</button>
+                  {products.map(p=>(
+                    <div key={p.id} onClick={()=>{setForm(p); setEditId(p.id);}} style={{ border:"1px solid #ddd", padding:"15px", marginBottom:"5px", cursor:"crosshair", background: editId === p.id ? "#f0f0f0" : "#fff" }}>
+                      <div style={{fontWeight:900}}>{p.name}</div>
+                      <div style={{fontSize:12, color:"#666"}}>Stock: {p.stock} | Sizes: {p.sizes}</div>
+                    </div>
+                  ))}
+               </div>
+             )}
+             
+             {tab === "products" && editId && (
+               <div style={{ border:"2px solid #111", padding:"2rem", background:"#fafafa" }}>
+                  <input placeholder="Name" value={form.name||''} onChange={e=>setForm({...form, name:e.target.value})} style={{ width:"100%", padding:"10px", marginBottom:"10px" }}/>
+                  <input placeholder="Price (e.g. ₹1,200)" value={form.price||''} onChange={e=>setForm({...form, price:e.target.value})} style={{ width:"100%", padding:"10px", marginBottom:"10px" }}/>
+                  <input type="number" placeholder="Stock Qty" value={form.stock||0} onChange={e=>setForm({...form, stock:parseInt(e.target.value)})} style={{ width:"100%", padding:"10px", marginBottom:"10px" }}/>
+                  <input placeholder="Sizes (comma separated: S, M, L)" value={form.sizes||''} onChange={e=>setForm({...form, sizes:e.target.value})} style={{ width:"100%", padding:"10px", marginBottom:"10px" }}/>
+                  <input placeholder="Image URL" value={form.frontImage||''} onChange={e=>setForm({...form, frontImage:e.target.value})} style={{ width:"100%", padding:"10px", marginBottom:"10px" }}/>
+                  <button onClick={save} style={{ width:"100%", padding:"15px", background:"#111", color:"#fff", fontWeight:900 }}>SAVE CHANGES</button>
+               </div>
+             )}
+
+             {tab === "orders" && (
+              <div>
+                {orders.length===0 ? <p>No orders yet.</p> : orders.map(o => (
+                  <div key={o.id} style={{border:"2px solid #111", padding:"1.5rem", marginBottom:"1rem", background:"#fafafa"}}>
+                    <div style={{display:"flex", justifyContent:"space-between", borderBottom:"1px solid #ddd", paddingBottom:"10px", marginBottom:"10px"}}>
+                      <strong>ORDER: {o.orderId}</strong>
+                      <span style={{color:"#c00", fontWeight:900}}>₹{o.total}</span>
+                    </div>
+                    <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"1rem", fontSize:"12px"}}>
+                      <div>
+                        <strong>Customer:</strong> {o.userName} <br/>
+                        <strong>Email:</strong> {o.userEmail} <br/>
+                        <strong>Phone:</strong> {o.shipping?.phone}
+                      </div>
+                      <div>
+                        <strong>Address:</strong> {o.shipping?.address}<br/>
+                        {o.shipping?.city}, {o.shipping?.state} - {o.shipping?.pincode}
+                      </div>
+                    </div>
+                    <div style={{marginTop:"10px", padding:"10px", background:"#111", color:"#fff", fontSize:"11px"}}>
+                      <strong>ITEMS:</strong> {o.items.map(i => `${i.name} (Size: ${i.selectedSize})`).join(' | ')}
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
-            {editId&&(
-              <div style={{ padding:"1.5rem 2rem",background:"#fafafa",overflow:"auto" }}>
-                <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"1.8rem" }}>
-                  <h3 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:22 }}>{editId==="new"?"New Product":"Edit Product"}</h3>
-                  <button onClick={()=>{setEditId(null);setForm(blank);}} style={{ background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:13,fontWeight:700 }}>✕</button>
-                </div>
-                <div className="admin-form-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"1.3rem" }}>
-                  <div style={{ gridColumn:"1/-1" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Product Name *</label><input className="admin-input" value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} placeholder="Terrain Tee 001" style={iSt}/></div>
-                  <div style={{ gridColumn:"1/2" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Stock Quantity *</label><input type="number" className="admin-input" value={form.stock} onChange={e=>setForm(f=>({...f,stock: parseInt(e.target.value)||0}))} placeholder="0" style={iSt}/></div>
-                  <div style={{ gridColumn:"2/3" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Old Price (Line-Through)</label><input className="admin-input" value={form.compareAtPrice || ""} onChange={e=>setForm(f=>({...f,compareAtPrice:e.target.value}))} placeholder="₹1,100" style={iSt}/></div>
-                  <div style={{ gridColumn:"3/4" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Active Price *</label><input className="admin-input" value={form.price} onChange={e=>setForm(f=>({...f,price:e.target.value}))} placeholder="₹1" style={iSt}/></div>
-                  <div style={{ gridColumn:"1/3" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Tag</label><input className="admin-input" value={form.tag} onChange={e=>setForm(f=>({...f,tag:e.target.value}))} placeholder="New Drop / Limited" style={iSt}/></div>
-                  <div style={{ gridColumn:"3/4" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Category</label><select value={form.category} onChange={e=>setForm(f=>({...f,category:e.target.value}))} style={iSt}>{["T-Shirts","Hoodies","Jackets"].map(c=><option key={c}>{c}</option>)}</select></div>
-                  <div style={{ gridColumn:"1/-1" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Description</label><textarea className="admin-input" rows={3} value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))} placeholder="Short description..." style={{ ...iSt,resize:"none" }}/></div>
-                  <div style={{ gridColumn:"1/-1",display:"flex",gap:"0.8rem",alignItems:"center" }}><button type="button" onClick={()=>setForm(f=>({...f,hasBack:!f.hasBack,backImage:f.hasBack?null:f.backImage}))} style={{ background:form.hasBack?"#111":"#fff",color:form.hasBack?"#fff":"#111",border:"2px solid #111",padding:"9px 18px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase" }}>{form.hasBack?"✓ Front + Back":"Front Only"}</button><span style={{ fontSize:11,color:"rgba(0,0,0,0.35)" }}>Toggle back photo</span></div>
-                  <div style={{ gridColumn:form.hasBack?"1/2":"1/-1" }}><ImgUpload value={form.frontImage} onChange={v=>setForm(f=>({...f,frontImage:v}))} label="Front Image *"/></div>
-                  {form.hasBack&&<div style={{ gridColumn:"2/4" }}><ImgUpload value={form.backImage} onChange={v=>setForm(f=>({...f,backImage:v}))} label="Back Image"/></div>}
-                </div>
-                <div style={{ marginTop:"1.8rem",display:"flex",gap:"0.8rem" }}>
-                  <button type="button" onClick={save} style={{ background:"#111",color:"#fff",border:"3px solid #111",padding:"13px 36px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",flex:1 }}>{editId==="new"?"Add Product":"Save Changes"}</button>
-                  <button type="button" onClick={()=>{setEditId(null);setForm(blank);}} style={{ background:"#fff",color:"#111",border:"2px solid rgba(0,0,0,0.18)",padding:"13px 22px",fontSize:11,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase" }}>Cancel</button>
-                </div>
-              </div>
             )}
           </div>
         </div>
       );
     }
 
-    function Hero(){
-      const [pos, setPos] = useState({ x: 0, y: 0 });
-      const handleMove = useCallback((e) => {
-        const x = (e.clientX / window.innerWidth - 0.5) * 40;
-        const y = (e.clientY / window.innerHeight - 0.5) * 40;
-        setPos({ x, y });
-      }, []);
-
-      return(
-        <section id="home" onMouseMove={handleMove} style={{ position:"relative", width:"100%", height:"80vh", background:"#111", borderBottom:"3px solid #111", overflow:"hidden", display:"grid", placeItems:"center" }}>
-          <div className="hero-video-placeholder" style={{ transform: `translate(${pos.x}px, ${pos.y}px)`, transition: "transform 0.1s ease-out" }}></div>
-          <div className="hero-sub">
-            <p>Techwear</p>
-            <p>SS'26 Collection</p>
-            <p>splotch.in</p>
-            <span className="hero-badge">New Drop Available</span>
-          </div>
-          <div className="hero-text-overlay">
-            <h1 className="hero-h1 reveal visible">SPLOTCH</h1>
-          </div>
-        </section>
-      );
-    }
-
-    function Shop({products,onQV,onAdd,filter,setFilter}){
-      const cats=["All",...Array.from(new Set(products.map(p=>p.category)))];
-      const filtered=filter==="All"?products:products.filter(p=>p.category===filter);
-      return(
-        <section id="shop" style={{ background:"#fff",borderBottom:"3px solid #111" }}>
-          <div style={{ background:"#111",padding:"4rem 2rem 3.5rem",position:"relative",overflow:"hidden",borderBottom:"2px solid #222" }}>
-            <div className="topo-parallax-wrap" style={{ opacity:0.07 }}><TopoSVG color="#fff"/></div>
-            <div style={{ position:"relative",zIndex:1 }}>
-              <SLabel inv>SS'26 — Limited Run</SLabel>
-              <h2 className="reveal" style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:"clamp(54px,9vw,120px)",letterSpacing:"-0.04em",color:"#fff",lineHeight:0.9,fontStyle:"italic" }}>The Collection.</h2>
-            </div>
-          </div>
-          <div style={{ borderBottom:"2px solid #111",display:"flex",alignItems:"center",overflowX:"auto" }}>
-            {cats.map(c=>(
-              <button key={c} onClick={()=>setFilter(c)} style={{ background:filter===c?"#111":"transparent",color:filter===c?"#fff":"rgba(0,0,0,0.4)", border:"none",borderRight:"1px solid rgba(0,0,0,0.08)", padding:"13px 18px",fontSize:10,fontWeight:700, letterSpacing:"0.18em",textTransform:"uppercase",whiteSpace:"nowrap",transition:"all .2s" }}>{c}</button>
-            ))}
-            <div style={{ marginLeft:"auto",padding:"0 1rem",fontSize:10,fontWeight:700,letterSpacing:"0.12em",color:"rgba(0,0,0,0.25)",textTransform:"uppercase",whiteSpace:"nowrap" }}>{filtered.length} item{filtered.length!==1?"s":""}</div>
-          </div>
-          <div style={{ padding:"2.5rem 2rem" }}>
-            {filtered.length===0?(
-              <div style={{ textAlign:"center",padding:"5rem",color:"rgba(0,0,0,0.2)" }}><div style={{ fontSize:40,marginBottom:12 }}>◎</div><div style={{ fontSize:10,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase" }}>No products in this category</div></div>
-            ):(
-              <div className="product-grid" style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:2 }}>
-                {filtered.map((p,i)=>( <div key={p.id} className={`reveal reveal-d${(i%3)+1}`}><ProdCard product={p} onQV={onQV} onAdd={onAdd}/></div> ))}
-              </div>
-            )}
-          </div>
-        </section>
-      );
-    }
-
-    function TheWork(){
-      const works=[
-        {label:"Terrain Vol.001",cat:"Capsule Drop"}, {label:"Shadow Protocol",cat:"Collab Series"}, {label:"Grid Zero",cat:"Artist Collab"},
-        {label:"Shell Jackets",cat:"Product"}, {label:"SS'25 Lookbook",cat:"Editorial"}, {label:"Modular Jacket",cat:"Product"},
-        {label:"Top Dog Series",cat:"Accessories"}, {label:"Field Campaign",cat:"Creative Direction"}, {label:"Terrain Vol.3",cat:"Upcoming Drop"},
-      ];
-      return(
-        <section id="work" style={{ background:"#fff",borderBottom:"3px solid #111",padding:"6rem 2rem" }}>
-          <SLabel>Portfolio — The Work</SLabel>
-          <h2 className="reveal" style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:"clamp(72px,11vw,160px)",letterSpacing:"-0.04em",lineHeight:0.88,marginBottom:"3.5rem",fontStyle:"italic" }}>The Work.</h2>
-          <div className="port-grid" style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:2 }}>
-            {works.map((w,i)=>(
-              <div key={i} className={`port-card reveal reveal-d${(i%3)+1}`} style={{ position:"relative",background:"#111",aspectRatio:"1/1",overflow:"hidden",border:"2px solid #111" }}>
-                <div style={{ position:"absolute",inset:0,opacity:0.13 }}>
-                  <svg viewBox="0 0 280 280" width="100%" height="100%">
-                    {[50,80,110,140,170,200,230].map((y,j)=>( <path key={j} d={`M0,${y} Q70,${y-14} 140,${y} T280,${y-8}`} fill="none" stroke="#fff" strokeWidth="0.75"/> ))}
-                    <ellipse cx="140" cy="140" rx={85-i*3} ry={38} fill="none" stroke="#fff" strokeWidth="0.75"/>
-                    <ellipse cx="140" cy="140" rx={55-i*2} ry={24} fill="none" stroke="#fff" strokeWidth="0.75"/>
-                  </svg>
-                </div>
-                <div style={{ position:"absolute",top:"1rem",left:"1rem",fontFamily:"Inter",fontWeight:900,fontSize:32,color:"rgba(255,255,255,0.06)",letterSpacing:"-0.05em",lineHeight:1 }}>0{i+1}</div>
-                <div className="port-overlay" style={{ position:"absolute",inset:0,background:"rgba(255,255,255,0.96)",display:"flex",flexDirection:"column",justifyContent:"flex-end",padding:"1.5rem" }}>
-                  <span className="port-text" style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.35)",marginBottom:5 }}>{w.cat}</span>
-                  <p className="port-text" style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:18,letterSpacing:"-0.01em",color:"#111",transitionDelay:".05s" }}>{w.label}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      );
-    }
-
-    function WhySplotch(){
-      const pts=[
-        "Obsessive material selection — every fabric tested for urban endurance",
-        "Zero mass production — all runs limited to 200 units maximum",
-        "Concept-first design — every collection maps a new aesthetic territory",
-        "End-to-end transparency — from sketch to final stitch, nothing is hidden",
-        "Community-driven drops — our wearers shape the next collection",
-      ];
-      return(
-        <section id="why" style={{ background:"#111",borderBottom:"3px solid #111",padding:"6rem 2rem",position:"relative",overflow:"hidden" }}>
-          <div className="topo-parallax-wrap" style={{ opacity:0.08 }}><TopoSVG color="#fff"/></div>
-          <div style={{ position:"relative",zIndex:1,display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4rem",alignItems:"start" }} className="two-col">
-            <div>
-              <SLabel inv>Why Choose Us</SLabel>
-              <h2 className="reveal" style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:"clamp(72px,9vw,130px)",letterSpacing:"-0.04em",lineHeight:0.88,color:"#fff",fontStyle:"italic" }}>Why Splotch.</h2>
-            </div>
-            <div style={{ paddingTop:"0.5rem" }}>
-              {pts.map((p,i)=>(
-                <div key={i} className={`reveal reveal-d${Math.min(i+1,4)}`} style={{ display:"flex",gap:"1.2rem",alignItems:"flex-start",borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"1.4rem 0" }}>
-                  <svg width="20" height="20" viewBox="0 0 20 20" style={{ flexShrink:0,marginTop:2 }}>
-                    <circle cx="10" cy="10" r="8" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="0.9"/>
-                    <circle cx="10" cy="10" r="5.5" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="0.9"/>
-                    <circle cx="10" cy="10" r="3" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="0.9"/>
-                    <circle cx="10" cy="10" r="1.2" fill="#fff"/>
-                  </svg>
-                  <p style={{ fontSize:14,lineHeight:1.7,color:"rgba(255,255,255,0.6)" }}>{p}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      );
-    }
-
-    function Testimonials(){
-      const items=[
-        {q:"Splotch doesn't make clothing. They make armour for the urban jungle. The Terrain Vest is the most considered piece I own.",name:"Sayed",residence:"Bangalore"},
-        {q:"Ordered three pieces from Drop 001. Every single one exceeded expectations in fit, durability, and pure aesthetic conviction.",name:"Advik",residence:"Bangalore"},
-        {q:"The topographic details are obsessively refined. You feel the intention in every seam. This is what Indian streetwear needed.",name:"Shubhum",residence:"Bangalore"},
-      ];
-      return(
-        <section style={{ background:"#fff",borderBottom:"3px solid #111",padding:"6rem 2rem" }}>
-          <SLabel>What People Say</SLabel>
-          <div className="testi-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:0 }}>
-            {items.map((t,i)=>(
-              <div key={i} className={`reveal reveal-d${i+1}`} style={{ borderLeft:"2px solid #111",borderTop:"2px solid #111", borderRight:i===2?"2px solid #111":"none",borderBottom:"2px solid #111", padding:"2.5rem 1.8rem" }}>
-                <div style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:36,color:"#111",marginBottom:"1.2rem",lineHeight:1 }}>"</div>
-                <p style={{ fontSize:14,lineHeight:1.8,color:"rgba(0,0,0,0.62)",marginBottom:"1.8rem",fontStyle:"italic" }}>{t.q}</p>
-                <div style={{ borderTop:"1px solid rgba(0,0,0,0.08)",paddingTop:"1rem" }}>
-                  <p style={{ fontWeight:700,fontSize:12,textTransform:"uppercase",letterSpacing:"0.08em" }}>{t.name}</p>
-                  <p style={{ fontSize:10,color:"rgba(0,0,0,0.35)",fontWeight:600,letterSpacing:"0.1em",marginTop:2,textTransform:"uppercase" }}>{t.residence}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      );
-    }
-
-    function About(){
-      const vals=[
-        {icon:"◈",title:"Intention",desc:"Every design decision is deliberate. We don't make product — we make statements."},
-        {icon:"◉",title:"Restraint",desc:"Two colors. Zero compromise. Complexity lives in the structure, not the palette."},
-        {icon:"◎",title:"Territory",desc:"Inspired by terrain maps, we chart new aesthetic ground with every collection."},
-      ];
-      return(
-        <section id="about" style={{ background:"#111",borderBottom:"3px solid #111",padding:"6rem 2rem",position:"relative",overflow:"hidden" }}>
-          <div className="topo-parallax-wrap" style={{ opacity:0.08 }}><TopoSVG color="#fff"/></div>
-          <div style={{ position:"relative",zIndex:1 }}>
-            <SLabel inv>About — Brand Story</SLabel>
-            <div className="two-col" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4rem",marginBottom:"4rem",alignItems:"end" }}>
-              <h2 className="reveal" style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:"clamp(72px,9vw,130px)",letterSpacing:"-0.04em",lineHeight:0.88,color:"#fff",fontStyle:"italic" }}>We Chart New Ground.</h2>
-              <div>
-                <p className="reveal" style={{ fontSize:15,lineHeight:1.85,color:"rgba(255,255,255,0.52)",marginBottom:"1.2rem" }}>Splotch was born in 2023 from a single obsession: what does truly functional Indian streetwear look like? Not inspired by the West. Not chasing trends. Built from the terrain of our cities.</p>
-                <p className="reveal reveal-d1" style={{ fontSize:15,lineHeight:1.85,color:"rgba(255,255,255,0.52)" }}>We operate from a small studio in Bangalore with six designers and two master pattern makers. Every collection is conceived as a system — interconnected pieces for every urban context.</p>
-              </div>
-            </div>
-            <div className="about-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:0 }}>
-              {vals.map((v,i)=>(
-                <div key={v.title} className={`reveal reveal-d${i+1}`} style={{ border:"1px solid rgba(255,255,255,0.1)", borderRight:i<2?"none":"1px solid rgba(255,255,255,0.1)", padding:"2.5rem 1.8rem" }}>
-                  <div style={{ fontSize:22,color:"rgba(255,255,255,0.4)",marginBottom:"1.2rem" }}>{v.icon}</div>
-                  <h3 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:20,color:"#fff",marginBottom:"0.8rem" }}>{v.title}</h3>
-                  <p style={{ fontSize:13,lineHeight:1.7,color:"rgba(255,255,255,0.42)" }}>{v.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      );
-    }
-
-    function Contact(){
-      const [form,setForm]=useState({name:"",email:"",message:""});
-      const [sent,setSent]=useState(false);
-      const [loading, setLoading]=useState(false);
-
-      const submit = async () => {
-        if(!form.name || !form.email || !form.message) return;
-        setLoading(true);
-        try {
-          if (!window.fbAddDoc || !window.fbDb) throw new Error("Firebase is not initialized.");
-          
-          await window.fbAddDoc(window.fbCollection(window.fbDb, "messages"), {
-            name: form.name, email: form.email, message: form.message, timestamp: new Date()
-          });
-          setSent(true); setTimeout(()=>setSent(false),4000); setForm({name:"",email:"",message:""}); 
-        } catch (e) {
-          console.error("Message Error: ", e); 
-          alert("Failed to send message: \n\n" + e.message + "\n\n(Have you updated your Firebase Rules to allow message writes?)");
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      const iSt={ display:"block",width:"100%",background:"transparent",border:"none",borderBottom:"2px solid rgba(255,255,255,0.15)",color:"#fff",padding:"13px 0",fontSize:15,fontFamily:"Inter",transition:"border-color .2s",marginBottom:"1.8rem" };
-      return(
-        <section id="contact" style={{ background:"#111",borderBottom:"3px solid #111",padding:"6rem 2rem",position:"relative",overflow:"hidden" }}>
-          <div className="topo-parallax-wrap" style={{ opacity:0.07 }}><TopoSVG color="#fff"/></div>
-          <div style={{ position:"relative",zIndex:1 }}>
-            <SLabel inv>Contact — Get In Touch</SLabel>
-            <div className="contact-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"5rem",alignItems:"start" }}>
-              <div className="reveal">
-                <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:"clamp(72px,9vw,120px)",letterSpacing:"-0.04em",lineHeight:0.88,color:"#fff",marginBottom:"2.5rem",fontStyle:"italic" }}>Contact Us.</h2>
-                {sent?(
-                  <div style={{ border:"2px solid rgba(255,255,255,0.2)",padding:"2rem",textAlign:"center" }}><p style={{ fontWeight:700,letterSpacing:"0.12em",color:"#fff",textTransform:"uppercase",fontSize:12 }}>Message received. We'll be in touch.</p></div>
-                ):(
-                  <React.Fragment>
-                    {["name","email"].map(field=>(
-                      <input key={field} type={field==="email"?"email":"text"} placeholder={field.charAt(0).toUpperCase()+field.slice(1)} value={form[field]} onChange={e=>setForm(f=>({...f,[field]:e.target.value}))} style={iSt} onFocus={e=>e.target.style.borderColor="rgba(255,255,255,0.7)"} onBlur={e=>e.target.style.borderColor="rgba(255,255,255,0.15)"}/>
-                    ))}
-                    <textarea placeholder="Message" value={form.message} rows={5} onChange={e=>setForm(f=>({...f,message:e.target.value}))} style={{ ...iSt,resize:"none" }} onFocus={e=>e.target.style.borderColor="rgba(255,255,255,0.7)"} onBlur={e=>e.target.style.borderColor="rgba(255,255,255,0.15)"}/>
-                    <button onClick={submit} disabled={loading} style={{ background:"#fff",color:"#111",border:"3px solid #fff",padding:"14px 36px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",transition:"all .2s" }} onMouseEnter={e=>{e.target.style.background="transparent";e.target.style.color="#fff";}} onMouseLeave={e=>{e.target.style.background="#fff";e.target.style.color="#111";}}>{loading ? "Sending..." : "Send Message →"}</button>
-                  </React.Fragment>
-                )}
-              </div>
-              <div className="reveal reveal-d2">
-                <p style={{ fontSize:11, lineHeight:1.6, color:"rgba(255,255,255,0.45)", marginBottom:"2rem", paddingBottom:"2rem", borderBottom:"1px solid rgba(255,255,255,0.07)" }}>Feel free to contact us with any questions or concerns. You can use the form on our website or email us directly. We appreciate your interest and look forward to hearing from you.</p>
-                {[{l:"Email",v:"splotchglobal@gmail.com"},{l:"Phone",v:"+91 9900605101"},{l:"Hours",v:"Mon–Fri, 10am–6pm IST"},{l:"Shipping",v:"Bangalore, Karnataka\nPan India Shipping"}].map((item,i)=>(
-                  <div key={item.l} style={{ borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"1.2rem 0",display:"flex",justifyContent:"space-between",gap:"1rem" }}>
-                    <span style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(255,255,255,0.22)",flexShrink:0 }}>{item.l}</span>
-                    <span style={{ fontSize:12,fontWeight:600,color:"rgba(255,255,255,0.55)",textAlign:"right",whiteSpace:"pre-line" }}>{item.v}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      );
-    }
-
-    function Footer(){
-      return(
-        <footer style={{ background:"#111",padding:"5rem 2rem 2.5rem",position:"relative",overflow:"hidden",borderTop:"3px solid #222" }}>
-          <div className="topo-parallax-wrap" style={{ opacity:0.05 }}><TopoSVG color="#fff"/></div>
-          <div style={{ position:"relative",zIndex:1 }}>
-            <div style={{ marginBottom:"3.5rem" }}><img src={LOGO_SRC} alt="Splotch" style={{ height:140,filter:"invert(1)",opacity:.85 }}/></div>
-            <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic", fontSize:"clamp(72px,8vw,110px)", letterSpacing:"-0.04em",lineHeight:0.88, color:"transparent",WebkitTextStroke:"1.5px rgba(255,255,255,0.4)", marginBottom:"5rem" }}>Predict the future,<br/>you didn't come<br/>this far to stop.</h2>
-            <div className="footer-grid" style={{ display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr",gap:"2.5rem",borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:"2.5rem",marginBottom:"2.5rem" }}>
-              <div>
-                <p style={{ fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic",fontSize:28,color:"#fff",marginBottom:"0.8rem" }}>splotch</p>
-                <p style={{ fontSize:12,lineHeight:1.7,color:"rgba(255,255,255,0.3)",maxWidth:260 }}>Engineering the next frontier of Indian streetwear from our Bangalore studio. Style beyond seasons.</p>
-              </div>
-              {[
-                {h:"Quick Links",ls:[["home","Home"],["shop","Shop"],["work","Work"],["about","About"],["contact","Contact"]]},
-                {h:"Collections",ls:[["","Terrain Vol.1"],["","Shadow Protocol"],["","Grid Zero"],["","SS'26 Preview"]]},
-                {h:"Follow",ls:[ ["https://www.instagram.com/splotchglobal?igsh=c2Y5aDFiZWVoanVj","Instagram"], ["","Twitter"], ["","Behance"], ["","Pinterest"] ]},
-              ].map(col=>(
-                <div key={col.h}>
-                  <p style={{ fontSize:9,fontWeight:700,letterSpacing:"0.28em",textTransform:"uppercase",color:"rgba(255,255,255,0.22)",marginBottom:"1rem" }}>{col.h}</p>
-                  {col.ls.map(([id,label])=>(
-                    <button key={label} onClick={()=>{ if(!id)return; if(id.startsWith('http')){ window.open(id,'_blank','noopener,noreferrer'); }else{ document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); } }} style={{ display:"block",width:"100%",textAlign:"left",background:"none",border:"none", fontSize:12,fontWeight:600,color:"rgba(255,255,255,0.38)", textDecoration:"none",lineHeight:2.2,textTransform:"uppercase",letterSpacing:"0.06em", transition:"color .15s",padding:0 }} onMouseEnter={e=>e.target.style.color="#fff"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.38)"}>{label}</button>
-                  ))}
-                </div>
-              ))}
-            </div>
-            <div style={{ borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:"1.5rem",display:"flex",justifyContent:"space-between",flexWrap:"wrap",gap:"0.8rem" }}>
-              <p style={{ fontSize:10,fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"rgba(255,255,255,0.15)" }}>
-  © 2026 Splotch — splotch.in 
-  <span 
-    style={{ color:"#111", marginLeft: "10px", transition: "color 0.4s", userSelect:"none" }} 
-    onMouseEnter={e => e.target.style.color = "rgba(255,255,255,0.2)"} 
-    onMouseLeave={e => e.target.style.color = "#111"}
-  >
-    // Created by dudefromalhiem
-  </span>
-</p>
-              <div style={{ display:"flex",gap:"1.5rem" }}>{["Privacy","Terms","Shipping","Returns"].map(l=>( <a key={l} href="#" style={{ fontSize:9,fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"rgba(255,255,255,0.15)",textDecoration:"none" }}>{l}</a> ))}</div>
-            </div>
-          </div>
-        </footer>
-      );
-    }
-
-    /* ═══════════════════════════════════════════════════════
-       ROOT APP
-    ═══════════════════════════════════════════════════════ */
     function App(){
       const [products,setProducts]=useState([]); 
-      
-      const [cart,setCart]=useState(() => {
-        const localData = localStorage.getItem('splotch_cart_v1');
-        return localData ? JSON.parse(localData) : [];
-      });
-      
-      const [qv,setQV]=useState(null);
+      const [cart,setCart]=useState([]);
       const [adminOpen,setAdminOpen]=useState(false);
       const [cartOpen,setCartOpen]=useState(false);
-      const [authOpen,setAuthOpen]=useState(false); 
-      const [mobMenu,setMobMenu]=useState(false);
-      const [filter,setFilter]=useState("All");
-      const [logoClicks,setLogoClicks]=useState(0);
-      const logoTimerRef=useRef(null);
+      const [authOpen,setAuthOpen]=useState(false);
       const [user, setUser]=useState(null);
 
       useEffect(() => {
-        console.log(
-          "%c[SYSTEM_ROOT] %c>>> %cCreated by dudefromalhiem", 
-          "color: #c00; font-weight: 900; font-size: 11px;", 
-          "color: #555; font-weight: bold;", 
-          "color: #fff; font-size: 11px; letter-spacing: 0.1em; font-style: italic;"
-        );
-      }, []);
-
-      useEffect(() => {
-        localStorage.setItem('splotch_cart_v1', JSON.stringify(cart));
-      }, [cart]);
-
-      useEffect(() => {
-        const syncFromCloud = async () => {
-          if (user && window.fbDb && window.fbGetDoc) {
-            try {
-              const docRef = window.fbDoc(window.fbDb, "userCarts", user.uid);
-              const docSnap = await window.fbGetDoc(docRef);
-              
-              if (docSnap.exists()) {
-                const cloudItems = docSnap.data().items || [];
-                setCart(prev => {
-                  const combined = [...prev, ...cloudItems];
-                  return Array.from(new Map(combined.map(item => [item.cartItemId, item])).values());
-                });
-              }
-            } catch (e) { console.error("Cloud sync error:", e); }
-          }
+        window.fbOnAuthStateChanged(window.fbAuth, u => setUser(u));
+        const fetch = async () => {
+          const snap = await window.fbGetDocs(window.fbCollection(window.fbDb, "products"));
+          const fetched = []; snap.forEach(d => fetched.push(d.data()));
+          setProducts(fetched);
         };
-        syncFromCloud();
-      }, [user]);
-
-      useEffect(() => {
-        const backupToCloud = async () => {
-          if (user && window.fbDb && window.fbSetDoc) {
-            try {
-              await window.fbSetDoc(window.fbDoc(window.fbDb, "userCarts", user.uid), {
-                items: cart,
-                updatedAt: new Date()
-              });
-            } catch (e) { console.error("Backup failed:", e); }
-          }
-        };
-        const timer = setTimeout(backupToCloud, 2000); 
-        return () => clearTimeout(timer);
-      }, [cart, user]);
-
-      useEffect(() => {
-        const fetchProducts = async () => {
-          if (!window.fbDb || !window.fbGetDocs) return;
-          try {
-            const snapshot = await window.fbGetDocs(window.fbCollection(window.fbDb, "products"));
-            if (snapshot.empty) {
-              DEFAULT_PRODUCTS.forEach(async (p) => {
-                await window.fbSetDoc(window.fbDoc(window.fbDb, "products", p.id), p);
-              });
-              setProducts(DEFAULT_PRODUCTS);
-            } else {
-              const fetched = [];
-              snapshot.forEach(doc => fetched.push(doc.data()));
-              setProducts(fetched);
-            }
-          } catch(e) {
-            console.error("Failed to load products:", e);
-          }
-        };
-        
-        if (window.fbDb) { fetchProducts(); } 
-        else { window.addEventListener('firebase-ready', fetchProducts); }
-        return () => window.removeEventListener('firebase-ready', fetchProducts);
+        fetch();
       }, []);
-
-      useEffect(()=>{
-        const handleAuthChange = () => {
-          if (window.fbAuth && window.fbOnAuthStateChanged) { window.fbOnAuthStateChanged(window.fbAuth, (u) => { setUser(u); }); }
-        };
-        if (window.fbAuth) { handleAuthChange(); } else { window.addEventListener('firebase-ready', handleAuthChange); }
-        return () => window.removeEventListener('firebase-ready', handleAuthChange);
-      }, []);
-
-      useEffect(()=>{
-        const obs=new IntersectionObserver( entries=>entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add("visible"); }), {threshold:0.1} );
-        document.querySelectorAll(".reveal").forEach(el=>obs.observe(el));
-        return ()=>obs.disconnect();
-      });
-
-      const handleLogoClick=()=>{
-        const next=logoClicks+1;
-        setLogoClicks(next);
-        if(logoTimerRef.current) clearTimeout(logoTimerRef.current);
-        if(next>=6){ setAdminOpen(true); setLogoClicks(0); return; }
-        logoTimerRef.current=setTimeout(()=>setLogoClicks(0),3000);
-      };
-
-      const addToCart = useCallback((item) => {
-        setCart(c => [...c, { ...item, cartItemId: Date.now() + Math.random() }]);
-      }, []);
-
-      const handleLogout = async () => {
-        if(user && window.fbAuth) {
-          try { await window.fbSignOut(window.fbAuth); } catch(err) { console.error(err); }
-        }
-      };
 
       return(
-        <div style={{ minHeight:"100vh",background:"#fff", position:"relative" }}>
+        <div style={{ minHeight:"100vh", position:"relative" }}>
           <CustomCursor />
-          <div className="grain-overlay"></div>
-          <ScrollProgress/>
-          
-          <Header cartCount={cart.length} onCartOpen={()=>setCartOpen(true)} onLogoClick={handleLogoClick} setMobMenu={setMobMenu} user={user} onAuthClick={()=>setAuthOpen(true)} handleLogout={handleLogout} />
+          <ScrollProgress />
+          <Header cartCount={cart.length} onCartOpen={()=>setCartOpen(true)} onLogoClick={()=>setAdminOpen(true)} user={user} onAuthClick={()=>setAuthOpen(true)} handleLogout={()=>window.fbSignOut(window.fbAuth)} />
           <Ticker/>
-          <MobMenu open={mobMenu} setOpen={setMobMenu} user={user} onAuthClick={()=>setAuthOpen(true)} handleLogout={handleLogout}/>
-
+          
           <Hero/>
-          <Shop products={products} onQV={setQV} onAdd={addToCart} filter={filter} setFilter={setFilter}/>
+          
+          <section id="shop" style={{ padding:"6rem 2rem", background:"#fff" }}>
+            <SLabel>SS'26 — Limited Run</SLabel>
+            <h2 className="dyn-title dyn-text-dark" style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:"clamp(54px,9vw,120px)",letterSpacing:"-0.04em",marginBottom:"3rem" }}>The Collection.</h2>
+            <div className="product-grid" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"20px" }}>
+              {products.map(p => <ProdCard key={p.id} product={p} onAdd={i=>setCart([...cart, i])}/>)}
+            </div>
+          </section>
+
           <TheWork/>
           <WhySplotch/>
           <Testimonials/>
-          <About/>
-          <Contact/>
-          <Footer/>
+          <Contact />
 
-          {qv&&<QuickView product={qv} onClose={()=>setQV(null)} onAdd={addToCart}/>}
-          {cartOpen&&<CartSidebar cart={cart} setCart={setCart} onClose={()=>setCartOpen(false)} user={user} onAuthClick={()=>setAuthOpen(true)}/>}
-          {adminOpen&&<AdminPanel products={products} setProducts={setProducts} onClose={()=>setAdminOpen(false)}/>}
-          {authOpen&&<AuthModal onClose={()=>setAuthOpen(false)} onSuccess={()=>setAuthOpen(false)}/>}
+          <footer style={{ padding:"4rem 2rem", background:"#111", color:"#fff", textAlign:"center" }}>
+            <img src={LOGO_SRC} style={{ height:140, marginBottom:"2rem", filter:"invert(1)" }}/>
+            <h2 className="dyn-title dyn-text-outline" style={{ fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic", fontSize:"clamp(72px,8vw,110px)", letterSpacing:"-0.04em",lineHeight:0.88, color:"transparent",WebkitTextStroke:"1.5px rgba(255,255,255,0.4)", marginBottom:"3rem" }}>Predict the future,<br/>you didn't come<br/>this far to stop.</h2>
+            <p style={{ fontSize:10,fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"rgba(255,255,255,0.15)" }}>
+              © 2026 Splotch. 
+              <span style={{ color:"#111", marginLeft: "10px", transition: "color 0.4s", cursor:"none", userSelect:"none" }} onMouseEnter={e => e.target.style.color = "rgba(255,255,255,0.2)"} onMouseLeave={e => e.target.style.color = "#111"}>
+                // Created by dudefromalhiem
+              </span>
+            </p>
+          </footer>
+
+          {authOpen && <AuthModal onClose={()=>setAuthOpen(false)} onSuccess={()=>setAuthOpen(false)}/>}
+          {adminOpen && <AdminPanel products={products} onClose={()=>setAdminOpen(false)}/>}
+          {cartOpen && <CartSidebar cart={cart} setCart={setCart} onClose={()=>setCartOpen(false)} user={user} onAuthClick={()=>setAuthOpen(true)}/>}
         </div>
       );
     }
