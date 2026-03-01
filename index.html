@@ -4,11 +4,13 @@
   <meta name="title" content="Splotch | Urban Techwear & Streetwear India">
   <meta name="description" content="Engineering the next frontier of Indian streetwear. Limited drop techwear, oversized tees, and urban utility gear. Made in Bangalore.">
   <meta name="keywords" content="streetwear India, techwear, oversized t-shirts, Splotch clothing, Bangalore fashion">
+
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://splotch.vercel.app/">
   <meta property="og:title" content="Splotch | Urban Techwear">
   <meta property="og:description" content="Style beyond seasons. Explore the SS'26 Terrain Collection.">
   <meta property="og:image" content="https://splotch.vercel.app/splotch-og-image.jpg">
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Splotch Website</title>
@@ -21,8 +23,13 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc, getDoc, updateDoc, increment, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { 
+      getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut,
+      createUserWithEmailAndPassword, signInWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { 
+      getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc, getDoc, updateDoc, increment, query, orderBy
+    } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCeq4FeU1LQKTyZAIJd7HL834rEUqQ0eTQ",
@@ -38,11 +45,13 @@
       window.fbDb = getFirestore(app);
       window.fbAuth = getAuth(app);
       window.fbProvider = new GoogleAuthProvider();
+      
       window.fbSignInWithPopup = signInWithPopup;
       window.fbSignOut = signOut;
       window.fbOnAuthStateChanged = onAuthStateChanged;
       window.fbCreateUserWithEmailAndPassword = createUserWithEmailAndPassword;
       window.fbSignInWithEmailAndPassword = signInWithEmailAndPassword;
+
       window.fbCollection = collection;
       window.fbAddDoc = addDoc;
       window.fbGetDocs = getDocs;
@@ -54,19 +63,21 @@
       window.fbIncrement = increment;
       window.fbQuery = query;
       window.fbOrderBy = orderBy;
+
       window.dispatchEvent(new Event('firebase-ready'));
     } catch(err) { console.error("Firebase Init Error:", err); }
   </script>
 
   <style>
-    /* CUSTOM ELASTIC CURSOR */
+    /* 1. CUSTOM ELASTIC CURSOR */
     body, button, a, input, textarea, select { cursor: none !important; }
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; cursor: none !important; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
     
     :root { --B: #111111; --W: #FFFFFF; }
     html { scroll-behavior: smooth; }
     body { background: var(--W); color: var(--B); font-family: 'Inter', sans-serif; overflow-x: hidden; }
     ::selection { background: var(--B); color: var(--W); }
+    input, textarea, select, button { font-family: inherit; border-radius: 0 !important; outline: none; }
 
     .cursor-dot {
       position: fixed; top: 0; left: 0; width: 28px; height: 28px; border: 2px solid #fff;
@@ -76,9 +87,58 @@
     }
     .cursor-dot.pulse { width: 10px; height: 10px; background-color: #fff; }
 
-    /* HEADER */
+    /* 2. DYNAMIC TITLES — no text-shadow, transform only */
+    .dyn-title {
+      display: inline-block; 
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .dyn-title:hover { 
+      transform: translate(-4px, -4px); 
+    }
+    .outline-text {
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(255,255,255,0.4);
+    }
+    .outline-text:hover {
+      -webkit-text-stroke: 1.5px #fff;
+    }
+
+    /* 3. HERO SPLOTCH — 3D shadow via JS, no mix-blend-mode */
+    .hero-h1 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: clamp(90px, 18vw, 260px);
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: -0.05em;
+      line-height: 0.85;
+      /* No mix-blend-mode so colored shadows are visible */
+      transition: text-shadow 0.08s linear;
+      /* Default static 3D shadow for mobile */
+      text-shadow:
+        2px 2px 0px rgba(200,0,0,0.9),
+        4px 4px 0px rgba(170,0,0,0.7),
+        6px 6px 0px rgba(140,0,0,0.5),
+        8px 8px 0px rgba(110,0,0,0.35),
+        10px 10px 0px rgba(80,0,0,0.2),
+        12px 12px 18px rgba(0,0,0,0.4);
+    }
+
+    /* Smooth shadow animation for mobile */
+    @keyframes splotch3d {
+      0%   { text-shadow: 2px 2px 0px rgba(200,0,0,0.9), 4px 4px 0px rgba(170,0,0,0.7), 6px 6px 0px rgba(140,0,0,0.5), 10px 10px 16px rgba(0,0,0,0.4); }
+      25%  { text-shadow: -2px 3px 0px rgba(200,0,0,0.9), -4px 6px 0px rgba(170,0,0,0.7), -6px 9px 0px rgba(140,0,0,0.5), -8px 12px 16px rgba(0,0,0,0.4); }
+      50%  { text-shadow: -3px -2px 0px rgba(200,0,0,0.9), -6px -4px 0px rgba(170,0,0,0.7), -9px -6px 0px rgba(140,0,0,0.5), -10px -8px 16px rgba(0,0,0,0.4); }
+      75%  { text-shadow: 3px -2px 0px rgba(200,0,0,0.9), 6px -4px 0px rgba(170,0,0,0.7), 9px -6px 0px rgba(140,0,0,0.5), 10px -8px 16px rgba(0,0,0,0.4); }
+      100% { text-shadow: 2px 2px 0px rgba(200,0,0,0.9), 4px 4px 0px rgba(170,0,0,0.7), 6px 6px 0px rgba(140,0,0,0.5), 10px 10px 16px rgba(0,0,0,0.4); }
+    }
+    @media (hover: none) {
+      .hero-h1 { animation: splotch3d 8s ease-in-out infinite; }
+    }
+
+    /* 4. HEADER SYSTEM */
     header { position: sticky; top: 0; z-index: 500; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; transition: box-shadow 0.3s, background 0.3s; }
-    .glass-nav { background: rgba(255, 255, 255, 0.65) !important; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+    .glass-nav { background: rgba(255, 255, 255, 0.65) !important; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 2px 0 #111; }
     
     /* DROPDOWN MENU */
     .user-menu-container { position: relative; }
@@ -88,25 +148,62 @@
     .user-menu-container:hover .user-dropdown { display: flex; animation: fadeIn 0.2s; }
     .user-dropdown-btn { background: transparent; color: #111; border: none; padding: 12px 16px; font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; text-align: left; transition: background 0.2s, color 0.2s; }
     .user-dropdown-btn:hover { background: #111; color: #fff; }
+
     .nav-signin { background: #111; color: #fff; border: 2px solid #111; padding: 6px 14px; font-size: 9px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; transition: all 0.2s; }
     .nav-signin:hover { background: transparent; color: #111; }
     
-    /* SIZE SELECTOR */
+    /* 5. SIZE SELECTOR */
     .size-btn { background: transparent; color: #111; border: 1.5px solid #111; padding: 6px 0; width: 34px; text-align: center; font-size: 10px; font-weight: 700; transition: all 0.2s; }
     .size-btn.active { background: #111; color: #fff; }
-    .size-btn:disabled { opacity: 0.2; text-decoration: line-through; }
+    .size-btn.soldout { opacity: 0.3; text-decoration: line-through; }
 
     .grain-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9998; opacity: 0.15; background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E'); }
-    .hero-h1 { font-family: 'Inter', sans-serif; font-weight: 900; font-size: clamp(80px, 18vw, 260px); color: var(--W); text-transform: uppercase; letter-spacing: -0.05em; line-height: 0.85; mix-blend-mode: difference; transition: text-shadow 0.1s ease-out; }
-    .nl { position: relative; color: #111; text-decoration: none; font-weight: 700; font-size: 10px; letter-spacing: 0.18em; }
+    .topo-parallax-wrap { position: absolute; top: -50vh; bottom: -50vh; left: 0; right: 0; pointer-events: none; z-index: 0; transform: translateY(calc(var(--scroll-y, 0) * 0.15px)); will-change: transform; }
+    .hero-video-placeholder { position: absolute; inset: 0; background: var(--B); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; }
+    .hero-video-placeholder::before { content: ''; position: absolute; inset: -60px; background: repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.04) 39px, rgba(255,255,255,0.04) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.04) 39px, rgba(255,255,255,0.04) 40px); }
+    .hero-text-overlay { position: absolute; z-index: 3; top: 32%; left: -2%; line-height: 0.85; pointer-events: none; -webkit-user-select: none; user-select: none; }
+    .hero-sub { position: absolute; z-index: 4; top: 2.5rem; right: 2rem; text-align: right; pointer-events: none; }
+    .hero-sub p { font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--W); line-height: 2; opacity: 0.7; }
+    .hero-badge { display: inline-block; border: 2px solid var(--W); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; padding: 6px 12px; color: var(--W); text-transform: uppercase; margin-top: 1rem; }
+    .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.65s cubic-bezier(0.76, 0, 0.24, 1); transform-style: preserve-3d; }
+    .flipped .flip-inner { transform: rotateY(180deg); }
+    .flip-front, .flip-back { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+    .flip-back { transform: rotateY(180deg); }
+    .reveal { opacity: 0; transform: translateY(44px); transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-d1 { transition-delay: 0.1s; } .reveal-d2 { transition-delay: 0.22s; } .reveal-d3 { transition-delay: 0.34s; } .reveal-d4 { transition-delay: 0.46s; }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .prod-card { transition: box-shadow 0.25s, transform 0.25s; }
+    .prod-card:hover { box-shadow: 6px 6px 0 #111; transform: translate(-2px, -2px); }
+    .prod-cta-btn, .flip-toggle { transition: background 0.2s, color 0.2s; }
+    .prod-cta-btn:hover, .flip-toggle:hover { background: #111 !important; color: #fff !important; }
+    .port-card .port-overlay { opacity: 0; transition: opacity 0.3s ease; }
+    .port-card:hover .port-overlay { opacity: 1; }
+    .port-card .port-text { transform: translateY(10px); opacity: 0; transition: transform 0.4s ease, opacity 0.4s ease; }
+    .port-card:hover .port-text { transform: translateY(0); opacity: 1; }
+    .nl { position: relative; color: #111; text-decoration: none; font-weight: 700; font-size: 10px; letter-spacing: 0.18em; cursor: none; }
     .nl::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #111; transition: width 0.2s; }
     .nl:hover::after { width: 100%; }
-
-    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .admin-input:focus, .drop-zone.over { border-color: #111 !important; }
+    
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: #fff; } ::-webkit-scrollbar-thumb { background: #111; }
-    @media (max-width: 768px) { .desk-nav { display: none !important; } .mob-ham { display: flex !important; } .product-grid, .port-grid, .two-col, .testi-grid { grid-template-columns: 1fr 1fr !important; } .contact-grid { grid-template-columns: 1fr !important; } }
-    @media (max-width: 480px) { .product-grid, .port-grid, .two-col, .testi-grid { grid-template-columns: 1fr !important; } }
+
+    /* Fix cursor on images — no crosshair anywhere */
+    img { cursor: none !important; -webkit-user-select: none; user-select: none; }
+
+    @media (max-width: 768px) {
+      .desk-nav { display: none !important; }
+      .mob-ham { display: flex !important; }
+      .product-grid, .port-grid, .two-col, .testi-grid { grid-template-columns: 1fr 1fr !important; }
+      .contact-grid { grid-template-columns: 1fr !important; }
+      .hero-h1 { font-size: clamp(80px, 22vw, 130px); }
+    }
+    @media (max-width: 480px) {
+      .product-grid, .port-grid, .two-col, .testi-grid { grid-template-columns: 1fr !important; }
+    }
+    @media (min-width: 769px) { .mob-ham, .mob-menu { display: none !important; } }
   </style>
 </head>
 <body>
@@ -116,11 +213,24 @@
     const { useState, useEffect, useRef, useCallback } = React;
     const LOGO_SRC = "SplotchPlainLogo-removebg.png";
 
-    // ELASTIC CURSOR COMPONENT
+    // ─── HELPERS ────────────────────────────────────────────────────────────────
+    const getTotalStock = (product) => {
+      if (product.sizeStock && typeof product.sizeStock === 'object') {
+        return Object.values(product.sizeStock).reduce((a, b) => a + (parseInt(b) || 0), 0);
+      }
+      return parseInt(product.stock) || 0;
+    };
+    const getSizeStock = (product, size) => {
+      if (product.sizeStock && typeof product.sizeStock === 'object') {
+        return parseInt(product.sizeStock[size]) || 0;
+      }
+      return parseInt(product.stock) || 0;
+    };
+
+    // ─── ELASTIC CURSOR ─────────────────────────────────────────────────────────
     function CustomCursor() {
       const [pulse, setPulse] = useState(false);
       const [pos, setPos] = useState({ x: 0, y: 0 });
-
       useEffect(() => {
         const move = (e) => setPos({ x: e.clientX, y: e.clientY });
         const down = () => setPulse(true);
@@ -130,24 +240,35 @@
         window.addEventListener('mouseup', up);
         return () => { window.removeEventListener('mousemove', move); window.removeEventListener('mousedown', down); window.removeEventListener('mouseup', up); };
       }, []);
-      return ( <div className={`cursor-dot ${pulse ? 'pulse' : ''}`} style={{ left: `${pos.x}px`, top: `${pos.y}px` }}></div> );
+      return <div className={`cursor-dot ${pulse ? 'pulse' : ''}`} style={{ left: `${pos.x}px`, top: `${pos.y}px` }}></div>;
     }
 
-    const TopoSVG = ({ color="#111" }) => (
-      <svg viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style={{ width:"100%",height:"100%", position:"absolute", top:0, left:0, opacity:0.07, pointerEvents:"none" }}>
-        {["M0,250 Q150,220 300,250 T600,235 T900,248 T1200,238", "M0,270 Q130,242 260,270 T520,255 T780,268 T1040,252 T1200,265", "M0,230 Q170,202 340,230 T680,217 T1020,228 T1200,220"].map((d,i)=>( <path key={i} d={d} fill="none" stroke={color} strokeWidth={0.65}/> ))}
+    const TopoSVG = ({ color="#111", style={} }) => (
+      <svg viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style={{ width:"100%",height:"100%",...style }}>
+        {["M0,250 Q150,220 300,250 T600,235 T900,248 T1200,238", "M0,270 Q130,242 260,270 T520,255 T780,268 T1040,252 T1200,265", "M0,230 Q170,202 340,230 T680,217 T1020,228 T1200,220", "M0,290 Q110,264 220,290 T440,276 T660,290 T880,272 T1100,288 T1200,282", "M0,210 Q190,183 380,210 T760,198 T1140,208 T1200,203"].map((d,i)=>( <path key={i} d={d} fill="none" stroke={color} strokeWidth={i<2?1:0.65}/> ))}
+        <ellipse cx="300" cy="250" rx="240" ry="65" fill="none" stroke={color} strokeWidth="0.75"/>
+        <ellipse cx="300" cy="250" rx="160" ry="42" fill="none" stroke={color} strokeWidth="0.75"/>
+        <ellipse cx="900" cy="245" rx="200" ry="55" fill="none" stroke={color} strokeWidth="0.75"/>
+        <ellipse cx="900" cy="245" rx="130" ry="35" fill="none" stroke={color} strokeWidth="0.75"/>
       </svg>
     );
 
-    // SEEDER DATA - Updated with specific size matrix
+    // ─── DEFAULT PRODUCTS with per-size stock ────────────────────────────────────
     const DEFAULT_PRODUCTS = [
-      { id:"shirt-1", name:"Terrain Tee 000", cost:"₹450", price:"₹1", compareAtPrice:"₹1,299", tag:"New Drop", description:"Urban utility tee.", frontImage:"Shirt 1 front.jpeg", backImage:"Shirt 1 back.jpeg", hasBack:true, stockMap: { S:5, M:10, L:0, XL:2 }, category:"T-Shirts" },
-      { id:"shirt-2", name:"Grid Tee 000", cost:"₹500", price:"₹1", compareAtPrice:"₹1,499", tag:"Limited", description:"Graphic techwear tee.", frontImage:"Shirt 2 front.jpeg", backImage:"Shirt 2 back.jpeg", hasBack:true, stockMap: { S:0, M:2, L:5, XL:0 }, category:"T-Shirts" },
-      { id:"shirt-3", name:"Shadow Tee 000", cost:"₹400", price:"₹1", compareAtPrice:"₹1,199", tag:"Last 5", description:"Minimalist dropped-shoulder tee.", frontImage:"Shirt 3 front.jpeg", backImage:"Shirt 3 back.jpeg", hasBack:false, stockMap: { S:1, M:1, L:1, XL:1 }, category:"T-Shirts" },
+      { id:"shirt-1", name:"Terrain Tee 000", cost:"₹450", price:"₹1", compareAtPrice:"₹1,299", tag:"New Drop", description:"Urban utility tee with topographic print detail. Oversized fit.", frontImage:"Shirt 1 front.jpeg", backImage:"Shirt 1 back.jpeg", hasBack:true, sizeStock:{ S:5, M:5, L:3, XL:2 }, sizes:"S, M, L, XL", category:"T-Shirts" },
+      { id:"shirt-2", name:"Grid Tee 000", cost:"₹500", price:"₹1", compareAtPrice:"₹1,499", tag:"Limited", description:"Graphic techwear tee from the Grid Zero collaboration.", frontImage:"Shirt 2 front.jpeg", backImage:"Shirt 2 back.jpeg", hasBack:true, sizeStock:{ S:2, M:4, L:3, XL:1 }, sizes:"S, M, L, XL", category:"T-Shirts" },
+      { id:"shirt-3", name:"Shadow Tee 000", cost:"₹400", price:"₹1", compareAtPrice:"₹1,199", tag:"Last 5", description:"Minimalist dropped-shoulder tee. Shadow Series print.", frontImage:"Shirt 3 front.jpeg", backImage:"Shirt 3 back.jpeg", hasBack:false, sizeStock:{ S:1, M:2, L:1, XL:1 }, sizes:"S, M, L, XL", category:"T-Shirts" },
     ];
 
     const SLabel = ({children,inv=false})=>(
       <div style={{ fontSize:10,fontWeight:700,letterSpacing:"0.32em",textTransform:"uppercase", marginBottom:"1.8rem",borderLeft:`3px solid ${inv?"#fff":"#111"}`, paddingLeft:10,color:inv?"rgba(255,255,255,0.45)":"rgba(0,0,0,0.45)" }}>{children}</div>
+    );
+
+    const ImgPlaceholder = ({label,dark=true})=>(
+      <div style={{ width:"100%",height:"100%",background:dark?"#1a1a1a":"#efefef", display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center", gap:10,position:"relative",overflow:"hidden" }}>
+        <div style={{ position:"absolute",inset:0,opacity:0.1 }}><TopoSVG color={dark?"#fff":"#111"}/></div>
+        <span style={{ fontSize:9,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase", color:dark?"rgba(255,255,255,0.2)":"rgba(0,0,0,0.25)",position:"relative",zIndex:1 }}>{label}</span>
+      </div>
     );
 
     function ScrollProgress(){
@@ -157,20 +278,22 @@
         window.addEventListener("scroll",fn,{passive:true});
         return ()=>window.removeEventListener("scroll",fn);
       },[]);
-      return <div style={{ position:"fixed",top:0,left:0,height:3,width:w+"%",background:"#111",zIndex:999 }}/>;
+      return <div style={{ position:"fixed",top:0,left:0,height:3,width:w+"%",background:"#111",zIndex:999,transition:"width .1s linear" }}/>;
     }
 
     function Ticker(){
-      const d=["STYLE BEYOND SEASONS","—","NEW DROP: TERRAIN SERIES","—","MADE IN INDIA","—","LIMITED RUNS. NO RESTOCKS.","—"];
+      const items=["STYLE BEYOND SEASONS","—","NEW DROP: TERRAIN SERIES","—","MADE IN INDIA","—","LIMITED RUNS. NO RESTOCKS.","—","splotch.in","—"];
+      const d=[...items,...items];
       return(
-        <div style={{ background:"#111",height:28,overflow:"hidden",display:"flex",alignItems:"center",borderBottom:"2px solid #222", position: "sticky", top: 48, zIndex: 499 }}>
+        <div style={{ background:"#111",height:28,overflow:"hidden",display:"flex",alignItems:"center",borderBottom:"2px solid #222", position:"sticky",top:48,zIndex:499 }}>
           <div style={{ display:"flex",animation:"ticker 32s linear infinite",whiteSpace:"nowrap" }}>
-            {[...d,...d,...d].map((t,i)=>(<span key={i} style={{ marginRight:"2rem",fontSize:9,fontWeight:700,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(255,255,255,0.45)",flexShrink:0 }}>{t}</span>))}
+            {d.map((t,i)=>(<span key={i} style={{ marginRight:"2rem",fontSize:9,fontWeight:700,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(255,255,255,0.45)",flexShrink:0 }}>{t}</span>))}
           </div>
         </div>
       );
     }
 
+    // ─── AUTH MODAL ──────────────────────────────────────────────────────────────
     function AuthModal({ onClose, onSuccess }) {
       const [isLogin, setIsLogin] = useState(true);
       const [email, setEmail] = useState("");
@@ -192,38 +315,49 @@
       };
 
       const handleGoogle = async () => {
-         try {
-           if (!window.fbAuth) throw new Error("Firebase Auth not loaded");
-           await window.fbSignInWithPopup(window.fbAuth, window.fbProvider);
-           onSuccess();
-         } catch(e) { setErr(e.message); }
+        try {
+          if (!window.fbAuth) throw new Error("Firebase Auth not loaded");
+          await window.fbSignInWithPopup(window.fbAuth, window.fbProvider);
+          onSuccess();
+        } catch(e) { setErr(e.message); }
       };
 
       const iSt = { display:"block", width:"100%", border:"2px solid rgba(0,0,0,0.14)", padding:"12px", fontSize:12, fontFamily:"Inter", marginBottom:"1rem" };
 
       return (
-        <div style={{ position:"fixed", inset:0, zIndex:1000, background:"rgba(17,17,17,0.85)", display:"flex", alignItems:"center", justifyContent:"center", animation:"fadeIn .2s ease" }}>
-          <div style={{ background:"#fff", border:"3px solid #111", width:"100%", maxWidth:400, position:"relative", padding:"2.5rem" }}>
-            <button onClick={onClose} style={{ position:"absolute", top:14, right:14, background:"none", border:"1.5px solid #111", width:34, height:34, fontSize:14, fontWeight:700 }}>✕</button>
-            <h2 style={{ fontFamily:"Playfair Display", fontWeight:700, fontSize:28, marginBottom:"0.5rem" }}>{isLogin ? "Welcome Back." : "Join Splotch."}</h2>
-            {err && <div style={{ background:"#c00", color:"#fff", padding:"10px", fontSize:10, fontWeight:700, textTransform:"uppercase", marginBottom:"1.5rem" }}>{err}</div>}
+        <div style={{ position:"fixed",inset:0,zIndex:1000,background:"rgba(17,17,17,0.85)",display:"flex",alignItems:"center",justifyContent:"center",animation:"fadeIn .2s ease" }}>
+          <div style={{ background:"#fff",border:"3px solid #111",width:"100%",maxWidth:400,position:"relative",padding:"2.5rem" }}>
+            <button onClick={onClose} style={{ position:"absolute",top:14,right:14,background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700 }}>✕</button>
+            <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:28,marginBottom:"0.5rem" }}>{isLogin ? "Welcome Back." : "Join Splotch."}</h2>
+            <p style={{ fontSize:12,color:"rgba(0,0,0,0.5)",marginBottom:"2rem" }}>Secure your access to exclusive drops.</p>
+            {err && <div style={{ background:"#c00",color:"#fff",padding:"10px",fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:"1.5rem" }}>{err}</div>}
             <form onSubmit={handleEmailAuth}>
               <input type="email" placeholder="Email Address" value={email} onChange={e=>setEmail(e.target.value)} style={iSt} required/>
               <input type="password" placeholder="Password (Min 6 characters)" value={pw} onChange={e=>setPw(e.target.value)} style={iSt} required/>
-              <button type="submit" disabled={loading} style={{ width:"100%", background:"#111", color:"#fff", border:"3px solid #111", padding:"14px", fontSize:11, fontWeight:700, letterSpacing:"0.2em", textTransform:"uppercase", marginBottom:"1rem" }}>
-                {loading ? "..." : (isLogin ? "Log In" : "Sign Up")}
+              <button type="submit" disabled={loading} style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"1rem" }}>
+                {loading ? "Processing..." : (isLogin ? "Log In" : "Sign Up")}
               </button>
             </form>
-            <button onClick={handleGoogle} style={{ width:"100%", background:"#fff", color:"#111", border:"2px solid rgba(0,0,0,0.2)", padding:"12px", fontSize:11, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", display:"flex", justifyContent:"center", alignItems:"center", gap:"10px" }}>
+            <div style={{ display:"flex",alignItems:"center",gap:"1rem",margin:"1.5rem 0" }}>
+              <div style={{ flex:1,height:1,background:"rgba(0,0,0,0.1)" }}></div>
+              <span style={{ fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.1em",color:"rgba(0,0,0,0.3)" }}>OR</span>
+              <div style={{ flex:1,height:1,background:"rgba(0,0,0,0.1)" }}></div>
+            </div>
+            <button onClick={handleGoogle} style={{ width:"100%",background:"#fff",color:"#111",border:"2px solid rgba(0,0,0,0.2)",padding:"12px",fontSize:11,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",display:"flex",justifyContent:"center",alignItems:"center",gap:"10px" }}>
               <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-              Google Login
+              Continue with Google
             </button>
-            <div style={{ textAlign:"center", marginTop:"2rem" }}><button onClick={() => setIsLogin(!isLogin)} style={{ background:"none", border:"none", fontSize:11, fontWeight:600, textDecoration:"underline" }}>{isLogin ? "Need an account? Sign up." : "Already have an account? Log in."}</button></div>
+            <div style={{ textAlign:"center",marginTop:"2rem" }}>
+              <button onClick={() => setIsLogin(!isLogin)} style={{ background:"none",border:"none",fontSize:11,fontWeight:600,color:"#111",textDecoration:"underline" }}>
+                {isLogin ? "Need an account? Sign up." : "Already have an account? Log in."}
+              </button>
+            </div>
           </div>
         </div>
       );
     }
 
+    // ─── HEADER ──────────────────────────────────────────────────────────────────
     function Header({cartCount, onCartOpen, onLogoClick, setMobMenu, user, onAuthClick, handleLogout}){
       const [scrolled,setScrolled]=useState(false);
       useEffect(()=>{
@@ -231,30 +365,25 @@
         window.addEventListener("scroll",fn,{passive:true});
         return ()=>window.removeEventListener("scroll",fn);
       },[]);
-
       const scrollTo=(id)=>{ document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); };
       const safeName = user ? (user.displayName || user.email || 'USER').split('@')[0].toUpperCase() : '';
 
       return(
         <header className={scrolled ? "glass-nav" : ""} style={{ overflow:"visible" }}>
-          <button onClick={onLogoClick} style={{ background:"none",border:"none", display:"flex",alignItems:"center",gap:10,padding:0, position:"relative", paddingLeft:"10px" }}>
-            <img src={LOGO_SRC} alt="Splotch" style={{ height:32,width:"auto",display:"block",filter:"invert(0)", transform:"scale(2.2)", transformOrigin:"left center" }}/>
+          <button onClick={onLogoClick} style={{ background:"none",border:"none",display:"flex",alignItems:"center",gap:10,padding:0,position:"relative",paddingLeft:"10px" }}>
+            <img src={LOGO_SRC} alt="Splotch" style={{ height:32,width:"auto",display:"block",filter:"invert(0)",transform:"scale(2.2)",transformOrigin:"left center" }}/>
           </button>
-          
           <nav className="desk-nav" style={{ display:"flex",gap:"2.5rem",alignItems:"center" }}>
             <button onClick={()=>scrollTo('home')} className="nl" style={{ background:"none",border:"none" }}>HOME</button>
             <button onClick={()=>scrollTo('shop')} className="nl" style={{ background:"none",border:"none" }}>SHOP</button>
             <a href="/about.html" className="nl">ABOUT</a>
             <button onClick={()=>scrollTo('contact')} className="nl" style={{ background:"none",border:"none" }}>CONTACT</button>
           </nav>
-          
           <div style={{ display:"flex",alignItems:"center",gap:"1.2rem" }}>
             <div className="auth-container desk-nav">
               {user ? (
                 <div className="user-menu-container">
-                  <div className="user-badge">
-                    {safeName} <span style={{ fontSize: '7px', opacity: 0.6 }}>▼</span>
-                  </div>
+                  <div className="user-badge">{safeName} <span style={{ fontSize:'7px',opacity:0.6 }}>▼</span></div>
                   <div className="user-dropdown">
                     <button className="user-dropdown-btn" onClick={handleLogout}>Logout</button>
                   </div>
@@ -263,10 +392,10 @@
                 <button className="nav-signin" onClick={onAuthClick}>SIGN IN</button>
               )}
             </div>
-            <button className="mob-ham" onClick={()=>setMobMenu(o=>!o)} style={{ background:"none",border:"2px solid #111", width:34,height:34, flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4 }}>
+            <button className="mob-ham" onClick={()=>setMobMenu(o=>!o)} style={{ background:"none",border:"2px solid #111",width:34,height:34,flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4 }}>
               {[0,1,2].map(i=><span key={i} style={{ display:"block",width:14,height:1.5,background:"#111" }}/>)}
             </button>
-            <button onClick={onCartOpen} style={{ background:"#111",color:"#fff",border:"2px solid #111", padding:"7px 14px",fontSize:10,fontWeight:700, letterSpacing:"0.15em",textTransform:"uppercase", display:"flex",alignItems:"center",gap:6 }}>
+            <button onClick={onCartOpen} style={{ background:"#111",color:"#fff",border:"2px solid #111",padding:"7px 14px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",display:"flex",alignItems:"center",gap:6 }}>
               CART
               {cartCount>0&&<span style={{ background:"#fff",color:"#111",width:16,height:16,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:900 }}>{cartCount}</span>}
             </button>
@@ -278,115 +407,55 @@
     function MobMenu({open, setOpen, user, onAuthClick, handleLogout}){
       const go=(id)=>{ document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); setOpen(false); };
       const safeName = user ? (user.displayName || user.email || 'USER').split('@')[0].toUpperCase() : '';
-      
       return(
-        <div className="mob-menu" style={{ position:"fixed",inset:0,zIndex:600,background:"#111", display:"flex",flexDirection:"column",justifyContent:"center",padding:"3rem 2rem", transform:open?"translateX(0)":"translateX(100%)", transition:"transform .4s cubic-bezier(.76,0,.24,1)" }}>
-          <button onClick={()=>setOpen(false)} style={{ position:"absolute",top:16,right:16, background:"none",border:"2px solid rgba(255,255,255,0.2)", width:42,height:42,color:"#fff",fontSize:18,fontWeight:700 }}>✕</button>
+        <div className="mob-menu" style={{ position:"fixed",inset:0,zIndex:600,background:"#111",display:"flex",flexDirection:"column",justifyContent:"center",padding:"3rem 2rem",transform:open?"translateX(0)":"translateX(100%)",transition:"transform .4s cubic-bezier(.76,0,.24,1)" }}>
+          <button onClick={()=>setOpen(false)} style={{ position:"absolute",top:16,right:16,background:"none",border:"2px solid rgba(255,255,255,0.2)",width:42,height:42,color:"#fff",fontSize:18,fontWeight:700 }}>✕</button>
           <img src={LOGO_SRC} alt="Splotch" style={{ height:48,width:"auto",marginBottom:"2.5rem",opacity:0.9,filter:"invert(1)" }}/>
-          
-          <button onClick={()=>go('home')} style={{ background:"none",border:"none",textAlign:"left",fontFamily:"Inter",fontWeight:900, fontSize:"clamp(38px,10vw,60px)",letterSpacing:"-0.04em",textTransform:"uppercase", color:"#fff",lineHeight:1.1, borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"0.5rem 0" }}>HOME</button>
-          <button onClick={()=>go('shop')} style={{ background:"none",border:"none",textAlign:"left",fontFamily:"Inter",fontWeight:900, fontSize:"clamp(38px,10vw,60px)",letterSpacing:"-0.04em",textTransform:"uppercase", color:"#fff",lineHeight:1.1, borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"0.5rem 0" }}>SHOP</button>
-          <a href="/about.html" style={{ textDecoration:"none", textAlign:"left",fontFamily:"Inter",fontWeight:900, fontSize:"clamp(38px,10vw,60px)",letterSpacing:"-0.04em",textTransform:"uppercase", color:"#fff",lineHeight:1.1, borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"0.5rem 0" }}>ABOUT</a>
-          <button onClick={()=>go('contact')} style={{ background:"none",border:"none",textAlign:"left",fontFamily:"Inter",fontWeight:900, fontSize:"clamp(38px,10vw,60px)",letterSpacing:"-0.04em",textTransform:"uppercase", color:"#fff",lineHeight:1.1, borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"0.5rem 0" }}>CONTACT</button>
-          
-          <div style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem' }}>
+          <button onClick={()=>go('home')} style={{ background:"none",border:"none",textAlign:"left",fontFamily:"Inter",fontWeight:900,fontSize:"clamp(38px,10vw,60px)",letterSpacing:"-0.04em",textTransform:"uppercase",color:"#fff",lineHeight:1.1,borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"0.5rem 0" }}>HOME</button>
+          <button onClick={()=>go('shop')} style={{ background:"none",border:"none",textAlign:"left",fontFamily:"Inter",fontWeight:900,fontSize:"clamp(38px,10vw,60px)",letterSpacing:"-0.04em",textTransform:"uppercase",color:"#fff",lineHeight:1.1,borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"0.5rem 0" }}>SHOP</button>
+          <a href="/about.html" style={{ textDecoration:"none",textAlign:"left",fontFamily:"Inter",fontWeight:900,fontSize:"clamp(38px,10vw,60px)",letterSpacing:"-0.04em",textTransform:"uppercase",color:"#fff",lineHeight:1.1,borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"0.5rem 0" }}>ABOUT</a>
+          <button onClick={()=>go('contact')} style={{ background:"none",border:"none",textAlign:"left",fontFamily:"Inter",fontWeight:900,fontSize:"clamp(38px,10vw,60px)",letterSpacing:"-0.04em",textTransform:"uppercase",color:"#fff",lineHeight:1.1,borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"0.5rem 0" }}>CONTACT</button>
+          <div style={{ marginTop:'2rem',borderTop:'1px solid rgba(255,255,255,0.1)',paddingTop:'2rem' }}>
             {user ? (
               <React.Fragment>
-                <span style={{ color: '#fff', fontSize: 12, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '1rem' }}>
-                    WELCOME, {safeName}
-                </span>
-                <button onClick={() => { handleLogout(); setOpen(false); }} style={{ background: 'transparent', color: '#fff', border: '1px solid #fff', padding: '10px 20px', fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase' }}>Logout</button>
+                <span style={{ color:'#fff',fontSize:12,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',display:'block',marginBottom:'1rem' }}>WELCOME, {safeName}</span>
+                <button onClick={()=>{ handleLogout(); setOpen(false); }} style={{ background:'transparent',color:'#fff',border:'1px solid #fff',padding:'10px 20px',fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase' }}>Logout</button>
               </React.Fragment>
             ) : (
-                <button onClick={() => { onAuthClick(); setOpen(false); }} style={{ background: '#fff', color: '#111', border: 'none', padding: '12px 24px', fontSize: 11, fontWeight: 900, letterSpacing: '0.15em', textTransform: 'uppercase' }}>Sign In</button>
+              <button onClick={()=>{ onAuthClick(); setOpen(false); }} style={{ background:'#fff',color:'#111',border:'none',padding:'12px 24px',fontSize:11,fontWeight:900,letterSpacing:'0.15em',textTransform:'uppercase' }}>Sign In</button>
             )}
           </div>
         </div>
       );
     }
 
-    function ProdCard({product,onQV,onAdd}){
-      const [flipped,setFlipped]=useState(false);
-      const [added,setAdded]=useState(false);
-      
-      const stockMap = product.stockMap || {};
-      const sizeArray = Object.keys(stockMap);
-      const totalStock = Object.values(stockMap).reduce((a,b)=>a+b, 0);
-      const isSoldOut = totalStock <= 0; 
-      
-      // Auto-select first available size
-      const [selSize, setSelSize] = useState(sizeArray.find(s => stockMap[s] > 0) || sizeArray[0]);
+    // ─── QUICK VIEW ───────────────────────────────────────────────────────────────
+    function QuickView({product, onClose, onAdd}){
+      const [flipped, setFlipped] = useState(false);
+      const [added, setAdded] = useState(false);
+      if (!product) return null;
 
-      const doAdd=(e)=>{ 
-        e.stopPropagation(); 
-        if(stockMap[selSize] <= 0) return;
-        onAdd({...product, selectedSize: selSize}); 
-        setAdded(true); setTimeout(()=>setAdded(false),1800); 
-      };
-      
-      return(
-        <div className="prod-card" style={{ border:"2px solid #111",background:"#fff",position:"relative", display:"flex", flexDirection:"column" }}>
-          {product.tag&&<div style={{ position:"absolute",top:12,left:12,zIndex:10,background:"#111",color:"#fff",fontSize:8,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",padding:"3px 8px" }}>{product.tag}</div>}
-          {product.hasBack&&(
-            <button className="flip-toggle" onClick={(e)=>{e.stopPropagation(); setFlipped(f=>!f)}} style={{ position:"absolute",top:12,right:12,zIndex:10, background:flipped?"#111":"rgba(255,255,255,0.92)", color:flipped?"#fff":"#111", border:"1.5px solid #111",fontSize:8,fontWeight:700, letterSpacing:"0.15em",textTransform:"uppercase", padding:"4px 9px",transition:"all .2s" }}>{flipped?"◀ Front":"Back ▶"}</button>
-          )}
-          {isSoldOut&&(
-            <div style={{ position:"absolute",inset:0,zIndex:20,background:"rgba(255,255,255,0.9)",display:"flex",alignItems:"center",justifyContent:"center" }}><span style={{ fontWeight:900,fontSize:16,letterSpacing:"0.1em",textTransform:"uppercase",color:"#c00" }}>SOLD OUT</span></div>
-          )}
-          <div style={{ aspectRatio:"3/4",overflow:"hidden",perspective:"1200px" }} className={flipped?"flipped":""} onClick={()=>onQV(product)}>
-            <div className="flip-inner">
-              <div className="flip-front">{product.frontImage ? <img src={product.frontImage} alt="" style={{ width:"100%",height:"100%",objectFit:"cover",display:"block" }}/> : <ImgPlaceholder label={product.name+" · Front"}/>}</div>
-              {product.hasBack&&(<div className="flip-back">{product.backImage ? <img src={product.backImage} alt="" style={{ width:"100%",height:"100%",objectFit:"cover",display:"block" }}/> : <ImgPlaceholder label={product.name+" · Back"} dark={false}/>}</div>)}
-            </div>
-            <button style={{ position:"absolute",bottom:10,left:10,right:10,zIndex:8, background:"rgba(17,17,17,0.88)",color:"#fff",border:"none", padding:"10px",fontSize:9,fontWeight:700,letterSpacing:"0.22em", textTransform:"uppercase", opacity:0,transition:"opacity .2s" }} className="qv-trigger">Quick View ↗</button>
-          </div>
-          <div style={{ padding:"1rem 1.2rem",borderTop:"2px solid #111", flex:1, display:"flex", flexDirection:"column" }}>
-            <div style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.3)",marginBottom:3 }}>{product.category}</div>
-            <div style={{ fontWeight:900,fontSize:15,textTransform:"uppercase",letterSpacing:"-0.01em",marginBottom:5 }}>{product.name}</div>
-            
-            <div style={{ fontWeight:700,fontSize:13,color:"rgba(0,0,0,0.55)",marginBottom:"0.9rem" }}>
-              {product.compareAtPrice && <span style={{ textDecoration: "line-through", opacity: 0.6, marginRight: "8px", fontWeight: 600 }}>{product.compareAtPrice}</span>}
-              <span style={{ color: product.compareAtPrice ? "#c00" : "#111", fontWeight: 900 }}>{product.price}</span>
-            </div>
+      const sizeArray = product.sizes ? product.sizes.split(',').map(s=>s.trim()) : ["OS"];
+      const [selSize, setSelSize] = useState(sizeArray.find(s => getSizeStock(product, s) > 0) || sizeArray[0]);
+      const isSizeSoldOut = (s) => getSizeStock(product, s) <= 0;
+      const isSoldOut = getTotalStock(product) <= 0;
+      const currentSizeSoldOut = isSizeSoldOut(selSize);
 
-            <div style={{ display:"flex", gap:"5px", marginBottom:"1rem", flexWrap:"wrap" }}>
-              {sizeArray.map(s => {
-                const qty = stockMap[s];
-                return (
-                  <button key={s} disabled={qty<=0} onClick={(e)=>{e.stopPropagation(); setSelSize(s)}} className={`size-btn ${selSize===s?'active':''}`}>{s}</button>
-                );
-              })}
-            </div>
-
-            <button className="prod-cta-btn" disabled={isSoldOut || stockMap[selSize]<=0} onClick={doAdd} style={{ marginTop:"auto", display:"block",width:"100%",background:added?"#111":"#fff", color:added?"#fff":"#111",border:"2px solid #111", padding:"10px",fontSize:10,fontWeight:700, letterSpacing:"0.18em",textTransform:"uppercase", opacity:(isSoldOut||stockMap[selSize]<=0)?0.5:1 }}>{added?"✓ Added":"Add to Cart"}</button>
-          </div>
-        </div>
-      );
-    }
-
-    function QuickView({product,onClose,onAdd}){
-      const [flipped,setFlipped]=useState(false);
-      const [added,setAdded]=useState(false);
-      if(!product) return null;
-
-      const stockMap = product.stockMap || {};
-      const sizeArray = Object.keys(stockMap);
-      const totalStock = Object.values(stockMap).reduce((a,b)=>a+b, 0);
-      const isSoldOut = totalStock <= 0;
-      const [selSize, setSelSize] = useState(sizeArray.find(s => stockMap[s] > 0) || sizeArray[0]);
+      const frontImg = product.frontImage || null;
+      const backImg = product.backImage || null;
 
       return(
         <div onClick={onClose} style={{ position:"fixed",inset:0,zIndex:900,background:"rgba(17,17,17,0.8)",display:"flex",alignItems:"center",justifyContent:"center",padding:"2rem",animation:"fadeIn .2s ease" }}>
           <div onClick={e=>e.stopPropagation()} style={{ background:"#fff",border:"3px solid #111",maxWidth:860,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",maxHeight:"90vh",overflow:"auto" }} className="two-col">
             <div style={{ position:"relative",background:"#111",minHeight:400,perspective:"1200px" }} className={flipped?"flipped":""}>
               <div className="flip-inner">
-                <div className="flip-front" style={{ position:"absolute",inset:0 }}>{product.frontImage ? <img src={product.frontImage} alt="" style={{ width:"100%",height:"100%",objectFit:"cover" }}/> : <ImgPlaceholder label="Front" dark/>}</div>
-                {product.hasBack&&<div className="flip-back" style={{ position:"absolute",inset:0 }}>{product.backImage ? <img src={product.backImage} alt="" style={{ width:"100%",height:"100%",objectFit:"cover" }}/> : <ImgPlaceholder label="Back" dark={false}/>}</div>}
+                <div className="flip-front" style={{ position:"absolute",inset:0 }}>{frontImg ? <img src={frontImg} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover" }}/> : <ImgPlaceholder label="Front" dark/>}</div>
+                {product.hasBack&&<div className="flip-back" style={{ position:"absolute",inset:0 }}>{backImg ? <img src={backImg} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover" }}/> : <ImgPlaceholder label="Back" dark={false}/>}</div>}
               </div>
               {product.hasBack&&(
                 <div style={{ position:"absolute",bottom:14,left:0,right:0,display:"flex",justifyContent:"center",gap:6,zIndex:10 }}>
                   {["Front","Back"].map((s,i)=>(
-                    <button key={s} onClick={()=>setFlipped(i===1)} style={{ background:(flipped===(i===1))?"#fff":"transparent", color:(flipped===(i===1))?"#111":"rgba(255,255,255,0.5)", border:"1.5px solid rgba(255,255,255,0.25)", padding:"5px 14px",fontSize:9,fontWeight:700, letterSpacing:"0.18em",textTransform:"uppercase" }}>{s}</button>
+                    <button key={s} onClick={()=>setFlipped(i===1)} style={{ background:(flipped===(i===1))?"#fff":"transparent",color:(flipped===(i===1))?"#111":"rgba(255,255,255,0.5)",border:"1.5px solid rgba(255,255,255,0.25)",padding:"5px 14px",fontSize:9,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase" }}>{s}</button>
                   ))}
                 </div>
               )}
@@ -396,18 +465,18 @@
                 <button onClick={onClose} style={{ float:"right",background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700 }}>✕</button>
                 <div style={{ fontSize:9,fontWeight:700,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(0,0,0,0.3)",marginBottom:6,clear:"both" }}>{product.category}</div>
                 <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:26,letterSpacing:"-0.02em",marginBottom:"0.6rem" }}>{product.name}</h2>
-                
                 <div style={{ fontWeight:700,fontSize:19,marginBottom:"1.2rem" }}>
-                  {product.compareAtPrice && <span style={{ textDecoration: "line-through", opacity: 0.5, marginRight: "10px", fontSize: "16px" }}>{product.compareAtPrice}</span>}
-                  <span style={{ color: product.compareAtPrice ? "#c00" : "#111" }}>{product.price}</span>
+                  {product.compareAtPrice && <span style={{ textDecoration:"line-through",opacity:0.5,marginRight:"10px",fontSize:"16px" }}>{product.compareAtPrice}</span>}
+                  <span style={{ color:product.compareAtPrice?"#c00":"#111" }}>{product.price}</span>
                 </div>
-
-                <div style={{ display:"flex", gap:"5px", marginBottom:"1.5rem" }}>
+                <div style={{ display:"flex",gap:"5px",marginBottom:"0.5rem",flexWrap:"wrap" }}>
                   {sizeArray.map(s => (
-                    <button key={s} disabled={stockMap[s]<=0} onClick={()=>setSelSize(s)} className={`size-btn ${selSize===s?'active':''}`}>{s}</button>
+                    <button key={s} onClick={()=>{ if(!isSizeSoldOut(s)) setSelSize(s); }} className={`size-btn ${selSize===s?'active':''} ${isSizeSoldOut(s)?'soldout':''}`} disabled={isSizeSoldOut(s)}>{s}</button>
                   ))}
                 </div>
-
+                <div style={{ fontSize:10,color:"rgba(0,0,0,0.4)",fontWeight:600,marginBottom:"1.5rem" }}>
+                  {currentSizeSoldOut ? "❌ Out of stock in this size" : `✓ ${getSizeStock(product, selSize)} left in ${selSize}`}
+                </div>
                 <p style={{ fontSize:14,lineHeight:1.75,color:"rgba(0,0,0,0.58)",marginBottom:"1.5rem" }}>{product.description}</p>
                 <div style={{ borderTop:"1px solid rgba(0,0,0,0.08)",paddingTop:"1rem" }}>
                   {[["Material","100% Organic Cotton"],["Fit","Oversized"],["Care","Cold wash, hang dry"],["Origin","Made in India"]].map(([k,v])=>(
@@ -418,25 +487,90 @@
                   ))}
                 </div>
               </div>
-              <button disabled={isSoldOut || stockMap[selSize]<=0} onClick={()=>{ onAdd({...product, selectedSize: selSize}); setAdded(true); setTimeout(()=>setAdded(false),2000); }} style={{ background:added?"#444":"#111",color:"#fff",border:"3px solid #111", padding:"15px",fontSize:11,fontWeight:700, letterSpacing:"0.2em",textTransform:"uppercase", marginTop:"1.5rem",transition:"background .2s", opacity:(isSoldOut||stockMap[selSize]<=0)?0.5:1 }}>{isSoldOut ? "Sold Out" : (added?"✓ Added to Cart":"Add to Cart")}</button>
+              <button disabled={isSoldOut || currentSizeSoldOut} onClick={()=>{ onAdd({...product, selectedSize:selSize}); setAdded(true); setTimeout(()=>setAdded(false),2000); }} style={{ background:added?"#444":"#111",color:"#fff",border:"3px solid #111",padding:"15px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginTop:"1.5rem",transition:"background .2s",opacity:(isSoldOut||currentSizeSoldOut)?0.5:1 }}>
+                {(isSoldOut||currentSizeSoldOut) ? "Sold Out" : (added ? "✓ Added to Cart" : "Add to Cart")}
+              </button>
             </div>
           </div>
         </div>
       );
     }
 
-    function CartSidebar({cart,setCart,onClose, user, onAuthClick}){
+    // ─── PRODUCT CARD ─────────────────────────────────────────────────────────────
+    function ProdCard({product, onQV, onAdd}){
+      const [flipped, setFlipped] = useState(false);
+      const [added, setAdded] = useState(false);
+      const sizeArray = product.sizes ? product.sizes.split(',').map(s=>s.trim()) : ["OS"];
+      const [selSize, setSelSize] = useState(sizeArray.find(s => getSizeStock(product, s) > 0) || sizeArray[0]);
+      const isSizeSoldOut = (s) => getSizeStock(product, s) <= 0;
+      const isSoldOut = getTotalStock(product) <= 0;
+
+      const doAdd = (e) => {
+        e.stopPropagation();
+        if (isSizeSoldOut(selSize)) return;
+        onAdd({...product, selectedSize: selSize});
+        setAdded(true); setTimeout(()=>setAdded(false), 1800);
+      };
+
+      const frontImg = product.frontImage || null;
+      const backImg = product.backImage || null;
+
+      return(
+        <div className="prod-card" style={{ border:"2px solid #111",background:"#fff",position:"relative",display:"flex",flexDirection:"column" }}>
+          {product.tag&&<div style={{ position:"absolute",top:12,left:12,zIndex:10,background:"#111",color:"#fff",fontSize:8,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",padding:"3px 8px" }}>{product.tag}</div>}
+          {product.hasBack&&(
+            <button className="flip-toggle" onClick={(e)=>{e.stopPropagation(); setFlipped(f=>!f)}} style={{ position:"absolute",top:12,right:12,zIndex:10,background:flipped?"#111":"rgba(255,255,255,0.92)",color:flipped?"#fff":"#111",border:"1.5px solid #111",fontSize:8,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",padding:"4px 9px",transition:"all .2s" }}>{flipped?"◀ Front":"Back ▶"}</button>
+          )}
+          {isSoldOut&&(
+            <div style={{ position:"absolute",inset:0,zIndex:20,background:"rgba(255,255,255,0.9)",display:"flex",alignItems:"center",justifyContent:"center" }}><span style={{ fontWeight:900,fontSize:16,letterSpacing:"0.1em",textTransform:"uppercase",color:"#c00" }}>SOLD OUT</span></div>
+          )}
+          {/* Image area — no cursor:crosshair */}
+          <div style={{ aspectRatio:"3/4",overflow:"hidden",perspective:"1200px" }} className={flipped?"flipped":""} onClick={()=>onQV(product)}>
+            <div className="flip-inner">
+              <div className="flip-front">{frontImg ? <img src={frontImg} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover",display:"block" }}/> : <ImgPlaceholder label={product.name+" · Front"}/>}</div>
+              {product.hasBack&&(<div className="flip-back">{backImg ? <img src={backImg} alt="" onError={(e)=>{e.target.style.display='none'}} style={{ width:"100%",height:"100%",objectFit:"cover",display:"block" }}/> : <ImgPlaceholder label={product.name+" · Back"} dark={false}/>}</div>)}
+            </div>
+          </div>
+          <div style={{ padding:"1rem 1.2rem",borderTop:"2px solid #111",flex:1,display:"flex",flexDirection:"column" }}>
+            <div style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.3)",marginBottom:3 }}>{product.category}</div>
+            <div style={{ fontWeight:900,fontSize:15,textTransform:"uppercase",letterSpacing:"-0.01em",marginBottom:5 }}>{product.name}</div>
+            <div style={{ fontWeight:700,fontSize:13,color:"rgba(0,0,0,0.55)",marginBottom:"0.9rem" }}>
+              {product.compareAtPrice && <span style={{ textDecoration:"line-through",opacity:0.6,marginRight:"8px",fontWeight:600 }}>{product.compareAtPrice}</span>}
+              <span style={{ color:product.compareAtPrice?"#c00":"#111",fontWeight:900 }}>{product.price}</span>
+            </div>
+            <div style={{ display:"flex",gap:"5px",marginBottom:"0.4rem",flexWrap:"wrap" }}>
+              {sizeArray.map(s => (
+                <button key={s} onClick={(e)=>{e.stopPropagation(); if(!isSizeSoldOut(s)) setSelSize(s);}} className={`size-btn ${selSize===s?'active':''} ${isSizeSoldOut(s)?'soldout':''}`} disabled={isSizeSoldOut(s)}>{s}</button>
+              ))}
+            </div>
+            <div style={{ fontSize:9,color:"rgba(0,0,0,0.4)",fontWeight:600,marginBottom:"0.8rem" }}>
+              {isSizeSoldOut(selSize) ? "Out of stock" : `${getSizeStock(product, selSize)} left`}
+            </div>
+            <button className="prod-cta-btn" disabled={isSoldOut || isSizeSoldOut(selSize)} onClick={doAdd} style={{ marginTop:"auto",display:"block",width:"100%",background:added?"#111":"#fff",color:added?"#fff":"#111",border:"2px solid #111",padding:"10px",fontSize:10,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase",opacity:(isSoldOut||isSizeSoldOut(selSize))?0.5:1 }}>
+              {added ? "✓ Added" : "Add to Cart"}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── CART SIDEBAR ─────────────────────────────────────────────────────────────
+    function CartSidebar({cart, setCart, onClose, user, onAuthClick}){
       const total = cart.reduce((s,i)=>s+(parseInt((i.price||"0").replace(/[^0-9]/g,""))||0),0);
       const [loading, setLoading] = useState(false);
-      const [step, setStep] = useState('cart'); 
-      const [shipping, setShipping] = useState({ phone: "", address: "", city: "", state: "", pincode: "" });
+      const [step, setStep] = useState('cart');
+      const [shipping, setShipping] = useState({ phone:"", address:"", city:"", state:"", pincode:"" });
+
+      const initiateCheckout = () => {
+        if (!user) { onAuthClick(); return; }
+        setStep('shipping');
+      };
 
       const processPayment = async () => {
         if (!shipping.phone || !shipping.address || !shipping.city || !shipping.state || !shipping.pincode) { alert("Please fill in all shipping details."); return; }
         setLoading(true);
-
         try {
-          const response = await fetch('/api/createOrder', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount: total }) });
+          const response = await fetch('/api/createOrder', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ amount:total }) });
           const data = await response.json();
           if (!response.ok) throw new Error(data.error || "Failed to fetch order");
 
@@ -446,19 +580,20 @@
               try {
                 if (!window.fbDb) throw new Error("Firebase DB not available.");
                 await window.fbAddDoc(window.fbCollection(window.fbDb, "orders"), {
-                  items: cart, total: total, paymentId: rzpRes.razorpay_payment_id, orderId: rzpRes.razorpay_order_id,
+                  items: cart, total, paymentId: rzpRes.razorpay_payment_id, orderId: rzpRes.razorpay_order_id,
                   userId: user.uid, userEmail: user.email, userName: user.displayName || "User",
                   shipping, timestamp: new Date(), status: "Processing"
                 });
-
-                // UPDATE SIZE SPECIFIC STOCK
+                // Decrement per-size stock in Firestore
                 for (const item of cart) {
-                  if(item.id) {
-                    try { await window.fbUpdateDoc(window.fbDoc(window.fbDb, "products", item.id), { ["stockMap." + item.selectedSize]: window.fbIncrement(-1) }); } 
-                    catch (e) { console.error(`Failed to decrement stock for ${item.id}`); }
+                  if (item.id) {
+                    try {
+                      await window.fbUpdateDoc(window.fbDoc(window.fbDb, "products", item.id), {
+                        [`sizeStock.${item.selectedSize}`]: window.fbIncrement(-1)
+                      });
+                    } catch (e) { console.error(`Stock decrement failed for ${item.id} size ${item.selectedSize}`); }
                   }
                 }
-                
                 alert("Payment successful! Order placed securely.");
                 setCart([]); onClose();
               } catch (dbErr) { alert("Paid, but order save failed. Please contact Splotch support."); }
@@ -466,7 +601,7 @@
             prefill: { email: user.email, contact: shipping.phone }, theme: { color: "#111111" }
           };
           new window.Razorpay(options).open();
-        } catch (err) { alert("Error initiating checkout: " + err.message); } 
+        } catch (err) { alert("Error initiating checkout: " + err.message); }
         finally { setLoading(false); }
       };
 
@@ -476,21 +611,19 @@
         <div style={{ position:"fixed",inset:0,zIndex:800 }}>
           <div onClick={onClose} style={{ position:"absolute",inset:0,background:"rgba(17,17,17,0.55)" }}/>
           <div style={{ position:"absolute",top:0,right:0,bottom:0,width:"100%",maxWidth:400,background:"#fff",borderLeft:"3px solid #111",display:"flex",flexDirection:"column" }}>
-            
             <div style={{ padding:"1.2rem 1.8rem",borderBottom:"2px solid #111",display:"flex",justifyContent:"space-between",alignItems:"center" }}>
-              <span style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:20,letterSpacing:"-0.01em" }}>{step === 'cart' ? `Cart (${cart.length})` : "Shipping Info"}</span>
+              <span style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:20,letterSpacing:"-0.01em" }}>{step==='cart' ? `Cart (${cart.length})` : "Shipping Info"}</span>
               <button onClick={onClose} style={{ background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700 }}>✕</button>
             </div>
-
             {step === 'cart' && (
               <React.Fragment>
                 <div style={{ flex:1,overflow:"auto",padding:"0.8rem 1.8rem" }}>
-                  {cart.length===0?(
+                  {cart.length===0 ? (
                     <div style={{ textAlign:"center",padding:"4rem 0",color:"rgba(0,0,0,0.25)" }}>
                       <img src={LOGO_SRC} alt="" style={{ height:40,opacity:.15,marginBottom:12 }}/>
                       <div style={{ fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase" }}>Your cart is empty</div>
                     </div>
-                  ):cart.map((item,i)=>(
+                  ) : cart.map((item,i)=>(
                     <div key={i} style={{ display:"flex",gap:"1rem",alignItems:"center",borderBottom:"1px solid rgba(0,0,0,0.07)",padding:"0.9rem 0" }}>
                       <div style={{ width:58,height:58,background:"#111",flexShrink:0,overflow:"hidden" }}>
                         {item.frontImage?<img src={item.frontImage} alt="" style={{ width:"100%",height:"100%",objectFit:"cover" }}/>:<div style={{ width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,0.15)",fontSize:18 }}>◎</div>}
@@ -510,63 +643,58 @@
                       <span style={{ fontSize:11,fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase" }}>Total</span>
                       <span style={{ fontSize:17,fontWeight:900,letterSpacing:"-0.02em" }}>₹{total.toLocaleString("en-IN")}</span>
                     </div>
-                    <button onClick={()=>{user ? setStep('shipping') : onAuthClick()}} style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase" }}>Secure Checkout →</button>
+                    <button onClick={initiateCheckout} style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase" }}>Secure Checkout →</button>
                     <button onClick={()=>setCart([])} style={{ width:"100%",background:"transparent",color:"rgba(0,0,0,0.35)",border:"none",padding:"8px",fontSize:9,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase",marginTop:4 }}>Clear Cart</button>
                   </div>
                 )}
               </React.Fragment>
             )}
-
             {step === 'shipping' && (
-              <div style={{ flex:1, display:"flex", flexDirection:"column" }}>
-                <div style={{ flex:1, overflow:"auto", padding:"1.5rem 1.8rem" }}>
+              <div style={{ flex:1,display:"flex",flexDirection:"column" }}>
+                <div style={{ flex:1,overflow:"auto",padding:"1.5rem 1.8rem" }}>
                   <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6 }}>Phone Number *</label>
-                  <input type="tel" placeholder="+91" value={shipping.phone} onChange={e=>setShipping(s=>({...s, phone: e.target.value}))} style={{...iSt, marginBottom:"1.5rem"}} />
-                  
+                  <input type="tel" placeholder="+91" value={shipping.phone} onChange={e=>setShipping(s=>({...s,phone:e.target.value}))} style={{...iSt,marginBottom:"1.5rem"}} />
                   <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6 }}>House/Flat No. & Street *</label>
-                  <input type="text" placeholder="Address Line 1" value={shipping.address} onChange={e=>setShipping(s=>({...s, address: e.target.value}))} style={{...iSt, marginBottom:"1rem"}} />
-                  
-                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"1rem", marginBottom:"1rem" }}>
+                  <input type="text" placeholder="Address Line 1" value={shipping.address} onChange={e=>setShipping(s=>({...s,address:e.target.value}))} style={{...iSt,marginBottom:"1rem"}} />
+                  <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem",marginBottom:"1rem" }}>
                     <div>
                       <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6 }}>City *</label>
-                      <input type="text" placeholder="City" value={shipping.city} onChange={e=>setShipping(s=>({...s, city: e.target.value}))} style={iSt} />
+                      <input type="text" placeholder="City" value={shipping.city} onChange={e=>setShipping(s=>({...s,city:e.target.value}))} style={iSt} />
                     </div>
                     <div>
                       <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6 }}>State *</label>
-                      <input type="text" placeholder="State" value={shipping.state} onChange={e=>setShipping(s=>({...s, state: e.target.value}))} style={iSt} />
+                      <input type="text" placeholder="State" value={shipping.state} onChange={e=>setShipping(s=>({...s,state:e.target.value}))} style={iSt} />
                     </div>
                   </div>
-
                   <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6 }}>Pincode *</label>
-                  <input type="text" placeholder="6-digit Pincode" value={shipping.pincode} onChange={e=>setShipping(s=>({...s, pincode: e.target.value}))} style={{...iSt, marginBottom:"1.5rem"}} />
-
+                  <input type="text" placeholder="6-digit Pincode" value={shipping.pincode} onChange={e=>setShipping(s=>({...s,pincode:e.target.value}))} style={{...iSt,marginBottom:"1.5rem"}} />
                 </div>
                 <div style={{ padding:"1.2rem 1.8rem",borderTop:"2px solid #111" }}>
-                  <button onClick={processPayment} disabled={loading} style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase", marginBottom:8 }}>{loading ? "Processing..." : `Pay ₹${total} Now`}</button>
+                  <button onClick={processPayment} disabled={loading} style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:8 }}>{loading ? "Processing..." : `Pay ₹${total} Now`}</button>
                   <button onClick={()=>setStep('cart')} style={{ width:"100%",background:"transparent",color:"#111",border:"2px solid rgba(0,0,0,0.2)",padding:"10px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase" }}>← Back to Cart</button>
                 </div>
               </div>
             )}
-
           </div>
         </div>
       );
     }
 
-    function ImgUpload({value,onChange,label}){
-      const ref=useRef();
-      const [drag,setDrag]=useState(false);
-      const read=(file)=>{ if(!file) return; const r=new FileReader(); r.onload=e=>onChange(e.target.result); r.readAsDataURL(file); };
+    // ─── IMAGE UPLOAD ─────────────────────────────────────────────────────────────
+    function ImgUpload({value, onChange, label}){
+      const ref = useRef();
+      const [drag, setDrag] = useState(false);
+      const read = (file) => { if(!file) return; const r=new FileReader(); r.onload=e=>onChange(e.target.result); r.readAsDataURL(file); };
       return(
         <div>
           <div style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",marginBottom:7 }}>{label}</div>
-          <div className={`drop-zone${drag?" over":""}`} onClick={()=>ref.current?.click()} onDragOver={e=>{e.preventDefault();setDrag(true);}} onDragLeave={()=>setDrag(false)} onDrop={e=>{e.preventDefault();setDrag(false);read(e.dataTransfer.files[0]);}} style={{ border:"2px dashed rgba(0,0,0,0.18)",padding:"0.9rem", textAlign:"center",background:drag?"rgba(0,0,0,0.03)":"#fafafa", minHeight:110,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8 }}>
-            {value?(
+          <div className={`drop-zone${drag?" over":""}`} onClick={()=>ref.current?.click()} onDragOver={e=>{e.preventDefault();setDrag(true);}} onDragLeave={()=>setDrag(false)} onDrop={e=>{e.preventDefault();setDrag(false);read(e.dataTransfer.files[0]);}} style={{ border:"2px dashed rgba(0,0,0,0.18)",padding:"0.9rem",textAlign:"center",background:drag?"rgba(0,0,0,0.03)":"#fafafa",minHeight:110,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8 }}>
+            {value ? (
               <React.Fragment>
                 <img src={value} alt="" style={{ maxHeight:90,maxWidth:"100%",objectFit:"contain" }}/>
                 <button onClick={e=>{e.stopPropagation();onChange(null);}} style={{ background:"#111",color:"#fff",border:"none",fontSize:8,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",padding:"3px 9px" }}>Remove</button>
               </React.Fragment>
-            ):(
+            ) : (
               <React.Fragment>
                 <svg width="28" height="28" viewBox="0 0 28 28" style={{ opacity:.3 }}><path d="M14 3L14 19M7 10L14 3L21 10" stroke="#111" strokeWidth="1.8" fill="none"/><path d="M3 21L3 25L25 25L25 21" stroke="#111" strokeWidth="1.8" fill="none"/></svg>
                 <span style={{ fontSize:10,fontWeight:600,color:"rgba(0,0,0,0.35)" }}>Click or drag image</span>
@@ -578,23 +706,24 @@
         </div>
       );
     }
-    
-    function AdminPanel({products,setProducts,onClose}){
-      const [authed,setAuthed]=useState(false);
+
+    // ─── ADMIN PANEL ─────────────────────────────────────────────────────────────
+    function AdminPanel({products, setProducts, onClose}){
+      const [authed, setAuthed] = useState(false);
       const [email, setEmail] = useState("");
       const [pw, setPw] = useState("");
-      const [pwErr,setPwErr]=useState(false);
-      const [editId,setEditId]=useState(null);
+      const [pwErr, setPwErr] = useState(false);
+      const [editId, setEditId] = useState(null);
       const [tab, setTab] = useState("products");
       const [orders, setOrders] = useState([]);
-      
-      const blank={ name:"", cost:"", price:"₹1", compareAtPrice:"₹1,100", tag:"", description:"", category:"T-Shirts", frontImage:null, backImage:null, hasBack:false, stockMapStr: "S:10, M:5, L:2" };
-      const [form,setForm]=useState(blank);
+
+      const blank = { name:"", cost:"", price:"₹1", compareAtPrice:"₹1,100", tag:"", description:"", category:"T-Shirts", frontImage:null, backImage:null, hasBack:false, sizes:"S, M, L, XL", sizeStock:{ S:10, M:10, L:10, XL:10 } };
+      const [form, setForm] = useState(blank);
 
       useEffect(() => {
-        if(authed && tab === "orders" && window.fbDb) {
+        if (authed && tab === "orders" && window.fbDb) {
           window.fbGetDocs(window.fbQuery(window.fbCollection(window.fbDb, "orders"), window.fbOrderBy("timestamp", "desc"))).then(snap => {
-            const ords = []; snap.forEach(d => ords.push({id: d.id, ...d.data()})); setOrders(ords);
+            const ords = []; snap.forEach(d => ords.push({id:d.id,...d.data()})); setOrders(ords);
           }).catch(e => console.error(e));
         }
       }, [authed, tab]);
@@ -603,67 +732,67 @@
         try {
           if (!window.fbAuth) throw new Error("Firebase Auth not connected.");
           const res = await window.fbSignInWithEmailAndPassword(window.fbAuth, email, pw);
-          if (res.user.email === "splotchglobal@gmail.com") { setAuthed(true); setPwErr(false); } 
+          if (res.user.email === "splotchglobal@gmail.com") { setAuthed(true); setPwErr(false); }
           else { setPwErr("Not authorized as Admin."); await window.fbSignOut(window.fbAuth); }
         } catch (err) { setPwErr(err.message.replace("Firebase: ", "")); }
       };
 
+      // When sizes field changes, sync sizeStock keys
+      const handleSizesChange = (newSizesStr) => {
+        const newArr = newSizesStr.split(',').map(s=>s.trim()).filter(Boolean);
+        const newStock = {};
+        newArr.forEach(s => { newStock[s] = form.sizeStock?.[s] ?? 10; });
+        setForm({...form, sizes: newSizesStr, sizeStock: newStock});
+      };
+
+      const handleSizeStockChange = (size, val) => {
+        setForm({...form, sizeStock: {...form.sizeStock, [size]: parseInt(val)||0}});
+      };
+
       const save = async () => {
-        if(!form.name||!form.price){ alert("Name & price required."); return; }
+        if (!form.name || !form.price) { alert("Name & price required."); return; }
         const newId = editId === "new" ? "prod-"+Date.now() : editId;
-        
-        // Parse the Stock Map String into a JSON Object
-        const stockMap = {};
-        if(form.stockMapStr) {
-          form.stockMapStr.split(',').forEach(s => {
-            const [size, qty] = s.split(':');
-            if(size && qty) stockMap[size.trim().toUpperCase()] = parseInt(qty.trim()) || 0;
-          });
-        }
-        const updatedProduct = {...form, id: newId, stockMap};
-        
+        const updatedProduct = {...form, id: newId};
         try {
           if (!window.fbDb || !window.fbSetDoc) throw new Error("Firebase missing");
-          // {merge:true} forces the database to accept new fields even if rule is strict
-          await window.fbSetDoc(window.fbDoc(window.fbDb, "products", newId), updatedProduct, {merge: true});
-          
+          await window.fbSetDoc(window.fbDoc(window.fbDb, "products", newId), updatedProduct);
           let upd;
-          if(editId==="new"){ upd=[...products, updatedProduct]; }
-          else{ upd=products.map(p=>p.id===editId?updatedProduct:p); }
-          setProducts(upd); 
+          if (editId==="new") { upd=[...products, updatedProduct]; }
+          else { upd=products.map(p=>p.id===editId?updatedProduct:p); }
+          setProducts(upd);
           setEditId(null); setForm(blank);
           alert("Saved Successfully!");
         } catch (err) { alert("Error saving to database: \n\n" + err.message); }
       };
 
-      const remove = async (id)=>{ 
-        if(window.confirm("Delete globally?")) {
+      const remove = async (id) => {
+        if (window.confirm("Delete globally?")) {
           try {
             await window.fbDeleteDoc(window.fbDoc(window.fbDb, "products", id));
-            setProducts(products.filter(p=>p.id!==id)); 
-            if(editId===id){setEditId(null);setForm(blank);} 
+            setProducts(products.filter(p=>p.id!==id));
+            if (editId===id) { setEditId(null); setForm(blank); }
           } catch(err) { alert("Delete failed: " + err.message); }
         }
       };
 
-      const iSt={ display:"block",width:"100%",border:"2px solid rgba(0,0,0,0.14)",background:"#fff",padding:"10px 12px",fontSize:13,fontFamily:"Inter",transition:"border-color .2s" };
+      const iSt = { display:"block",width:"100%",border:"2px solid rgba(0,0,0,0.14)",background:"#fff",padding:"10px 12px",fontSize:13,fontFamily:"Inter",transition:"border-color .2s" };
 
-      if(!authed) return(
+      if (!authed) return(
         <div style={{ position:"fixed",inset:0,zIndex:1000,background:"#111",display:"flex",alignItems:"center",justifyContent:"center",animation:"fadeIn .2s" }}>
           <div style={{ background:"#fff",border:"3px solid #111",padding:"2.5rem",width:"100%",maxWidth:380,position:"relative" }}>
             <button onClick={onClose} style={{ position:"absolute",top:14,right:14,background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700 }}>✕</button>
             <img src={LOGO_SRC} alt="Splotch" style={{ height:44,marginBottom:"1.5rem",filter:"invert(0)" }}/>
             <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:26,marginBottom:"0.4rem" }}>Admin Portal</h2>
             <p style={{ fontSize:12,color:"rgba(0,0,0,0.4)",marginBottom:"1.8rem" }}>Authenticate to access the global backend.</p>
-            
-            <input className="admin-input" type="email" placeholder="Admin Email" value={email} onChange={e=>setEmail(e.target.value)} style={{...iSt, marginBottom:"0.5rem"}}/>
-            <input className="admin-input" type="password" placeholder="Password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&login()} style={{ ...iSt,marginBottom:"0.9rem" }}/>
-            
+            <input className="admin-input" type="email" placeholder="Admin Email" value={email} onChange={e=>setEmail(e.target.value)} style={{...iSt,marginBottom:"0.5rem"}}/>
+            <input className="admin-input" type="password" placeholder="Password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&login()} style={{...iSt,marginBottom:"0.9rem"}}/>
             <button onClick={login} style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"13px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase" }}>Secure Unlock</button>
             {pwErr&&<p style={{ color:"#c00",fontSize:10,fontWeight:700,marginTop:10,textAlign:"center" }}>{pwErr}</p>}
           </div>
         </div>
       );
+
+      const sizeArr = form.sizes ? form.sizes.split(',').map(s=>s.trim()).filter(Boolean) : [];
 
       return(
         <div style={{ position:"fixed",inset:0,zIndex:1000,background:"#fff",overflow:"auto",animation:"fadeIn .2s" }}>
@@ -678,48 +807,105 @@
               <button onClick={onClose} style={{ background:"transparent",color:"rgba(255,255,255,0.5)",border:"1.5px solid rgba(255,255,255,0.18)",width:38,height:38,fontSize:15,fontWeight:700 }}>✕</button>
             </div>
           </div>
-          <div style={{ padding: "2rem" }}>
+          <div style={{ padding:"2rem" }}>
             {tab === "products" && (
               <div style={{ display:"grid",gridTemplateColumns:editId?"1fr 1.5fr":"1fr",gap:"2rem" }}>
                 <div>
-                  <button onClick={()=>{setForm(blank);setEditId("new");}} style={{ width:"100%", padding:"15px", background:"#111", color:"#fff", fontWeight:900, marginBottom:"1rem" }}>+ CREATE NEW PRODUCT</button>
+                  <button onClick={()=>{setForm(blank);setEditId("new");}} style={{ width:"100%",padding:"15px",background:"#111",color:"#fff",fontWeight:900,marginBottom:"1rem" }}>+ CREATE NEW PRODUCT</button>
                   {products.map(p=>{
-                    const tStock = Object.values(p.stockMap||{}).reduce((a,b)=>a+b,0);
-                    return(
-                    <div key={p.id} onClick={()=>{
-                      // Load existing sizes into string format for easy editing
-                      const mapStr = Object.entries(p.stockMap||{}).map(([k,v])=>`${k}:${v}`).join(', ');
-                      setForm({...p, stockMapStr: mapStr});
-                      setEditId(p.id);
-                    }} style={{ display:"flex",alignItems:"center",gap:"0.9rem",border:"2px solid #111",padding:"0.9rem 1rem", background:editId===p.id?"#111":"#fff",color:editId===p.id?"#fff":"#111" }}>
-                      <div style={{ width:52,height:52,background:"#333",flexShrink:0,overflow:"hidden" }}>{p.frontImage?<img src={p.frontImage} alt="" style={{ width:"100%",height:"100%",objectFit:"cover" }}/>:<div style={{ width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,color:"rgba(255,255,255,0.15)" }}>◎</div>}</div>
-                      <div style={{ flex:1,minWidth:0 }}><div style={{ fontWeight:700,fontSize:13,textTransform:"uppercase",letterSpacing:"-0.01em",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis" }}>{p.name}</div><div style={{ fontSize:11,fontWeight:600,marginTop:1 }}>{p.price}</div></div>
-                      <div style={{ display:"flex",flexDirection:"column",gap:3,flexShrink:0,alignItems:"flex-end" }}>
-                        <span style={{ fontSize:8,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 5px",background:tStock<=0?"#c00":"transparent",color:tStock<=0?"#fff":editId===p.id?"rgba(255,255,255,0.4)":"rgba(0,0,0,0.4)",border:`1px solid ${tStock<=0?"#c00":editId===p.id?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.12)"}` }}>
-                          {tStock <= 0 ? "Sold Out" : `Stock: ${tStock}`}
-                        </span>
-                        <button onClick={e=>{e.stopPropagation(); remove(p.id);}} style={{ fontSize:7,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 5px",background:"transparent",color:"rgba(180,0,0,0.55)",border:"1px solid rgba(180,0,0,0.18)" }}>Delete</button>
+                    const totalStock = getTotalStock(p);
+                    return (
+                      <div key={p.id} onClick={()=>{setForm({...p, sizeStock: p.sizeStock || {S:10,M:10,L:10,XL:10}});setEditId(p.id);}} style={{ display:"flex",alignItems:"center",gap:"0.9rem",border:"2px solid #111",padding:"0.9rem 1rem",background:editId===p.id?"#111":"#fff",color:editId===p.id?"#fff":"#111",marginBottom:"4px" }}>
+                        <div style={{ width:52,height:52,background:"#333",flexShrink:0,overflow:"hidden" }}>{p.frontImage?<img src={p.frontImage} alt="" style={{ width:"100%",height:"100%",objectFit:"cover" }}/>:<div style={{ width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,color:"rgba(255,255,255,0.15)" }}>◎</div>}</div>
+                        <div style={{ flex:1,minWidth:0 }}>
+                          <div style={{ fontWeight:700,fontSize:13,textTransform:"uppercase",letterSpacing:"-0.01em",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis" }}>{p.name}</div>
+                          <div style={{ fontSize:11,fontWeight:600,marginTop:1 }}>{p.price}</div>
+                          {p.sizeStock && (
+                            <div style={{ fontSize:9,marginTop:3,opacity:0.6 }}>
+                              {Object.entries(p.sizeStock).map(([s,qty])=>`${s}:${qty}`).join(' · ')}
+                            </div>
+                          )}
+                        </div>
+                        <div style={{ display:"flex",flexDirection:"column",gap:3,flexShrink:0,alignItems:"flex-end" }}>
+                          <span style={{ fontSize:8,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 5px",background:totalStock<=0?"#c00":"transparent",color:totalStock<=0?"#fff":editId===p.id?"rgba(255,255,255,0.4)":"rgba(0,0,0,0.4)",border:`1px solid ${totalStock<=0?"#c00":editId===p.id?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.12)"}` }}>
+                            {totalStock <= 0 ? "Sold Out" : `Total: ${totalStock}`}
+                          </span>
+                          <button onClick={e=>{e.stopPropagation(); remove(p.id);}} style={{ fontSize:7,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 5px",background:"transparent",color:"rgba(180,0,0,0.55)",border:"1px solid rgba(180,0,0,0.18)" }}>Delete</button>
+                        </div>
                       </div>
-                    </div>
-                  )})}
+                    );
+                  })}
                 </div>
-                {editId&&(
-                  <div style={{ padding:"2rem",background:"#fafafa", border:"2px solid #111" }}>
+                {editId && (
+                  <div style={{ padding:"2rem",background:"#fafafa",border:"2px solid #111" }}>
                     <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"1.8rem" }}>
                       <h3 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:22 }}>{editId==="new"?"New Product":"Edit Product"}</h3>
                       <button onClick={()=>{setEditId(null);setForm(blank);}} style={{ background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:13,fontWeight:700 }}>✕</button>
                     </div>
-                    <div className="admin-form-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"1.3rem" }}>
-                      <div style={{ gridColumn:"1/-1" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Product Name *</label><input className="admin-input" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Terrain Tee 001" style={iSt}/></div>
-                      
-                      <div style={{ gridColumn:"1/-1" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Inventory Matrix (Size:Qty) *</label><input className="admin-input" value={form.stockMapStr} onChange={e=>setForm({...form,stockMapStr:e.target.value})} placeholder="S:10, M:5, L:2" style={iSt}/></div>
-                      
-                      <div style={{ gridColumn:"1/2" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Old Price</label><input className="admin-input" value={form.compareAtPrice || ""} onChange={e=>setForm({...form,compareAtPrice:e.target.value})} placeholder="₹1,100" style={iSt}/></div>
-                      <div style={{ gridColumn:"2/4" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Active Price *</label><input className="admin-input" value={form.price} onChange={e=>setForm({...form,price:e.target.value})} placeholder="₹1" style={iSt}/></div>
-                      <div style={{ gridColumn:"1/3" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Tag</label><input className="admin-input" value={form.tag} onChange={e=>setForm({...form,tag:e.target.value})} placeholder="New Drop" style={iSt}/></div>
-                      <div style={{ gridColumn:"3/4" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Category</label><input className="admin-input" value={form.category} onChange={e=>setForm({...form,category:e.target.value})} placeholder="T-Shirts" style={iSt}/></div>
-                      <div style={{ gridColumn:"1/-1" }}><label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Description</label><textarea className="admin-input" rows={3} value={form.description} onChange={e=>setForm({...form,description:e.target.value})} placeholder="Short description..." style={{ ...iSt,resize:"none" }}/></div>
-                      <div style={{ gridColumn:"1/-1",display:"flex",gap:"0.8rem",alignItems:"center" }}><button type="button" onClick={()=>setForm({...form,hasBack:!form.hasBack,backImage:form.hasBack?null:form.backImage})} style={{ background:form.hasBack?"#111":"#fff",color:form.hasBack?"#fff":"#111",border:"2px solid #111",padding:"9px 18px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase" }}>{form.hasBack?"✓ Front + Back":"Front Only"}</button><span style={{ fontSize:11,color:"rgba(0,0,0,0.35)" }}>Toggle back photo</span></div>
+                    <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"1.3rem" }}>
+                      {/* Product Name */}
+                      <div style={{ gridColumn:"1/-1" }}>
+                        <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Product Name *</label>
+                        <input className="admin-input" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Terrain Tee 001" style={iSt}/>
+                      </div>
+                      {/* Prices */}
+                      <div style={{ gridColumn:"1/2" }}>
+                        <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Old Price</label>
+                        <input className="admin-input" value={form.compareAtPrice || ""} onChange={e=>setForm({...form,compareAtPrice:e.target.value})} placeholder="₹1,100" style={iSt}/>
+                      </div>
+                      <div style={{ gridColumn:"2/3" }}>
+                        <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Active Price *</label>
+                        <input className="admin-input" value={form.price} onChange={e=>setForm({...form,price:e.target.value})} placeholder="₹1" style={iSt}/>
+                      </div>
+                      <div style={{ gridColumn:"3/4" }}>
+                        <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Tag</label>
+                        <input className="admin-input" value={form.tag} onChange={e=>setForm({...form,tag:e.target.value})} placeholder="New Drop" style={iSt}/>
+                      </div>
+                      {/* Category */}
+                      <div style={{ gridColumn:"1/-1" }}>
+                        <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Category</label>
+                        <input className="admin-input" value={form.category} onChange={e=>setForm({...form,category:e.target.value})} placeholder="T-Shirts" style={iSt}/>
+                      </div>
+                      {/* Sizes */}
+                      <div style={{ gridColumn:"1/-1" }}>
+                        <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Sizes Available</label>
+                        <input className="admin-input" value={form.sizes} onChange={e=>handleSizesChange(e.target.value)} placeholder="S, M, L, XL" style={iSt}/>
+                        <p style={{ fontSize:9,color:"rgba(0,0,0,0.3)",marginTop:4 }}>Separate with commas. Stock per size below ↓</p>
+                      </div>
+                      {/* Per-size stock inputs */}
+                      {sizeArr.length > 0 && (
+                        <div style={{ gridColumn:"1/-1" }}>
+                          <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:10 }}>Stock Per Size *</label>
+                          <div style={{ display:"grid",gridTemplateColumns:`repeat(${Math.min(sizeArr.length,4)}, 1fr)`,gap:"0.8rem" }}>
+                            {sizeArr.map(s => (
+                              <div key={s}>
+                                <label style={{ fontSize:9,fontWeight:900,letterSpacing:"0.15em",textTransform:"uppercase",color:"#111",display:"block",marginBottom:4,textAlign:"center" }}>{s}</label>
+                                <input
+                                  type="number"
+                                  min="0"
+                                  className="admin-input"
+                                  value={form.sizeStock?.[s] ?? 0}
+                                  onChange={e=>handleSizeStockChange(s, e.target.value)}
+                                  style={{...iSt, textAlign:"center", fontWeight:700}}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                          <div style={{ marginTop:8,padding:"8px 12px",background:"#f0f0f0",fontSize:10,fontWeight:700,color:"rgba(0,0,0,0.5)" }}>
+                            Total stock: {sizeArr.reduce((t,s)=>t+(parseInt(form.sizeStock?.[s])||0),0)} units
+                          </div>
+                        </div>
+                      )}
+                      {/* Description */}
+                      <div style={{ gridColumn:"1/-1" }}>
+                        <label style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6 }}>Description</label>
+                        <textarea className="admin-input" rows={3} value={form.description} onChange={e=>setForm({...form,description:e.target.value})} placeholder="Short description..." style={{...iSt,resize:"none"}}/>
+                      </div>
+                      {/* Back toggle */}
+                      <div style={{ gridColumn:"1/-1",display:"flex",gap:"0.8rem",alignItems:"center" }}>
+                        <button type="button" onClick={()=>setForm({...form,hasBack:!form.hasBack,backImage:form.hasBack?null:form.backImage})} style={{ background:form.hasBack?"#111":"#fff",color:form.hasBack?"#fff":"#111",border:"2px solid #111",padding:"9px 18px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase" }}>{form.hasBack?"✓ Front + Back":"Front Only"}</button>
+                        <span style={{ fontSize:11,color:"rgba(0,0,0,0.35)" }}>Toggle back photo</span>
+                      </div>
                       <div style={{ gridColumn:form.hasBack?"1/2":"1/-1" }}><ImgUpload value={form.frontImage} onChange={v=>setForm({...form,frontImage:v})} label="Front Image *"/></div>
                       {form.hasBack&&<div style={{ gridColumn:"2/4" }}><ImgUpload value={form.backImage} onChange={v=>setForm({...form,backImage:v})} label="Back Image"/></div>}
                     </div>
@@ -733,26 +919,19 @@
 
             {tab === "orders" && (
               <div>
-                <h2 style={{fontFamily:"Playfair Display", marginBottom:"2rem"}}>Order Dashboard</h2>
+                <h2 style={{ fontFamily:"Playfair Display",marginBottom:"2rem" }}>Order Dashboard</h2>
                 {orders.length===0 ? <p>No orders yet.</p> : orders.map(o => (
-                  <div key={o.id} style={{border:"2px solid #111", padding:"1.5rem", marginBottom:"1rem", background:"#fafafa"}}>
-                    <div style={{display:"flex", justifyContent:"space-between", borderBottom:"1px solid #ddd", paddingBottom:"10px", marginBottom:"10px"}}>
+                  <div key={o.id} style={{ border:"2px solid #111",padding:"1.5rem",marginBottom:"1rem",background:"#fafafa" }}>
+                    <div style={{ display:"flex",justifyContent:"space-between",borderBottom:"1px solid #ddd",paddingBottom:"10px",marginBottom:"10px" }}>
                       <strong>ORDER: {o.orderId}</strong>
-                      <span style={{color:"#c00", fontWeight:900}}>₹{o.total}</span>
+                      <span style={{ color:"#c00",fontWeight:900 }}>₹{o.total}</span>
                     </div>
-                    <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"1rem", fontSize:"12px"}}>
-                      <div>
-                        <strong>Customer:</strong> {o.userName} <br/>
-                        <strong>Email:</strong> {o.userEmail} <br/>
-                        <strong>Phone:</strong> {o.shipping?.phone}
-                      </div>
-                      <div>
-                        <strong>Address:</strong> {o.shipping?.address}<br/>
-                        {o.shipping?.city}, {o.shipping?.state} - {o.shipping?.pincode}
-                      </div>
+                    <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem",fontSize:"12px" }}>
+                      <div><strong>Customer:</strong> {o.userName} <br/><strong>Email:</strong> {o.userEmail} <br/><strong>Phone:</strong> {o.shipping?.phone}</div>
+                      <div><strong>Address:</strong> {o.shipping?.address}<br/>{o.shipping?.city}, {o.shipping?.state} - {o.shipping?.pincode}</div>
                     </div>
-                    <div style={{marginTop:"10px", padding:"10px", background:"#111", color:"#fff", fontSize:"11px"}}>
-                      <strong>ITEMS:</strong> {o.items.map(i => `${i.name} (Size: ${i.selectedSize})`).join(' | ')}
+                    <div style={{ marginTop:"10px",padding:"10px",background:"#111",color:"#fff",fontSize:"11px" }}>
+                      <strong>ITEMS:</strong> {o.items.map(i=>`${i.name} (Size: ${i.selectedSize})`).join(' | ')}
                     </div>
                   </div>
                 ))}
@@ -763,20 +942,46 @@
       );
     }
 
+    // ─── HERO with 3D moving SPLOTCH shadow ──────────────────────────────────────
     function Hero(){
-      const [pos, setPos] = useState({ x: 0, y: 0 });
+      const [mousePos, setMousePos] = useState({ x: 0.2, y: -0.2 }); // Default slight angle
+
       const handleMove = useCallback((e) => {
-        // Reduced movement math for a subtle 3D shift
-        const x = (window.innerWidth / 2 - e.clientX) / 40; 
-        const y = (window.innerHeight / 2 - e.clientY) / 40;
-        setPos({ x, y });
+        const x = (e.clientX / window.innerWidth - 0.5) * 2;   // -1 to 1
+        const y = (e.clientY / window.innerHeight - 0.5) * 2;  // -1 to 1
+        setMousePos({ x, y });
       }, []);
 
-      // 3D Extrusion shadow mapping
-      const textShadow3D = `${pos.x}px ${pos.y}px 0px #c00, ${pos.x * 2}px ${pos.y * 2}px 0px #111`;
+      const handleTouch = useCallback((e) => {
+        const t = e.touches[0];
+        const x = (t.clientX / window.innerWidth - 0.5) * 2;
+        const y = (t.clientY / window.innerHeight - 0.5) * 2;
+        setMousePos({ x, y });
+      }, []);
+
+      // Generate layered 3D text-shadow from mouse position
+      const build3DShadow = (mx, my) => {
+        const layers = 7;
+        const maxShift = 14;
+        const parts = [];
+        for (let i = 1; i <= layers; i++) {
+          const f = i / layers;
+          const sx = (-mx * maxShift * f).toFixed(1);
+          const sy = (-my * maxShift * f).toFixed(1);
+          const r = Math.round(200 - f * 60);
+          const alpha = (0.95 - f * 0.55).toFixed(2);
+          parts.push(`${sx}px ${sy}px 0px rgba(${r},0,0,${alpha})`);
+        }
+        // Final soft blur layer for depth
+        parts.push(`${(-mx * maxShift * 1.3).toFixed(1)}px ${(-my * maxShift * 1.3).toFixed(1)}px 20px rgba(0,0,0,0.35)`);
+        return parts.join(', ');
+      };
 
       return(
-        <section id="home" onMouseMove={handleMove} style={{ position:"relative", width:"100%", height:"80vh", background:"#111", borderBottom:"3px solid #111", overflow:"hidden", display:"grid", placeItems:"center" }}>
+        <section id="home"
+          onMouseMove={handleMove}
+          onTouchMove={handleTouch}
+          style={{ position:"relative",width:"100%",height:"80vh",background:"#111",borderBottom:"3px solid #111",overflow:"hidden",display:"grid",placeItems:"center" }}>
           <div className="hero-video-placeholder"></div>
           <div className="hero-sub">
             <p>Techwear</p>
@@ -785,34 +990,40 @@
             <span className="hero-badge">New Drop Available</span>
           </div>
           <div className="hero-text-overlay">
-            <h1 className="hero-h1 reveal visible" style={{ textShadow: textShadow3D }}>SPLOTCH</h1>
+            <h1
+              className="hero-h1 reveal visible"
+              style={{ textShadow: build3DShadow(mousePos.x, mousePos.y) }}
+            >
+              SPLOTCH
+            </h1>
           </div>
         </section>
       );
     }
 
-    function Shop({products,onQV,onAdd,filter,setFilter}){
-      const cats=["All",...Array.from(new Set(products.map(p=>p.category)))];
-      const filtered=filter==="All"?products:products.filter(p=>p.category===filter);
+    // ─── SHOP ────────────────────────────────────────────────────────────────────
+    function Shop({products, onQV, onAdd, filter, setFilter}){
+      const cats = ["All",...Array.from(new Set(products.map(p=>p.category)))];
+      const filtered = filter==="All" ? products : products.filter(p=>p.category===filter);
       return(
         <section id="shop" style={{ background:"#fff",borderBottom:"3px solid #111" }}>
           <div style={{ background:"#111",padding:"4rem 2rem 3.5rem",position:"relative",overflow:"hidden",borderBottom:"2px solid #222" }}>
             <div className="topo-parallax-wrap" style={{ opacity:0.07 }}><TopoSVG color="#fff"/></div>
             <div style={{ position:"relative",zIndex:1 }}>
               <SLabel inv>SS'26 — Limited Run</SLabel>
-              <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:"clamp(54px,9vw,120px)",letterSpacing:"-0.04em",color:"#fff",lineHeight:0.9,fontStyle:"italic" }}>The Collection.</h2>
+              <h2 className="dyn-title" style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:"clamp(54px,9vw,120px)",letterSpacing:"-0.04em",color:"#fff",lineHeight:0.9,fontStyle:"italic" }}>The Collection.</h2>
             </div>
           </div>
           <div style={{ borderBottom:"2px solid #111",display:"flex",alignItems:"center",overflowX:"auto" }}>
             {cats.map(c=>(
-              <button key={c} onClick={()=>setFilter(c)} style={{ background:filter===c?"#111":"transparent",color:filter===c?"#fff":"rgba(0,0,0,0.4)", border:"none",borderRight:"1px solid rgba(0,0,0,0.08)", padding:"13px 18px",fontSize:10,fontWeight:700, letterSpacing:"0.18em",textTransform:"uppercase",whiteSpace:"nowrap",transition:"all .2s" }}>{c}</button>
+              <button key={c} onClick={()=>setFilter(c)} style={{ background:filter===c?"#111":"transparent",color:filter===c?"#fff":"rgba(0,0,0,0.4)",border:"none",borderRight:"1px solid rgba(0,0,0,0.08)",padding:"13px 18px",fontSize:10,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase",whiteSpace:"nowrap",transition:"all .2s" }}>{c}</button>
             ))}
             <div style={{ marginLeft:"auto",padding:"0 1rem",fontSize:10,fontWeight:700,letterSpacing:"0.12em",color:"rgba(0,0,0,0.25)",textTransform:"uppercase",whiteSpace:"nowrap" }}>{filtered.length} item{filtered.length!==1?"s":""}</div>
           </div>
           <div style={{ padding:"2.5rem 2rem" }}>
-            {filtered.length===0?(
+            {filtered.length===0 ? (
               <div style={{ textAlign:"center",padding:"5rem",color:"rgba(0,0,0,0.2)" }}><div style={{ fontSize:40,marginBottom:12 }}>◎</div><div style={{ fontSize:10,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase" }}>No products in this category</div></div>
-            ):(
+            ) : (
               <div className="product-grid" style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"20px" }}>
                 {filtered.map((p,i)=>( <div key={p.id} className={`reveal reveal-d${(i%3)+1}`}><ProdCard product={p} onQV={onQV} onAdd={onAdd}/></div> ))}
               </div>
@@ -824,13 +1035,13 @@
 
     function TheWork(){
       const works=[
-        {label:"Terrain Vol.001",cat:"Capsule Drop"}, {label:"Shadow Protocol",cat:"Collab Series"}, {label:"Grid Zero",cat:"Artist Collab"},
-        {label:"Shell Jackets",cat:"Product"}, {label:"SS'25 Lookbook",cat:"Editorial"}, {label:"Modular Jacket",cat:"Product"}
+        {label:"Terrain Vol.001",cat:"Capsule Drop"},{label:"Shadow Protocol",cat:"Collab Series"},{label:"Grid Zero",cat:"Artist Collab"},
+        {label:"Shell Jackets",cat:"Product"},{label:"SS'25 Lookbook",cat:"Editorial"},{label:"Modular Jacket",cat:"Product"}
       ];
       return(
         <section id="work" style={{ background:"#f9f9f9",borderBottom:"3px solid #111",padding:"6rem 2rem" }}>
           <SLabel>Portfolio — The Work</SLabel>
-          <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:"clamp(50px,9vw,120px)",letterSpacing:"-0.04em",lineHeight:0.88,marginBottom:"3.5rem",fontStyle:"italic" }}>The Work.</h2>
+          <h2 className="dyn-title" style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:"clamp(50px,9vw,120px)",letterSpacing:"-0.04em",lineHeight:0.88,marginBottom:"3.5rem",fontStyle:"italic" }}>The Work.</h2>
           <div className="port-grid" style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"10px" }}>
             {works.map((w,i)=>(
               <div key={i} className={`port-card reveal reveal-d${(i%3)+1}`} style={{ position:"relative",background:"#111",aspectRatio:"1/1",overflow:"hidden",border:"2px solid #111" }}>
@@ -843,7 +1054,7 @@
                 <div style={{ position:"absolute",top:"1rem",left:"1rem",fontFamily:"Inter",fontWeight:900,fontSize:32,color:"rgba(255,255,255,0.06)",letterSpacing:"-0.05em",lineHeight:1 }}>0{i+1}</div>
                 <div className="port-overlay" style={{ position:"absolute",inset:0,background:"rgba(255,255,255,0.96)",display:"flex",flexDirection:"column",justifyContent:"flex-end",padding:"1.5rem" }}>
                   <span className="port-text" style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.35)",marginBottom:5 }}>{w.cat}</span>
-                  <p className="port-text" style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:18,letterSpacing:"-0.01em",color:"#111",transitionDelay:".05s" }}>{w.label}</p>
+                  <p className="port-text" style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:18,letterSpacing:"-0.01em",color:"#111" }}>{w.label}</p>
                 </div>
               </div>
             ))}
@@ -865,7 +1076,7 @@
           <div style={{ position:"relative",zIndex:1,display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4rem",alignItems:"start" }} className="two-col">
             <div>
               <SLabel inv>Why Choose Us</SLabel>
-              <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:"clamp(50px,9vw,120px)",letterSpacing:"-0.04em",lineHeight:0.88,color:"#fff",fontStyle:"italic" }}>Why Splotch.</h2>
+              <h2 className="dyn-title" style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:"clamp(50px,9vw,120px)",letterSpacing:"-0.04em",lineHeight:0.88,color:"#fff",fontStyle:"italic" }}>Why Splotch.</h2>
             </div>
             <div style={{ paddingTop:"0.5rem" }}>
               {pts.map((p,i)=>(
@@ -894,7 +1105,7 @@
           <SLabel>What People Say</SLabel>
           <div className="testi-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:0 }}>
             {items.map((t,i)=>(
-              <div key={i} className={`reveal reveal-d${i+1}`} style={{ borderLeft:"2px solid #111",borderTop:"2px solid #111", borderRight:i===1?"2px solid #111":"none",borderBottom:"2px solid #111", padding:"2.5rem 1.8rem" }}>
+              <div key={i} className={`reveal reveal-d${i+1}`} style={{ borderLeft:"2px solid #111",borderTop:"2px solid #111",borderRight:i===1?"2px solid #111":"none",borderBottom:"2px solid #111",padding:"2.5rem 1.8rem" }}>
                 <div style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:36,color:"#111",marginBottom:"1.2rem",lineHeight:1 }}>"</div>
                 <p style={{ fontSize:14,lineHeight:1.8,color:"rgba(0,0,0,0.62)",marginBottom:"1.8rem",fontStyle:"italic" }}>{t.q}</p>
                 <div style={{ borderTop:"1px solid rgba(0,0,0,0.08)",paddingTop:"1rem" }}>
@@ -910,20 +1121,18 @@
 
     function Contact(){
       const [form,setForm]=useState({name:"",email:"",message:""});
-      const [loading, setLoading]=useState(false);
-      const [sent, setSent]=useState(false);
+      const [sent,setSent]=useState(false);
+      const [loading,setLoading]=useState(false);
 
       const submit = async (e) => {
         e.preventDefault();
-        if(!form.name || !form.email || !form.message) return;
+        if (!form.name||!form.email||!form.message) return;
         setLoading(true);
         try {
-          if (!window.fbAddDoc || !window.fbDb) throw new Error("Firebase is not connected.");
-          await window.fbAddDoc(window.fbCollection(window.fbDb, "messages"), {
-            name: form.name, email: form.email, message: form.message, timestamp: new Date()
-          });
-          setSent(true); setTimeout(()=>setSent(false),4000); setForm({name:"",email:"",message:""}); 
-        } catch (err) { alert("Failed to send message: " + err.message); } 
+          if (!window.fbAddDoc||!window.fbDb) throw new Error("Firebase is not connected.");
+          await window.fbAddDoc(window.fbCollection(window.fbDb,"messages"),{ name:form.name,email:form.email,message:form.message,timestamp:new Date() });
+          setSent(true); setTimeout(()=>setSent(false),4000); setForm({name:"",email:"",message:""});
+        } catch (err) { alert("Failed to send message: "+err.message); }
         finally { setLoading(false); }
       };
 
@@ -935,20 +1144,20 @@
             <SLabel inv>Contact — Get In Touch</SLabel>
             <div className="contact-grid" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"5rem",alignItems:"start" }}>
               <div className="reveal">
-                <h2 style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:"clamp(54px,9vw,120px)",lineHeight:0.88,color:"#fff",marginBottom:"2.5rem",fontStyle:"italic" }}>Contact Us.</h2>
-                {sent?(
+                <h2 className="dyn-title" style={{ fontFamily:"Playfair Display",fontWeight:700,fontSize:"clamp(54px,9vw,120px)",lineHeight:0.88,color:"#fff",marginBottom:"2.5rem",fontStyle:"italic" }}>Contact Us.</h2>
+                {sent ? (
                   <div style={{ border:"2px solid rgba(255,255,255,0.2)",padding:"2rem",textAlign:"center" }}><p style={{ fontWeight:700,letterSpacing:"0.12em",color:"#fff",textTransform:"uppercase",fontSize:12 }}>Message received. We'll be in touch.</p></div>
-                ):(
+                ) : (
                   <form onSubmit={submit}>
                     <input type="text" placeholder="Name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} style={iSt}/>
                     <input type="email" placeholder="Email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} style={iSt}/>
-                    <textarea placeholder="Message" value={form.message} rows={4} onChange={e=>setForm({...form,message:e.target.value})} style={{...iSt, resize:"none"}}/>
-                    <button type="submit" disabled={loading} style={{ background:"#fff",color:"#111",padding:"15px 40px",fontSize:11,fontWeight:900,letterSpacing:"0.2em",textTransform:"uppercase", marginTop:"1rem", border:"none" }}>{loading ? "Sending..." : "Send Message →"}</button>
+                    <textarea placeholder="Message" value={form.message} rows={4} onChange={e=>setForm({...form,message:e.target.value})} style={{...iSt,resize:"none"}}/>
+                    <button type="submit" disabled={loading} style={{ background:"#fff",color:"#111",border:"3px solid #fff",padding:"15px 40px",fontSize:11,fontWeight:900,letterSpacing:"0.2em",textTransform:"uppercase",marginTop:"1rem" }}>{loading?"Sending...":"Send Message →"}</button>
                   </form>
                 )}
               </div>
               <div className="reveal reveal-d2">
-                <p style={{ fontSize:11, lineHeight:1.6, color:"rgba(255,255,255,0.45)", marginBottom:"2rem", paddingBottom:"2rem", borderBottom:"1px solid rgba(255,255,255,0.07)" }}>Feel free to contact us with any questions or concerns. You can use the form on our website or email us directly. We appreciate your interest and look forward to hearing from you.</p>
+                <p style={{ fontSize:11,lineHeight:1.6,color:"rgba(255,255,255,0.45)",marginBottom:"2rem",paddingBottom:"2rem",borderBottom:"1px solid rgba(255,255,255,0.07)" }}>Feel free to contact us with any questions or concerns. You can use the form on our website or email us directly. We appreciate your interest and look forward to hearing from you.</p>
                 {[{l:"Email",v:"splotchglobal@gmail.com"},{l:"Phone",v:"+91 9900605101"},{l:"Hours",v:"Mon–Fri, 10am–6pm IST"}].map((item)=>(
                   <div key={item.l} style={{ borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"1.2rem 0",display:"flex",justifyContent:"space-between",gap:"1rem" }}>
                     <span style={{ fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(255,255,255,0.22)",flexShrink:0 }}>{item.l}</span>
@@ -966,33 +1175,16 @@
       return(
         <footer style={{ background:"#111",padding:"5rem 2rem 2.5rem",position:"relative",overflow:"hidden" }}>
           <div className="topo-parallax-wrap" style={{ opacity:0.05 }}><TopoSVG color="#fff"/></div>
-          <div style={{ position:"relative",zIndex:1 }}>
-            <div style={{ marginBottom:"3.5rem" }}><img src={LOGO_SRC} alt="Splotch" style={{ height:140,filter:"invert(1)",opacity:.85 }}/></div>
-            <h2 className="outline-text" style={{ fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic", fontSize:"clamp(50px,8vw,100px)", letterSpacing:"-0.04em",lineHeight:0.88, marginBottom:"5rem", transition:"all 0.3s" }}>
+          <div style={{ position:"relative",zIndex:1,textAlign:"center" }}>
+            <img src={LOGO_SRC} alt="Splotch" style={{ height:140,filter:"invert(1)",opacity:.85,marginBottom:"2rem" }}/>
+            <br/>
+            <h2 className="dyn-title outline-text" style={{ fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic",fontSize:"clamp(50px,8vw,100px)",letterSpacing:"-0.04em",lineHeight:0.88,marginBottom:"5rem" }}>
               Predict the future,<br/>don't stop now.
             </h2>
-            <div className="footer-grid" style={{ display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr",gap:"2.5rem",borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:"2.5rem",marginBottom:"2.5rem" }}>
-              <div>
-                <p style={{ fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic",fontSize:28,color:"#fff",marginBottom:"0.8rem" }}>splotch</p>
-                <p style={{ fontSize:12,lineHeight:1.7,color:"rgba(255,255,255,0.3)",maxWidth:260 }}>Engineering the next frontier of Indian streetwear from our Bangalore studio. Style beyond seasons.</p>
-              </div>
-              {[
-                {h:"Quick Links",ls:[["home","Home"],["shop","Shop"],["about.html","About"],["contact","Contact"]]},
-                {h:"Collections",ls:[["","Terrain Vol.1"],["","Shadow Protocol"],["","Grid Zero"]]},
-                {h:"Follow",ls:[ ["https://www.instagram.com/splotchglobal?igsh=c2Y5aDFiZWVoanVj","Instagram"] ]},
-              ].map(col=>(
-                <div key={col.h}>
-                  <p style={{ fontSize:9,fontWeight:700,letterSpacing:"0.28em",textTransform:"uppercase",color:"rgba(255,255,255,0.22)",marginBottom:"1rem" }}>{col.h}</p>
-                  {col.ls.map(([id,label])=>(
-                    <a key={label} href={id.includes('.html') || id.includes('http') ? id : `#${id}`} style={{ display:"block",width:"100%",textAlign:"left", fontSize:12,fontWeight:600,color:"rgba(255,255,255,0.38)", textDecoration:"none",lineHeight:2.2,textTransform:"uppercase",letterSpacing:"0.06em", transition:"color .15s" }} onMouseEnter={e=>e.target.style.color="#fff"} onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.38)"}>{label}</a>
-                  ))}
-                </div>
-              ))}
-            </div>
             <div style={{ borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:"1.5rem",display:"flex",justifyContent:"space-between",flexWrap:"wrap",gap:"0.8rem" }}>
               <p style={{ fontSize:10,fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"rgba(255,255,255,0.15)" }}>
-                © 2026 Splotch. 
-                <span style={{ color:"#111", marginLeft: "10px", transition: "color 0.4s" }} onMouseEnter={e=>e.target.style.color="rgba(255,255,255,0.2)"} onMouseLeave={e=>e.target.style.color="#111"}>// Created by dudefromalhiem</span>
+                © 2026 Splotch.
+                <span style={{ color:"#111",marginLeft:"10px",transition:"color 0.4s" }} onMouseEnter={e=>e.target.style.color="rgba(255,255,255,0.2)"} onMouseLeave={e=>e.target.style.color="#111"}>// Created by dudefromalhiem</span>
               </p>
             </div>
           </div>
@@ -1000,65 +1192,49 @@
       );
     }
 
+    // ─── APP ──────────────────────────────────────────────────────────────────────
     function App(){
-      const [products,setProducts]=useState([]); 
-      const [cart,setCart]=useState(() => { const localData = localStorage.getItem('splotch_cart_v1'); return localData ? JSON.parse(localData) : []; });
+      const [products,setProducts]=useState([]);
+      const [cart,setCart]=useState(()=>{ const d=localStorage.getItem('splotch_cart_v1'); return d?JSON.parse(d):[]; });
       const [qv,setQV]=useState(null);
       const [adminOpen,setAdminOpen]=useState(false);
       const [cartOpen,setCartOpen]=useState(false);
-      const [authOpen,setAuthOpen]=useState(false); 
+      const [authOpen,setAuthOpen]=useState(false);
       const [mobMenu,setMobMenu]=useState(false);
       const [filter,setFilter]=useState("All");
       const [logoClicks,setLogoClicks]=useState(0);
       const logoTimerRef=useRef(null);
-      const [user, setUser]=useState(null);
+      const [user,setUser]=useState(null);
 
-      useEffect(() => { localStorage.setItem('splotch_cart_v1', JSON.stringify(cart)); }, [cart]);
+      useEffect(()=>{ localStorage.setItem('splotch_cart_v1',JSON.stringify(cart)); },[cart]);
 
-      useEffect(() => {
-        if (user && window.fbDb && window.fbGetDoc) {
-          window.fbGetDoc(window.fbDoc(window.fbDb, "userCarts", user.uid)).then(docSnap => {
-            if (docSnap.exists()) setCart(prev => Array.from(new Map([...prev, ...(docSnap.data().items||[])].map(item => [item.cartItemId, item])).values()));
-          });
-        }
-      }, [user]);
-
-      useEffect(() => {
-        if (user && window.fbDb && window.fbSetDoc) {
-          const t = setTimeout(()=>window.fbSetDoc(window.fbDoc(window.fbDb, "userCarts", user.uid), { items: cart, updatedAt: new Date() }), 2000); 
-          return () => clearTimeout(t);
-        }
-      }, [cart, user]);
-
-      useEffect(() => {
+      useEffect(()=>{
         const initData = async () => {
-          if (!window.fbDb || !window.fbGetDocs) return;
+          if (!window.fbDb||!window.fbGetDocs) return;
           try {
-            const snap = await window.fbGetDocs(window.fbCollection(window.fbDb, "products"));
+            const snap = await window.fbGetDocs(window.fbCollection(window.fbDb,"products"));
             if (snap.empty) {
-              DEFAULT_PRODUCTS.forEach(p => window.fbSetDoc(window.fbDoc(window.fbDb, "products", p.id), p));
+              DEFAULT_PRODUCTS.forEach(p=>window.fbSetDoc(window.fbDoc(window.fbDb,"products",p.id),p));
               setProducts(DEFAULT_PRODUCTS);
             } else {
-              const fetched = []; snap.forEach(doc => fetched.push(doc.data())); setProducts(fetched);
+              const fetched=[]; snap.forEach(doc=>fetched.push(doc.data())); setProducts(fetched);
             }
-          } catch(e) { console.error(e); }
+          } catch(e){ console.error(e); }
         };
         if (window.fbDb) initData();
-        else window.addEventListener('firebase-ready', initData);
-        return () => window.removeEventListener('firebase-ready', initData);
-      }, []);
+        else window.addEventListener('firebase-ready',initData);
+        return ()=>window.removeEventListener('firebase-ready',initData);
+      },[]);
 
       useEffect(()=>{
-        const initAuth = () => {
-          if (window.fbAuth) window.fbOnAuthStateChanged(window.fbAuth, u => setUser(u));
-        };
-        if (window.fbAuth) initAuth();
-        else window.addEventListener('firebase-ready', initAuth);
-        return () => window.removeEventListener('firebase-ready', initAuth);
-      }, []);
+        const initAuth=()=>{ if(window.fbAuth) window.fbOnAuthStateChanged(window.fbAuth,u=>setUser(u)); };
+        if(window.fbAuth) initAuth();
+        else window.addEventListener('firebase-ready',initAuth);
+        return ()=>window.removeEventListener('firebase-ready',initAuth);
+      },[]);
 
       useEffect(()=>{
-        const obs=new IntersectionObserver( entries=>entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add("visible"); }), {threshold:0.1} );
+        const obs=new IntersectionObserver(entries=>entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add("visible"); }),{threshold:0.1});
         document.querySelectorAll(".reveal").forEach(el=>obs.observe(el));
         return ()=>obs.disconnect();
       });
@@ -1070,18 +1246,16 @@
         logoTimerRef.current=setTimeout(()=>setLogoClicks(0),3000);
       };
 
-      const addToCart = useCallback((item) => { setCart(c => [...c, { ...item, cartItemId: Date.now() + Math.random() }]); }, []);
+      const addToCart=useCallback((item)=>{ setCart(c=>[...c,{...item,cartItemId:Date.now()+Math.random()}]); },[]);
 
       return(
-        <div style={{ minHeight:"100vh",background:"#fff", position:"relative" }}>
+        <div style={{ minHeight:"100vh",background:"#fff",position:"relative" }}>
           <CustomCursor />
           <div className="grain-overlay"></div>
           <ScrollProgress/>
-          
-          <Header cartCount={cart.length} onCartOpen={()=>setCartOpen(true)} onLogoClick={handleLogoClick} setMobMenu={setMobMenu} user={user} onAuthClick={()=>setAuthOpen(true)} handleLogout={()=>window.fbSignOut(window.fbAuth)} />
+          <Header cartCount={cart.length} onCartOpen={()=>setCartOpen(true)} onLogoClick={handleLogoClick} setMobMenu={setMobMenu} user={user} onAuthClick={()=>setAuthOpen(true)} handleLogout={()=>window.fbSignOut(window.fbAuth)}/>
           <Ticker/>
           <MobMenu open={mobMenu} setOpen={setMobMenu} user={user} onAuthClick={()=>setAuthOpen(true)} handleLogout={()=>window.fbSignOut(window.fbAuth)}/>
-
           <Hero/>
           <Shop products={products} onQV={setQV} onAdd={addToCart} filter={filter} setFilter={setFilter}/>
           <TheWork/>
@@ -1089,7 +1263,6 @@
           <Testimonials/>
           <Contact/>
           <Footer/>
-
           {qv&&<QuickView product={qv} onClose={()=>setQV(null)} onAdd={addToCart}/>}
           {cartOpen&&<CartSidebar cart={cart} setCart={setCart} onClose={()=>setCartOpen(false)} user={user} onAuthClick={()=>setAuthOpen(true)}/>}
           {adminOpen&&<AdminPanel products={products} setProducts={setProducts} onClose={()=>setAdminOpen(false)}/>}
