@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="google-site-verification" content="O_5PvbzTUcfIR6BAsC8lE8vyy0nEluGbPNQgihyIveg" />
   <meta name="title" content="Splotch | Urban Techwear & Streetwear India">
   <meta name="description" content="Engineering the next frontier of Indian streetwear. Limited drop techwear, oversized tees, and urban utility gear. Made in Bangalore.">
   <meta name="keywords" content="streetwear India, techwear, oversized t-shirts, Splotch clothing, Bangalore fashion">
@@ -13,27 +14,30 @@
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Splotch Website</title>
-  
+  <title>Splotch</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js" data-type="module"></script>
+  
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { 
-      getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut,
-      createUserWithEmailAndPassword, signInWithEmailAndPassword
+      getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, 
+      createUserWithEmailAndPassword, signInWithEmailAndPassword 
     } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { 
-      getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc, getDoc, updateDoc, increment, query, orderBy
+      getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc, getDoc, 
+      updateDoc, increment, query, orderBy, where 
     } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCeq4FeU1LQKTyZAIJd7HL834rEUqQ0eTQ",
-      authDomain: "splotchclothing.firebaseapp.com",      
+      authDomain: "splotchclothing.firebaseapp.com",
       projectId: "splotchclothing",
       storageBucket: "splotchclothing.firebasestorage.app",
       messagingSenderId: "791501370137",
@@ -55,7 +59,7 @@
       window.fbCollection = collection;
       window.fbAddDoc = addDoc;
       window.fbGetDocs = getDocs;
-      window.fbGetDoc = getDoc; 
+      window.fbGetDoc = getDoc;
       window.fbDoc = doc;
       window.fbSetDoc = setDoc;
       window.fbDeleteDoc = deleteDoc;
@@ -63,22 +67,49 @@
       window.fbIncrement = increment;
       window.fbQuery = query;
       window.fbOrderBy = orderBy;
+      window.fbWhere = where; // Exported for User Orders querying
 
       window.dispatchEvent(new Event('firebase-ready'));
-    } catch(err) { console.error("Firebase Init Error:", err); }
+    } catch(err) { 
+      console.error("Firebase Init Error:", err); 
+    }
   </script>
 
   <style>
-    /* 1. BASE STYLES */
+    /* ==========================================================================
+       1. BASE STYLES & GLOBALS
+       ========================================================================== */
     :root { --B: #111111; --W: #FFFFFF; }
     html { scroll-behavior: smooth; }
-    body { background: var(--W); color: var(--B); font-family: 'Inter', sans-serif; overflow-x: hidden; margin: 0; padding: 0; }
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
+    body { 
+      background: var(--W); 
+      color: var(--B); 
+      font-family: 'Inter', sans-serif; 
+      overflow-x: hidden; 
+      margin: 0; 
+      padding: 0; 
+    }
+    *, *::before, *::after { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+      border-radius: 0 !important; 
+    }
     ::selection { background: var(--B); color: var(--W); }
     input, textarea, select, button { font-family: inherit; border-radius: 0 !important; outline: none; }
     img { -webkit-user-select: none; user-select: none; }
 
-    /* 2. CUSTOM ELASTIC CURSOR (Desktop Only via JS body class) */
+    /* ==========================================================================
+       2. CUSTOM CURSOR
+       ========================================================================== */
+    @media (pointer: fine) {
+      body, button, a, input, textarea, select, img, .prod-card { cursor: none !important; }
+      *, *::before, *::after { cursor: none !important; }
+    }
+    @media (pointer: coarse) {
+      .cursor-dot { display: none !important; }
+    }
+    
     body.custom-cursor-active, 
     body.custom-cursor-active button, 
     body.custom-cursor-active a, 
@@ -87,7 +118,9 @@
     body.custom-cursor-active select, 
     body.custom-cursor-active img, 
     body.custom-cursor-active .prod-card,
-    body.custom-cursor-active * { cursor: none !important; }
+    body.custom-cursor-active * { 
+      cursor: none !important; 
+    }
 
     .cursor-dot {
       position: fixed; top: 0; left: 0; width: 28px; height: 28px;
@@ -98,30 +131,30 @@
     }
     .cursor-dot.pulse { width: 10px; height: 10px; background-color: #fff; }
 
-    /* 3. DYNAMIC TITLES (Transform only) */
-    .dyn-title { display: inline-block; transition: transform 0.3s cubic-bezier(0.25,1,0.5,1); }
+    /* ==========================================================================
+       3. TYPOGRAPHY & TITLES
+       ========================================================================== */
+    .dyn-title { 
+      display: inline-block; 
+      transition: transform 0.3s cubic-bezier(0.25,1,0.5,1); 
+    }
     .dyn-title:hover { transform: translate(-4px,-4px); }
-    .outline-text { color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,0.35); }
-    .outline-text:hover { -webkit-text-stroke: 1.5px rgba(255,255,255,0.75); }
+    
+    .outline-text { 
+      color: transparent; 
+      -webkit-text-stroke: 1.5px rgba(255,255,255,0.35); 
+      transition: all 0.3s; 
+    }
+    .outline-text:hover { -webkit-text-stroke: 1.5px #fff; }
 
-    /* 4. HERO H1 3D EXTRUSION */
+    /* 3D HERO TITLE */
     .hero-h1 {
       font-family: 'Inter', sans-serif; font-weight: 900;
       font-size: clamp(90px, 18vw, 260px); color: #fff;
       text-transform: uppercase; letter-spacing: -0.05em; line-height: 0.85;
       -webkit-user-select: none; user-select: none;
       will-change: text-shadow;
-      text-shadow:
-        -1px -2px 0 rgba(255,255,255,0.65),
-        -2px -4px 0 rgba(255,255,255,0.35),
-        -3px -5px 0 rgba(255,255,255,0.12),
-         2px  2px 0 rgba(220,28,28,0.98),
-         4px  4px 0 rgba(190,0,0,0.88),
-         6px  6px 0 rgba(158,0,0,0.75),
-         8px  8px 0 rgba(118,0,0,0.58),
-        10px 10px 0 rgba(75,0,0,0.4),
-        12px 12px 0 rgba(35,0,0,0.25),
-        15px 15px 24px rgba(0,0,0,0.6);
+      transition: text-shadow 0.08s linear;
     }
 
     @keyframes splotch3d {
@@ -135,71 +168,132 @@
       .hero-h1 { animation: splotch3d 11s cubic-bezier(0.45,0,0.55,1) infinite; }
     }
 
-    /* 5. HEADER */
-    header { position: sticky; top: 0; z-index: 500; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; transition: box-shadow 0.3s, background 0.3s; }
-    .glass-nav { background: rgba(255,255,255,0.68) !important; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 2px 0 #111; }
+    /* ==========================================================================
+       4. HEADER & NAV
+       ========================================================================== */
+    header { 
+      position: sticky; top: 0; z-index: 500; height: 48px; 
+      display: flex; align-items: center; justify-content: space-between; 
+      padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; 
+      transition: box-shadow 0.3s, background 0.3s; 
+    }
+    .glass-nav { 
+      background: rgba(255,255,255,0.68) !important; 
+      -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); 
+      box-shadow: 0 2px 0 #111; 
+    }
+    
     .user-menu-container { position: relative; }
-    .user-badge { background: #111; color: #fff; border: 2px solid #111; padding: 6px 14px; font-size: 9px; font-weight: 900; letter-spacing: 0.15em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; transition: background 0.2s, color 0.2s; }
+    .user-badge { 
+      background: #111; color: #fff; border: 2px solid #111; 
+      padding: 6px 14px; font-size: 9px; font-weight: 900; 
+      letter-spacing: 0.15em; text-transform: uppercase; 
+      display: flex; align-items: center; gap: 8px; transition: background 0.2s, color 0.2s; 
+    }
     .user-menu-container:hover .user-badge { background: transparent; color: #111; }
-    .user-dropdown { position: absolute; top: 100%; right: 0; background: #fff; border: 2px solid #111; border-top: none; display: none; flex-direction: column; min-width: 100%; box-shadow: 3px 3px 0 #000; z-index: 1001; }
+    .user-dropdown { 
+      position: absolute; top: 100%; right: 0; background: #fff; 
+      border: 2px solid #111; border-top: none; display: none; 
+      flex-direction: column; min-width: 100%; box-shadow: 3px 3px 0 #000; z-index: 1001; 
+    }
     .user-menu-container:hover .user-dropdown { display: flex; animation: fadeIn 0.18s; }
-    .user-dropdown-btn { background: transparent; color: #111; border: none; padding: 12px 16px; font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; text-align: left; transition: background 0.2s, color 0.2s; }
+    .user-dropdown-btn { 
+      background: transparent; color: #111; border: none; padding: 12px 16px; 
+      font-size: 9px; font-weight: 700; letter-spacing: 0.15em; 
+      text-transform: uppercase; text-align: left; transition: background 0.2s, color 0.2s; 
+    }
     .user-dropdown-btn:hover { background: #111; color: #fff; }
-    .nav-signin { background: #111; color: #fff; border: 2px solid #111; padding: 6px 14px; font-size: 9px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; transition: all 0.2s; }
-    .nav-signin:hover { background: transparent; color: #111; }
 
-    /* 6. SIZE BTNS */
-    .size-btn { background: transparent; color: #111; border: 1.5px solid #111; padding: 6px 0; width: 34px; text-align: center; font-size: 10px; font-weight: 700; transition: all 0.2s; }
+    .nav-signin { 
+      background: #111; color: #fff; border: 2px solid #111; 
+      padding: 6px 14px; font-size: 9px; font-weight: 900; 
+      letter-spacing: 0.18em; text-transform: uppercase; transition: all 0.2s; 
+    }
+    .nav-signin:hover { background: transparent; color: #111; }
+    
+    .nl { position: relative; color: #111; text-decoration: none; font-weight: 700; font-size: 10px; letter-spacing: 0.18em; cursor: none; }
+    .nl::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #111; transition: width 0.2s; }
+    .nl:hover::after { width: 100%; }
+
+    /* ==========================================================================
+       5. COMPONENTS & CARDS
+       ========================================================================== */
+    .size-btn { 
+      background: transparent; color: #111; border: 1.5px solid #111; 
+      padding: 6px 0; width: 34px; text-align: center; font-size: 10px; 
+      font-weight: 700; transition: all 0.2s; 
+    }
     .size-btn.active { background: #111; color: #fff; }
     .size-btn.soldout { opacity: 0.28; text-decoration: line-through; }
 
-    /* 7. GRAIN / TOPO */
-    .grain-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9998; opacity: 0.15; background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E'); }
-    .topo-parallax-wrap { position: absolute; top: -50vh; bottom: -50vh; left: 0; right: 0; pointer-events: none; z-index: 0; will-change: transform; }
-
-    /* 8. HERO LAYOUT */
-    .hero-text-overlay { position: absolute; z-index: 5; top: 32%; left: -2%; line-height: 0.85; pointer-events: none; -webkit-user-select: none; user-select: none; }
-    .hero-sub { position: absolute; z-index: 4; top: 2.5rem; right: 2rem; text-align: right; pointer-events: none; }
-    .hero-sub p { font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #fff; line-height: 2; opacity: 0.7; }
-    .hero-badge { display: inline-block; border: 2px solid #fff; font-size: 10px; font-weight: 700; letter-spacing: 0.2em; padding: 6px 12px; color: #fff; text-transform: uppercase; margin-top: 1rem; }
-
-    /* 9. FLIP CARDS */
-    .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.65s cubic-bezier(0.76,0,0.24,1); transform-style: preserve-3d; }
-    .flipped .flip-inner { transform: rotateY(180deg); }
-    .flip-front, .flip-back { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
-    .flip-back { transform: rotateY(180deg); }
-
-    /* 10. SCROLL REVEAL */
-    .reveal { opacity: 0; transform: translateY(44px); transition: opacity 0.78s cubic-bezier(0.22,1,0.36,1), transform 0.78s cubic-bezier(0.22,1,0.36,1); }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-    .reveal-d1 { transition-delay: 0.08s; } .reveal-d2 { transition-delay: 0.2s; } .reveal-d3 { transition-delay: 0.32s; } .reveal-d4 { transition-delay: 0.44s; }
-
-    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-    /* 11. CARDS */
     .prod-card { transition: box-shadow 0.25s, transform 0.25s; }
     .prod-card:hover { box-shadow: 6px 6px 0 #111; transform: translate(-2px,-2px); }
     .prod-cta-btn, .flip-toggle { transition: background 0.2s, color 0.2s; }
-    .prod-cta-btn:hover, .flip-toggle:hover { background: #111 !important; color: #fff !important; }
+    .prod-cta-btn:hover:not(:disabled), .flip-toggle:hover { background: #111 !important; color: #fff !important; }
 
     .port-card .port-overlay { opacity: 0; transition: opacity 0.3s ease; }
     .port-card:hover .port-overlay { opacity: 1; }
     .port-card .port-text { transform: translateY(10px); opacity: 0; transition: transform 0.4s ease, opacity 0.4s ease; }
     .port-card:hover .port-text { transform: translateY(0); opacity: 1; }
 
-    .nl { position: relative; color: #111; text-decoration: none; font-weight: 700; font-size: 10px; letter-spacing: 0.18em; }
-    .nl::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #111; transition: width 0.2s; }
-    .nl:hover::after { width: 100%; }
+    .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.65s cubic-bezier(0.76,0,0.24,1); transform-style: preserve-3d; }
+    .flipped .flip-inner { transform: rotateY(180deg); }
+    .flip-front, .flip-back { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+    .flip-back { transform: rotateY(180deg); }
+
+    /* ==========================================================================
+       6. UTILITIES, ANIMATIONS & BACKGROUNDS
+       ========================================================================== */
+    .grain-overlay { 
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9998; opacity: 0.15; 
+      background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E'); 
+    }
+    .topo-parallax-wrap { position: absolute; top: -50vh; bottom: -50vh; left: 0; right: 0; pointer-events: none; z-index: 0; will-change: transform; }
+
+    .hero-video-placeholder { position: absolute; inset: 0; background: var(--B); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; }
+    .hero-video-placeholder::before { content: ''; position: absolute; inset: -60px; background: repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.04) 39px, rgba(255,255,255,0.04) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.04) 39px, rgba(255,255,255,0.04) 40px); }
+    .hero-text-overlay { position: absolute; z-index: 5; top: 32%; left: -2%; line-height: 0.85; pointer-events: none; -webkit-user-select: none; user-select: none; }
+    .hero-sub { position: absolute; z-index: 4; top: 2.5rem; right: 2rem; text-align: right; pointer-events: none; }
+    .hero-sub p { font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #fff; line-height: 2; opacity: 0.7; }
+    .hero-badge { display: inline-block; border: 2px solid #fff; font-size: 10px; font-weight: 700; letter-spacing: 0.2em; padding: 6px 12px; color: #fff; text-transform: uppercase; margin-top: 1rem; }
+
+    .reveal { opacity: 0; transform: translateY(44px); transition: opacity 0.78s cubic-bezier(0.22,1,0.36,1), transform 0.78s cubic-bezier(0.22,1,0.36,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-d1 { transition-delay: 0.08s; } .reveal-d2 { transition-delay: 0.2s; } .reveal-d3 { transition-delay: 0.32s; } .reveal-d4 { transition-delay: 0.44s; }
+
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     .admin-input:focus, .drop-zone.over { border-color: #111 !important; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: #fff; } ::-webkit-scrollbar-thumb { background: #111; }
 
-    /* 12. RESPONSIVE */
+    /* ==========================================================================
+       7. MOBILE RESPONSIVE
+       ========================================================================== */
     @media (max-width: 768px) {
       .desk-nav { display: none !important; }
-      .mob-ham { display: flex !important; }
+      
+      /* Fixed Hamburger Button styling */
+      .mob-ham { 
+        display: flex !important; 
+        background: none; 
+        border: 2px solid #111; 
+        width: 34px; 
+        height: 34px; 
+        flex-direction: column; 
+        align-items: center; 
+        justify-content: center; 
+        gap: 4px;
+        flex-shrink: 0; /* Prevents squishing */
+      }
+      .mob-ham span {
+        display: block;
+        width: 14px;
+        height: 1.5px;
+        background: #111;
+        flex-shrink: 0; /* Prevents lines from shrinking */
+      }
+
       .product-grid, .port-grid, .two-col, .testi-grid { grid-template-columns: 1fr 1fr !important; }
       .contact-grid { grid-template-columns: 1fr !important; }
       .hero-h1 { font-size: clamp(80px, 22vw, 130px); }
@@ -215,22 +309,47 @@
   <div id="root"></div>
 
   <script type="text/babel">
+    /* ==========================================================================
+       TABLE OF CONTENTS (Search these tags to find components)
+       --------------------------------------------------------------------------
+       [HELPERS]        - Math, Stock checking, Canvas Compression, Timeout
+       [DATA]           - Default fallback products & portfolio items
+       [UI_PRIMITIVES]  - SLabel, TopoSVG, ImgPlaceholder
+       [CURSOR]         - Mobile-friendly elastic CustomCursor
+       [SCROLL_TICKER]  - Scroll progress bar & Infinite Ticker
+       [AUTH_MODAL]     - User Login / Signup component
+       [HEADER_MENU]    - Header Navbar and Mobile Overlay Menu
+       [USER_ORDERS]    - UserOrdersModal (View past purchases)
+       [CART]           - CartSidebar (With Item Selection System & Name/Phone Validation)
+       [PRODUCT]        - ProdCard & QuickView Modal
+       [ADMIN]          - AdminPanel & ImgUpload components
+       [SECTIONS]       - Hero, Shop, TheWork, WhySplotch, Testimonials, Contact
+       [MAIN_APP]       - The core App logic & state assembly
+       ========================================================================== */
+
     const { useState, useEffect, useRef, useCallback, useMemo } = React;
     const LOGO_SRC = "SplotchPlainLogo-removebg.png";
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // HELPERS
-    // ────────────────────────────────────────────────────────────────────────────
+    // ==========================================================================
+    // [HELPERS]
+    // ==========================================================================
     const getTotalStock = (p) => {
       if (p.sizeStock && typeof p.sizeStock === 'object') return Object.values(p.sizeStock).reduce((a,b)=>a+(parseInt(b)||0),0);
       return parseInt(p.stock)||0;
     };
+    
     const getSizeStock = (p, size) => {
       if (p.sizeStock && typeof p.sizeStock === 'object') return parseInt(p.sizeStock[size])||0;
       return parseInt(p.stock)||0;
     };
 
-    // Canvas-based image compression
+    const withTimeout = (promise, ms=6000, msg="Database timeout. Make sure ad-blockers are disabled.") => {
+      return Promise.race([
+        promise,
+        new Promise((_, rej) => setTimeout(() => rej(new Error(msg)), ms))
+      ]);
+    };
+
     const compressImage = (dataUrl, maxDim=900, quality=0.72) =>
       new Promise(resolve => {
         const img = new Image();
@@ -246,9 +365,10 @@
         img.src = dataUrl;
       });
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // DEFAULT DATA
-    // ────────────────────────────────────────────────────────────────────────────
+
+    // ==========================================================================
+    // [DATA]
+    // ==========================================================================
     const DEFAULT_PRODUCTS = [
       { id:"shirt-1", name:"Terrain Tee 000", cost:"₹450", price:"₹1", compareAtPrice:"₹1,299", tag:"New Drop", description:"Urban utility tee with topographic print detail. Oversized fit.", frontImage:"Shirt 1 front.jpeg", backImage:"Shirt 1 back.jpeg", hasBack:true, sizeStock:{S:5,M:5,L:3,XL:2}, sizes:"S, M, L, XL", category:"T-Shirts" },
       { id:"shirt-2", name:"Grid Tee 000",    cost:"₹500", price:"₹1", compareAtPrice:"₹1,499", tag:"Limited",  description:"Graphic techwear tee from the Grid Zero collaboration.", frontImage:"Shirt 2 front.jpeg", backImage:"Shirt 2 back.jpeg", hasBack:true, sizeStock:{S:2,M:4,L:3,XL:1}, sizes:"S, M, L, XL", category:"T-Shirts" },
@@ -264,11 +384,14 @@
       { id:"port-6", label:"Modular Jacket",   cat:"Product",        image:null, order:5 },
     ];
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // UI COMPONENTS
-    // ────────────────────────────────────────────────────────────────────────────
+
+    // ==========================================================================
+    // [UI_PRIMITIVES]
+    // ==========================================================================
     const SLabel = ({children, inv=false}) => (
-      <div style={{ fontSize:10, fontWeight:700, letterSpacing:"0.32em", textTransform:"uppercase", marginBottom:"1.8rem", borderLeft:`3px solid ${inv?"#fff":"#111"}`, paddingLeft:10, color:inv?"rgba(255,255,255,0.45)":"rgba(0,0,0,0.45)" }}>{children}</div>
+      <div style={{ fontSize:10, fontWeight:700, letterSpacing:"0.32em", textTransform:"uppercase", marginBottom:"1.8rem", borderLeft:`3px solid ${inv?"#fff":"#111"}`, paddingLeft:10, color:inv?"rgba(255,255,255,0.45)":"rgba(0,0,0,0.45)" }}>
+        {children}
+      </div>
     );
 
     const TopoSVG = ({color="#111", style={}}) => (
@@ -290,22 +413,22 @@
       </div>
     );
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // MOBILE-FRIENDLY CURSOR
-    // ────────────────────────────────────────────────────────────────────────────
+
+    // ==========================================================================
+    // [CURSOR]
+    // ==========================================================================
     function CustomCursor() {
       const [pulse, setPulse] = useState(false);
       const [pos, setPos] = useState({ x: -100, y: -100 });
       const [isTouch, setIsTouch] = useState(false);
 
       useEffect(() => {
-        // If they touch the screen, disable the custom cursor globally
         const handleTouchStart = () => {
           setIsTouch(true);
           document.body.classList.remove('custom-cursor-active');
         };
         const handleMouseMove = (e) => {
-          if (isTouch) return; // Don't track if touch device
+          if (isTouch) return;
           document.body.classList.add('custom-cursor-active');
           setPos({ x: e.clientX, y: e.clientY });
         };
@@ -328,6 +451,10 @@
       return <div className={`cursor-dot ${pulse ? 'pulse' : ''}`} style={{ left: `${pos.x}px`, top: `${pos.y}px` }}></div>;
     }
 
+
+    // ==========================================================================
+    // [SCROLL_TICKER]
+    // ==========================================================================
     function ScrollProgress() {
       const [w, setW] = useState(0);
       useEffect(() => {
@@ -350,13 +477,16 @@
       );
     }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // AUTH MODAL
-    // ────────────────────────────────────────────────────────────────────────────
+
+    // ==========================================================================
+    // [AUTH_MODAL]
+    // ==========================================================================
     function AuthModal({onClose, onSuccess}) {
       const [isLogin, setIsLogin] = useState(true);
-      const [email, setEmail] = useState(""); const [pw, setPw] = useState("");
-      const [err, setErr] = useState(""); const [loading, setLoading] = useState(false);
+      const [email, setEmail] = useState(""); 
+      const [pw, setPw] = useState("");
+      const [err, setErr] = useState(""); 
+      const [loading, setLoading] = useState(false);
 
       const handleEmailAuth = async (e) => {
         e.preventDefault();
@@ -370,6 +500,7 @@
         } catch(error){setErr(error.message.replace("Firebase: ",""));}
         finally{setLoading(false);}
       };
+      
       const handleGoogle = async () => {
         try{
           if(!window.fbAuth) throw new Error("Firebase Auth not loaded");
@@ -377,7 +508,9 @@
           onSuccess();
         }catch(e){setErr(e.message);}
       };
+      
       const iSt={display:"block",width:"100%",border:"2px solid rgba(0,0,0,0.14)",padding:"12px",fontSize:12,fontFamily:"Inter",marginBottom:"1rem"};
+      
       return (
         <div style={{position:"fixed",inset:0,zIndex:1000,background:"rgba(17,17,17,0.85)",display:"flex",alignItems:"center",justifyContent:"center",animation:"fadeIn .2s ease"}}>
           <div style={{background:"#fff",border:"3px solid #111",width:"100%",maxWidth:400,position:"relative",padding:"2.5rem"}}>
@@ -411,35 +544,42 @@
       );
     }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // HEADER
-    // ────────────────────────────────────────────────────────────────────────────
-    function Header({cartCount, onCartOpen, onLogoClick, setMobMenu, user, onAuthClick, handleLogout}) {
+
+    // ==========================================================================
+    // [HEADER_MENU]
+    // ==========================================================================
+    function Header({cartCount, onCartOpen, onLogoClick, setMobMenu, user, onAuthClick, handleLogout, openUserOrders}) {
       const [scrolled, setScrolled] = useState(false);
+      
       useEffect(()=>{
         const fn=()=>setScrolled(window.scrollY>30);
         window.addEventListener("scroll",fn,{passive:true});
         return()=>window.removeEventListener("scroll",fn);
       },[]);
+      
       const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({behavior:"smooth"});
       const safeName = user?(user.displayName||user.email||'USER').split('@')[0].toUpperCase():'';
+      
       return (
         <header className={scrolled?"glass-nav":""} style={{overflow:"visible"}}>
           <button onClick={onLogoClick} style={{background:"none",border:"none",display:"flex",alignItems:"center",padding:0,position:"relative",paddingLeft:"10px"}}>
             <img src={LOGO_SRC} alt="Splotch" style={{height:32,width:"auto",display:"block",transform:"scale(2.2)",transformOrigin:"left center"}}/>
           </button>
+          
           <nav className="desk-nav" style={{display:"flex",gap:"2.5rem",alignItems:"center"}}>
             <button onClick={()=>scrollTo('home')} className="nl" style={{background:"none",border:"none"}}>HOME</button>
             <button onClick={()=>scrollTo('shop')} className="nl" style={{background:"none",border:"none"}}>SHOP</button>
             <a href="/about.html" className="nl">ABOUT</a>
             <button onClick={()=>scrollTo('contact')} className="nl" style={{background:"none",border:"none"}}>CONTACT</button>
           </nav>
+          
           <div style={{display:"flex",alignItems:"center",gap:"1.2rem"}}>
             <div className="auth-container desk-nav">
               {user?(
                 <div className="user-menu-container">
                   <div className="user-badge">{safeName}<span style={{fontSize:'7px',opacity:0.6,marginLeft:4}}>▼</span></div>
                   <div className="user-dropdown">
+                    <button className="user-dropdown-btn" onClick={openUserOrders}>My Orders</button>
                     <button className="user-dropdown-btn" onClick={handleLogout}>Logout</button>
                   </div>
                 </div>
@@ -447,9 +587,14 @@
                 <button className="nav-signin" onClick={onAuthClick}>SIGN IN</button>
               )}
             </div>
-            <button className="mob-ham" onClick={()=>setMobMenu(o=>!o)} style={{background:"none",border:"2px solid #111",width:34,height:34,flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4}}>
-              {[0,1,2].map(i=><span key={i} style={{display:"block",width:14,height:1.5,background:"#111"}}/>)}
+            
+            {/* The newly fixed mobile hamburger button */}
+            <button className="mob-ham" onClick={()=>setMobMenu(o=>!o)}>
+              <span></span>
+              <span></span>
+              <span></span>
             </button>
+            
             <button onClick={onCartOpen} style={{background:"#111",color:"#fff",border:"2px solid #111",padding:"7px 14px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",display:"flex",alignItems:"center",gap:6}}>
               CART
               {cartCount>0&&<span style={{background:"#fff",color:"#111",width:16,height:16,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:900}}>{cartCount}</span>}
@@ -459,25 +604,26 @@
       );
     }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // MOB MENU
-    // ────────────────────────────────────────────────────────────────────────────
-    function MobMenu({open, setOpen, user, onAuthClick, handleLogout}) {
+    function MobMenu({open, setOpen, user, onAuthClick, handleLogout, openUserOrders}) {
       const go = (id) => { document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); setOpen(false); };
       const safeName = user?(user.displayName||user.email||'USER').split('@')[0].toUpperCase():'';
       const btnSt = {background:"none",border:"none",textAlign:"left",fontFamily:"Inter",fontWeight:900,fontSize:"clamp(38px,10vw,60px)",letterSpacing:"-0.04em",textTransform:"uppercase",color:"#fff",lineHeight:1.1,borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"0.5rem 0"};
+      
       return (
         <div className="mob-menu" style={{position:"fixed",inset:0,zIndex:600,background:"#111",display:"flex",flexDirection:"column",justifyContent:"center",padding:"3rem 2rem",transform:open?"translateX(0)":"translateX(100%)",transition:"transform .4s cubic-bezier(.76,0,.24,1)"}}>
           <button onClick={()=>setOpen(false)} style={{position:"absolute",top:16,right:16,background:"none",border:"2px solid rgba(255,255,255,0.2)",width:42,height:42,color:"#fff",fontSize:18,fontWeight:700}}>✕</button>
           <img src={LOGO_SRC} alt="Splotch" style={{height:48,width:"auto",marginBottom:"2.5rem",opacity:0.9,filter:"invert(1)"}}/>
+          
           <button onClick={()=>go('home')} style={btnSt}>HOME</button>
           <button onClick={()=>go('shop')} style={btnSt}>SHOP</button>
           <a href="/about.html" style={{textDecoration:"none",...btnSt,display:"block"}}>ABOUT</a>
           <button onClick={()=>go('contact')} style={btnSt}>CONTACT</button>
+          
           <div style={{marginTop:'2rem',borderTop:'1px solid rgba(255,255,255,0.1)',paddingTop:'2rem'}}>
             {user?(
               <React.Fragment>
                 <span style={{color:'#fff',fontSize:12,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',display:'block',marginBottom:'1rem'}}>WELCOME, {safeName}</span>
+                <button onClick={()=>{openUserOrders(); setOpen(false);}} style={{background:'transparent',color:'#fff',border:'1px solid #fff',padding:'10px 20px',fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',marginRight:10}}>My Orders</button>
                 <button onClick={()=>{handleLogout();setOpen(false);}} style={{background:'transparent',color:'#fff',border:'1px solid #fff',padding:'10px 20px',fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase'}}>Logout</button>
               </React.Fragment>
             ):(
@@ -488,18 +634,264 @@
       );
     }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // QUICK VIEW
-    // ────────────────────────────────────────────────────────────────────────────
+
+    // ==========================================================================
+    // [USER_ORDERS]
+    // ==========================================================================
+    function UserOrdersModal({ user, onClose }) {
+      const [orders, setOrders] = useState([]);
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        const fetchOrders = async () => {
+          if (!window.fbDb || !window.fbWhere) return;
+          try {
+            const q = window.fbQuery(window.fbCollection(window.fbDb, "orders"), window.fbWhere("userId", "==", user.uid));
+            const snap = await window.fbGetDocs(q);
+            const fetchedOrders = [];
+            snap.forEach(doc => fetchedOrders.push({ id: doc.id, ...doc.data() }));
+            
+            // Sort locally to avoid needing Firebase Composite Indexes
+            fetchedOrders.sort((a,b) => b.timestamp?.seconds - a.timestamp?.seconds);
+            setOrders(fetchedOrders);
+          } catch(err) { 
+            console.error("Failed to load user orders:", err); 
+          } finally { 
+            setLoading(false); 
+          }
+        };
+        fetchOrders();
+      }, [user]);
+
+      return (
+        <div style={{position:"fixed",inset:0,zIndex:900,background:"rgba(17,17,17,0.8)",display:"flex",alignItems:"center",justifyContent:"center",padding:"2rem",animation:"fadeIn .2s ease"}}>
+          <div style={{background:"#fff",border:"3px solid #111",width:"100%",maxWidth:600,maxHeight:"80vh",display:"flex",flexDirection:"column"}}>
+            <div style={{padding:"1.2rem 1.8rem",borderBottom:"2px solid #111",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <span style={{fontFamily:"Playfair Display",fontWeight:700,fontSize:22,letterSpacing:"-0.01em"}}>My Orders</span>
+              <button onClick={onClose} style={{background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700}}>✕</button>
+            </div>
+            
+            <div style={{flex:1,overflow:"auto",padding:"1.5rem"}}>
+              {loading ? (
+                <p style={{fontSize:12,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",textAlign:"center",padding:"2rem"}}>Loading orders...</p>
+              ) : orders.length === 0 ? (
+                <p style={{fontSize:12,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",textAlign:"center",padding:"2rem"}}>No past orders found.</p>
+              ) : (
+                orders.map(o => {
+                  const date = o.timestamp ? new Date(o.timestamp.seconds * 1000).toLocaleDateString() : "Recent";
+                  return (
+                    <div key={o.id} style={{border:"2px solid #111",padding:"1.2rem",marginBottom:"1rem",background:"#fafafa"}}>
+                      <div style={{display:"flex",justifyContent:"space-between",borderBottom:"1px solid #ddd",paddingBottom:"10px",marginBottom:"10px"}}>
+                        <strong style={{fontSize:12}}>ORDER ID: <span style={{color:"rgba(0,0,0,0.5)",fontWeight:400}}>{o.orderId||o.id}</span></strong>
+                        <span style={{color:"#c00",fontWeight:900,fontSize:14}}>₹{o.total}</span>
+                      </div>
+                      <p style={{fontSize:10,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",marginBottom:"10px"}}>Placed on {date}</p>
+                      
+                      <div style={{background:"#111",color:"#fff",padding:"1rem",fontSize:"11px",lineHeight:1.6}}>
+                        <strong style={{color:"rgba(255,255,255,0.5)",letterSpacing:"0.1em"}}>ITEMS PURCHASED:</strong><br/>
+                        {o.items?.map((i, idx) => (
+                          <div key={idx} style={{display:"flex",justifyContent:"space-between",borderBottom:"1px solid rgba(255,255,255,0.1)",padding:"4px 0"}}>
+                            <span>{i.name}</span>
+                            <span>{i.selectedSize}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                })
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+
+    // ==========================================================================
+    // [CART] (Updated with Selection System)
+    // ==========================================================================
+    function CartSidebar({cart, setCart, onClose, user, onAuthClick}) {
+      const [loading, setLoading] = useState(false);
+      const [step, setStep] = useState('cart');
+      const [shipping, setShipping] = useState({name:"", phone:"", address:"", city:"", state:"", pincode:""});
+      
+      // Track which cart items are selected for checkout
+      const [selectedIds, setSelectedIds] = useState(cart.map(i => i.cartItemId));
+      
+      // Auto-select newly added items
+      useEffect(() => {
+        const newIds = cart.map(i => i.cartItemId);
+        setSelectedIds(prev => {
+          const combined = new Set([...prev, ...newIds]);
+          return Array.from(combined).filter(id => newIds.includes(id));
+        });
+      }, [cart.length]);
+
+      const toggleSelect = (id) => {
+        setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+      };
+
+      const selectedCartItems = cart.filter(item => selectedIds.includes(item.cartItemId));
+      const total = selectedCartItems.reduce((s,i)=>s+(parseInt((i.price||"0").replace(/[^0-9]/g,""))||0),0);
+
+      const initiateCheckout = () => { 
+        if(selectedCartItems.length === 0) { alert("Please select at least one item to checkout."); return; }
+        if(!user){ onAuthClick(); return; } 
+        setStep('shipping'); 
+      };
+
+      const processPayment = async () => {
+        // Validate Shipping Fields
+        if(!shipping.name || shipping.phone.length !== 10 || !shipping.address || !shipping.city || !shipping.state || !shipping.pincode){
+          alert("Please fill in all shipping details. Ensure phone number is exactly 10 digits.");
+          return;
+        }
+        
+        setLoading(true);
+        try {
+          const response = await fetch('/api/createOrder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:total})});
+          const data = await response.json();
+          if(!response.ok) throw new Error(data.error||"Failed to create order");
+          
+          const options = {
+            key:data.keyId,amount:total*100,currency:"INR",name:"Splotch",description:"Apparel Order",image:LOGO_SRC,order_id:data.orderId,
+            handler: async function(rzpRes){
+              try {
+                if(!window.fbDb) throw new Error("Firebase DB not available.");
+                await window.fbAddDoc(window.fbCollection(window.fbDb,"orders"),{
+                  items: selectedCartItems, // Only save selected items
+                  total,paymentId:rzpRes.razorpay_payment_id,orderId:rzpRes.razorpay_order_id,
+                  userId:user.uid,userEmail:user.email,userName:shipping.name, // Saved from form
+                  shipping,timestamp:new Date(),status:"Processing"
+                });
+                
+                for(const item of selectedCartItems){
+                  if(item.id){
+                    try{ await window.fbUpdateDoc(window.fbDoc(window.fbDb,"products",item.id),{[`sizeStock.${item.selectedSize}`]:window.fbIncrement(-1)}); }
+                    catch(e){ console.error(`Stock decrement failed for ${item.id}`); }
+                  }
+                }
+                
+                alert("Payment successful! Order placed."); 
+                // Only remove the purchased items from the cart!
+                setCart(prev => prev.filter(item => !selectedIds.includes(item.cartItemId)));
+                onClose();
+              }catch(dbErr){alert("Paid but order save failed. Contact support.");}
+            },
+            prefill:{email:user.email,contact:"+91"+shipping.phone, name: shipping.name}, theme:{color:"#111111"}
+          };
+          new window.Razorpay(options).open();
+        }catch(err){alert("Checkout error: "+err.message);}
+        finally{setLoading(false);}
+      };
+
+      const iSt={display:"block",width:"100%",border:"2px solid rgba(0,0,0,0.14)",background:"#f9f9f9",padding:"12px",fontSize:13,fontFamily:"Inter"};
+      
+      return (
+        <div style={{position:"fixed",inset:0,zIndex:800}}>
+          <div onClick={onClose} style={{position:"absolute",inset:0,background:"rgba(17,17,17,0.55)"}}/>
+          <div style={{position:"absolute",top:0,right:0,bottom:0,width:"100%",maxWidth:400,background:"#fff",borderLeft:"3px solid #111",display:"flex",flexDirection:"column"}}>
+            <div style={{padding:"1.2rem 1.8rem",borderBottom:"2px solid #111",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <span style={{fontFamily:"Playfair Display",fontWeight:700,fontSize:20,letterSpacing:"-0.01em"}}>{step==='cart'?`Cart (${cart.length})`:"Shipping Info"}</span>
+              <button onClick={onClose} style={{background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700}}>✕</button>
+            </div>
+            
+            {step==='cart'&&(
+              <React.Fragment>
+                <div style={{flex:1,overflow:"auto",padding:"0.8rem 1.8rem"}}>
+                  {cart.length===0?(
+                    <div style={{textAlign:"center",padding:"4rem 0",color:"rgba(0,0,0,0.25)"}}>
+                      <img src={LOGO_SRC} alt="" style={{height:40,opacity:.15,marginBottom:12}}/>
+                      <div style={{fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase"}}>Your cart is empty</div>
+                    </div>
+                  ):cart.map((item)=>(
+                    <div key={item.cartItemId} style={{display:"flex",gap:"1rem",alignItems:"center",borderBottom:"1px solid rgba(0,0,0,0.07)",padding:"0.9rem 0"}}>
+                      
+                      {/* Checkbox for Selection System */}
+                      <input 
+                        type="checkbox" 
+                        checked={selectedIds.includes(item.cartItemId)}
+                        onChange={() => toggleSelect(item.cartItemId)}
+                        style={{width: 18, height: 18, cursor: "pointer"}}
+                      />
+
+                      <div style={{width:58,height:58,background:"#111",flexShrink:0,overflow:"hidden", opacity: selectedIds.includes(item.cartItemId) ? 1 : 0.4}}>
+                        {item.frontImage?<img src={item.frontImage} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,0.15)",fontSize:18}}>◎</div>}
+                      </div>
+                      <div style={{flex:1,minWidth:0, opacity: selectedIds.includes(item.cartItemId) ? 1 : 0.4}}>
+                        <div style={{fontWeight:700,fontSize:12,textTransform:"uppercase",letterSpacing:"0.03em",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{item.name}</div>
+                        <div style={{fontSize:10,color:"#666",marginTop:2}}>SIZE: {item.selectedSize}</div>
+                        <div style={{fontSize:12,fontWeight:600,color:"#c00",marginTop:2}}>{item.price}</div>
+                      </div>
+                      <button onClick={()=>setCart(c=>c.filter(j=>j.cartItemId!==item.cartItemId))} style={{background:"none",border:"1px solid rgba(0,0,0,0.12)",width:26,height:26,fontSize:11,flexShrink:0}}>✕</button>
+                    </div>
+                  ))}
+                </div>
+                {cart.length>0&&(
+                  <div style={{padding:"1.2rem 1.8rem",borderTop:"2px solid #111"}}>
+                    <div style={{display:"flex",justifyContent:"space-between",marginBottom:"0.9rem"}}>
+                      <span style={{fontSize:11,fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase"}}>Total ({selectedCartItems.length} selected)</span>
+                      <span style={{fontSize:17,fontWeight:900,letterSpacing:"-0.02em"}}>₹{total.toLocaleString("en-IN")}</span>
+                    </div>
+                    <button onClick={initiateCheckout} disabled={selectedCartItems.length === 0} style={{width:"100%",background:selectedCartItems.length===0?"#666":"#111",color:"#fff",border:`3px solid ${selectedCartItems.length===0?"#666":"#111"}`,padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase", transition: "background 0.2s"}}>Secure Checkout →</button>
+                    <button onClick={()=>setCart([])} style={{width:"100%",background:"transparent",color:"rgba(0,0,0,0.35)",border:"none",padding:"8px",fontSize:9,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase",marginTop:4}}>Clear All</button>
+                  </div>
+                )}
+              </React.Fragment>
+            )}
+
+            {step==='shipping'&&(
+              <div style={{flex:1,display:"flex",flexDirection:"column"}}>
+                <div style={{flex:1,overflow:"auto",padding:"1.5rem 1.8rem"}}>
+                  
+                  <label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6}}>Full Name *</label>
+                  <input type="text" placeholder="John Doe" value={shipping.name} onChange={e=>setShipping(s=>({...s,name:e.target.value}))} style={{...iSt,marginBottom:"1rem"}}/>
+
+                  <label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6}}>Phone Number *</label>
+                  <div style={{display:"flex", marginBottom:"1.5rem"}}>
+                    <div style={{display:"flex", alignItems:"center", justifyContent:"center", padding:"12px", background:"#eee", border:"2px solid rgba(0,0,0,0.14)", borderRight:"none", fontSize:13, fontFamily:"Inter", fontWeight:600}}>+91</div>
+                    <input type="tel" placeholder="10-digit mobile number" value={shipping.phone} onChange={e=>setShipping(s=>({...s,phone:e.target.value.replace(/\D/g, '').slice(0,10)}))} style={{...iSt, marginBottom:0, flex:1}} />
+                  </div>
+                  
+                  <label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6}}>House/Flat No. & Street *</label>
+                  <input type="text" placeholder="Address Line 1" value={shipping.address} onChange={e=>setShipping(s=>({...s,address:e.target.value}))} style={{...iSt,marginBottom:"1rem"}}/>
+                  
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem",marginBottom:"1rem"}}>
+                    <div><label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6}}>City *</label><input type="text" placeholder="City" value={shipping.city} onChange={e=>setShipping(s=>({...s,city:e.target.value}))} style={iSt}/></div>
+                    <div><label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6}}>State *</label><input type="text" placeholder="State" value={shipping.state} onChange={e=>setShipping(s=>({...s,state:e.target.value}))} style={iSt}/></div>
+                  </div>
+                  
+                  <label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6}}>Pincode *</label>
+                  <input type="text" placeholder="6-digit Pincode" value={shipping.pincode} onChange={e=>setShipping(s=>({...s,pincode:e.target.value}))} style={{...iSt,marginBottom:"1.5rem"}}/>
+                
+                </div>
+                <div style={{padding:"1.2rem 1.8rem",borderTop:"2px solid #111"}}>
+                  <button onClick={processPayment} disabled={loading} style={{width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:8}}>{loading?"Processing...":`Pay ₹${total} Now`}</button>
+                  <button onClick={()=>setStep('cart')} style={{width:"100%",background:"transparent",color:"#111",border:"2px solid rgba(0,0,0,0.2)",padding:"10px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase"}}>← Back to Cart</button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+
+    // ==========================================================================
+    // [PRODUCT] - Quick View & Prod Card
+    // ==========================================================================
     function QuickView({product, onClose, onAdd}) {
       const [flipped, setFlipped] = useState(false);
       const [added, setAdded] = useState(false);
       if (!product) return null;
+      
       const sizeArray = product.sizes?product.sizes.split(',').map(s=>s.trim()):["OS"];
       const [selSize, setSelSize] = useState(sizeArray.find(s=>getSizeStock(product,s)>0)||sizeArray[0]);
+      
       const isSizeSoldOut = s=>getSizeStock(product,s)<=0;
       const isSoldOut = getTotalStock(product)<=0;
       const currentSizeSoldOut = isSizeSoldOut(selSize);
+      
       return (
         <div onClick={onClose} style={{position:"fixed",inset:0,zIndex:900,background:"rgba(17,17,17,0.8)",display:"flex",alignItems:"center",justifyContent:"center",padding:"2rem",animation:"fadeIn .2s ease"}}>
           <div onClick={e=>e.stopPropagation()} style={{background:"#fff",border:"3px solid #111",maxWidth:860,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",maxHeight:"90vh",overflow:"auto"}} className="two-col">
@@ -556,17 +948,23 @@
       );
     }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // PRODUCT CARD
-    // ────────────────────────────────────────────────────────────────────────────
     function ProdCard({product, onQV, onAdd}) {
       const [flipped, setFlipped] = useState(false);
       const [added, setAdded] = useState(false);
+      
       const sizeArray = product.sizes?product.sizes.split(',').map(s=>s.trim()):["OS"];
       const [selSize, setSelSize] = useState(sizeArray.find(s=>getSizeStock(product,s)>0)||sizeArray[0]);
+      
       const isSizeSoldOut = s=>getSizeStock(product,s)<=0;
       const isSoldOut = getTotalStock(product)<=0;
-      const doAdd = e=>{ e.stopPropagation(); if(isSizeSoldOut(selSize))return; onAdd({...product,selectedSize:selSize}); setAdded(true); setTimeout(()=>setAdded(false),1800); };
+      
+      const doAdd = e=>{ 
+        e.stopPropagation(); 
+        if(isSizeSoldOut(selSize))return; 
+        onAdd({...product,selectedSize:selSize}); 
+        setAdded(true); setTimeout(()=>setAdded(false),1800); 
+      };
+
       return (
         <div className="prod-card" style={{border:"2px solid #111",background:"#fff",position:"relative",display:"flex",flexDirection:"column"}}>
           {product.tag&&<div style={{position:"absolute",top:12,left:12,zIndex:10,background:"#111",color:"#fff",fontSize:8,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",padding:"3px 8px"}}>{product.tag}</div>}
@@ -605,122 +1003,15 @@
       );
     }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // CART SIDEBAR
-    // ────────────────────────────────────────────────────────────────────────────
-    function CartSidebar({cart, setCart, onClose, user, onAuthClick}) {
-      const total = cart.reduce((s,i)=>s+(parseInt((i.price||"0").replace(/[^0-9]/g,""))||0),0);
-      const [loading, setLoading] = useState(false);
-      const [step, setStep] = useState('cart');
-      const [shipping, setShipping] = useState({phone:"",address:"",city:"",state:"",pincode:""});
-      const initiateCheckout = () => { if(!user){onAuthClick();return;} setStep('shipping'); };
-      const processPayment = async () => {
-        if(!shipping.phone||!shipping.address||!shipping.city||!shipping.state||!shipping.pincode){alert("Please fill in all shipping details.");return;}
-        setLoading(true);
-        try {
-          const response = await fetch('/api/createOrder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:total})});
-          const data = await response.json();
-          if(!response.ok) throw new Error(data.error||"Failed to create order");
-          const options = {
-            key:data.keyId,amount:total*100,currency:"INR",name:"Splotch",description:"Apparel Order",image:LOGO_SRC,order_id:data.orderId,
-            handler: async function(rzpRes){
-              try {
-                if(!window.fbDb) throw new Error("Firebase DB not available.");
-                await window.fbAddDoc(window.fbCollection(window.fbDb,"orders"),{
-                  items:cart,total,paymentId:rzpRes.razorpay_payment_id,orderId:rzpRes.razorpay_order_id,
-                  userId:user.uid,userEmail:user.email,userName:user.displayName||"User",
-                  shipping,timestamp:new Date(),status:"Processing"
-                });
-                for(const item of cart){
-                  if(item.id){
-                    try{ await window.fbUpdateDoc(window.fbDoc(window.fbDb,"products",item.id),{[`sizeStock.${item.selectedSize}`]:window.fbIncrement(-1)}); }
-                    catch(e){ console.error(`Stock decrement failed for ${item.id}`); }
-                  }
-                }
-                alert("Payment successful! Order placed."); setCart([]); onClose();
-              }catch(dbErr){alert("Paid but order save failed. Contact support.");}
-            },
-            prefill:{email:user.email,contact:shipping.phone},theme:{color:"#111111"}
-          };
-          new window.Razorpay(options).open();
-        }catch(err){alert("Checkout error: "+err.message);}
-        finally{setLoading(false);}
-      };
-      const iSt={display:"block",width:"100%",border:"2px solid rgba(0,0,0,0.14)",background:"#f9f9f9",padding:"12px",fontSize:13,fontFamily:"Inter"};
-      return (
-        <div style={{position:"fixed",inset:0,zIndex:800}}>
-          <div onClick={onClose} style={{position:"absolute",inset:0,background:"rgba(17,17,17,0.55)"}}/>
-          <div style={{position:"absolute",top:0,right:0,bottom:0,width:"100%",maxWidth:400,background:"#fff",borderLeft:"3px solid #111",display:"flex",flexDirection:"column"}}>
-            <div style={{padding:"1.2rem 1.8rem",borderBottom:"2px solid #111",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              <span style={{fontFamily:"Playfair Display",fontWeight:700,fontSize:20,letterSpacing:"-0.01em"}}>{step==='cart'?`Cart (${cart.length})`:"Shipping Info"}</span>
-              <button onClick={onClose} style={{background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700}}>✕</button>
-            </div>
-            {step==='cart'&&(
-              <React.Fragment>
-                <div style={{flex:1,overflow:"auto",padding:"0.8rem 1.8rem"}}>
-                  {cart.length===0?(
-                    <div style={{textAlign:"center",padding:"4rem 0",color:"rgba(0,0,0,0.25)"}}>
-                      <img src={LOGO_SRC} alt="" style={{height:40,opacity:.15,marginBottom:12}}/>
-                      <div style={{fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase"}}>Your cart is empty</div>
-                    </div>
-                  ):cart.map((item,i)=>(
-                    <div key={i} style={{display:"flex",gap:"1rem",alignItems:"center",borderBottom:"1px solid rgba(0,0,0,0.07)",padding:"0.9rem 0"}}>
-                      <div style={{width:58,height:58,background:"#111",flexShrink:0,overflow:"hidden"}}>
-                        {item.frontImage?<img src={item.frontImage} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,0.15)",fontSize:18}}>◎</div>}
-                      </div>
-                      <div style={{flex:1,minWidth:0}}>
-                        <div style={{fontWeight:700,fontSize:12,textTransform:"uppercase",letterSpacing:"0.03em",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{item.name}</div>
-                        <div style={{fontSize:10,color:"#666",marginTop:2}}>SIZE: {item.selectedSize}</div>
-                        <div style={{fontSize:12,fontWeight:600,color:"#c00",marginTop:2}}>{item.price}</div>
-                      </div>
-                      <button onClick={()=>setCart(c=>c.filter((_,j)=>j!==i))} style={{background:"none",border:"1px solid rgba(0,0,0,0.12)",width:26,height:26,fontSize:11,flexShrink:0}}>✕</button>
-                    </div>
-                  ))}
-                </div>
-                {cart.length>0&&(
-                  <div style={{padding:"1.2rem 1.8rem",borderTop:"2px solid #111"}}>
-                    <div style={{display:"flex",justifyContent:"space-between",marginBottom:"0.9rem"}}>
-                      <span style={{fontSize:11,fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase"}}>Total</span>
-                      <span style={{fontSize:17,fontWeight:900,letterSpacing:"-0.02em"}}>₹{total.toLocaleString("en-IN")}</span>
-                    </div>
-                    <button onClick={initiateCheckout} style={{width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase"}}>Secure Checkout →</button>
-                    <button onClick={()=>setCart([])} style={{width:"100%",background:"transparent",color:"rgba(0,0,0,0.35)",border:"none",padding:"8px",fontSize:9,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase",marginTop:4}}>Clear Cart</button>
-                  </div>
-                )}
-              </React.Fragment>
-            )}
-            {step==='shipping'&&(
-              <div style={{flex:1,display:"flex",flexDirection:"column"}}>
-                <div style={{flex:1,overflow:"auto",padding:"1.5rem 1.8rem"}}>
-                  <label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6}}>Phone Number *</label>
-                  <input type="tel" placeholder="+91" value={shipping.phone} onChange={e=>setShipping(s=>({...s,phone:e.target.value}))} style={{...iSt,marginBottom:"1.5rem"}}/>
-                  <label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6}}>House/Flat No. & Street *</label>
-                  <input type="text" placeholder="Address Line 1" value={shipping.address} onChange={e=>setShipping(s=>({...s,address:e.target.value}))} style={{...iSt,marginBottom:"1rem"}}/>
-                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem",marginBottom:"1rem"}}>
-                    <div><label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6}}>City *</label><input type="text" placeholder="City" value={shipping.city} onChange={e=>setShipping(s=>({...s,city:e.target.value}))} style={iSt}/></div>
-                    <div><label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6}}>State *</label><input type="text" placeholder="State" value={shipping.state} onChange={e=>setShipping(s=>({...s,state:e.target.value}))} style={iSt}/></div>
-                  </div>
-                  <label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.5)",display:"block",marginBottom:6}}>Pincode *</label>
-                  <input type="text" placeholder="6-digit Pincode" value={shipping.pincode} onChange={e=>setShipping(s=>({...s,pincode:e.target.value}))} style={{...iSt,marginBottom:"1.5rem"}}/>
-                </div>
-                <div style={{padding:"1.2rem 1.8rem",borderTop:"2px solid #111"}}>
-                  <button onClick={processPayment} disabled={loading} style={{width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:8}}>{loading?"Processing...":`Pay ₹${total} Now`}</button>
-                  <button onClick={()=>setStep('cart')} style={{width:"100%",background:"transparent",color:"#111",border:"2px solid rgba(0,0,0,0.2)",padding:"10px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase"}}>← Back to Cart</button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      );
-    }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // IMAGE UPLOAD (with compression)
-    // ────────────────────────────────────────────────────────────────────────────
+    // ==========================================================================
+    // [ADMIN] - ImgUpload & AdminPanel
+    // ==========================================================================
     function ImgUpload({value, onChange, label}) {
       const ref = useRef();
       const [drag, setDrag] = useState(false);
       const [compressing, setCompressing] = useState(false);
+      
       const read = async (file) => {
         if(!file) return;
         setCompressing(true);
@@ -732,6 +1023,7 @@
         };
         reader.readAsDataURL(file);
       };
+
       return (
         <div>
           <div style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",marginBottom:7}}>{label}</div>
@@ -756,9 +1048,6 @@
       );
     }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // ADMIN PANEL
-    // ────────────────────────────────────────────────────────────────────────────
     function AdminPanel({products, setProducts, portfolio, setPortfolio, onClose}) {
       const [authed, setAuthed] = useState(false);
       const [email, setEmail] = useState(""); const [pw, setPw] = useState(""); const [pwErr, setPwErr] = useState("");
@@ -797,7 +1086,6 @@
         setForm({...form,sizes:v,sizeStock:newStock});
       };
 
-      // ── SAVE PRODUCT ──────────────────────────────────────────────────────────
       const saveProduct = async () => {
         if(!form.name||!form.price){alert("Name & price required.");return;}
         setSaving(true);
@@ -805,15 +1093,14 @@
         const updated = {...form, id:newId};
         try {
           if(!window.fbDb||!window.fbSetDoc) throw new Error("Firebase not connected.");
-          await window.fbSetDoc(window.fbDoc(window.fbDb,"products",newId), updated);
+          await withTimeout(window.fbSetDoc(window.fbDoc(window.fbDb,"products",newId), updated, {merge:true}));
           setProducts(editId==="new"?[...products,updated]:products.map(p=>p.id===editId?updated:p));
           setEditId(null); setForm(blankProduct);
           alert("✓ Product saved to Firebase!");
-        }catch(err){ alert("Save failed: "+err.message); }
+        }catch(err){ alert("Save failed:\n" + err.message); }
         setSaving(false);
       };
 
-      // ── SAVE PORTFOLIO ITEM ───────────────────────────────────────────────────
       const savePortItem = async () => {
         if(!portForm.label){alert("Title required.");return;}
         setSaving(true);
@@ -821,11 +1108,11 @@
         const updated = {...portForm, id:newId};
         try {
           if(!window.fbDb||!window.fbSetDoc) throw new Error("Firebase not connected.");
-          await window.fbSetDoc(window.fbDoc(window.fbDb,"portfolio",newId), updated);
+          await withTimeout(window.fbSetDoc(window.fbDoc(window.fbDb,"portfolio",newId), updated, {merge:true}));
           setPortfolio(portEditId==="new"?[...portfolio,updated]:portfolio.map(p=>p.id===portEditId?updated:p));
           setPortEditId(null); setPortForm(blankPort);
           alert("✓ Portfolio item saved!");
-        }catch(err){alert("Save failed: "+err.message);}
+        }catch(err){alert("Save failed:\n" + err.message);}
         setSaving(false);
       };
 
@@ -869,9 +1156,9 @@
               <span style={{fontFamily:"Inter",fontWeight:700,fontSize:11,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(255,255,255,0.5)"}} className="desk-nav">/ Admin</span>
             </div>
             <div style={{display:"flex",gap:"0.6rem"}}>
-              {["products","portfolio","orders"].map(t=>(
-                <button key={t} onClick={()=>setTab(t)} style={{background:tab===t?"#fff":"transparent",color:tab===t?"#111":"#fff",border:"2px solid #fff",padding:"7px 16px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase"}}>{t.charAt(0).toUpperCase()+t.slice(1)}</button>
-              ))}
+              <button onClick={()=>{setTab("products"); setEditId(null);}} style={{background:tab==="products"?"#fff":"transparent",color:tab==="products"?"#111":"#fff",border:"2px solid #fff",padding:"7px 16px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase"}}>PRODUCTS</button>
+              <button onClick={()=>{setTab("portfolio"); setPortEditId(null);}} style={{background:tab==="portfolio"?"#fff":"transparent",color:tab==="portfolio"?"#111":"#fff",border:"2px solid #fff",padding:"7px 16px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase"}}>PORTFOLIO</button>
+              <button onClick={()=>setTab("orders")} style={{background:tab==="orders"?"#fff":"transparent",color:tab==="orders"?"#111":"#fff",border:"2px solid #fff",padding:"7px 16px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase"}}>ORDERS</button>
               <button onClick={onClose} style={{background:"transparent",color:"rgba(255,255,255,0.5)",border:"1.5px solid rgba(255,255,255,0.18)",width:38,height:38,fontSize:15,fontWeight:700}}>✕</button>
             </div>
           </div>
@@ -881,7 +1168,7 @@
           </div>
 
           <div style={{padding:"2rem"}}>
-            {/* ─── PRODUCTS TAB ─────────────────────────────────────────────── */}
+            {/* Products Tab */}
             {tab==="products"&&(
               <div style={{display:"grid",gridTemplateColumns:editId?"1fr 1.6fr":"1fr",gap:"2rem"}} className="admin-form-grid">
                 <div>
@@ -889,7 +1176,7 @@
                   {products.map(p=>{
                     const ts=getTotalStock(p);
                     return (
-                      <div key={p.id} onClick={()=>{setForm({...p,sizeStock:p.sizeStock||{S:10,M:10,L:10,XL:10}});setEditId(p.id);}} style={{display:"flex",alignItems:"center",gap:"0.9rem",border:"2px solid #111",padding:"0.9rem 1rem",background:editId===p.id?"#111":"#fff",color:editId===p.id?"#fff":"#111",marginBottom:"4px", cursor:"pointer"}}>
+                      <div key={p.id} onClick={()=>{setForm({...p,sizeStock:p.sizeStock||{S:10,M:10,L:10,XL:10}});setEditId(p.id);}} style={{display:"flex",alignItems:"center",gap:"0.9rem",border:"2px solid #111",padding:"0.9rem 1rem",background:editId===p.id?"#111":"#fff",color:editId===p.id?"#fff":"#111",marginBottom:"4px",cursor:"pointer"}}>
                         <div style={{width:52,height:52,background:"#333",flexShrink:0,overflow:"hidden"}}>{p.frontImage?<img src={p.frontImage} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,color:"rgba(255,255,255,0.15)"}}>◎</div>}</div>
                         <div style={{flex:1,minWidth:0}}>
                           <div style={{fontWeight:700,fontSize:13,textTransform:"uppercase",letterSpacing:"-0.01em",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{p.name}</div>
@@ -945,14 +1232,14 @@
                       {form.hasBack&&<div style={{gridColumn:"2/4"}}><ImgUpload value={form.backImage} onChange={v=>setForm({...form,backImage:v})} label="Back Image"/></div>}
                     </div>
                     <button type="button" onClick={saveProduct} disabled={saving} style={{width:"100%",background:saving?"#666":"#111",color:"#fff",border:`3px solid ${saving?"#666":"#111"}`,padding:"14px 36px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginTop:"1.8rem"}}>
-                      {saving?"Saving to Firebase…":(editId==="new"?"Add Product to Firebase":"Save Changes to Firebase")}
+                      {saving?"Saving…":(editId==="new"?"Add Product":"Save Changes")}
                     </button>
                   </div>
                 )}
               </div>
             )}
 
-            {/* ─── PORTFOLIO TAB ─────────────────────────────────────────────── */}
+            {/* Portfolio Tab */}
             {tab==="portfolio"&&(
               <div style={{display:"grid",gridTemplateColumns:portEditId?"1fr 1.4fr":"1fr",gap:"2rem"}} className="admin-form-grid">
                 <div>
@@ -988,7 +1275,7 @@
               </div>
             )}
 
-            {/* ─── ORDERS TAB ─────────────────────────────────────────────────── */}
+            {/* Orders Tab */}
             {tab==="orders"&&(
               <div>
                 <h2 style={{fontFamily:"Playfair Display",marginBottom:"2rem"}}>Order Dashboard</h2>
@@ -1014,9 +1301,10 @@
       );
     }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // HERO — parallax background + full 3D SPLOTCH
-    // ────────────────────────────────────────────────────────────────────────────
+
+    // ==========================================================================
+    // [SECTIONS]
+    // ==========================================================================
     function Hero() {
       const rafRef = useRef(null);
       const targetRef = useRef({x:0,y:0});
@@ -1043,7 +1331,6 @@
         targetRef.current={x:(t.clientX/window.innerWidth-0.5)*2,y:(t.clientY/window.innerHeight-0.5)*2};
       },[]);
 
-      // Full 3D: white highlight toward light, red→black shadow away from light
       const build3DShadow=(mx,my)=>{
         const hx=(mx*6).toFixed(1), hy=(my*6).toFixed(1);
         const hx2=(mx*11).toFixed(1), hy2=(my*11).toFixed(1);
@@ -1070,24 +1357,20 @@
         <section id="home" onMouseMove={handleMove} onTouchMove={handleTouch}
           style={{position:"relative",width:"100%",height:"80vh",background:"#111",borderBottom:"3px solid #111",overflow:"hidden",display:"grid",placeItems:"center"}}>
 
-          {/* Grid — slowest / furthest back */}
           <div style={{position:"absolute",inset:"-60px",background:"#111",
             backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,0.032) 39px,rgba(255,255,255,0.032) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,0.032) 39px,rgba(255,255,255,0.032) 40px)",
             transform:`translate(${bgX*0.28}px,${bgY*0.28}px)`,zIndex:1,willChange:"transform"}}/>
 
-          {/* Topo — mid depth */}
           <div style={{position:"absolute",inset:"-40px",opacity:0.065,pointerEvents:"none",
             transform:`translate(${bgX*0.52}px,${bgY*0.52}px)`,zIndex:2,willChange:"transform"}}>
             <TopoSVG color="#fff" style={{width:"120%",height:"120%"}}/>
           </div>
 
-          {/* Sub — fixed */}
           <div className="hero-sub" style={{zIndex:4}}>
             <p>Techwear</p><p>SS'26 Collection</p><p>splotch.in</p>
             <span className="hero-badge">New Drop Available</span>
           </div>
 
-          {/* SPLOTCH — foreground */}
           <div className="hero-text-overlay" style={{zIndex:5}}>
             <h1 className="hero-h1 reveal visible" style={{textShadow:build3DShadow(smooth.x,smooth.y)}}>SPLOTCH</h1>
           </div>
@@ -1095,9 +1378,6 @@
       );
     }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // SHOP
-    // ────────────────────────────────────────────────────────────────────────────
     function Shop({products, onQV, onAdd, filter, setFilter}) {
       const cats=["All",...Array.from(new Set(products.map(p=>p.category)))];
       const filtered=filter==="All"?products:products.filter(p=>p.category===filter);
@@ -1129,9 +1409,6 @@
       );
     }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // THE WORK — loads from Firestore
-    // ────────────────────────────────────────────────────────────────────────────
     function TheWork({portfolio}) {
       const sorted = useMemo(()=>[...portfolio].sort((a,b)=>(a.order||0)-(b.order||0)),[portfolio]);
       return (
@@ -1141,7 +1418,6 @@
           <div className="port-grid" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"10px"}}>
             {sorted.map((w,i)=>(
               <div key={w.id} className={`port-card reveal reveal-d${(i%3)+1}`} style={{position:"relative",background:"#111",aspectRatio:"1/1",overflow:"hidden",border:"2px solid #111"}}>
-                {/* Background: either uploaded image or topo art */}
                 {w.image?(
                   <img src={w.image} alt={w.label} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",opacity:0.7}}/>
                 ):(
@@ -1164,9 +1440,6 @@
       );
     }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // WHY SPLOTCH
-    // ────────────────────────────────────────────────────────────────────────────
     function WhySplotch() {
       const pts=["Obsessive material selection — every fabric tested for urban endurance","Zero mass production — all runs limited to 200 units maximum","Concept-first design — every collection maps a new aesthetic territory","End-to-end transparency — from sketch to final stitch, nothing is hidden"];
       return (
@@ -1194,9 +1467,6 @@
       );
     }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // TESTIMONIALS
-    // ────────────────────────────────────────────────────────────────────────────
     function Testimonials() {
       const items=[
         {q:"Splotch doesn't make clothing. They make armour for the urban jungle. The Terrain Vest is the most considered piece I own.",name:"Sayed",residence:"Bangalore"},
@@ -1222,9 +1492,6 @@
       );
     }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // CONTACT
-    // ────────────────────────────────────────────────────────────────────────────
     function Contact() {
       const [form,setForm]=useState({name:"",email:"",message:""});
       const [sent,setSent]=useState(false);
@@ -1286,9 +1553,6 @@
       );
     }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // FOOTER
-    // ────────────────────────────────────────────────────────────────────────────
     function Footer() {
       return (
         <footer style={{background:"#111",padding:"5rem 2rem 2.5rem",position:"relative",overflow:"hidden"}}>
@@ -1310,9 +1574,10 @@
       );
     }
 
-    // ────────────────────────────────────────────────────────────────────────────
-    // APP
-    // ────────────────────────────────────────────────────────────────────────────
+
+    // ==========================================================================
+    // [MAIN_APP]
+    // ==========================================================================
     function App() {
       const [products,setProducts]=useState([]);
       const [portfolio,setPortfolio]=useState([]);
@@ -1321,6 +1586,7 @@
       const [adminOpen,setAdminOpen]=useState(false);
       const [cartOpen,setCartOpen]=useState(false);
       const [authOpen,setAuthOpen]=useState(false);
+      const [ordersOpen,setOrdersOpen]=useState(false); // Controls User Orders Modal
       const [mobMenu,setMobMenu]=useState(false);
       const [filter,setFilter]=useState("All");
       const [logoClicks,setLogoClicks]=useState(0);
@@ -1329,12 +1595,11 @@
 
       useEffect(()=>{localStorage.setItem('splotch_cart_v1',JSON.stringify(cart));},[cart]);
 
-      // Load products & portfolio from Firestore
+      // Load products & portfolio
       useEffect(()=>{
         const initData=async()=>{
           if(!window.fbDb||!window.fbGetDocs) return;
           try{
-            // Products
             const snap=await window.fbGetDocs(window.fbCollection(window.fbDb,"products"));
             if(snap.empty){
               DEFAULT_PRODUCTS.forEach(p=>window.fbSetDoc(window.fbDoc(window.fbDb,"products",p.id),p).catch(e=>console.warn(e)));
@@ -1342,7 +1607,7 @@
             }else{
               const fetched=[];snap.forEach(d=>fetched.push(d.data()));setProducts(fetched);
             }
-            // Portfolio
+            
             const portSnap=await window.fbGetDocs(window.fbCollection(window.fbDb,"portfolio"));
             if(portSnap.empty){
               DEFAULT_PORTFOLIO.forEach(p=>window.fbSetDoc(window.fbDoc(window.fbDb,"portfolio",p.id),p).catch(e=>console.warn(e)));
@@ -1370,7 +1635,10 @@
         return()=>obs.disconnect();
       });
 
+      // Logo click handler - Prevent Admin Panel from opening on Mobile Devices
       const handleLogoClick=()=>{
+        if (window.innerWidth <= 768) return; // Prevent mobile access to admin
+
         const next=logoClicks+1;setLogoClicks(next);
         if(logoTimerRef.current)clearTimeout(logoTimerRef.current);
         if(next>=6){setAdminOpen(true);setLogoClicks(0);return;}
@@ -1384,9 +1652,28 @@
           <CustomCursor/>
           <div className="grain-overlay"/>
           <ScrollProgress/>
-          <Header cartCount={cart.length} onCartOpen={()=>setCartOpen(true)} onLogoClick={handleLogoClick} setMobMenu={setMobMenu} user={user} onAuthClick={()=>setAuthOpen(true)} handleLogout={()=>window.fbSignOut(window.fbAuth)}/>
+          
+          <Header 
+            cartCount={cart.length} 
+            onCartOpen={()=>setCartOpen(true)} 
+            onLogoClick={handleLogoClick} 
+            setMobMenu={setMobMenu} 
+            user={user} 
+            onAuthClick={()=>setAuthOpen(true)} 
+            handleLogout={()=>window.fbSignOut(window.fbAuth)}
+            openUserOrders={()=>setOrdersOpen(true)}
+          />
           <Ticker/>
-          <MobMenu open={mobMenu} setOpen={setMobMenu} user={user} onAuthClick={()=>setAuthOpen(true)} handleLogout={()=>window.fbSignOut(window.fbAuth)}/>
+          
+          <MobMenu 
+            open={mobMenu} 
+            setOpen={setMobMenu} 
+            user={user} 
+            onAuthClick={()=>setAuthOpen(true)} 
+            handleLogout={()=>window.fbSignOut(window.fbAuth)}
+            openUserOrders={()=>setOrdersOpen(true)}
+          />
+
           <Hero/>
           <Shop products={products} onQV={setQV} onAdd={addToCart} filter={filter} setFilter={setFilter}/>
           <TheWork portfolio={portfolio}/>
@@ -1394,10 +1681,12 @@
           <Testimonials/>
           <Contact/>
           <Footer/>
+          
           {qv&&<QuickView product={qv} onClose={()=>setQV(null)} onAdd={addToCart}/>}
           {cartOpen&&<CartSidebar cart={cart} setCart={setCart} onClose={()=>setCartOpen(false)} user={user} onAuthClick={()=>setAuthOpen(true)}/>}
           {adminOpen&&<AdminPanel products={products} setProducts={setProducts} portfolio={portfolio} setPortfolio={setPortfolio} onClose={()=>setAdminOpen(false)}/>}
           {authOpen&&<AuthModal onClose={()=>setAuthOpen(false)} onSuccess={()=>setAuthOpen(false)}/>}
+          {ordersOpen && user && <UserOrdersModal user={user} onClose={() => setOrdersOpen(false)} />}
         </div>
       );
     }
