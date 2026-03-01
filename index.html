@@ -13,10 +13,10 @@
   <meta property="og:image" content="https://splotch.vercel.app/splotch-og-image.jpg">
 
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width">
   <title>Splotch</title>
 
-  <link rel="icon" type="image/x-icon" href="favicon.png">
+  <link rel="icon" type="image/png" href="favicon.png">
   <link rel="apple-touch-icon" href="favicon.png">
   
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
@@ -333,10 +333,10 @@
        [SCROLL_TICKER]  - Scroll progress bar & Infinite Ticker
        [AUTH_MODAL]     - User Login / Signup component
        [HEADER_MENU]    - Header Navbar and Mobile Overlay Menu
-       [USER_ORDERS]    - UserOrdersModal (View past purchases)
+       [USER_ORDERS]    - UserOrdersModal (View past purchases & status)
        [CART]           - CartSidebar (Item Selection, Fallback OTP & Checkout)
        [PRODUCT]        - ProdCard & QuickView Modal
-       [ADMIN]          - AdminPanel & ImgUpload components
+       [ADMIN]          - AdminPanel & ImgUpload components (With Order Status)
        [SECTIONS]       - Hero, Shop, TheWork, WhySplotch, Testimonials, Contact
        [FOOTER]         - Animated Footer & Social Links
        [MAIN_APP]       - The core App logic & state assembly
@@ -669,13 +669,22 @@
               ) : (
                 orders.map(o => {
                   const date = o.timestamp ? new Date(o.timestamp.seconds * 1000).toLocaleDateString() : "Recent";
+                  const status = o.status || "Processing";
+                  const statusColor = status === "Delivered" ? "#008000" : status === "Shipped" ? "#0055ff" : "#d4a017";
+
                   return (
                     <div key={o.id} style={{border:"2px solid #111",padding:"1.2rem",marginBottom:"1rem",background:"#fafafa"}}>
                       <div style={{display:"flex",justifyContent:"space-between",borderBottom:"1px solid #ddd",paddingBottom:"10px",marginBottom:"10px"}}>
                         <strong style={{fontSize:12}}>ORDER ID: <span style={{color:"rgba(0,0,0,0.5)",fontWeight:400}}>{o.orderId||o.id}</span></strong>
                         <span style={{color:"#c00",fontWeight:900,fontSize:14}}>₹{o.total}</span>
                       </div>
-                      <p style={{fontSize:10,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",marginBottom:"10px"}}>Placed on {date}</p>
+                      
+                      <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"10px"}}>
+                        <p style={{fontSize:10,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)", margin:0}}>Placed on {date}</p>
+                        <span style={{fontSize:9, fontWeight:900, letterSpacing:"0.15em", textTransform:"uppercase", padding:"4px 8px", border:`1.5px solid ${statusColor}`, color:statusColor, background:"#fff"}}>
+                          {status}
+                        </span>
+                      </div>
                       
                       <div style={{background:"#111",color:"#fff",padding:"1rem",fontSize:"11px",lineHeight:1.6}}>
                         <strong style={{color:"rgba(255,255,255,0.5)",letterSpacing:"0.1em"}}>ITEMS PURCHASED:</strong><br/>
@@ -697,7 +706,7 @@
     }
 
     // --- [CART] ---
-    function CartSidebar({cart, setCart, onClose, user, onAuthClick}) {
+    function CartSidebar({cart, setCart, onClose, user, onAuthClick, setProducts}) {
       const ENABLE_OTP_VERIFICATION = true; 
 
       const [loading, setLoading] = useState(false);
@@ -807,10 +816,23 @@
                   shipping,timestamp:new Date(),status:"Processing"
                 });
                 
+                // Inventory Decrement
                 for(const item of selectedCartItems){
                   if(item.id){
-                    try{ await window.fbUpdateDoc(window.fbDoc(window.fbDb,"products",item.id),{[`sizeStock.${item.selectedSize}`]:window.fbIncrement(-1)}); }
-                    catch(e){ console.error(`Stock decrement failed for ${item.id}`); }
+                    try{ 
+                      await window.fbUpdateDoc(window.fbDoc(window.fbDb,"products",item.id),{[`sizeStock.${item.selectedSize}`]:window.fbIncrement(-1)}); 
+                      
+                      // Update Local State so UI reflects missing stock instantly
+                      if (setProducts) {
+                         setProducts(prev => prev.map(p => {
+                           if (p.id === item.id && p.sizeStock && p.sizeStock[item.selectedSize] > 0) {
+                             return { ...p, sizeStock: { ...p.sizeStock, [item.selectedSize]: p.sizeStock[item.selectedSize] - 1 } };
+                           }
+                           return p;
+                         }));
+                      }
+
+                    } catch(e){ console.error(`Stock decrement failed for ${item.id}`); }
                   }
                 }
                 
@@ -1353,7 +1375,7 @@
               </div>
             )}
 
-            {/* Orders Tab */}
+            {/* Orders Tab WITH STATUS CONTROLLER */}
             {tab==="orders"&&(
               <div>
                 <h2 style={{fontFamily:"Playfair Display",marginBottom:"2rem"}}>Order Dashboard</h2>
@@ -1370,6 +1392,30 @@
                     <div style={{marginTop:"10px",padding:"10px",background:"#111",color:"#fff",fontSize:"11px"}}>
                       <strong>ITEMS:</strong> {o.items?.map(i=>`${i.name} (${i.selectedSize})`).join(' | ')}
                     </div>
+
+                    {/* STATUS CONTROLLER */}
+                    <div style={{marginTop:"15px", paddingTop:"15px", borderTop:"1px solid #ddd", display:"flex", alignItems:"center", gap:"10px"}}>
+                      <strong style={{fontSize:"11px", textTransform:"uppercase", letterSpacing:"0.1em"}}>Status:</strong>
+                      <select 
+                        style={{padding:"6px", fontSize:"11px", fontWeight:700, border:"2px solid #111", cursor:"pointer", textTransform:"uppercase"}}
+                        value={o.status || "Processing"}
+                        onChange={async (e) => {
+                          const newStatus = e.target.value;
+                          try {
+                            await window.fbUpdateDoc(window.fbDoc(window.fbDb, "orders", o.id), { status: newStatus });
+                            setOrders(orders.map(order => order.id === o.id ? {...order, status: newStatus} : order));
+                            alert("Order status updated to " + newStatus);
+                          } catch(err) {
+                            alert("Failed to update status.");
+                          }
+                        }}
+                      >
+                        <option value="Processing">Processing</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
+                      </select>
+                    </div>
+
                   </div>
                 ))}
               </div>
@@ -1741,7 +1787,7 @@
 
       useEffect(()=>{localStorage.setItem('splotch_cart_v1',JSON.stringify(cart));},[cart]);
 
-      // Load products & portfolio
+      // Load products & portfolio (FIXED TO ATTACH ID)
       useEffect(()=>{
         const initData=async()=>{
           if(!window.fbDb||!window.fbGetDocs) return;
@@ -1751,7 +1797,7 @@
               DEFAULT_PRODUCTS.forEach(p=>window.fbSetDoc(window.fbDoc(window.fbDb,"products",p.id),p).catch(e=>console.warn(e)));
               setProducts(DEFAULT_PRODUCTS);
             }else{
-              const fetched=[];snap.forEach(d=>fetched.push(d.data()));setProducts(fetched);
+              const fetched=[];snap.forEach(d=>fetched.push({ id: d.id, ...d.data() }));setProducts(fetched);
             }
             
             const portSnap=await window.fbGetDocs(window.fbCollection(window.fbDb,"portfolio"));
@@ -1759,7 +1805,7 @@
               DEFAULT_PORTFOLIO.forEach(p=>window.fbSetDoc(window.fbDoc(window.fbDb,"portfolio",p.id),p).catch(e=>console.warn(e)));
               setPortfolio(DEFAULT_PORTFOLIO);
             }else{
-              const fetchedPort=[];portSnap.forEach(d=>fetchedPort.push(d.data()));setPortfolio(fetchedPort);
+              const fetchedPort=[];portSnap.forEach(d=>fetchedPort.push({ id: d.id, ...d.data() }));setPortfolio(fetchedPort);
             }
           }catch(e){console.error("Data load error:",e);setProducts(DEFAULT_PRODUCTS);setPortfolio(DEFAULT_PORTFOLIO);}
         };
@@ -1828,7 +1874,7 @@
           <Footer/>
           
           {qv&&<QuickView product={qv} onClose={()=>setQV(null)} onAdd={addToCart}/>}
-          {cartOpen&&<CartSidebar cart={cart} setCart={setCart} onClose={()=>setCartOpen(false)} user={user} onAuthClick={()=>setAuthOpen(true)}/>}
+          {cartOpen&&<CartSidebar cart={cart} setCart={setCart} onClose={()=>setCartOpen(false)} user={user} onAuthClick={()=>setAuthOpen(true)} setProducts={setProducts} />}
           {adminOpen&&<AdminPanel products={products} setProducts={setProducts} portfolio={portfolio} setPortfolio={setPortfolio} onClose={()=>setAdminOpen(false)}/>}
           {authOpen&&<AuthModal onClose={()=>setAuthOpen(false)} onSuccess={()=>setAuthOpen(false)}/>}
           {ordersOpen && user && <UserOrdersModal user={user} onClose={() => setOrdersOpen(false)} />}
