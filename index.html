@@ -1046,7 +1046,16 @@
               ))}
             </div>
             <div style={{ borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:"1.5rem",display:"flex",justifyContent:"space-between",flexWrap:"wrap",gap:"0.8rem" }}>
-              <p style={{ fontSize:10,fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"rgba(255,255,255,0.15)" }}>© 2026 Splotch — splotch.in</p>
+              <p style={{ fontSize:10,fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"rgba(255,255,255,0.15)" }}>
+  © 2026 Splotch — splotch.in 
+  <span 
+    style={{ color:"#111", marginLeft: "10px", transition: "color 0.4s", cursor:"crosshair", userSelect:"none" }} 
+    onMouseEnter={e => e.target.style.color = "rgba(255,255,255,0.2)"} 
+    onMouseLeave={e => e.target.style.color = "#111"}
+  >
+    // Created by dudefromalhiem
+  </span>
+</p>
               <div style={{ display:"flex",gap:"1.5rem" }}>{["Privacy","Terms","Shipping","Returns"].map(l=>( <a key={l} href="#" style={{ fontSize:9,fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"rgba(255,255,255,0.15)",textDecoration:"none" }}>{l}</a> ))}</div>
             </div>
           </div>
