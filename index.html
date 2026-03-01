@@ -87,6 +87,9 @@
   </script>
 
   <style>
+    /* ==========================================================================
+       1. BASE STYLES & GLOBALS
+       ========================================================================== */
     :root { --B: #111111; --W: #FFFFFF; }
     html { scroll-behavior: smooth; }
     body { background: var(--W); color: var(--B); font-family: 'Inter', sans-serif; overflow-x: hidden; margin: 0; padding: 0; }
@@ -95,6 +98,9 @@
     input, textarea, select, button { font-family: inherit; border-radius: 0 !important; outline: none; }
     img { -webkit-user-select: none; user-select: none; }
 
+    /* ==========================================================================
+       2. CUSTOM CURSOR
+       ========================================================================== */
     @media (pointer: fine) {
       body, button, a, input, textarea, select, img, .prod-card { cursor: none !important; }
       *, *::before, *::after { cursor: none !important; }
@@ -122,6 +128,9 @@
     }
     .cursor-dot.pulse { width: 10px; height: 10px; background-color: #fff; }
 
+    /* ==========================================================================
+       3. TYPOGRAPHY & TITLES
+       ========================================================================== */
     .dyn-title { display: inline-block; transition: transform 0.3s cubic-bezier(0.25,1,0.5,1); }
     .dyn-title:hover { transform: translate(-4px,-4px); }
     .outline-text { color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,0.35); transition: all 0.3s; }
@@ -147,6 +156,9 @@
       .hero-h1 { animation: splotch3d 11s cubic-bezier(0.45,0,0.55,1) infinite; }
     }
 
+    /* ==========================================================================
+       4. HEADER & NAV
+       ========================================================================== */
     header { position: sticky; top: 0; z-index: 500; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; transition: box-shadow 0.3s, background 0.3s; }
     .glass-nav { background: rgba(255,255,255,0.68) !important; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 2px 0 #111; }
     
@@ -165,6 +177,9 @@
     .nl::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #111; transition: width 0.2s; }
     .nl:hover::after { width: 100%; }
 
+    /* ==========================================================================
+       5. COMPONENTS & CARDS
+       ========================================================================== */
     .size-btn { background: transparent; color: #111; border: 1.5px solid #111; padding: 6px 0; width: 34px; text-align: center; font-size: 10px; font-weight: 700; transition: all 0.2s; }
     .size-btn.active { background: #111; color: #fff; }
     .size-btn.soldout { opacity: 0.28; text-decoration: line-through; }
@@ -184,6 +199,9 @@
     .flip-front, .flip-back { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
     .flip-back { transform: rotateY(180deg); }
 
+    /* ==========================================================================
+       6. UTILITIES, ANIMATIONS & BACKGROUNDS
+       ========================================================================== */
     .grain-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9998; opacity: 0.15; background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E'); }
     .topo-parallax-wrap { position: absolute; top: -50vh; bottom: -50vh; left: 0; right: 0; pointer-events: none; z-index: 0; will-change: transform; }
 
@@ -200,16 +218,17 @@
 
     @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
     .admin-input:focus, .drop-zone.over { border-color: #111 !important; }
     ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: #fff; } ::-webkit-scrollbar-thumb { background: #111; }
 
-    /* FOOTER ANIMATIONS */
+    /* ==========================================================================
+       7. FOOTER ANIMATIONS
+       ========================================================================== */
     .footer-animated-bg {
-      background: linear-gradient(-45deg, #050505, #111, #0a0a0a, #1a1a1a);
+      background: linear-gradient(-45deg, #050505, #151515, #0a0a0a, #111111);
       background-size: 400% 400%;
-      animation: cyberScan 12s ease infinite;
+      animation: cyberScan 15s ease infinite;
     }
     @keyframes cyberScan { 
       0% { background-position: 0% 50% } 
@@ -219,33 +238,40 @@
     
     .cyber-text {
       color: transparent;
-      -webkit-text-stroke: 1.5px rgba(255,255,255,0.3);
+      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.2);
       animation: textPulse 4s infinite alternate;
+      transition: all 0.3s ease;
     }
-    .cyber-text:hover { -webkit-text-stroke: 1.5px #fff; }
+    .cyber-text:hover { 
+      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9); 
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
     @keyframes textPulse {
-      0% { -webkit-text-stroke-color: rgba(255,255,255,0.2); text-shadow: 0 0 0px rgba(255,255,255,0); }
-      100% { -webkit-text-stroke-color: rgba(255,255,255,0.5); text-shadow: 0 0 15px rgba(255,255,255,0.1); }
+      0% { -webkit-text-stroke-color: rgba(255, 255, 255, 0.15); text-shadow: 0 0 0px rgba(255, 255, 255, 0); }
+      100% { -webkit-text-stroke-color: rgba(255, 255, 255, 0.4); text-shadow: 0 0 15px rgba(255, 255, 255, 0.05); }
     }
     
     .ghost-credit {
-      opacity: 0.02;
-      transition: opacity 0.5s ease;
+      opacity: 0.03;
+      transition: opacity 0.4s ease;
       cursor: crosshair;
     }
     .ghost-credit:hover { opacity: 1; }
     
     .social-link {
-      color: rgba(255,255,255,0.3);
+      color: rgba(255, 255, 255, 0.3);
       text-decoration: none;
-      transition: color 0.3s;
+      transition: color 0.3s, transform 0.3s;
       font-size: 10px;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       cursor: none;
     }
-    .social-link:hover { color: #fff; }
+    .social-link:hover { color: #fff; transform: translateY(-2px); display: inline-block; }
 
+    /* ==========================================================================
+       8. MOBILE RESPONSIVE
+       ========================================================================== */
     @media (max-width: 768px) {
       .desk-nav { display: none !important; }
       .mob-ham { 
@@ -269,21 +295,22 @@
 
   <script type="text/babel">
     /* ==========================================================================
-      TABLE OF CONTENTS
-      --------------------------------------------------------------------------
-      [HELPERS]        - Math, Stock checking, Canvas Compression, Timeout
-      [DATA]           - Default fallback products & portfolio items
-      [UI_PRIMITIVES]  - SLabel, TopoSVG, ImgPlaceholder
-      [CURSOR]         - Mobile-friendly elastic CustomCursor
-      [SCROLL_TICKER]  - Scroll progress bar & Infinite Ticker
-      [AUTH_MODAL]     - User Login / Signup component
-      [HEADER_MENU]    - Header Navbar and Mobile Overlay Menu
-      [USER_ORDERS]    - UserOrdersModal (View past purchases)
-      [CART]           - CartSidebar (Item Selection, Fallback OTP & Checkout)
-      [PRODUCT]        - ProdCard & QuickView Modal
-      [ADMIN]          - AdminPanel & ImgUpload components
-      [SECTIONS]       - Hero, Shop, TheWork, WhySplotch, Testimonials, Contact
-      [MAIN_APP]       - The core App logic & state assembly
+       TABLE OF CONTENTS (Search these tags to find components)
+       --------------------------------------------------------------------------
+       [HELPERS]        - Math, Stock checking, Canvas Compression, Timeout
+       [DATA]           - Default fallback products & portfolio items
+       [UI_PRIMITIVES]  - SLabel, TopoSVG, ImgPlaceholder
+       [CURSOR]         - Mobile-friendly elastic CustomCursor
+       [SCROLL_TICKER]  - Scroll progress bar & Infinite Ticker
+       [AUTH_MODAL]     - User Login / Signup component
+       [HEADER_MENU]    - Header Navbar and Mobile Overlay Menu
+       [USER_ORDERS]    - UserOrdersModal (View past purchases)
+       [CART]           - CartSidebar (Item Selection, Fallback OTP & Checkout)
+       [PRODUCT]        - ProdCard & QuickView Modal
+       [ADMIN]          - AdminPanel & ImgUpload components
+       [SECTIONS]       - Hero, Shop, TheWork, WhySplotch, Testimonials, Contact
+       [FOOTER]         - Animated Footer & Social Links
+       [MAIN_APP]       - The core App logic & state assembly
        ========================================================================== */
 
     const { useState, useEffect, useRef, useCallback, useMemo } = React;
@@ -1612,34 +1639,43 @@
       );
     }
 
+    // --- [FOOTER] ---
     function Footer() {
       return (
-        <footer className="footer-animated-bg" style={{padding:"5rem 2rem 2.5rem",position:"relative",overflow:"hidden"}}>
-          <div className="topo-parallax-wrap" style={{opacity:0.05}}><TopoSVG color="#fff"/></div>
+        <footer className="footer-animated-bg" style={{padding:"6rem 2rem 3rem",position:"relative",overflow:"hidden"}}>
+          <div className="topo-parallax-wrap" style={{opacity:0.04}}><TopoSVG color="#fff"/></div>
           <div style={{position:"relative",zIndex:1,textAlign:"center"}}>
-            <img src={LOGO_SRC} alt="Splotch" style={{height:160,width:"auto",filter:"invert(1)",opacity:0.9,marginBottom:"2.5rem",display:"inline-block"}}/>
+            <img src={LOGO_SRC} alt="Splotch" style={{height:140,width:"auto",filter:"invert(1)",opacity:0.8,marginBottom:"3rem",display:"inline-block"}}/>
             <br/>
             
-            {/* ANIMATED FOOTER TITLE */}
-            <h2 className="dyn-title cyber-text" style={{fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic",fontSize:"clamp(40px,7vw,96px)",letterSpacing:"-0.04em",lineHeight:0.92,marginBottom:"5rem",display:"inline-block"}}>
+            <h2 className="dyn-title cyber-text" style={{fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic",fontSize:"clamp(40px,7vw,96px)",letterSpacing:"-0.04em",lineHeight:0.92,marginBottom:"4rem",display:"inline-block"}}>
               Predict the future,<br/>you didn't come<br/>this far to stop.
             </h2>
+
+            {/* --- THE SEO MANIFESTO BLOCK --- */}
+            <div style={{maxWidth: "600px", margin: "0 auto 4rem auto", padding: "2rem 0", borderTop: "1px solid rgba(255,255,255,0.08)", borderBottom: "1px solid rgba(255,255,255,0.08)"}}>
+              <p style={{fontSize: "9px", fontWeight: 600, color: "rgba(255,255,255,0.35)", lineHeight: 1.8, letterSpacing: "0.15em", textTransform: "uppercase"}}>
+                Splotch is an independent streetwear brand engineered in Bangalore, India. 
+                Developing premium oversized t-shirts, limited-drop techwear, and utility clothing 
+                for the modern urban environment. Zero mass production. Pure aesthetic conviction. 
+                Explore the latest drops of cool clothes and functional fashion.
+              </p>
+            </div>
             
-            <div style={{borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:"1.5rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1rem"}}>
+            <div style={{borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:"2rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1.5rem"}}>
               
               {/* SOCIAL LINKS */}
-              <div style={{display:"flex",gap:"1.5rem"}}>
+              <div style={{display:"flex",gap:"2rem"}}>
                 <a href="https://www.instagram.com/splotchglobal?igsh=c2Y5aDFiZWVoanVj" target="_blank" className="social-link">Instagram</a>
                 <a href="#" className="social-link">Twitter</a>
                 <a href="#" className="social-link">Pinterest</a>
               </div>
 
               {/* GHOST CREDIT */}
-              <p style={{fontSize:10,fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"rgba(255,255,255,0.15)",margin:0}}>
+              <p style={{fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",color:"rgba(255,255,255,0.2)",margin:0}}>
                 © 2026 Splotch.
-                <span className="ghost-credit" style={{marginLeft:"10px"}}>// Created by dudefromalhiem</span>
+                <span className="ghost-credit" style={{marginLeft:"10px"}}>// Engineered by Dudefromalhiem</span>
               </p>
-
             </div>
           </div>
         </footer>
@@ -1666,15 +1702,17 @@
       // --- [TERMINAL EASTER EGG] ---
       useEffect(() => {
         console.log(
-          "%c[SYSTEM_ROOT] ACCESS GRANTED\n%c // ENGINEERED BY DUDEFROMALHIEM \n%c WELCOME TO THE NEXT FRONTIER OF STREETWEAR. Z E R O  C O M P R O M I S E.",
+          "%c[SYSTEM_ROOT] ACCESS GRANTED\n%c // ENGINEERED BY DUDEFROMALHIEM \n%c WELCOME TO THE NEXT FRONTIER OF STREETWEAR. Z E R O  C O M P R O M I S E.\n%c Dudefromalhiem made this. If you are reading this, you are the resistance.",
           "color: #c00; font-size: 20px; font-weight: 900;",
           "color: #fff; font-size: 13px; font-weight: 700; background: #111; padding: 4px; margin-top: 5px; display: inline-block;",
-          "color: #666; font-size: 11px; font-style: italic; margin-top: 5px; display: inline-block;"
+          "color: #666; font-size: 11px; font-style: italic; margin-top: 5px; display: inline-block;",
+          "color: #c00; font-size: 10px; font-weight: 700; margin-top: 15px; display: block;"
         );
       }, []);
 
       useEffect(()=>{localStorage.setItem('splotch_cart_v1',JSON.stringify(cart));},[cart]);
 
+      // Load products & portfolio
       useEffect(()=>{
         const initData=async()=>{
           if(!window.fbDb||!window.fbGetDocs) return;
