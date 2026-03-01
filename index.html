@@ -235,6 +235,7 @@
       );
     }
 
+    // SCROLL PROGRESS BAR (RESTORED)
     function ScrollProgress(){
       const [w,setW]=useState(0);
       useEffect(()=>{
@@ -344,7 +345,6 @@
       return(
         <header className={scrolled ? "glass-nav" : ""} style={{ overflow:"visible" }}>
           <button onClick={onLogoClick} style={{ background:"none",border:"none", display:"flex",alignItems:"center",gap:10,padding:0, position:"relative" }}>
-            {/* OVERSIZED LOGO BURSTING OUT OF NAVBAR */}
             <img src="SplotchPlainLogo-removebg.png" alt="Splotch" style={{ height:46,width:"auto",display:"block",filter:"invert(0)", transform:"scale(2.2)", transformOrigin:"left center" }}/>
           </button>
           
@@ -739,15 +739,15 @@
         }
       };
 
-      // FIXED: Added hard alert and try/catch so the button doesn't freeze
       const save = async () => {
-        if(!form.name||!form.price){ showToast("Name & price required."); return; }
-        const newId = editId === "new" ? "prod-"+Date.now() : editId;
-        const updatedProduct = {...form, id: newId};
-        
         try {
+          if(!form.name||!form.price){ showToast("Name & price required."); return; }
+          const newId = editId === "new" ? "prod-"+Date.now() : editId;
+          const updatedProduct = {...form, id: newId};
+          
           if (!window.fbDb || !window.fbSetDoc) throw new Error("Firebase missing");
           await window.fbSetDoc(window.fbDoc(window.fbDb, "products", newId), updatedProduct);
+          
           let upd;
           if(editId==="new"){ upd=[...products, updatedProduct]; showToast("Product added Globally!"); }
           else{ upd=products.map(p=>p.id===editId?updatedProduct:p); showToast("Saved Globally!"); }
@@ -1031,7 +1031,6 @@
       const [sent,setSent]=useState(false);
       const [loading, setLoading]=useState(false);
 
-      // FIXED: Added hard alert and finally block to prevent "Hanging"
       const submit = async () => {
         if(!form.name || !form.email || !form.message) return;
         setLoading(true);
@@ -1151,6 +1150,15 @@
       const [user, setUser]=useState(null);
 
       useEffect(() => {
+        console.log(
+          "%c[SYSTEM_ROOT] %c>>> %cCreated by dudefromalhiem", 
+          "color: #c00; font-weight: 900; font-size: 11px;", 
+          "color: #555; font-weight: bold;", 
+          "color: #fff; font-size: 11px; letter-spacing: 0.1em; font-style: italic;"
+        );
+      }, []);
+
+      useEffect(() => {
         localStorage.setItem('splotch_cart_v1', JSON.stringify(cart));
       }, [cart]);
 
@@ -1247,9 +1255,10 @@
       };
 
       return(
-        <div style={{ minHeight:"100vh",background:"#fff", position:"relative", cursor: "none" }}>
+        <div style={{ minHeight:"100vh",background:"#fff", position:"relative" }}>
           <CustomCursor />
           <div className="grain-overlay"></div>
+          <ScrollProgress/>
           
           <Header cartCount={cart.length} onCartOpen={()=>setCartOpen(true)} onLogoClick={handleLogoClick} setMobMenu={setMobMenu} user={user} onAuthClick={()=>setAuthOpen(true)} handleLogout={handleLogout} />
           <Ticker/>
