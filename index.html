@@ -24,20 +24,28 @@
   
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function() {
+      // EmailJS Public Key
+      emailjs.init("5_7QdMYStCw47SxHL"); 
+    })();
+  </script>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { 
-      getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, 
-      createUserWithEmailAndPassword, signInWithEmailAndPassword 
+      getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut,
+      createUserWithEmailAndPassword, signInWithEmailAndPassword
     } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { 
       getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc, getDoc, 
-      updateDoc, increment, query, orderBy, where 
+      updateDoc, increment, query, orderBy, where
     } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCeq4FeU1LQKTyZAIJd7HL834rEUqQ0eTQ",
-      authDomain: "splotchclothing.firebaseapp.com",
+      authDomain: "splotchclothing.firebaseapp.com",      
       projectId: "splotchclothing",
       storageBucket: "splotchclothing.firebasestorage.app",
       messagingSenderId: "791501370137",
@@ -59,7 +67,7 @@
       window.fbCollection = collection;
       window.fbAddDoc = addDoc;
       window.fbGetDocs = getDocs;
-      window.fbGetDoc = getDoc;
+      window.fbGetDoc = getDoc; 
       window.fbDoc = doc;
       window.fbSetDoc = setDoc;
       window.fbDeleteDoc = deleteDoc;
@@ -70,9 +78,7 @@
       window.fbWhere = where; // Exported for User Orders querying
 
       window.dispatchEvent(new Event('firebase-ready'));
-    } catch(err) { 
-      console.error("Firebase Init Error:", err); 
-    }
+    } catch(err) { console.error("Firebase Init Error:", err); }
   </script>
 
   <style>
@@ -81,20 +87,8 @@
        ========================================================================== */
     :root { --B: #111111; --W: #FFFFFF; }
     html { scroll-behavior: smooth; }
-    body { 
-      background: var(--W); 
-      color: var(--B); 
-      font-family: 'Inter', sans-serif; 
-      overflow-x: hidden; 
-      margin: 0; 
-      padding: 0; 
-    }
-    *, *::before, *::after { 
-      margin: 0; 
-      padding: 0; 
-      box-sizing: border-box; 
-      border-radius: 0 !important; 
-    }
+    body { background: var(--W); color: var(--B); font-family: 'Inter', sans-serif; overflow-x: hidden; margin: 0; padding: 0; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
     ::selection { background: var(--B); color: var(--W); }
     input, textarea, select, button { font-family: inherit; border-radius: 0 !important; outline: none; }
     img { -webkit-user-select: none; user-select: none; }
@@ -118,9 +112,7 @@
     body.custom-cursor-active select, 
     body.custom-cursor-active img, 
     body.custom-cursor-active .prod-card,
-    body.custom-cursor-active * { 
-      cursor: none !important; 
-    }
+    body.custom-cursor-active * { cursor: none !important; }
 
     .cursor-dot {
       position: fixed; top: 0; left: 0; width: 28px; height: 28px;
@@ -134,17 +126,10 @@
     /* ==========================================================================
        3. TYPOGRAPHY & TITLES
        ========================================================================== */
-    .dyn-title { 
-      display: inline-block; 
-      transition: transform 0.3s cubic-bezier(0.25,1,0.5,1); 
-    }
+    .dyn-title { display: inline-block; transition: transform 0.3s cubic-bezier(0.25,1,0.5,1); }
     .dyn-title:hover { transform: translate(-4px,-4px); }
     
-    .outline-text { 
-      color: transparent; 
-      -webkit-text-stroke: 1.5px rgba(255,255,255,0.35); 
-      transition: all 0.3s; 
-    }
+    .outline-text { color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,0.35); transition: all 0.3s; }
     .outline-text:hover { -webkit-text-stroke: 1.5px #fff; }
 
     /* 3D HERO TITLE */
@@ -171,44 +156,18 @@
     /* ==========================================================================
        4. HEADER & NAV
        ========================================================================== */
-    header { 
-      position: sticky; top: 0; z-index: 500; height: 48px; 
-      display: flex; align-items: center; justify-content: space-between; 
-      padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; 
-      transition: box-shadow 0.3s, background 0.3s; 
-    }
-    .glass-nav { 
-      background: rgba(255,255,255,0.68) !important; 
-      -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); 
-      box-shadow: 0 2px 0 #111; 
-    }
+    header { position: sticky; top: 0; z-index: 500; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; transition: box-shadow 0.3s, background 0.3s; }
+    .glass-nav { background: rgba(255,255,255,0.68) !important; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 2px 0 #111; }
     
     .user-menu-container { position: relative; }
-    .user-badge { 
-      background: #111; color: #fff; border: 2px solid #111; 
-      padding: 6px 14px; font-size: 9px; font-weight: 900; 
-      letter-spacing: 0.15em; text-transform: uppercase; 
-      display: flex; align-items: center; gap: 8px; transition: background 0.2s, color 0.2s; 
-    }
+    .user-badge { background: #111; color: #fff; border: 2px solid #111; padding: 6px 14px; font-size: 9px; font-weight: 900; letter-spacing: 0.15em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; transition: background 0.2s, color 0.2s; }
     .user-menu-container:hover .user-badge { background: transparent; color: #111; }
-    .user-dropdown { 
-      position: absolute; top: 100%; right: 0; background: #fff; 
-      border: 2px solid #111; border-top: none; display: none; 
-      flex-direction: column; min-width: 100%; box-shadow: 3px 3px 0 #000; z-index: 1001; 
-    }
+    .user-dropdown { position: absolute; top: 100%; right: 0; background: #fff; border: 2px solid #111; border-top: none; display: none; flex-direction: column; min-width: 100%; box-shadow: 3px 3px 0 #000; z-index: 1001; }
     .user-menu-container:hover .user-dropdown { display: flex; animation: fadeIn 0.18s; }
-    .user-dropdown-btn { 
-      background: transparent; color: #111; border: none; padding: 12px 16px; 
-      font-size: 9px; font-weight: 700; letter-spacing: 0.15em; 
-      text-transform: uppercase; text-align: left; transition: background 0.2s, color 0.2s; 
-    }
+    .user-dropdown-btn { background: transparent; color: #111; border: none; padding: 12px 16px; font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; text-align: left; transition: background 0.2s, color 0.2s; }
     .user-dropdown-btn:hover { background: #111; color: #fff; }
 
-    .nav-signin { 
-      background: #111; color: #fff; border: 2px solid #111; 
-      padding: 6px 14px; font-size: 9px; font-weight: 900; 
-      letter-spacing: 0.18em; text-transform: uppercase; transition: all 0.2s; 
-    }
+    .nav-signin { background: #111; color: #fff; border: 2px solid #111; padding: 6px 14px; font-size: 9px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; transition: all 0.2s; }
     .nav-signin:hover { background: transparent; color: #111; }
     
     .nl { position: relative; color: #111; text-decoration: none; font-weight: 700; font-size: 10px; letter-spacing: 0.18em; cursor: none; }
@@ -218,11 +177,7 @@
     /* ==========================================================================
        5. COMPONENTS & CARDS
        ========================================================================== */
-    .size-btn { 
-      background: transparent; color: #111; border: 1.5px solid #111; 
-      padding: 6px 0; width: 34px; text-align: center; font-size: 10px; 
-      font-weight: 700; transition: all 0.2s; 
-    }
+    .size-btn { background: transparent; color: #111; border: 1.5px solid #111; padding: 6px 0; width: 34px; text-align: center; font-size: 10px; font-weight: 700; transition: all 0.2s; }
     .size-btn.active { background: #111; color: #fff; }
     .size-btn.soldout { opacity: 0.28; text-decoration: line-through; }
 
@@ -244,10 +199,7 @@
     /* ==========================================================================
        6. UTILITIES, ANIMATIONS & BACKGROUNDS
        ========================================================================== */
-    .grain-overlay { 
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9998; opacity: 0.15; 
-      background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E'); 
-    }
+    .grain-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9998; opacity: 0.15; background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E'); }
     .topo-parallax-wrap { position: absolute; top: -50vh; bottom: -50vh; left: 0; right: 0; pointer-events: none; z-index: 0; will-change: transform; }
 
     .hero-video-placeholder { position: absolute; inset: 0; background: var(--B); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; }
@@ -263,6 +215,7 @@
 
     @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
     .admin-input:focus, .drop-zone.over { border-color: #111 !important; }
     ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: #fff; } ::-webkit-scrollbar-thumb { background: #111; }
@@ -273,26 +226,11 @@
     @media (max-width: 768px) {
       .desk-nav { display: none !important; }
       
-      /* Fixed Hamburger Button styling */
       .mob-ham { 
-        display: flex !important; 
-        background: none; 
-        border: 2px solid #111; 
-        width: 34px; 
-        height: 34px; 
-        flex-direction: column; 
-        align-items: center; 
-        justify-content: center; 
-        gap: 4px;
-        flex-shrink: 0; /* Prevents squishing */
+        display: flex !important; background: none; border: 2px solid #111; width: 34px; height: 34px; 
+        flex-direction: column; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; 
       }
-      .mob-ham span {
-        display: block;
-        width: 14px;
-        height: 1.5px;
-        background: #111;
-        flex-shrink: 0; /* Prevents lines from shrinking */
-      }
+      .mob-ham span { display: block; width: 14px; height: 1.5px; background: #111; flex-shrink: 0; }
 
       .product-grid, .port-grid, .two-col, .testi-grid { grid-template-columns: 1fr 1fr !important; }
       .contact-grid { grid-template-columns: 1fr !important; }
@@ -320,10 +258,10 @@
        [AUTH_MODAL]     - User Login / Signup component
        [HEADER_MENU]    - Header Navbar and Mobile Overlay Menu
        [USER_ORDERS]    - UserOrdersModal (View past purchases)
-       [CART]           - CartSidebar (With Item Selection System & Name/Phone Validation)
+       [CART]           - CartSidebar (With Item Selection System & Name/Phone Validation & EmailJS)
        [PRODUCT]        - ProdCard & QuickView Modal
        [ADMIN]          - AdminPanel & ImgUpload components
-       [SECTIONS]       - Hero, Shop, TheWork, WhySplotch, Testimonials, Contact
+       [SECTIONS]       - Hero, Shop, TheWork, WhySplotch, Testimonials, Contact (With EmailJS)
        [MAIN_APP]       - The core App logic & state assembly
        ========================================================================== */
 
@@ -588,7 +526,6 @@
               )}
             </div>
             
-            {/* The newly fixed mobile hamburger button */}
             <button className="mob-ham" onClick={()=>setMobMenu(o=>!o)}>
               <span></span>
               <span></span>
@@ -708,17 +645,15 @@
 
 
     // ==========================================================================
-    // [CART] (Updated with Selection System)
+    // [CART] (With Item Selection System & Name/Phone Validation & EmailJS)
     // ==========================================================================
     function CartSidebar({cart, setCart, onClose, user, onAuthClick}) {
       const [loading, setLoading] = useState(false);
       const [step, setStep] = useState('cart');
       const [shipping, setShipping] = useState({name:"", phone:"", address:"", city:"", state:"", pincode:""});
       
-      // Track which cart items are selected for checkout
       const [selectedIds, setSelectedIds] = useState(cart.map(i => i.cartItemId));
       
-      // Auto-select newly added items
       useEffect(() => {
         const newIds = cart.map(i => i.cartItemId);
         setSelectedIds(prev => {
@@ -741,7 +676,6 @@
       };
 
       const processPayment = async () => {
-        // Validate Shipping Fields
         if(!shipping.name || shipping.phone.length !== 10 || !shipping.address || !shipping.city || !shipping.state || !shipping.pincode){
           alert("Please fill in all shipping details. Ensure phone number is exactly 10 digits.");
           return;
@@ -758,10 +692,11 @@
             handler: async function(rzpRes){
               try {
                 if(!window.fbDb) throw new Error("Firebase DB not available.");
+                
                 await window.fbAddDoc(window.fbCollection(window.fbDb,"orders"),{
-                  items: selectedCartItems, // Only save selected items
+                  items: selectedCartItems,
                   total,paymentId:rzpRes.razorpay_payment_id,orderId:rzpRes.razorpay_order_id,
-                  userId:user.uid,userEmail:user.email,userName:shipping.name, // Saved from form
+                  userId:user.uid,userEmail:user.email,userName:shipping.name,
                   shipping,timestamp:new Date(),status:"Processing"
                 });
                 
@@ -772,8 +707,28 @@
                   }
                 }
                 
+                // --- EMAILJS ORDER CONFIRMATION ---
+                if (window.emailjs) {
+                  const itemList = selectedCartItems.map(i => `${i.name} (Size: ${i.selectedSize})`).join('\n');
+                  try {
+                    await window.emailjs.send(
+                      "service_wm633dr", 
+                      "template_xtcij6q", 
+                      {
+                        name: shipping.name,
+                        email: user.email,
+                        order_id: rzpRes.razorpay_order_id || data.orderId,
+                        total: total,
+                        items: itemList
+                      }
+                    );
+                  } catch(emailErr) {
+                    console.warn("Receipt email failed to send.", emailErr);
+                  }
+                }
+                // ----------------------------------
+
                 alert("Payment successful! Order placed."); 
-                // Only remove the purchased items from the cart!
                 setCart(prev => prev.filter(item => !selectedIds.includes(item.cartItemId)));
                 onClose();
               }catch(dbErr){alert("Paid but order save failed. Contact support.");}
@@ -806,15 +761,12 @@
                     </div>
                   ):cart.map((item)=>(
                     <div key={item.cartItemId} style={{display:"flex",gap:"1rem",alignItems:"center",borderBottom:"1px solid rgba(0,0,0,0.07)",padding:"0.9rem 0"}}>
-                      
-                      {/* Checkbox for Selection System */}
                       <input 
                         type="checkbox" 
                         checked={selectedIds.includes(item.cartItemId)}
                         onChange={() => toggleSelect(item.cartItemId)}
                         style={{width: 18, height: 18, cursor: "pointer"}}
                       />
-
                       <div style={{width:58,height:58,background:"#111",flexShrink:0,overflow:"hidden", opacity: selectedIds.includes(item.cartItemId) ? 1 : 0.4}}>
                         {item.frontImage?<img src={item.frontImage} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,0.15)",fontSize:18}}>◎</div>}
                       </div>
@@ -1053,7 +1005,10 @@
       const [email, setEmail] = useState(""); const [pw, setPw] = useState(""); const [pwErr, setPwErr] = useState("");
       const [editId, setEditId] = useState(null);
       const [tab, setTab] = useState("products");
+      
       const [orders, setOrders] = useState([]);
+      const [messages, setMessages] = useState([]); 
+      
       const [saving, setSaving] = useState(false);
 
       const blankProduct = {name:"",cost:"",price:"₹1",compareAtPrice:"₹1,100",tag:"",description:"",category:"T-Shirts",frontImage:null,backImage:null,hasBack:false,sizes:"S, M, L, XL",sizeStock:{S:10,M:10,L:10,XL:10}};
@@ -1063,10 +1018,17 @@
       const [portEditId, setPortEditId] = useState(null);
 
       useEffect(()=>{
-        if(authed && tab==="orders" && window.fbDb){
-          window.fbGetDocs(window.fbQuery(window.fbCollection(window.fbDb,"orders"),window.fbOrderBy("timestamp","desc")))
-            .then(snap=>{const o=[];snap.forEach(d=>o.push({id:d.id,...d.data()}));setOrders(o);})
-            .catch(e=>console.error(e));
+        if(authed && window.fbDb){
+          if(tab==="orders") {
+            window.fbGetDocs(window.fbQuery(window.fbCollection(window.fbDb,"orders"),window.fbOrderBy("timestamp","desc")))
+              .then(snap=>{const o=[];snap.forEach(d=>o.push({id:d.id,...d.data()}));setOrders(o);})
+              .catch(e=>console.error(e));
+          }
+          if(tab==="messages") {
+            window.fbGetDocs(window.fbQuery(window.fbCollection(window.fbDb,"messages"),window.fbOrderBy("timestamp","desc")))
+              .then(snap=>{const m=[];snap.forEach(d=>m.push({id:d.id,...d.data()}));setMessages(m);})
+              .catch(e=>console.error(e));
+          }
         }
       },[authed,tab]);
 
@@ -1128,6 +1090,12 @@
         catch(err){alert("Delete failed: "+err.message);}
       };
 
+      const removeMessage = async (id) => {
+        if(!window.confirm("Delete this message forever?")) return;
+        try{ await window.fbDeleteDoc(window.fbDoc(window.fbDb,"messages",id)); setMessages(messages.filter(m=>m.id!==id)); }
+        catch(err){alert("Delete failed: "+err.message);}
+      };
+
       const iSt={display:"block",width:"100%",border:"2px solid rgba(0,0,0,0.14)",background:"#fff",padding:"10px 12px",fontSize:13,fontFamily:"Inter",transition:"border-color .2s"};
 
       if(!authed) return (
@@ -1159,6 +1127,7 @@
               <button onClick={()=>{setTab("products"); setEditId(null);}} style={{background:tab==="products"?"#fff":"transparent",color:tab==="products"?"#111":"#fff",border:"2px solid #fff",padding:"7px 16px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase"}}>PRODUCTS</button>
               <button onClick={()=>{setTab("portfolio"); setPortEditId(null);}} style={{background:tab==="portfolio"?"#fff":"transparent",color:tab==="portfolio"?"#111":"#fff",border:"2px solid #fff",padding:"7px 16px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase"}}>PORTFOLIO</button>
               <button onClick={()=>setTab("orders")} style={{background:tab==="orders"?"#fff":"transparent",color:tab==="orders"?"#111":"#fff",border:"2px solid #fff",padding:"7px 16px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase"}}>ORDERS</button>
+              <button onClick={()=>setTab("messages")} style={{background:tab==="messages"?"#fff":"transparent",color:tab==="messages"?"#111":"#fff",border:"2px solid #fff",padding:"7px 16px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase"}}>MESSAGES</button>
               <button onClick={onClose} style={{background:"transparent",color:"rgba(255,255,255,0.5)",border:"1.5px solid rgba(255,255,255,0.18)",width:38,height:38,fontSize:15,fontWeight:700}}>✕</button>
             </div>
           </div>
@@ -1294,6 +1263,29 @@
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+
+            {/* Messages Tab */}
+            {tab==="messages"&&(
+              <div>
+                <h2 style={{fontFamily:"Playfair Display",marginBottom:"2rem"}}>Customer Messages</h2>
+                {messages.length===0?<p style={{color:"rgba(0,0,0,0.4)"}}>No messages yet.</p>:messages.map(m=>{
+                  const date = m.timestamp ? new Date(m.timestamp.seconds * 1000).toLocaleString() : "Unknown Date";
+                  return (
+                    <div key={m.id} style={{border:"2px solid #111",padding:"1.5rem",marginBottom:"1rem",background:"#fafafa"}}>
+                      <div style={{display:"flex",justifyContent:"space-between",borderBottom:"1px solid #ddd",paddingBottom:"10px",marginBottom:"10px"}}>
+                        <strong>From: {m.name}</strong>
+                        <span style={{fontSize:"11px", color:"#666"}}>{date}</span>
+                      </div>
+                      <div style={{fontSize:"12px", marginBottom:"10px"}}><strong>Email:</strong> <a href={`mailto:${m.email}`}>{m.email}</a></div>
+                      <div style={{padding:"12px",background:"#fff",border:"1px solid #ddd",fontSize:"13px",lineHeight:1.6, whiteSpace:"pre-wrap"}}>
+                        {m.message}
+                      </div>
+                      <button onClick={()=>removeMessage(m.id)} style={{marginTop:"10px", fontSize:9,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"5px 10px",background:"transparent",color:"rgba(180,0,0,0.55)",border:"1px solid rgba(180,0,0,0.18)"}}>Delete Message</button>
+                    </div>
+                  )
+                })}
               </div>
             )}
           </div>
@@ -1504,9 +1496,31 @@
         setLoading(true); setErrMsg("");
         try {
           if(!window.fbAddDoc||!window.fbDb) throw new Error("Firebase is not connected.");
-          await window.fbAddDoc(window.fbCollection(window.fbDb,"messages"),{
-            name:form.name,email:form.email,message:form.message,timestamp:new Date()
-          });
+          
+          await withTimeout(
+            window.fbAddDoc(window.fbCollection(window.fbDb,"messages"),{
+              name:form.name,email:form.email,message:form.message,timestamp:new Date()
+            })
+          );
+
+          // --- EMAILJS CONTACT US NOTIFICATION ---
+          if (window.emailjs) {
+            try {
+              await window.emailjs.send(
+                "service_wm633dr", 
+                "template_igjj8ga",
+                {
+                  name: form.name,
+                  email: form.email,
+                  message: form.message
+                }
+              );
+            } catch(emailErr) {
+              console.warn("EmailJS failed, but message saved to DB:", emailErr);
+            }
+          }
+          // ---------------------------------------
+
           setSent(true); setTimeout(()=>setSent(false),5000); setForm({name:"",email:"",message:""});
         }catch(err){
           console.error("Contact form error:",err);
@@ -1586,7 +1600,7 @@
       const [adminOpen,setAdminOpen]=useState(false);
       const [cartOpen,setCartOpen]=useState(false);
       const [authOpen,setAuthOpen]=useState(false);
-      const [ordersOpen,setOrdersOpen]=useState(false); // Controls User Orders Modal
+      const [ordersOpen,setOrdersOpen]=useState(false); 
       const [mobMenu,setMobMenu]=useState(false);
       const [filter,setFilter]=useState("All");
       const [logoClicks,setLogoClicks]=useState(0);
@@ -1600,6 +1614,7 @@
         const initData=async()=>{
           if(!window.fbDb||!window.fbGetDocs) return;
           try{
+            // Products
             const snap=await window.fbGetDocs(window.fbCollection(window.fbDb,"products"));
             if(snap.empty){
               DEFAULT_PRODUCTS.forEach(p=>window.fbSetDoc(window.fbDoc(window.fbDb,"products",p.id),p).catch(e=>console.warn(e)));
@@ -1608,6 +1623,7 @@
               const fetched=[];snap.forEach(d=>fetched.push(d.data()));setProducts(fetched);
             }
             
+            // Portfolio
             const portSnap=await window.fbGetDocs(window.fbCollection(window.fbDb,"portfolio"));
             if(portSnap.empty){
               DEFAULT_PORTFOLIO.forEach(p=>window.fbSetDoc(window.fbDoc(window.fbDb,"portfolio",p.id),p).catch(e=>console.warn(e)));
@@ -1635,9 +1651,8 @@
         return()=>obs.disconnect();
       });
 
-      // Logo click handler - Prevent Admin Panel from opening on Mobile Devices
       const handleLogoClick=()=>{
-        if (window.innerWidth <= 768) return; // Prevent mobile access to admin
+        if (window.innerWidth <= 768) return; 
 
         const next=logoClicks+1;setLogoClicks(next);
         if(logoTimerRef.current)clearTimeout(logoTimerRef.current);
