@@ -73,8 +73,9 @@
   </script>
 
   <style>
-    /* CUSTOM CURSOR SYSTEM overrides default browser cursors entirely */
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; cursor: none !important; }
+    /* CUSTOM CURSOR SYSTEM */
+    body, button, a, input, textarea, select { cursor: none !important; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
     
     :root { --B: #111111; --W: #FFFFFF; }
     html { scroll-behavior: smooth; }
@@ -234,6 +235,16 @@
       );
     }
 
+    function ScrollProgress(){
+      const [w,setW]=useState(0);
+      useEffect(()=>{
+        const fn=()=>setW((window.scrollY/(document.body.scrollHeight-window.innerHeight))*100);
+        window.addEventListener("scroll",fn,{passive:true});
+        return ()=>window.removeEventListener("scroll",fn);
+      },[]);
+      return <div style={{ position:"fixed",top:0,left:0,height:3,width:w+"%",background:"#111",zIndex:999,transition:"width .1s linear" }}/>;
+    }
+
     function Ticker(){
       const items=["STYLE BEYOND SEASONS","—","NEW DROP: TERRAIN SERIES","—","MADE IN INDIA","—","LIMITED RUNS. NO RESTOCKS.","—","splotch.in","—"];
       const d=[...items,...items];
@@ -327,6 +338,8 @@
       },[]);
 
       const scrollTo=(id)=>{ document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); };
+      
+      const safeName = user ? (user.displayName || user.email || 'USER').split('@')[0].toUpperCase() : '';
 
       return(
         <header className={scrolled ? "glass-nav" : ""} style={{ overflow:"visible" }}>
@@ -346,7 +359,7 @@
               {user ? (
                 <div className="user-menu-container">
                   <div className="user-badge">
-                    WELCOME, {(user.displayName || user.email).split('@')[0].toUpperCase()}
+                    WELCOME, {safeName}
                     <span style={{ fontSize: '7px', opacity: 0.6 }}>▼</span>
                   </div>
                   <div className="user-dropdown">
@@ -373,6 +386,8 @@
 
     function MobMenu({open, setOpen, user, onAuthClick, handleLogout}){
       const go=(id)=>{ document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); setOpen(false); };
+      const safeName = user ? (user.displayName || user.email || 'USER').split('@')[0].toUpperCase() : '';
+      
       return(
         <div className="mob-menu" style={{ position:"fixed",inset:0,zIndex:600,background:"#111", display:"flex",flexDirection:"column",justifyContent:"center",padding:"3rem 2rem", transform:open?"translateX(0)":"translateX(100%)", transition:"transform .4s cubic-bezier(.76,0,.24,1)" }}>
           <button onClick={()=>setOpen(false)} style={{ position:"absolute",top:16,right:16, background:"none",border:"2px solid rgba(255,255,255,0.2)", width:42,height:42,color:"#fff",fontSize:18,fontWeight:700 }}>✕</button>
@@ -385,7 +400,7 @@
             {user ? (
               <React.Fragment>
                 <span style={{ color: '#fff', fontSize: 12, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '1rem' }}>
-                    WELCOME, {(user.displayName || user.email).split('@')[0].toUpperCase()}
+                    WELCOME, {safeName}
                 </span>
                 <button onClick={() => { handleLogout(); setOpen(false); }} style={{ background: 'transparent', color: '#fff', border: '1px solid #fff', padding: '10px 20px', fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase' }}>Logout</button>
               </React.Fragment>
@@ -582,8 +597,9 @@
         } catch (err) {
           console.error("Checkout Error:", err);
           alert("Error initiating checkout. Please try again.");
+        } finally {
+          setLoading(false);
         }
-        setLoading(false);
       };
 
       const iSt = { display:"block",width:"100%",border:"2px solid rgba(0,0,0,0.14)",background:"#f9f9f9",padding:"12px",fontSize:13,fontFamily:"Inter" };
@@ -659,7 +675,7 @@
 
                 </div>
                 <div style={{ padding:"1.2rem 1.8rem",borderTop:"2px solid #111" }}>
-                  <button onClick={processPayment} disabled={loading} style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",cursor:loading?"wait":"pointer", marginBottom:8 }}>{loading ? "Processing..." : `Pay ₹${total} Now`}</button>
+                  <button onClick={processPayment} disabled={loading} style={{ width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase", marginBottom:8 }}>{loading ? "Processing..." : `Pay ₹${total} Now`}</button>
                   <button onClick={()=>setStep('cart')} style={{ width:"100%",background:"transparent",color:"#111",border:"2px solid rgba(0,0,0,0.2)",padding:"10px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase" }}>← Back to Cart</button>
                 </div>
               </div>
@@ -723,26 +739,23 @@
         }
       };
 
-      // FIXED: Properly catching and alerting errors
+      // FIXED: Added hard alert and try/catch so the button doesn't freeze
       const save = async () => {
+        if(!form.name||!form.price){ showToast("Name & price required."); return; }
+        const newId = editId === "new" ? "prod-"+Date.now() : editId;
+        const updatedProduct = {...form, id: newId};
+        
         try {
-          if(!form.name||!form.price){ showToast("Name & price required."); return; }
-          const newId = editId === "new" ? "prod-"+Date.now() : editId;
-          const updatedProduct = {...form, id: newId};
-          
-          if (!window.fbDb || !window.fbSetDoc) throw new Error("Firebase disconnected or missing.");
-          
+          if (!window.fbDb || !window.fbSetDoc) throw new Error("Firebase missing");
           await window.fbSetDoc(window.fbDoc(window.fbDb, "products", newId), updatedProduct);
-          
           let upd;
           if(editId==="new"){ upd=[...products, updatedProduct]; showToast("Product added Globally!"); }
           else{ upd=products.map(p=>p.id===editId?updatedProduct:p); showToast("Saved Globally!"); }
           setProducts(upd); 
           setEditId(null); setForm(blank);
-          
         } catch (err) { 
           console.error("Save failed:", err); 
-          alert("Failed to save changes: \n\n" + err.message + "\n\n(Verify your Firebase Rules allow your Admin Email to write to 'products')"); 
+          alert("Error saving to database: \n\n" + err.message + "\n\n(Did you update your Firebase Rules?)"); 
         }
       };
 
@@ -1136,15 +1149,6 @@
       const [logoClicks,setLogoClicks]=useState(0);
       const logoTimerRef=useRef(null);
       const [user, setUser]=useState(null);
-      
-      useEffect(() => {
-        console.log(
-          "%c[SYSTEM_ROOT] %c>>> %cCreated by dudefromalhiem", 
-          "color: #c00; font-weight: 900; font-size: 11px;", 
-          "color: #555; font-weight: bold;", 
-          "color: #fff; font-size: 11px; letter-spacing: 0.1em; font-style: italic;"
-        );
-      }, []);
 
       useEffect(() => {
         localStorage.setItem('splotch_cart_v1', JSON.stringify(cart));
@@ -1243,10 +1247,9 @@
       };
 
       return(
-        <div style={{ minHeight:"100vh",background:"#fff", position:"relative" }}>
+        <div style={{ minHeight:"100vh",background:"#fff", position:"relative", cursor: "none" }}>
           <CustomCursor />
           <div className="grain-overlay"></div>
-          <ScrollProgress/>
           
           <Header cartCount={cart.length} onCartOpen={()=>setCartOpen(true)} onLogoClick={handleLogoClick} setMobMenu={setMobMenu} user={user} onAuthClick={()=>setAuthOpen(true)} handleLogout={handleLogout} />
           <Ticker/>
