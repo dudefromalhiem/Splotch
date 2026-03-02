@@ -105,15 +105,16 @@
       }
     }
     
-    .cursor-dot {
+.cursor-dot {
       position: fixed;
       width: 24px;
       height: 24px;
-      border: 1.5px solid #111;
+      border: 1.5px solid #fff; /* Changed from #111 to #fff */
       border-radius: 50% !important;
       transform: translate(-50%, -50%);
       pointer-events: none;
       z-index: 99999;
+      mix-blend-mode: difference; /* Added this back! */
       transition: width 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), height 0.25s;
       top: 0;
       left: 0;
@@ -127,7 +128,7 @@
     .cursor-dot.clicked {
       width: 8px;
       height: 8px;
-      background: #111;
+      background: #fff; /* Changed from #111 to #fff */
     }
 
     .grain {
