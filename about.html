@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
   <meta name="google-site-verification" content="O_5PvbzTUcfIR6BAsC8lE8vyy0nEluGbPNQgihyIveg" />
   <title>About | Splotch — Bangalore Streetwear</title>
@@ -75,15 +75,17 @@
       padding: 0;
     }
     
-    html {
+    html, body {
       scroll-behavior: smooth;
+      overflow-x: hidden;
+      max-width: 100%;
     }
     
     body {
       background: var(--W);
       color: var(--B);
       font-family: 'Inter', sans-serif;
-      overflow-x: hidden;
+      position: relative;
     }
     
     ::selection {
@@ -107,7 +109,7 @@
       position: fixed;
       width: 24px;
       height: 24px;
-      border: 1.5px solid #fff;
+      border: 1.5px solid #111;
       border-radius: 50% !important;
       transform: translate(-50%, -50%);
       pointer-events: none;
@@ -126,7 +128,7 @@
     .cursor-dot.clicked {
       width: 8px;
       height: 8px;
-      background: #fff;
+      background: #111;
     }
 
     .grain {
@@ -169,22 +171,26 @@
       letter-spacing: 0.22em;
       text-transform: uppercase;
       transition: color 0.2s;
-      cursor: pointer;
     }
     
-    .nl:hover { color: #111; }
-    .nl.active-link { color: #111; }
-    .nl::after { 
-      content: ''; 
-      position: absolute; 
-      bottom: -2px; 
-      left: 0; 
-      width: 0; 
-      height: 1.5px; 
-      background: #111; 
-      transition: width 0.2s; 
+    .nl:hover, .nl.active-link {
+      color: #111;
     }
-    .nl:hover::after, .nl.active-link::after { width: 100%; }
+    
+    .nl::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: #111;
+      transition: width 0.2s;
+    }
+    
+    .nl:hover::after, .nl.active-link::after {
+      width: 100%;
+    }
     
     .enter-btn {
       background: #111;
@@ -206,6 +212,18 @@
       transform: translate(-1px, -1px);
     }
 
+    .logo-btn { 
+      background: none; 
+      border: none; 
+      display: block; 
+      padding: 0; 
+      position: relative; 
+      padding-left: 10px; 
+      text-decoration: none; 
+      cursor: pointer; 
+    }
+    .logo-btn:focus { outline: none; }
+
     @media (max-width: 768px) {
       .desk-nav { display: none !important; }
       .mob-ham {
@@ -220,11 +238,12 @@
         gap: 5px;
         cursor: pointer;
       }
-      .mob-ham span { display: block; width: 14px; height: 1.5px; background: #111; }
-    }
-    
-    @media (min-width: 769px) {
-      .mob-ham, .mob-menu { display: none !important; }
+      .mob-ham span {
+        display: block;
+        width: 14px;
+        height: 1.5px;
+        background: #111;
+      }
     }
 
     #progress {
@@ -531,6 +550,9 @@
       color: transparent;
       -webkit-text-stroke: 1px rgba(0, 0, 0, 0.2);
       filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.15));
+      display: inline-block;
+      padding-bottom: 0.15em;
+      line-height: 1.2;
     }
     
     .about-cta-btn {
@@ -579,6 +601,15 @@
     
     .about-footer a:hover {
       color: #fff;
+    }
+
+    .ghost-credit {
+      opacity: 0.15;
+      transition: opacity 0.4s ease;
+      cursor: pointer;
+    }
+    .ghost-credit:hover {
+      opacity: 0.8;
     }
 
     .reveal {
@@ -714,9 +745,9 @@
       
       return (
         <header className={scrolled ? 'scrolled' : ''}>
-          <a href="/" style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', padding: 0, paddingLeft: 10, textDecoration: 'none' }}>
+          <button className="logo-btn" onClick={(e) => e.preventDefault()} title="Splotch" style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', padding: 0, paddingLeft: 10, textDecoration: 'none', cursor: 'default' }}>
             <img src="favicon.png" alt="Splotch" style={{ height: 32, width: 'auto', display: 'block', transform: 'scale(2.2)', transformOrigin: 'left center' }} />
-          </a>
+          </button>
           <nav className="desk-nav" style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
             <a href="/" className="nl">HOME</a>
             <a href="/shop.html" className="nl">SHOP</a>
@@ -737,8 +768,8 @@
       
       return (
         <div className="mob-menu" style={{ position: 'fixed', inset: 0, zIndex: 600, background: '#0a0a0a', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '3rem 2rem', transform: open ? 'translateX(0)' : 'translateX(100%)', transition: 'transform .4s cubic-bezier(.76,0,.24,1)' }}>
-          <button onClick={() => setOpen(false)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: '1.5px solid rgba(255,255,255,0.2)', width: 42, height: 42, color: '#fff', fontSize: 18, fontWeight: 700 }}>✕</button>
-          <img src="favicon.png" alt="Splotch" style={{ height: 48, width: 'auto', marginBottom: '3rem', opacity: 0.8, filter: 'invert(1)' }} />
+          <button onClick={() => setOpen(false)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: '1.5px solid rgba(255,255,255,0.2)', width: 42, height: 42, color: '#fff', fontSize: 18, fontWeight: 700, cursor: 'pointer' }}>✕</button>
+          <img src="favicon.png" alt="Splotch" style={{ height: 48, width: 'auto', objectFit: 'contain', marginBottom: '3rem', opacity: 0.8 }} />
           <a href="/" style={btnSt}>HOME</a>
           <a href="/shop.html" style={btnSt}>SHOP</a>
           <a href="/about.html" style={{ ...btnSt, color: 'rgba(255,255,255,0.5)' }}>ABOUT</a>
@@ -824,7 +855,7 @@
                 Utility for the<br />Urban Jungle.
               </h2>
               <p className="reveal reveal-d2" style={{ fontSize: 14, lineHeight: 1.85, color: 'rgba(0,0,0,0.55)', marginBottom: '1.5rem' }}>
-                Splotch was born in 2026 from a single obsession between 3 guys: what does truly functional Indian streetwear look like? We moved away from chasing Western trends to focus on the terrain of our own cities — the chaos, the density, the texture of Bangalore.
+                Splotch was born in 2026 from a single obsession between 3 guys: what does truly functional Indian streetwear look like? We moved away from the noise to focus on the terrain of our own cities — the chaos, the density, the texture of Bangalore.
               </p>
               <p className="reveal reveal-d3" style={{ fontSize: 14, lineHeight: 1.85, color: 'rgba(0,0,0,0.55)', marginBottom: '2rem' }}>
                 Every piece is engineered in our Bangalore studio. We don't just design clothes; we conceive systems — interconnected garments built for endurance, versatility, and aesthetic restraint. Each run is capped at 200 units, archived when gone.
@@ -929,7 +960,7 @@
 
     function Timeline() {
       const events = [
-        { yr: '2026', t: 'The Spark', d: 'Splotch was founded in Bangalore by 3 guys with a singular obsession: build Indian streetwear that doesn\'t chase Western trends.' },
+        { yr: '2026', t: 'The Spark', d: 'Splotch was founded in Bangalore by 3 guys with a singular obsession: build Indian streetwear that doesn\'t follow trends, but dictates them.' },
         { yr: '2026', t: 'First Drop', d: 'The first Collection launched. 200 units. Sold out rapidly. Zero restocks. The proof of concept became a statement.' },
         { yr: '∞', t: 'The Future', d: 'Limited runs. No mass production. Pure aesthetic conviction. The work continues.' }
       ];
@@ -993,8 +1024,8 @@
       return (
         <section id="about-cta">
           <span className="slabel dark reveal" style={{ display: 'table', margin: '0 auto 2rem' }}>Enter The Store</span>
-          <h2 className="dyn-title chrome-effect reveal reveal-d1" style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(40px,7vw,96px)', letterSpacing: '-0.03em', lineHeight: 0.9, marginBottom: '3rem' }}>
-            Ready to upgrade<br />your aesthetics?
+          <h2 className="dyn-title chrome-effect reveal reveal-d1" style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(40px,7vw,96px)', letterSpacing: '-0.03em', color: '#111', lineHeight: 0.9, marginBottom: '3rem' }}>
+            Ready to upgrade<br />your wardrobe?
           </h2>
           <br/>
           <a href="/shop.html" className="about-cta-btn reveal reveal-d2">Shop the Collection →</a>
@@ -1082,6 +1113,13 @@
       const [returnOpen, setReturnOpen] = useState(false);
 
       useEffect(() => {
+        console.log(
+          "%c[SYSTEM_ROOT] ACCESS GRANTED\n%c // ENGINEERED BY DUDEFROMALHIEM \n%c WELCOME TO THE NEXT FRONTIER OF STREETWEAR. Z E R O  C O M P R O M I S E.\n%c Dudefromalhiem made this. If you are reading this, welcome.",
+          "color: #c00; font-size: 20px; font-weight: 900;","color: #fff; font-size: 13px; font-weight: 700; background: #111; padding: 4px; margin-top: 5px; display: inline-block;","color: #666; font-size: 11px; font-style: italic; margin-top: 5px; display: inline-block;","color: #c00; font-size: 10px; font-weight: 700; margin-top: 15px; display: block;"
+        );
+      }, []);
+
+      useEffect(() => {
         const bar = document.getElementById('progress');
         const fn = () => {
           if (bar) bar.style.width = (window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100) + '%';
@@ -1105,7 +1143,7 @@
       }, []);
 
       return (
-        <div style={{ minHeight: '100vh', background: '#fff' }}>
+        <div style={{ minHeight: '100vh', background: '#fff', overflowX: 'hidden', position: 'relative' }}>
           <Cursor />
           <Header mobMenu={mobMenu} setMobMenu={setMobMenu} />
           <MobMenu open={mobMenu} setOpen={setMobMenu} />
@@ -1127,7 +1165,10 @@
               <a href="/">Home</a>
               <a href="/shop.html">Shop</a>
             </div>
-            <span>© 2026 Splotch. All rights reserved.</span>
+            <div style={{display: 'flex', alignItems: 'center'}}>
+               <span className="ghost-credit" style={{marginRight: "10px"}}>// Engineered by Dudefromalhiem</span>
+               <span>© 2026 Splotch.</span>
+            </div>
           </footer>
 
           {termsOpen && <TermsModal onClose={() => setTermsOpen(false)} />}

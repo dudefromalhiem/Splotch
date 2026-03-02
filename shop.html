@@ -265,6 +265,18 @@
     @media (min-width: 769px) { 
       .mob-ham, .mob-menu { display: none !important; } 
     }
+    /* Testimonials Hover & Mobile Border Fix */
+.testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #111; border: 2px solid #111; }
+.testi-card { background: #fff; padding: 2.5rem 1.8rem; transition: background 0.25s, color 0.25s, transform 0.2s; }
+.testi-card:hover { background: #111; color: #fff; }
+.testi-card:hover .testi-q { color: rgba(255,255,255,0.8) !important; }
+.testi-card:hover .testi-name { color: #fff !important; }
+.testi-card:hover .testi-res { color: rgba(255,255,255,0.5) !important; }
+.testi-card:hover .testi-quote-mark { color: rgba(255,255,255,0.1) !important; }
+
+@media (max-width: 768px) {
+  .testi-grid { grid-template-columns: 1fr !important; }
+}
   </style>
 </head>
 <body>
