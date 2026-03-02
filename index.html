@@ -7,7 +7,7 @@
   <meta name="google-site-verification" content="O_5PvbzTUcfIR6BAsC8lE8vyy0nEluGbPNQgihyIveg" />
   <title>Splotch | Premium Streetwear & Clothing in India</title>
   <meta name="title" content="Splotch | Premium Streetwear & Clothing in India">
-  <meta name="description" content="Welcome to the official Splotch website. Splotch is an independent streetwear clothing brand engineered in Bangalore, India. Created in 2026 by 3 guys. Shop premium oversized t-shirts, limited drops, and contemporary fashion.">
+  <meta name="description" content="Welcome to the official Splotch website. Splotch is an independent streetwear clothing brand engineered in Bangalore, India. Shop premium oversized t-shirts, limited drops, and contemporary fashion.">
   <meta name="keywords" content="splotch, splotch website, splotch clothing, streetwear, clothes in india, streetwear india, oversized t-shirts, contemporary fashion, bangalore clothing brand">
   <meta name="robots" content="index, follow">
   <meta name="author" content="Splotch">
@@ -33,7 +33,7 @@
     "alternateName": "Splotch Clothing",
     "url": "https://splotch.in/",
     "logo": "https://splotch.in/favicon.png",
-    "description": "Splotch is a premium contemporary streetwear and clothing brand based in Bangalore, India, specializing in limited-run apparel. Created in 2026 by 3 guys.",
+    "description": "Splotch is a premium contemporary streetwear and clothing brand based in Bangalore, India, specializing in limited-run apparel.",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Bangalore",
@@ -96,7 +96,7 @@
     :root {
       --B: #111111;
       --W: #FFFFFF;
-      --R: #DC1C1C; /* Splotch Red */
+      --R: #DC1C1C;
     }
     
     *, *::before, *::after {
@@ -206,18 +206,18 @@
     }
     
     .nl::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0;
-      height: 1.5px;
-      background: #fff;
-      transition: width .2s;
+      content:'';
+      position:absolute;
+      bottom:-2px;
+      left:0;
+      width:0;
+      height:1.5px;
+      background:#fff;
+      transition:width .2s;
     }
     
     .nl:hover::after {
-      width: 100%;
+      width:100%;
     }
     
     .enter-btn {
@@ -287,7 +287,7 @@
     .hero-h1 {
       font-family: 'Inter', sans-serif;
       font-weight: 900;
-      font-size: clamp(80px, 18vw, 240px);
+      font-size: clamp(70px, 16vw, 240px);
       color: #fff;
       text-transform: uppercase;
       letter-spacing: -0.05em;
@@ -295,7 +295,6 @@
       user-select: none;
       position: relative;
       z-index: 3;
-      transition: text-shadow 0.06s linear;
     }
     
     .hero-sub-text {
@@ -623,7 +622,7 @@
     }
     
     .scroll-band-item {
-      font-size: clamp(32px,5vw,56px);
+      font-size: clamp(24px, 5vw, 56px);
       font-family: 'Playfair Display', serif;
       font-style: italic;
       font-weight: 700;
@@ -660,6 +659,7 @@
       color: transparent;
       -webkit-text-stroke: 1px rgba(255,255,255,0.1);
       filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.5));
+      display: inline-block;
     }
     
     .cta-btn {
@@ -729,11 +729,6 @@
     ::-webkit-scrollbar-track { background: #111; }
     ::-webkit-scrollbar-thumb { background: #fff; }
 
-    @media (max-width: 768px) {
-      .strip-grid { grid-template-columns: 1fr 1fr !important; }
-      .hero-corner.bl, .hero-corner.br { display: none; }
-    }
-    
     /* Modal Standard Styles */
     .modal-overlay {
       position: fixed;
@@ -769,6 +764,13 @@
       font-size: 14px;
       font-weight: 700;
       cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .strip-grid { grid-template-columns: 1fr 1fr !important; }
+      .hero-corner.bl, .hero-corner.br { display: none; }
+      .ticker-inner { animation-duration: 12s !important; }
+      .scroll-band-inner { animation-duration: 10s !important; }
     }
   </style>
 </head>
@@ -934,20 +936,18 @@
 
     // AGGRESSIVE 3D SHADOW SYSTEM FOR MAIN PAGE
     function buildAggressive3D(mx, my) {
-      const layers = [
-        { d: 2, r: 228, g: 30, b: 30, a: 1 },
-        { d: 4, r: 200, g: 5, b: 5, a: 0.95 },
-        { d: 6, r: 170, g: 0, b: 0, a: 0.9 },
-        { d: 9, r: 120, g: 0, b: 0, a: 0.8 },
-        { d: 13, r: 60, g: 0, b: 0, a: 0.6 },
-        { d: 18, r: 20, g: 0, b: 0, a: 0.4 }
-      ];
-      return [
-        `${(mx * 8).toFixed(1)}px ${(my * 8).toFixed(1)}px 0 rgba(255,255,255,0.8)`,
-        `${(mx * 15).toFixed(1)}px ${(my * 15).toFixed(1)}px 0 rgba(255,255,255,0.4)`,
-        ...layers.map(l => `${(-mx * l.d * 2.5).toFixed(1)}px ${(-my * l.d * 2.5).toFixed(1)}px 0 rgba(${l.r},${l.g},${l.b},${l.a})`),
-        `${(-mx * 30).toFixed(1)}px ${(-my * 30).toFixed(1)}px 40px rgba(0,0,0,0.9)`
-      ].join(', ');
+      const layers = [];
+      // Deep red extrusion
+      for(let i=1; i<=8; i++) {
+        layers.push(`${(mx * i * 2).toFixed(1)}px ${(my * i * 2).toFixed(1)}px 0px #DC1C1C`);
+      }
+      // Dark grey deep extrusion
+      for(let i=9; i<=14; i++) {
+        layers.push(`${(mx * i * 2).toFixed(1)}px ${(my * i * 2).toFixed(1)}px 0px #1a1a1a`);
+      }
+      // Massive drop shadow
+      layers.push(`${(mx * 16 * 2).toFixed(1)}px ${(my * 16 * 2).toFixed(1)}px 40px rgba(0,0,0,0.9)`);
+      return layers.join(', ');
     }
 
     function Hero() {
@@ -1029,11 +1029,12 @@
       }, []);
       
       const rotate = useTransform(scrollYProgress, [0, 1], [22, 0]);
-      const scale = useTransform(scrollYProgress, [0, 1], isMobile ? [0.72, 0.92] : [1.06, 1]);
+      // Slightly larger scale on mobile to prevent it from looking too small
+      const scale = useTransform(scrollYProgress, [0, 1], isMobile ? [0.9, 1] : [1.06, 1]);
       const translate = useTransform(scrollYProgress, [0, 1], [0, -100]);
 
       return (
-        <div className="h-[55rem] md:h-[80rem] flex items-center justify-center relative p-4 md:p-20" ref={containerRef}>
+        <div className="h-[40rem] md:h-[80rem] flex items-center justify-center relative p-4 md:p-20" ref={containerRef}>
           <div className="py-10 md:py-44 w-full relative" style={{ perspective: '1100px' }}>
             <motion.div style={{ translateY: translate }} className="max-w-5xl mx-auto text-center mb-[-3rem]">
               {titleComponent}
@@ -1050,7 +1051,7 @@
                 zIndex: 10,
                 position: 'relative'
               }}
-              className="max-w-[90rem] mt-0 mx-auto h-[28rem] md:h-[42rem] w-full"
+              className="max-w-[90rem] mt-0 mx-auto h-[22rem] sm:h-[28rem] md:h-[42rem] w-full"
             >
               <div className="h-full w-full overflow-hidden rounded-[14px] bg-zinc-900 pointer-events-auto">
                 {children}
@@ -1141,7 +1142,7 @@
       const stats = [
         { num: '200', unit: 'units', label: 'Max per run — ever' },
         { num: '100', unit: '%', label: 'Organic cotton always' },
-        { num: '3', unit: 'guys', label: 'Engineered by 3 guys' },
+        { num: '3', unit: 'guys', label: 'Founded in 2026' },
         { num: '0', unit: 'x', label: 'Mass production. Never.' }
       ];
       
@@ -1218,7 +1219,7 @@
           <div style={{ maxWidth: 900, margin: '0 auto', position: 'relative', zIndex: 1 }}>
             <span className="section-label reveal">Our Philosophy</span>
             <p className="manifesto-q reveal reveal-d1">
-              <em>"We don't follow trends.</em> We dictate them. <em>Engineered in Bangalore,</em> with zero compromise."
+              <em>"Two colors.</em> Zero compromise. <em>Complexity lives in the structure,</em> not the palette."
             </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginTop: '3rem' }} className="reveal reveal-d2">
               <div style={{ width: 50, height: 1.5, background: 'rgba(255,255,255,0.3)' }} />
@@ -1276,7 +1277,7 @@
           <div style={{ position: 'relative', zIndex: 1 }}>
             <span className="section-label reveal" style={{ margin: '0 auto 2rem', display: 'table' }}>Enter The Store</span>
             <h2 className="dyn-title chrome-effect reveal reveal-d1" style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(44px,8vw,110px)', letterSpacing: '-0.03em', lineHeight: 0.9, marginBottom: '3rem' }}>
-              Ready to upgrade<br />your aesthetics?
+              Ready to upgrade<br />your wardrobe?
             </h2>
             <br />
             <a href="/shop.html" className="cta-btn reveal reveal-d2">Enter The Shop →</a>
@@ -1300,7 +1301,7 @@
       return (
         <header className={scrolled ? 'scrolled' : ''}>
           <a href="/" style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', padding: 0, paddingLeft: 10, textDecoration: 'none' }}>
-            <img src="favicon.png" alt="Splotch" style={{ height: 32, width: 'auto', display: 'block', transform: 'scale(2.2)', transformOrigin: 'left center', filter: 'invert(1)' }} />
+            <img src="favicon.png" alt="Splotch" style={{ height: 32, width: 'auto', display: 'block', objectFit: 'contain', transform: 'scale(2.2)', transformOrigin: 'left center', filter: 'invert(1)' }} />
           </a>
           <nav className="desk-nav" style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
             <a href="/" className="nl" style={{ color: '#fff' }}>HOME</a>
@@ -1323,7 +1324,7 @@
       return (
         <div className="mob-menu" style={{ position: 'fixed', inset: 0, zIndex: 600, background: '#0a0a0a', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '3rem 2rem', transform: open ? 'translateX(0)' : 'translateX(100%)', transition: 'transform .4s cubic-bezier(.76,0,.24,1)' }}>
           <button onClick={() => setOpen(false)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: '1.5px solid rgba(255,255,255,0.2)', width: 42, height: 42, color: '#fff', fontSize: 18, fontWeight: 700 }}>✕</button>
-          <img src="favicon.png" alt="Splotch" style={{ height: 48, width: 'auto', marginBottom: '3rem', opacity: 0.8, filter: 'invert(1)' }} />
+          <img src="favicon.png" alt="Splotch" style={{ height: 48, width: 'auto', objectFit: 'contain', marginBottom: '3rem', opacity: 0.8, filter: 'invert(1)' }} />
           <a href="/" style={btnSt}>HOME</a>
           <a href="/shop.html" style={btnSt}>SHOP</a>
           <a href="/about.html" style={btnSt}>ABOUT</a>
@@ -1344,7 +1345,7 @@
               <p style={{ marginBottom: "1rem" }}><strong>1. General Conditions</strong><br/>By visiting our site and/or purchasing something from us, you engage in our "Service" and agree to be bound by the following terms and conditions. Splotch reserves the right to refuse service to anyone for any reason at any time.</p>
               <p style={{ marginBottom: "1rem" }}><strong>2. Products & Exclusivity</strong><br/>All Splotch runs are strictly limited. We do not mass produce. Once an item is sold out, it is permanently archived. We have made every effort to display as accurately as possible the colors and images of our products.</p>
               <p style={{ marginBottom: "1rem" }}><strong>3. Billing & Accuracy</strong><br/>You agree to provide current, complete and accurate purchase and account information for all purchases made at our store.</p>
-              <p style={{ marginBottom: "1rem" }}><strong>4. Returns & Refunds</strong><br/>We maintain a strict 7-day return policy. Returns and refunds are only allowed within 7 days of receiving the product. Items must be unwashed, and in original packaging. Use the "Request Return" button to initiate the process.</p>
+              <p style={{ marginBottom: "1rem" }}><strong>4. Returns & Refunds</strong><br/>We maintain a strict 7-day return policy. Returns and refunds are only allowed within 7 days of receiving the product. Items must be unworn, unwashed, and in original packaging. Use the "Request Return" link in the footer to initiate the process.</p>
             </div>
           </div>
         </div>
@@ -1414,6 +1415,13 @@
       const [returnOpen, setReturnOpen] = useState(false);
       
       useEffect(() => {
+        console.log(
+          "%c[SYSTEM_ROOT] ACCESS GRANTED\n%c // ENGINEERED BY DUDEFROMALHIEM \n%c WELCOME TO THE NEXT FRONTIER OF STREETWEAR. Z E R O  C O M P R O M I S E.\n%c Dudefromalhiem made this. If you are reading this, welcome.",
+          "color: #c00; font-size: 20px; font-weight: 900;","color: #fff; font-size: 13px; font-weight: 700; background: #111; padding: 4px; margin-top: 5px; display: inline-block;","color: #666; font-size: 11px; font-style: italic; margin-top: 5px; display: inline-block;","color: #c00; font-size: 10px; font-weight: 700; margin-top: 15px; display: block;"
+        );
+      }, []);
+
+      useEffect(() => {
         const obs = new IntersectionObserver(entries => {
           entries.forEach(e => {
             if (e.isIntersecting) e.target.classList.add('visible');
@@ -1473,12 +1481,16 @@
               <a href="https://x.com/splotchglobal" target="_blank">Twitter</a>
               <a href="/about.html">About</a>
             </div>
-            <span>© 2026 Splotch. All rights reserved.</span>
+            <div style={{display: 'flex', alignItems: 'center'}}>
+               <span className="ghost-credit" style={{marginRight: "10px"}}>// Engineered by Dudefromalhiem</span>
+               <span>© 2026 Splotch.</span>
+            </div>
           </footer>
 
           <div style={{ background: '#050505', padding: '2rem', borderTop: '1px solid rgba(255,255,255,0.03)' }}>
             <p style={{ maxWidth: 800, margin: '0 auto', fontSize: 9, lineHeight: 2, color: 'rgba(255,255,255,0.12)', fontWeight: 500, letterSpacing: '0.12em', textAlign: 'center', textTransform: 'uppercase' }}>
-              Splotch is an independent streetwear clothing brand engineered in Bangalore, India. Premium oversized t-shirts, limited-drop techwear, and urban utility clothing for the modern aesthetic. Zero mass production. Every run limited to 200 units. Explore Collection 001. Contemporary Indian streetwear. Style beyond seasons. Created in 2026 by 3 guys.
+              Every order includes premium packaging, custom stickers, and a personalized handwritten note.<br/><br/>
+              Splotch is an independent streetwear clothing brand engineered in Bangalore, India. Premium oversized t-shirts, limited-drop techwear, and urban utility clothing for the modern aesthetic. Zero mass production. Every run limited to 200 units. Explore Collection 001. Contemporary Indian streetwear. Style beyond seasons. Created in 2026.
             </p>
           </div>
           

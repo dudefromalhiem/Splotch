@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width">
 
   <title>Shop | Splotch — Premium Streetwear Collection</title>
-  <meta name="description" content="Shop the latest limited drops from Splotch. Contemporary streetwear, premium oversized t-shirts, and urban utility gear engineered in Bangalore, India. Created in 2026 by 3 guys.">
+  <meta name="description" content="Shop the latest limited drops from Splotch. Contemporary streetwear, premium oversized t-shirts, and urban utility gear engineered in Bangalore, India. Created in 2026.">
   <meta name="keywords" content="shop splotch, splotch clothing store, streetwear india, buy streetwear online, oversized t-shirts india, modern fashion, clothes in india">
   
   <link rel="icon" type="image/png" href="favicon.png">
@@ -544,7 +544,7 @@
       return (
         <header className={scrolled?"glass-nav":""} style={{overflow:"visible"}}>
           <button className="logo-btn" onClick={(e) => { e.preventDefault(); onLogoClick(); setTimeout(() => { window.location.href = '/'; }, 300); }} title="Home" style={{background:"none",border:"none",cursor:"pointer"}}>
-            <img src={LOGO_SRC} alt="Splotch" style={{height:32,width:"auto",display:"block",transform:"scale(2.2)",transformOrigin:"left center"}}/>
+            <img src={LOGO_SRC} alt="Splotch" style={{height:32,width:"auto",display:"block",objectFit:"contain",transform:"scale(2.2)",transformOrigin:"left center"}}/>
           </button>
           
           <nav className="desk-nav" style={{display:"flex",gap:"2.5rem",alignItems:"center"}}>
@@ -590,7 +590,7 @@
       return (
         <div className="mob-menu" style={{position:"fixed",inset:0,zIndex:600,background:"#111",display:"flex",flexDirection:"column",justifyContent:"center",padding:"3rem 2rem",transform:open?"translateX(0)":"translateX(100%)",transition:"transform .4s cubic-bezier(.76,0,.24,1)"}}>
           <button onClick={()=>setOpen(false)} style={{position:"absolute",top:16,right:16,background:"none",border:"2px solid rgba(255,255,255,0.2)",width:42,height:42,color:"#fff",fontSize:18,fontWeight:700,cursor:"pointer"}}>✕</button>
-          <img src={LOGO_SRC} alt="Splotch" style={{height:48,width:"auto",marginBottom:"2.5rem",opacity:0.9,filter:"invert(1)"}}/>
+          <img src={LOGO_SRC} alt="Splotch" style={{height:48,width:"auto",objectFit:"contain",marginBottom:"2.5rem",opacity:0.9,filter:"invert(1)"}}/>
           
           <a href="/" style={btnSt}>HOME</a>
           <button onClick={()=>go('shop')} style={btnSt}>SHOP</button>
@@ -880,6 +880,9 @@
                 </div>
                 {cart.length>0&&(
                   <div style={{padding:"1.2rem 1.8rem",borderTop:"2px solid #111"}}>
+                    <div style={{background: '#111', color: '#fff', padding: '8px', fontSize: '9px', textAlign: 'center', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1rem'}}>
+                      📦 Includes premium packaging & custom stickers
+                    </div>
                     <div style={{display:"flex",justifyContent:"space-between",marginBottom:"0.9rem"}}>
                       <span style={{fontSize:11,fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase"}}>Total ({selectedCartItems.length} selected)</span>
                       <span style={{fontSize:17,fontWeight:900,letterSpacing:"-0.02em"}}>₹{total.toLocaleString("en-IN")}</span>
@@ -1331,7 +1334,6 @@
                   <button onClick={()=>{setPortForm({...blankPort,order:portfolio.length});setPortEditId("new");}} style={{width:"100%",padding:"15px",background:"#111",color:"#fff",fontWeight:900,marginBottom:"1rem",cursor:"pointer"}}>+ ADD PORTFOLIO ITEM</button>
                   {portfolio.map(p=>(
                     <div key={p.id} onClick={()=>{
-                        // ensure backwards compatibility with old image field
                         const imgs = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
                         setPortForm({...p, images: imgs});
                         setPortEditId(p.id);
@@ -1712,7 +1714,7 @@
 
       useEffect(()=>{
         console.log(
-          "%c[SYSTEM_ROOT] ACCESS GRANTED\n%c // ENGINEERED BY DUDEFROMALHIEM \n%c WELCOME TO THE NEXT FRONTIER OF STREETWEAR. Z E R O  C O M P R O M I S E.\n%c Dudefromalhiem made this. If you are reading this, you are the resistance.",
+          "%c[SYSTEM_ROOT] ACCESS GRANTED\n%c // ENGINEERED BY DUDEFROMALHIEM \n%c WELCOME TO THE NEXT FRONTIER OF STREETWEAR. Z E R O  C O M P R O M I S E.\n%c Dudefromalhiem made this. If you are reading this, welcome.",
           "color: #c00; font-size: 20px; font-weight: 900;","color: #fff; font-size: 13px; font-weight: 700; background: #111; padding: 4px; margin-top: 5px; display: inline-block;","color: #666; font-size: 11px; font-style: italic; margin-top: 5px; display: inline-block;","color: #c00; font-size: 10px; font-weight: 700; margin-top: 15px; display: block;"
         );
       },[]);
@@ -1813,7 +1815,7 @@
               <br/>
               <div className="cyber-text-container">
                 <h2 className="cyber-text" style={{fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic",fontSize:"clamp(40px,7vw,96px)",letterSpacing:"-0.04em",lineHeight:0.92,marginBottom:"4rem",margin:"0"}}>
-                  We don't follow trends,<br/>we dictate them.
+                  Predict the future,<br/>you didn't come<br/>this far to stop.
                 </h2>
               </div>
               <div style={{maxWidth:"600px",margin:"4rem auto",padding:"2rem 0",borderTop:"1px solid rgba(255,255,255,0.08)",borderBottom:"1px solid rgba(255,255,255,0.08)"}}>
@@ -1828,10 +1830,10 @@
                   <a href="https://www.instagram.com/splotchglobal" target="_blank" className="social-link">Instagram</a>
                   <a href="https://x.com/splotchglobal" className="social-link">X(Formerly Twitter)</a>
                 </div>
-                <p style={{fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",color:"rgba(255,255,255,0.2)",margin:0}}>
-                  © 2026 Splotch.
-                  <span className="ghost-credit" style={{marginLeft:"10px"}}>// Engineered by Dudefromalhiem</span>
-                </p>
+                <div style={{display: 'flex', alignItems: 'center'}}>
+                  <span className="ghost-credit" style={{marginRight: "10px"}}>// Engineered by Dudefromalhiem</span>
+                  <span style={{fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",color:"rgba(255,255,255,0.2)"}}>© 2026 Splotch.</span>
+                </div>
               </div>
             </div>
           </footer>
