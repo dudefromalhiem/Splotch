@@ -377,7 +377,7 @@
       </div>
     );
 
-    function Cursor() {
+function Cursor() {
       useEffect(() => {
         const el = document.getElementById('cursor');
         if (!el) return;
@@ -392,36 +392,20 @@
           el.classList.add('clicked');
         };
         
-        const up = () => {
+        const up = (e) => {
           el.classList.remove('clicked');
+          if (e.target && e.target.closest && e.target.closest('a, button, input, select, .prod-card, .port-card, .ps-card')) {
+            el.classList.add('hovered');
+          }
         };
         
-        const hover = () => {
-          el.classList.add('hovered');
+        const handleMouseOver = (e) => {
+          if (e.target && e.target.closest && e.target.closest('a, button, input, select, .prod-card, .port-card, .ps-card')) {
+            el.classList.add('hovered');
+          } else {
+            el.classList.remove('hovered');
+          }
         };
-        
-        const unhover = () => {
-          el.classList.remove('hovered');
-        };
-        
-        window.addEventListener('mousemove', move);
-        window.addEventListener('mousedown', down);
-        window.addEventListener('mouseup', up);
-        
-        document.querySelectorAll('a,button,input,select,.display-card-link').forEach(n => {
-          n.addEventListener('mouseenter', hover);
-          n.addEventListener('mouseleave', unhover);
-        });
-        
-        return () => {
-          window.removeEventListener('mousemove', move);
-          window.removeEventListener('mousedown', down);
-          window.removeEventListener('mouseup', up);
-        };
-      }, []);
-      
-      return null;
-    }
         
         window.addEventListener('mousemove', move);
         window.addEventListener('mousedown', down);
