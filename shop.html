@@ -377,7 +377,7 @@
       </div>
     );
 
-function Cursor() {
+    function Cursor() {
       useEffect(() => {
         const el = document.getElementById('cursor');
         if (!el) return;
@@ -388,37 +388,35 @@ function Cursor() {
         };
         
         const down = () => {
-          el.classList.remove('hovered'); // Drops the large ring
-          el.classList.add('clicked');    // Triggers the tiny solid dot
+          el.classList.remove('hovered');
+          el.classList.add('clicked');
         };
         
-        const up = (e) => {
-          el.classList.remove('clicked'); // Removes the tiny dot
-          
-          // Re-checks if we are still over a clickable item when the mouse is released
-          if (e.target && e.target.closest && e.target.closest('a, button, input, select, .prod-card, .port-card, .ps-card')) {
-            el.classList.add('hovered');
-          }
+        const up = () => {
+          el.classList.remove('clicked');
         };
         
-        const handleMouseOver = (e) => {
-          if (e.target && e.target.closest && e.target.closest('a, button, input, select, .prod-card, .port-card, .ps-card')) {
-            el.classList.add('hovered');
-          } else {
-            el.classList.remove('hovered');
-          }
+        const hover = () => {
+          el.classList.add('hovered');
+        };
+        
+        const unhover = () => {
+          el.classList.remove('hovered');
         };
         
         window.addEventListener('mousemove', move);
         window.addEventListener('mousedown', down);
         window.addEventListener('mouseup', up);
-        window.addEventListener('mouseover', handleMouseOver);
+        
+        document.querySelectorAll('a,button,input,select,.display-card-link').forEach(n => {
+          n.addEventListener('mouseenter', hover);
+          n.addEventListener('mouseleave', unhover);
+        });
         
         return () => {
           window.removeEventListener('mousemove', move);
           window.removeEventListener('mousedown', down);
           window.removeEventListener('mouseup', up);
-          window.removeEventListener('mouseover', handleMouseOver);
         };
       }, []);
       
