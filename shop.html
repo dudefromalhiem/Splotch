@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Shop | Splotch — Premium Streetwear Collection</title>
   <meta name="description" content="Shop the latest limited drops from Splotch. Contemporary streetwear, premium oversized t-shirts, and urban utility gear engineered in Bangalore, India. Created in 2026.">
@@ -32,7 +32,7 @@
   
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js" data-type="module"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -172,12 +172,12 @@
     .footer-animated-bg::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center 30%,transparent 10%,#111 80%); pointer-events: none; z-index: 0; }
     
     .cyber-text-container { perspective: 1000px; display: inline-block; position: relative; z-index: 2; }
-    .cyber-text { color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,0.2); background: linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.8) 50%,transparent 100%); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; animation: textShine 5s linear infinite; transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); cursor: crosshair; position: relative; display: inline-block; }
+    .cyber-text { color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,0.2); background: linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.8) 50%,transparent 100%); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; animation: textShine 5s linear infinite; transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); cursor: crosshair; position: relative; display: inline-block; padding-bottom: 0.15em; }
     @keyframes textShine { 0%{background-position:200% center} 100%{background-position:-200% center} }
     .cyber-text:hover { transform: translateZ(40px) rotateX(15deg) skewX(-5deg); -webkit-text-stroke: 1.5px rgba(255,255,255,0.9); text-shadow: 0 0 20px rgba(255,255,255,0.5),-3px 3px 0 rgba(200,0,0,0.8),3px -3px 0 rgba(0,200,255,0.8); }
     
-    .ghost-credit { opacity: 0.03; transition: opacity 0.4s ease; cursor: crosshair; }
-    .ghost-credit:hover { opacity: 1; }
+    .ghost-credit { opacity: 0.15; transition: opacity 0.4s ease; cursor: crosshair; }
+    .ghost-credit:hover { opacity: 0.8; }
     
     .social-link { color: rgba(255,255,255,0.3); text-decoration: none; transition: color 0.3s,transform 0.3s; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; }
     .social-link:hover { color: #fff; transform: translateY(-2px); display: inline-block; }
@@ -245,16 +245,22 @@
     .carousel-btn.left { left: 10px; }
     .carousel-btn.right { right: 10px; }
 
+    /* Testimonials Fixes */
+    .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #111; border: 2px solid #111; }
+    .testi-card { background: #fff; padding: 2.5rem 1.8rem; transition: background 0.25s, color 0.25s, transform 0.2s; }
+    .testi-card:hover { background: #111; color: #fff; }
+    .testi-card:hover .testi-q { color: rgba(255,255,255,0.8); }
+    .testi-card:hover .testi-name { color: #fff; }
+    .testi-card:hover .testi-res { color: rgba(255,255,255,0.5); }
+    .testi-card:hover .testi-quote-mark { color: rgba(255,255,255,0.1); }
+
     @media (max-width: 768px) {
       .desk-nav { display: none !important; }
       .mob-ham { display: flex !important; background: none; border: 2px solid #111; width: 34px; height: 34px; flex-direction: column; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; cursor: pointer; }
       .mob-ham span { display: block; width: 14px; height: 1.5px; background: #111; flex-shrink: 0; }
-      .product-grid, .port-grid, .two-col, .testi-grid { grid-template-columns: 1fr 1fr !important; }
+      .product-grid, .port-grid, .two-col, .testi-grid { grid-template-columns: 1fr !important; }
       .contact-grid { grid-template-columns: 1fr !important; }
       .admin-form-grid { grid-template-columns: 1fr !important; }
-    }
-    @media (max-width: 480px) { 
-      .product-grid, .port-grid, .two-col, .testi-grid { grid-template-columns: 1fr !important; } 
     }
     @media (min-width: 769px) { 
       .mob-ham, .mob-menu { display: none !important; } 
@@ -262,6 +268,9 @@
   </style>
 </head>
 <body>
+  <div id="progress"></div>
+  <div class="cursor-dot" id="cursor"></div>
+  <div class="grain"></div>
   <div id="root"></div>
 
   <script type="text/babel">
@@ -543,8 +552,8 @@
       
       return (
         <header className={scrolled?"glass-nav":""} style={{overflow:"visible"}}>
-          <button className="logo-btn" onClick={(e) => { e.preventDefault(); onLogoClick(); setTimeout(() => { window.location.href = '/'; }, 300); }} title="Home" style={{background:"none",border:"none",cursor:"pointer"}}>
-            <img src={LOGO_SRC} alt="Splotch" style={{height:32,width:"auto",display:"block",objectFit:"contain",transform:"scale(2.2)",transformOrigin:"left center"}}/>
+          <button className="logo-btn" onClick={(e) => { e.preventDefault(); onLogoClick(); }} title="Splotch" style={{background:"none",border:"none",cursor:"pointer"}}>
+            <img src={LOGO_SRC} alt="Splotch" style={{height:32,width:"auto",display:"block",transform:"scale(2.2)",transformOrigin:"left center"}}/>
           </button>
           
           <nav className="desk-nav" style={{display:"flex",gap:"2.5rem",alignItems:"center"}}>
@@ -590,7 +599,7 @@
       return (
         <div className="mob-menu" style={{position:"fixed",inset:0,zIndex:600,background:"#111",display:"flex",flexDirection:"column",justifyContent:"center",padding:"3rem 2rem",transform:open?"translateX(0)":"translateX(100%)",transition:"transform .4s cubic-bezier(.76,0,.24,1)"}}>
           <button onClick={()=>setOpen(false)} style={{position:"absolute",top:16,right:16,background:"none",border:"2px solid rgba(255,255,255,0.2)",width:42,height:42,color:"#fff",fontSize:18,fontWeight:700,cursor:"pointer"}}>✕</button>
-          <img src={LOGO_SRC} alt="Splotch" style={{height:48,width:"auto",objectFit:"contain",marginBottom:"2.5rem",opacity:0.9,filter:"invert(1)"}}/>
+          <img src={LOGO_SRC} alt="Splotch" style={{height:48,width:"auto",marginBottom:"2.5rem",opacity:0.9,filter:"invert(1)"}}/>
           
           <a href="/" style={btnSt}>HOME</a>
           <button onClick={()=>go('shop')} style={btnSt}>SHOP</button>
@@ -1124,9 +1133,37 @@
       useEffect(()=>{
         if(authed&&window.fbDb){
           if(tab==="orders") {
-            window.fbGetDocs(window.fbQuery(window.fbCollection(window.fbDb,"orders"),window.fbOrderBy("timestamp","desc")))
-              .then(snap=>{const o=[];snap.forEach(d=>o.push({id:d.id,...d.data()}));setOrders(o);})
-              .catch(e=>console.error(e));
+            const fetchOrders = async () => {
+              try {
+                const q = window.fbQuery(window.fbCollection(window.fbDb,"orders"),window.fbOrderBy("timestamp","desc"));
+                const snap = await window.fbGetDocs(q);
+                const now = new Date().getTime();
+                const sevenDays = 7 * 24 * 60 * 60 * 1000;
+                const validOrders = [];
+                
+                for (const d of snap.docs) {
+                  const data = d.data();
+                  let shouldDelete = false;
+                  
+                  if (data.status === "Delivered" && data.deliveredAt) {
+                    const deliveredTime = data.deliveredAt.seconds ? data.deliveredAt.seconds * 1000 : (data.deliveredAt.getTime ? data.deliveredAt.getTime() : 0);
+                    if (deliveredTime > 0 && (now - deliveredTime) > sevenDays) {
+                      shouldDelete = true;
+                    }
+                  }
+                  
+                  if (shouldDelete) {
+                    try {
+                      await window.fbDeleteDoc(window.fbDoc(window.fbDb,"orders",d.id));
+                    } catch(e) { console.error("Auto-delete failed", e); }
+                  } else {
+                    validOrders.push({id: d.id, ...data});
+                  }
+                }
+                setOrders(validOrders);
+              } catch(e) { console.error(e); }
+            };
+            fetchOrders();
           }
           if(tab==="messages") {
             window.fbGetDocs(window.fbQuery(window.fbCollection(window.fbDb,"messages"),window.fbOrderBy("timestamp","desc")))
@@ -1412,7 +1449,16 @@
                     </div>
                     <div style={{marginTop:"15px",paddingTop:"15px",borderTop:"1px solid #ddd",display:"flex",alignItems:"center",gap:"10px"}}>
                       <strong style={{fontSize:"11px",textTransform:"uppercase",letterSpacing:"0.1em"}}>Status:</strong>
-                      <select style={{padding:"6px",fontSize:"11px",fontWeight:700,border:"2px solid #111",textTransform:"uppercase",cursor:"pointer"}} value={o.status||"Processing"} onChange={async(e)=>{const ns=e.target.value;try{await window.fbUpdateDoc(window.fbDoc(window.fbDb,"orders",o.id),{status:ns});setOrders(orders.map(order=>order.id===o.id?{...order,status:ns}:order));alert("Status updated to "+ns);}catch(err){alert("Failed to update status.");}}}>
+                      <select style={{padding:"6px",fontSize:"11px",fontWeight:700,border:"2px solid #111",textTransform:"uppercase",cursor:"pointer"}} value={o.status||"Processing"} onChange={async(e)=>{
+                        const ns=e.target.value;
+                        try{
+                          const updatePayload = {status:ns};
+                          if (ns === "Delivered") updatePayload.deliveredAt = new Date();
+                          await window.fbUpdateDoc(window.fbDoc(window.fbDb,"orders",o.id), updatePayload);
+                          setOrders(orders.map(order=>order.id===o.id?{...order, status:ns, deliveredAt: updatePayload.deliveredAt || order.deliveredAt}:order));
+                          alert("Status updated to "+ns);
+                        }catch(err){alert("Failed to update status.");}
+                      }}>
                         <option value="Processing">Processing</option>
                         <option value="Shipped">Shipped</option>
                         <option value="Delivered">Delivered</option>
@@ -1596,14 +1642,14 @@
       return (
         <section style={{background:"#fff",borderBottom:"3px solid #111",padding:"6rem 2rem"}}>
           <SLabel>What People Say</SLabel>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:0}} className="testi-grid">
+          <div className="testi-grid">
             {items.map((t,i)=>(
-              <div key={i} className={`reveal reveal-d${i+1}`} style={{borderLeft:"2px solid #111",borderTop:"2px solid #111",borderRight:i===2?"2px solid #111":"none",borderBottom:"2px solid #111",padding:"2.5rem 1.8rem"}}>
-                <div style={{fontFamily:"Playfair Display",fontWeight:700,fontSize:36,color:"#111",marginBottom:"1.2rem",lineHeight:1}}>"</div>
-                <p style={{fontSize:14,lineHeight:1.8,color:"rgba(0,0,0,0.62)",marginBottom:"1.8rem",fontStyle:"italic"}}>{t.q}</p>
-                <div style={{borderTop:"1px solid rgba(0,0,0,0.08)",paddingTop:"1rem"}}>
-                  <p style={{fontWeight:700,fontSize:12,textTransform:"uppercase",letterSpacing:"0.08em"}}>{t.name}</p>
-                  <p style={{fontSize:10,color:"rgba(0,0,0,0.35)",fontWeight:600,letterSpacing:"0.1em",marginTop:2,textTransform:"uppercase"}}>{t.residence}</p>
+              <div key={i} className={`testi-card reveal reveal-d${i+1}`}>
+                <div className="testi-quote-mark" style={{fontFamily:"Playfair Display",fontWeight:700,fontSize:36,color:"#111",marginBottom:"1.2rem",lineHeight:1, transition:"color 0.25s"}}>"</div>
+                <p className="testi-q" style={{fontSize:14,lineHeight:1.8,color:"rgba(0,0,0,0.62)",marginBottom:"1.8rem",fontStyle:"italic", transition:"color 0.25s"}}>{t.q}</p>
+                <div style={{borderTop:"1px solid rgba(128,128,128,0.2)",paddingTop:"1rem"}}>
+                  <p className="testi-name" style={{fontWeight:700,fontSize:12,textTransform:"uppercase",letterSpacing:"0.08em", transition:"color 0.25s"}}>{t.name}</p>
+                  <p className="testi-res" style={{fontSize:10,color:"rgba(0,0,0,0.35)",fontWeight:600,letterSpacing:"0.1em",marginTop:2,textTransform:"uppercase", transition:"color 0.25s"}}>{t.residence}</p>
                 </div>
               </div>
             ))}
@@ -1693,6 +1739,44 @@
       );
     }
 
+    function Footer() {
+      const [termsOpen, setTermsOpen] = useState(false);
+      const [returnOpen, setReturnOpen] = useState(false);
+      
+      return (
+        <footer className="footer-animated-bg" style={{padding:"6rem 2rem 3rem",position:"relative",overflow:"hidden"}}>
+          <div style={{position:"relative",zIndex:1,textAlign:"center"}}>
+            <img src={LOGO_SRC} alt="Splotch" style={{height:140,width:"auto",filter:"invert(1)",opacity:0.8,marginBottom:"3rem",display:"inline-block"}}/>
+            <br/>
+            <div className="cyber-text-container">
+              <h2 className="cyber-text" style={{fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic",fontSize:"clamp(40px,7vw,96px)",letterSpacing:"-0.04em",lineHeight:1.1,marginBottom:"4rem",margin:"0"}}>
+                Predict the future,<br/>you didn't come<br/>this far to stop.
+              </h2>
+            </div>
+            <div style={{maxWidth:"600px",margin:"4rem auto",padding:"2rem 0",borderTop:"1px solid rgba(255,255,255,0.08)",borderBottom:"1px solid rgba(255,255,255,0.08)"}}>
+              <p style={{fontSize:"9px",fontWeight:600,color:"rgba(255,255,255,0.35)",lineHeight:1.8,letterSpacing:"0.15em",textTransform:"uppercase"}}>
+                Splotch is an independent streetwear brand engineered in Bangalore, India. Developing premium oversized t-shirts, limited-drop techwear, and utility clothing for the modern urban environment. Zero mass production. Pure aesthetic conviction.
+              </p>
+            </div>
+            <div style={{borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:"2rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1.5rem"}}>
+              <div style={{display:"flex",gap:"2rem", flexWrap:"wrap"}}>
+                <a onClick={() => setTermsOpen(true)} className="social-link" style={{cursor:"pointer"}}>Terms & Conditions</a>
+                <a onClick={() => setReturnOpen(true)} className="social-link" style={{cursor:"pointer"}}>Request Return</a>
+                <a href="https://www.instagram.com/splotchglobal" target="_blank" className="social-link">Instagram</a>
+                <a href="https://x.com/splotchglobal" className="social-link">X(Formerly Twitter)</a>
+              </div>
+              <div style={{display: 'flex', alignItems: 'center'}}>
+                 <span className="ghost-credit" style={{marginRight: "10px"}}>// Engineered by Dudefromalhiem</span>
+                 <span style={{fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",color:"rgba(255,255,255,0.2)"}}>© 2026 Splotch.</span>
+              </div>
+            </div>
+          </div>
+          {termsOpen && <TermsModal onClose={() => setTermsOpen(false)} />}
+          {returnOpen && <ReturnModal onClose={() => setReturnOpen(false)} />}
+        </footer>
+      );
+    }
+
     function App() {
       const [products,setProducts]=useState([]);
       const [portfolio,setPortfolio]=useState([]);
@@ -1705,10 +1789,6 @@
       const [mobMenu,setMobMenu]=useState(false);
       const [filter,setFilter]=useState("All");
       const [logoClicks,setLogoClicks]=useState(0);
-      
-      const [termsOpen, setTermsOpen] = useState(false);
-      const [returnOpen, setReturnOpen] = useState(false);
-      
       const logoTimerRef=useRef(null);
       const [user,setUser]=useState(null);
 
@@ -1794,7 +1874,7 @@
       const addToCart=useCallback(item=>setCart(c=>[...c,{...item,cartItemId:Date.now()+Math.random()}]),[]);
 
       return (
-        <div style={{minHeight:"100vh",background:"#fff",position:"relative"}}>
+        <div style={{minHeight:"100vh",background:"#fff",position:"relative",overflowX:"hidden"}}>
           <CustomCursor/>
           <div className="grain-overlay"/>
           <ScrollProgress/>
@@ -1808,43 +1888,13 @@
           <WhySplotch/>
           <Testimonials/>
           <Contact/>
-          
-          <footer className="footer-animated-bg" style={{padding:"6rem 2rem 3rem",position:"relative",overflow:"hidden"}}>
-            <div style={{position:"relative",zIndex:1,textAlign:"center"}}>
-              <img src={LOGO_SRC} alt="Splotch" style={{height:140,width:"auto",filter:"invert(1)",opacity:0.8,marginBottom:"3rem",display:"inline-block"}}/>
-              <br/>
-              <div className="cyber-text-container">
-                <h2 className="cyber-text" style={{fontFamily:"Playfair Display",fontWeight:700,fontStyle:"italic",fontSize:"clamp(40px,7vw,96px)",letterSpacing:"-0.04em",lineHeight:0.92,marginBottom:"4rem",margin:"0"}}>
-                  Predict the future,<br/>you didn't come<br/>this far to stop.
-                </h2>
-              </div>
-              <div style={{maxWidth:"600px",margin:"4rem auto",padding:"2rem 0",borderTop:"1px solid rgba(255,255,255,0.08)",borderBottom:"1px solid rgba(255,255,255,0.08)"}}>
-                <p style={{fontSize:"9px",fontWeight:600,color:"rgba(255,255,255,0.35)",lineHeight:1.8,letterSpacing:"0.15em",textTransform:"uppercase"}}>
-                  Splotch is an independent streetwear brand engineered in Bangalore, India. Developing premium oversized t-shirts, limited-drop techwear, and utility clothing for the modern urban environment. Zero mass production. Pure aesthetic conviction.
-                </p>
-              </div>
-              <div style={{borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:"2rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1.5rem"}}>
-                <div style={{display:"flex",gap:"2rem", flexWrap:"wrap"}}>
-                  <a onClick={() => setTermsOpen(true)} className="social-link" style={{cursor:"pointer"}}>Terms & Conditions</a>
-                  <a onClick={() => setReturnOpen(true)} className="social-link" style={{cursor:"pointer"}}>Request Return</a>
-                  <a href="https://www.instagram.com/splotchglobal" target="_blank" className="social-link">Instagram</a>
-                  <a href="https://x.com/splotchglobal" className="social-link">X(Formerly Twitter)</a>
-                </div>
-                <div style={{display: 'flex', alignItems: 'center'}}>
-                  <span className="ghost-credit" style={{marginRight: "10px"}}>// Engineered by Dudefromalhiem</span>
-                  <span style={{fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",color:"rgba(255,255,255,0.2)"}}>© 2026 Splotch.</span>
-                </div>
-              </div>
-            </div>
-          </footer>
+          <Footer/>
           
           {qv&&<QuickView product={qv} onClose={()=>setQV(null)} onAdd={addToCart}/>}
           {cartOpen&&<CartSidebar cart={cart} setCart={setCart} onClose={()=>setCartOpen(false)} user={user} onAuthClick={()=>setAuthOpen(true)} setProducts={setProducts}/>}
           {adminOpen&&<AdminPanel products={products} setProducts={setProducts} portfolio={portfolio} setPortfolio={setPortfolio} onClose={()=>setAdminOpen(false)}/>}
           {authOpen&&<AuthModal onClose={()=>setAuthOpen(false)} onSuccess={()=>setAuthOpen(false)}/>}
           {ordersOpen&&user&&<UserOrdersModal user={user} onClose={()=>setOrdersOpen(false)}/>}
-          {termsOpen && <TermsModal onClose={() => setTermsOpen(false)} />}
-          {returnOpen && <ReturnModal onClose={() => setReturnOpen(false)} />}
         </div>
       );
     }
