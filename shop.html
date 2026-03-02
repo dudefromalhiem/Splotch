@@ -106,8 +106,31 @@
     
     body.custom-cursor-active, body.custom-cursor-active button, body.custom-cursor-active a, body.custom-cursor-active input, body.custom-cursor-active textarea, body.custom-cursor-active select, body.custom-cursor-active img, body.custom-cursor-active .prod-card, body.custom-cursor-active * { cursor: none !important; }
     
-    .cursor-dot { position: fixed; top: 0; left: 0; width: 28px; height: 28px; border: 2px solid #fff; border-radius: 50% !important; transform: translate(-50%, -50%); pointer-events: none; z-index: 99999; mix-blend-mode: difference; transition: width 0.3s cubic-bezier(0.175,0.885,0.32,1.275), height 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
-    .cursor-dot.pulse { width: 10px; height: 10px; background-color: #fff; }
+.cursor-dot {
+      position: fixed;
+      width: 24px;
+      height: 24px;
+      border: 1.5px solid #fff;
+      border-radius: 50% !important;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 99999;
+      mix-blend-mode: difference;
+      transition: width 0.25s, height 0.25s, opacity 0.2s;
+      top: 0;
+      left: 0;
+    }
+    
+    .cursor-dot.hovered {
+      width: 44px;
+      height: 44px;
+    }
+    
+    .cursor-dot.clicked {
+      width: 8px;
+      height: 8px;
+      background: #fff;
+    }
     
     .dyn-title { display: inline-block; transition: transform 0.3s cubic-bezier(0.25,1,0.5,1); }
     .dyn-title:hover { transform: translate(-4px,-4px); }
@@ -281,6 +304,7 @@
 </head>
 <body>
   <div id="progress"></div>
+  <div class="cursor-dot" id="cursor"></div>
   <div class="grain"></div>
   <div id="root"></div>
 
@@ -353,32 +377,51 @@
       </div>
     );
 
-    function CustomCursor() {
-      const [pulse,setPulse]=useState(false);
-      const [pos,setPos]=useState({x:-100,y:-100});
-      const [isTouch,setIsTouch]=useState(false);
-      
-      useEffect(()=>{
-        const handleTouchStart=()=>{setIsTouch(true);document.body.classList.remove('custom-cursor-active');};
-        const handleMouseMove=(e)=>{if(isTouch)return;document.body.classList.add('custom-cursor-active');setPos({x:e.clientX,y:e.clientY});};
-        const down=()=>{if(!isTouch)setPulse(true);};
-        const up=()=>{if(!isTouch)setPulse(false);};
+function Cursor() {
+      useEffect(() => {
+        const el = document.getElementById('cursor');
+        if (!el) return;
         
-        window.addEventListener('touchstart',handleTouchStart);
-        window.addEventListener('mousemove',handleMouseMove);
-        window.addEventListener('mousedown',down);
-        window.addEventListener('mouseup',up);
-        
-        return()=>{
-          window.removeEventListener('touchstart',handleTouchStart);
-          window.removeEventListener('mousemove',handleMouseMove);
-          window.removeEventListener('mousedown',down);
-          window.removeEventListener('mouseup',up);
+        const move = (e) => {
+          el.style.left = e.clientX + 'px';
+          el.style.top = e.clientY + 'px';
         };
-      },[isTouch]);
+        
+        const down = () => {
+          el.classList.remove('hovered');
+          el.classList.add('clicked');
+        };
+        
+        const up = () => {
+          el.classList.remove('clicked');
+        };
+        
+        const hover = () => {
+          el.classList.add('hovered');
+        };
+        
+        const unhover = () => {
+          el.classList.remove('hovered');
+        };
+        
+        window.addEventListener('mousemove', move);
+        window.addEventListener('mousedown', down);
+        window.addEventListener('mouseup', up);
+        
+        // Tells the cursor to expand over links, buttons, inputs, and your product cards
+        document.querySelectorAll('a,button,input,select,.prod-card').forEach(n => {
+          n.addEventListener('mouseenter', hover);
+          n.addEventListener('mouseleave', unhover);
+        });
+        
+        return () => {
+          window.removeEventListener('mousemove', move);
+          window.removeEventListener('mousedown', down);
+          window.removeEventListener('mouseup', up);
+        };
+      }, []);
       
-      if(isTouch)return null;
-      return <div className={`cursor-dot ${pulse?'pulse':''}`} style={{left:`${pos.x}px`,top:`${pos.y}px`}}></div>;
+      return null;
     }
 
     function ScrollProgress() {
@@ -1886,7 +1929,7 @@
 
       return (
         <div style={{minHeight:"100vh",background:"#fff",position:"relative",overflowX:"hidden"}}>
-          <CustomCursor/>
+          <Cursor />
           <div className="grain-overlay"/>
           <ScrollProgress/>
           
