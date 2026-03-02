@@ -1479,12 +1479,13 @@
         };
       }, []);
 
-      return (
+return (
         <div style={{ minHeight: '100vh', background: '#111', overflowX: 'hidden', position: 'relative' }}>
           <ScrollProgress />
           <Cursor />
           <Header mobMenu={mobMenu} setMobMenu={setMobMenu} />
           <MobMenu open={mobMenu} setOpen={setMobMenu} />
+          <Hero />
 
           <section id="scroll-section">
             <ContainerScroll
