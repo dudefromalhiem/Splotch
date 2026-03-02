@@ -7,7 +7,7 @@
   <meta name="google-site-verification" content="O_5PvbzTUcfIR6BAsC8lE8vyy0nEluGbPNQgihyIveg" />
   <title>Splotch | Premium Streetwear & Clothing in India</title>
   <meta name="title" content="Splotch | Premium Streetwear & Clothing in India">
-  <meta name="description" content="Welcome to the official Splotch website. Splotch is an independent streetwear clothing brand engineered in Bangalore, India. Shop premium oversized t-shirts, limited drops, and contemporary fashion.">
+  <meta name="description" content="Welcome to the official Splotch website. Splotch is an independent streetwear clothing brand engineered in Bangalore, India. Created in 2026 by 3 guys. Shop premium oversized t-shirts, limited drops, and contemporary fashion.">
   <meta name="keywords" content="splotch, splotch website, splotch clothing, streetwear, clothes in india, streetwear india, oversized t-shirts, contemporary fashion, bangalore clothing brand">
   <meta name="robots" content="index, follow">
   <meta name="author" content="Splotch">
@@ -613,6 +613,7 @@
       border-top: 1.5px solid rgba(255,255,255,0.08);
       border-bottom: 1.5px solid rgba(255,255,255,0.08);
       padding: 1.2rem 0;
+      width: 100%;
     }
     
     .scroll-band-inner {
@@ -660,6 +661,32 @@
       -webkit-text-stroke: 1px rgba(255,255,255,0.1);
       filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.5));
       display: inline-block;
+      padding-bottom: 0.15em;
+    }
+    
+    .cyber-text {
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(255,255,255,0.2);
+      background: linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.8) 50%,transparent 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: textShine 5s linear infinite;
+      transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+      position: relative;
+      display: inline-block;
+      padding-bottom: 0.15em;
+    }
+    
+    @keyframes textShine { 
+      0%{background-position:200% center} 
+      100%{background-position:-200% center} 
+    }
+    
+    .cyber-text:hover { 
+      transform: translateZ(40px) rotateX(15deg) skewX(-5deg); 
+      -webkit-text-stroke: 1.5px rgba(255,255,255,0.9); 
+      text-shadow: 0 0 20px rgba(255,255,255,0.5),-3px 3px 0 rgba(200,0,0,0.8),3px -3px 0 rgba(0,200,255,0.8); 
     }
     
     .cta-btn {
@@ -721,13 +748,16 @@
       transform: translateY(0);
     }
     
-    .reveal-d1 { transition-delay: .1s; }
-    .reveal-d2 { transition-delay: .22s; }
+    .reveal-d1 { transition-delay: .1s; } 
+    .reveal-d2 { transition-delay: .22s; } 
     .reveal-d3 { transition-delay: .34s; }
 
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: #111; }
     ::-webkit-scrollbar-thumb { background: #fff; }
+
+    .ghost-credit { opacity: 0.15; transition: opacity 0.4s ease; cursor: pointer; }
+    .ghost-credit:hover { opacity: 0.8; }
 
     /* Modal Standard Styles */
     .modal-overlay {
@@ -934,18 +964,14 @@
       return null;
     }
 
-    // AGGRESSIVE 3D SHADOW SYSTEM FOR MAIN PAGE
     function buildAggressive3D(mx, my) {
       const layers = [];
-      // Deep red extrusion
       for(let i=1; i<=8; i++) {
         layers.push(`${(mx * i * 2).toFixed(1)}px ${(my * i * 2).toFixed(1)}px 0px #DC1C1C`);
       }
-      // Dark grey deep extrusion
       for(let i=9; i<=14; i++) {
         layers.push(`${(mx * i * 2).toFixed(1)}px ${(my * i * 2).toFixed(1)}px 0px #1a1a1a`);
       }
-      // Massive drop shadow
       layers.push(`${(mx * 16 * 2).toFixed(1)}px ${(my * 16 * 2).toFixed(1)}px 40px rgba(0,0,0,0.9)`);
       return layers.join(', ');
     }
@@ -1029,7 +1055,6 @@
       }, []);
       
       const rotate = useTransform(scrollYProgress, [0, 1], [22, 0]);
-      // Slightly larger scale on mobile to prevent it from looking too small
       const scale = useTransform(scrollYProgress, [0, 1], isMobile ? [0.9, 1] : [1.06, 1]);
       const translate = useTransform(scrollYProgress, [0, 1], [0, -100]);
 
@@ -1142,7 +1167,7 @@
       const stats = [
         { num: '200', unit: 'units', label: 'Max per run — ever' },
         { num: '100', unit: '%', label: 'Organic cotton always' },
-        { num: '3', unit: 'guys', label: 'Founded in 2026' },
+        { num: '26', unit: 'est', label: 'Founded in 2026' },
         { num: '0', unit: 'x', label: 'Mass production. Never.' }
       ];
       
@@ -1219,7 +1244,7 @@
           <div style={{ maxWidth: 900, margin: '0 auto', position: 'relative', zIndex: 1 }}>
             <span className="section-label reveal">Our Philosophy</span>
             <p className="manifesto-q reveal reveal-d1">
-              <em>"Two colors.</em> Zero compromise. <em>Complexity lives in the structure,</em> not the palette."
+              <em>Predict the future,</em><br/>you didn't come<br/><em>this far to stop.</em>
             </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginTop: '3rem' }} className="reveal reveal-d2">
               <div style={{ width: 50, height: 1.5, background: 'rgba(255,255,255,0.3)' }} />
@@ -1276,7 +1301,7 @@
           <canvas ref={ref} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }} />
           <div style={{ position: 'relative', zIndex: 1 }}>
             <span className="section-label reveal" style={{ margin: '0 auto 2rem', display: 'table' }}>Enter The Store</span>
-            <h2 className="dyn-title chrome-effect reveal reveal-d1" style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(44px,8vw,110px)', letterSpacing: '-0.03em', lineHeight: 0.9, marginBottom: '3rem' }}>
+            <h2 className="dyn-title chrome-effect reveal reveal-d1" style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(40px,8vw,110px)', letterSpacing: '-0.03em', lineHeight: 1.1, marginBottom: '3rem' }}>
               Ready to upgrade<br />your wardrobe?
             </h2>
             <br />
@@ -1301,7 +1326,7 @@
       return (
         <header className={scrolled ? 'scrolled' : ''}>
           <a href="/" style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', padding: 0, paddingLeft: 10, textDecoration: 'none' }}>
-            <img src="favicon.png" alt="Splotch" style={{ height: 32, width: 'auto', display: 'block', objectFit: 'contain', transform: 'scale(2.2)', transformOrigin: 'left center', filter: 'invert(1)' }} />
+            <img src="favicon.png" alt="Splotch" style={{ height: 32, width: 'auto', display: 'block', transform: 'scale(2.2)', transformOrigin: 'left center', filter: 'invert(1)' }} />
           </a>
           <nav className="desk-nav" style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
             <a href="/" className="nl" style={{ color: '#fff' }}>HOME</a>
@@ -1324,7 +1349,7 @@
       return (
         <div className="mob-menu" style={{ position: 'fixed', inset: 0, zIndex: 600, background: '#0a0a0a', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '3rem 2rem', transform: open ? 'translateX(0)' : 'translateX(100%)', transition: 'transform .4s cubic-bezier(.76,0,.24,1)' }}>
           <button onClick={() => setOpen(false)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: '1.5px solid rgba(255,255,255,0.2)', width: 42, height: 42, color: '#fff', fontSize: 18, fontWeight: 700 }}>✕</button>
-          <img src="favicon.png" alt="Splotch" style={{ height: 48, width: 'auto', objectFit: 'contain', marginBottom: '3rem', opacity: 0.8, filter: 'invert(1)' }} />
+          <img src="favicon.png" alt="Splotch" style={{ height: 48, width: 'auto', marginBottom: '3rem', opacity: 0.8, filter: 'invert(1)' }} />
           <a href="/" style={btnSt}>HOME</a>
           <a href="/shop.html" style={btnSt}>SHOP</a>
           <a href="/about.html" style={btnSt}>ABOUT</a>
@@ -1345,7 +1370,7 @@
               <p style={{ marginBottom: "1rem" }}><strong>1. General Conditions</strong><br/>By visiting our site and/or purchasing something from us, you engage in our "Service" and agree to be bound by the following terms and conditions. Splotch reserves the right to refuse service to anyone for any reason at any time.</p>
               <p style={{ marginBottom: "1rem" }}><strong>2. Products & Exclusivity</strong><br/>All Splotch runs are strictly limited. We do not mass produce. Once an item is sold out, it is permanently archived. We have made every effort to display as accurately as possible the colors and images of our products.</p>
               <p style={{ marginBottom: "1rem" }}><strong>3. Billing & Accuracy</strong><br/>You agree to provide current, complete and accurate purchase and account information for all purchases made at our store.</p>
-              <p style={{ marginBottom: "1rem" }}><strong>4. Returns & Refunds</strong><br/>We maintain a strict 7-day return policy. Returns and refunds are only allowed within 7 days of receiving the product. Items must be unworn, unwashed, and in original packaging. Use the "Request Return" link in the footer to initiate the process.</p>
+              <p style={{ marginBottom: "1rem" }}><strong>4. Returns & Refunds</strong><br/>We maintain a strict 7-day return policy. Returns and refunds are only allowed within 7 days of receiving the product. Items must be unworn, unwashed, and in original packaging. Use the "Request Return" button to initiate the process.</p>
             </div>
           </div>
         </div>
@@ -1415,13 +1440,6 @@
       const [returnOpen, setReturnOpen] = useState(false);
       
       useEffect(() => {
-        console.log(
-          "%c[SYSTEM_ROOT] ACCESS GRANTED\n%c // ENGINEERED BY DUDEFROMALHIEM \n%c WELCOME TO THE NEXT FRONTIER OF STREETWEAR. Z E R O  C O M P R O M I S E.\n%c Dudefromalhiem made this. If you are reading this, welcome.",
-          "color: #c00; font-size: 20px; font-weight: 900;","color: #fff; font-size: 13px; font-weight: 700; background: #111; padding: 4px; margin-top: 5px; display: inline-block;","color: #666; font-size: 11px; font-style: italic; margin-top: 5px; display: inline-block;","color: #c00; font-size: 10px; font-weight: 700; margin-top: 15px; display: block;"
-        );
-      }, []);
-
-      useEffect(() => {
         const obs = new IntersectionObserver(entries => {
           entries.forEach(e => {
             if (e.isIntersecting) e.target.classList.add('visible');
@@ -1438,7 +1456,7 @@
       }, []);
 
       return (
-        <div style={{ minHeight: '100vh', background: '#111' }}>
+        <div style={{ minHeight: '100vh', background: '#111', overflowX: 'hidden', position: 'relative' }}>
           <ScrollProgress />
           <Cursor />
           <Header mobMenu={mobMenu} setMobMenu={setMobMenu} />
@@ -1479,7 +1497,6 @@
               <a onClick={() => setReturnOpen(true)}>Request Return</a>
               <a href="https://www.instagram.com/splotchglobal" target="_blank">Instagram</a>
               <a href="https://x.com/splotchglobal" target="_blank">Twitter</a>
-              <a href="/about.html">About</a>
             </div>
             <div style={{display: 'flex', alignItems: 'center'}}>
                <span className="ghost-credit" style={{marginRight: "10px"}}>// Engineered by Dudefromalhiem</span>
