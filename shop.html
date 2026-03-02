@@ -158,7 +158,6 @@
     .reveal.visible { opacity: 1; transform: translateY(0); }
     .reveal-d1 { transition-delay: 0.08s; } .reveal-d2 { transition-delay: 0.2s; } .reveal-d3 { transition-delay: 0.32s; } .reveal-d4 { transition-delay: 0.44s; }
     
-    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     
     .admin-input:focus, .drop-zone.over { border-color: #111 !important; }
@@ -172,11 +171,11 @@
     .footer-animated-bg::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center 30%,transparent 10%,#111 80%); pointer-events: none; z-index: 0; }
     
     .cyber-text-container { perspective: 1000px; display: inline-block; position: relative; z-index: 2; }
-    .cyber-text { color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,0.2); background: linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.8) 50%,transparent 100%); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; animation: textShine 5s linear infinite; transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); cursor: crosshair; position: relative; display: inline-block; padding-bottom: 0.15em; }
+    .cyber-text { color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,0.2); background: linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.8) 50%,transparent 100%); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; animation: textShine 5s linear infinite; transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); cursor: crosshair; position: relative; display: inline-block; }
     @keyframes textShine { 0%{background-position:200% center} 100%{background-position:-200% center} }
     .cyber-text:hover { transform: translateZ(40px) rotateX(15deg) skewX(-5deg); -webkit-text-stroke: 1.5px rgba(255,255,255,0.9); text-shadow: 0 0 20px rgba(255,255,255,0.5),-3px 3px 0 rgba(200,0,0,0.8),3px -3px 0 rgba(0,200,255,0.8); }
     
-    .ghost-credit { opacity: 0.15; transition: opacity 0.4s ease; cursor: crosshair; }
+    .ghost-credit { opacity: 0.15; transition: opacity 0.4s ease; cursor: pointer; }
     .ghost-credit:hover { opacity: 0.8; }
     
     .social-link { color: rgba(255,255,255,0.3); text-decoration: none; transition: color 0.3s,transform 0.3s; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; }
@@ -249,10 +248,10 @@
     .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #111; border: 2px solid #111; }
     .testi-card { background: #fff; padding: 2.5rem 1.8rem; transition: background 0.25s, color 0.25s, transform 0.2s; }
     .testi-card:hover { background: #111; color: #fff; }
-    .testi-card:hover .testi-q { color: rgba(255,255,255,0.8); }
-    .testi-card:hover .testi-name { color: #fff; }
-    .testi-card:hover .testi-res { color: rgba(255,255,255,0.5); }
-    .testi-card:hover .testi-quote-mark { color: rgba(255,255,255,0.1); }
+    .testi-card:hover .testi-q { color: rgba(255,255,255,0.8) !important; }
+    .testi-card:hover .testi-name { color: #fff !important; }
+    .testi-card:hover .testi-res { color: rgba(255,255,255,0.5) !important; }
+    .testi-card:hover .testi-quote-mark { color: rgba(255,255,255,0.1) !important; }
 
     @media (max-width: 768px) {
       .desk-nav { display: none !important; }
@@ -265,23 +264,10 @@
     @media (min-width: 769px) { 
       .mob-ham, .mob-menu { display: none !important; } 
     }
-    /* Testimonials Hover & Mobile Border Fix */
-.testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #111; border: 2px solid #111; }
-.testi-card { background: #fff; padding: 2.5rem 1.8rem; transition: background 0.25s, color 0.25s, transform 0.2s; }
-.testi-card:hover { background: #111; color: #fff; }
-.testi-card:hover .testi-q { color: rgba(255,255,255,0.8) !important; }
-.testi-card:hover .testi-name { color: #fff !important; }
-.testi-card:hover .testi-res { color: rgba(255,255,255,0.5) !important; }
-.testi-card:hover .testi-quote-mark { color: rgba(255,255,255,0.1) !important; }
-
-@media (max-width: 768px) {
-  .testi-grid { grid-template-columns: 1fr !important; }
-}
   </style>
 </head>
 <body>
   <div id="progress"></div>
-  <div class="cursor-dot" id="cursor"></div>
   <div class="grain"></div>
   <div id="root"></div>
 
@@ -390,18 +376,6 @@
         return()=>window.removeEventListener("scroll",fn);
       },[]);
       return <div style={{position:"fixed",top:0,left:0,height:3,width:w+"%",background:"var(--R)",zIndex:999,transition:"width .1s linear"}}/>;
-    }
-
-    function Ticker() {
-      const items=["STYLE BEYOND SEASONS","—","COLLECTION 001","—","MADE IN INDIA","—","LIMITED RUNS. NO RESTOCKS.","—","splotch.in","—"];
-      const d=[...items,...items];
-      return (
-        <div style={{background:"#111",height:28,overflow:"hidden",display:"flex",alignItems:"center",borderBottom:"2px solid #222",position:"sticky",top:48,zIndex:499}}>
-          <div style={{display:"flex",animation:"ticker 32s linear infinite",whiteSpace:"nowrap"}}>
-            {d.map((t,i)=><span key={i} style={{marginRight:"2rem",fontSize:9,fontWeight:700,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(255,255,255,0.45)",flexShrink:0}}>{t}</span>)}
-          </div>
-        </div>
-      );
     }
 
     function TermsModal({ onClose }) {
@@ -1383,6 +1357,7 @@
                   <button onClick={()=>{setPortForm({...blankPort,order:portfolio.length});setPortEditId("new");}} style={{width:"100%",padding:"15px",background:"#111",color:"#fff",fontWeight:900,marginBottom:"1rem",cursor:"pointer"}}>+ ADD PORTFOLIO ITEM</button>
                   {portfolio.map(p=>(
                     <div key={p.id} onClick={()=>{
+                        // ensure backwards compatibility with old image field
                         const imgs = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
                         setPortForm({...p, images: imgs});
                         setPortEditId(p.id);

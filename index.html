@@ -240,6 +240,18 @@
       transform: translate(-1px,-1px);
     }
 
+    .logo-btn { 
+      background: none; 
+      border: none; 
+      display: block; 
+      padding: 0; 
+      position: relative; 
+      padding-left: 10px; 
+      text-decoration: none; 
+      cursor: pointer; 
+    }
+    .logo-btn:focus { outline: none; }
+
     @media (max-width: 768px) {
       .desk-nav { display: none !important; }
       .mob-ham {
@@ -252,6 +264,7 @@
         align-items: center;
         justify-content: center;
         gap: 5px;
+        cursor: pointer;
       }
       .mob-ham span {
         display: block;
@@ -295,6 +308,7 @@
       user-select: none;
       position: relative;
       z-index: 3;
+      transition: text-shadow 0.06s linear;
     }
     
     .hero-sub-text {
@@ -658,35 +672,11 @@
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      -webkit-text-stroke: 1px rgba(255,255,255,0.1);
-      filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.5));
+      -webkit-text-stroke: 1px rgba(0,0,0,0.2);
+      filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.15));
       display: inline-block;
       padding-bottom: 0.15em;
-    }
-    
-    .cyber-text {
-      color: transparent;
-      -webkit-text-stroke: 1.5px rgba(255,255,255,0.2);
-      background: linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.8) 50%,transparent 100%);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      background-clip: text;
-      animation: textShine 5s linear infinite;
-      transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
-      position: relative;
-      display: inline-block;
-      padding-bottom: 0.15em;
-    }
-    
-    @keyframes textShine { 
-      0%{background-position:200% center} 
-      100%{background-position:-200% center} 
-    }
-    
-    .cyber-text:hover { 
-      transform: translateZ(40px) rotateX(15deg) skewX(-5deg); 
-      -webkit-text-stroke: 1.5px rgba(255,255,255,0.9); 
-      text-shadow: 0 0 20px rgba(255,255,255,0.5),-3px 3px 0 rgba(200,0,0,0.8),3px -3px 0 rgba(0,200,255,0.8); 
+      line-height: 1.2;
     }
     
     .cta-btn {
@@ -737,6 +727,15 @@
       color: #fff;
     }
 
+    .ghost-credit {
+      opacity: 0.15;
+      transition: opacity 0.4s ease;
+      cursor: pointer;
+    }
+    .ghost-credit:hover {
+      opacity: 0.8;
+    }
+
     .reveal {
       opacity: 0;
       transform: translateY(36px);
@@ -755,9 +754,6 @@
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: #111; }
     ::-webkit-scrollbar-thumb { background: #fff; }
-
-    .ghost-credit { opacity: 0.15; transition: opacity 0.4s ease; cursor: pointer; }
-    .ghost-credit:hover { opacity: 0.8; }
 
     /* Modal Standard Styles */
     .modal-overlay {
@@ -802,18 +798,6 @@
       .ticker-inner { animation-duration: 12s !important; }
       .scroll-band-inner { animation-duration: 10s !important; }
     }
-    /* Testimonials Hover & Mobile Border Fix */
-.testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #111; border: 2px solid #111; }
-.testi-card { background: #fff; padding: 2.5rem 1.8rem; transition: background 0.25s, color 0.25s, transform 0.2s; }
-.testi-card:hover { background: #111; color: #fff; }
-.testi-card:hover .testi-q { color: rgba(255,255,255,0.8) !important; }
-.testi-card:hover .testi-name { color: #fff !important; }
-.testi-card:hover .testi-res { color: rgba(255,255,255,0.5) !important; }
-.testi-card:hover .testi-quote-mark { color: rgba(255,255,255,0.1) !important; }
-
-@media (max-width: 768px) {
-  .testi-grid { grid-template-columns: 1fr !important; }
-}
   </style>
 </head>
 <body>
@@ -947,7 +931,7 @@
         window.addEventListener('mousedown', down);
         window.addEventListener('mouseup', up);
         
-        document.querySelectorAll('a,button,.display-card-link,select,input').forEach(n => {
+        document.querySelectorAll('a,button,input,select,.display-card-link').forEach(n => {
           n.addEventListener('mouseenter', hover);
           n.addEventListener('mouseleave', unhover);
         });
@@ -976,14 +960,18 @@
       return null;
     }
 
+    // AGGRESSIVE 3D SHADOW SYSTEM FOR MAIN PAGE
     function buildAggressive3D(mx, my) {
       const layers = [];
+      // Deep red extrusion
       for(let i=1; i<=8; i++) {
         layers.push(`${(mx * i * 2).toFixed(1)}px ${(my * i * 2).toFixed(1)}px 0px #DC1C1C`);
       }
+      // Dark grey deep extrusion
       for(let i=9; i<=14; i++) {
         layers.push(`${(mx * i * 2).toFixed(1)}px ${(my * i * 2).toFixed(1)}px 0px #1a1a1a`);
       }
+      // Massive drop shadow
       layers.push(`${(mx * 16 * 2).toFixed(1)}px ${(my * 16 * 2).toFixed(1)}px 40px rgba(0,0,0,0.9)`);
       return layers.join(', ');
     }
@@ -992,9 +980,10 @@
       const canvasRef = useRef(null);
       useCanvasBg(canvasRef);
       
-      const [smooth, setSmooth] = useState({ x: 0, y: 0 });
-      const targetRef = useRef({ x: 0, y: 0 });
-      const curRef = useRef({ x: 0, y: 0 });
+      // Start slightly off-center so the 3D effect is visible immediately on mobile
+      const [smooth, setSmooth] = useState({ x: 0.6, y: 0.6 });
+      const targetRef = useRef({ x: 0.6, y: 0.6 });
+      const curRef = useRef({ x: 0.6, y: 0.6 });
       const rafRef = useRef(null);
       
       useEffect(() => {
@@ -1015,9 +1004,17 @@
           y: (e.clientY / window.innerHeight - 0.5) * 2
         };
       }, []);
+      
+      const onTouch = useCallback((e) => {
+        const touch = e.touches[0];
+        targetRef.current = {
+          x: (touch.clientX / window.innerWidth - 0.5) * 2,
+          y: (touch.clientY / window.innerHeight - 0.5) * 2
+        };
+      }, []);
 
       return (
-        <section id="hero" onMouseMove={onMove}>
+        <section id="hero" onMouseMove={onMove} onTouchMove={onTouch}>
           <canvas ref={canvasRef} id="bgCanvas" />
           <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.75) 100%)', zIndex: 2, pointerEvents: 'none' }} />
           
@@ -1067,6 +1064,7 @@
       }, []);
       
       const rotate = useTransform(scrollYProgress, [0, 1], [22, 0]);
+      // Scaled up for mobile visibility without breaking scroll
       const scale = useTransform(scrollYProgress, [0, 1], isMobile ? [0.9, 1] : [1.06, 1]);
       const translate = useTransform(scrollYProgress, [0, 1], [0, -100]);
 
@@ -1152,7 +1150,7 @@
               {Array.from({length:8}).map((_,i) => <div key={i} className="ps-shimmer" />)}
             </div>
           ) : (
-            <a href="/shop.html" style={{ textDecoration:'none', display:'block', cursor:'none', height: '100%', zIndex: 20, position: 'relative' }}>
+            <a href="/shop.html" style={{ textDecoration:'none', display:'block', cursor:'pointer', height: '100%', zIndex: 20, position: 'relative' }}>
               <div className="ps-track">
                 {cards.map((c, i) => (
                   <div key={i} className="ps-card">
@@ -1179,7 +1177,7 @@
       const stats = [
         { num: '200', unit: 'units', label: 'Max per run — ever' },
         { num: '100', unit: '%', label: 'Organic cotton always' },
-        { num: '26', unit: 'est', label: 'Founded in 2026' },
+        { num: '3', unit: 'guys', label: 'Founded in 2026' },
         { num: '0', unit: 'x', label: 'Mass production. Never.' }
       ];
       
@@ -1337,9 +1335,9 @@
       
       return (
         <header className={scrolled ? 'scrolled' : ''}>
-          <a href="/" style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', padding: 0, paddingLeft: 10, textDecoration: 'none' }}>
+          <button className="logo-btn" onClick={(e) => e.preventDefault()} title="Splotch" style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', padding: 0, paddingLeft: 10, textDecoration: 'none', cursor: 'default' }}>
             <img src="favicon.png" alt="Splotch" style={{ height: 32, width: 'auto', display: 'block', transform: 'scale(2.2)', transformOrigin: 'left center', filter: 'invert(1)' }} />
-          </a>
+          </button>
           <nav className="desk-nav" style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
             <a href="/" className="nl" style={{ color: '#fff' }}>HOME</a>
             <a href="/shop.html" className="nl" style={{ color: 'rgba(255,255,255,0.65)' }}>SHOP</a>
@@ -1360,8 +1358,8 @@
       
       return (
         <div className="mob-menu" style={{ position: 'fixed', inset: 0, zIndex: 600, background: '#0a0a0a', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '3rem 2rem', transform: open ? 'translateX(0)' : 'translateX(100%)', transition: 'transform .4s cubic-bezier(.76,0,.24,1)' }}>
-          <button onClick={() => setOpen(false)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: '1.5px solid rgba(255,255,255,0.2)', width: 42, height: 42, color: '#fff', fontSize: 18, fontWeight: 700 }}>✕</button>
-          <img src="favicon.png" alt="Splotch" style={{ height: 48, width: 'auto', marginBottom: '3rem', opacity: 0.8, filter: 'invert(1)' }} />
+          <button onClick={() => setOpen(false)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: '1.5px solid rgba(255,255,255,0.2)', width: 42, height: 42, color: '#fff', fontSize: 18, fontWeight: 700, cursor: 'pointer' }}>✕</button>
+          <img src="favicon.png" alt="Splotch" style={{ height: 48, width: 'auto', objectFit: 'contain', marginBottom: '3rem', opacity: 0.8, filter: 'invert(1)' }} />
           <a href="/" style={btnSt}>HOME</a>
           <a href="/shop.html" style={btnSt}>SHOP</a>
           <a href="/about.html" style={btnSt}>ABOUT</a>
@@ -1452,19 +1450,33 @@
       const [returnOpen, setReturnOpen] = useState(false);
       
       useEffect(() => {
+        console.log(
+          "%c[SYSTEM_ROOT] ACCESS GRANTED\n%c // ENGINEERED BY DUDEFROMALHIEM \n%c WELCOME TO THE NEXT FRONTIER OF STREETWEAR. Z E R O  C O M P R O M I S E.\n%c Dudefromalhiem made this. If you are reading this, welcome.",
+          "color: #c00; font-size: 20px; font-weight: 900;","color: #fff; font-size: 13px; font-weight: 700; background: #111; padding: 4px; margin-top: 5px; display: inline-block;","color: #666; font-size: 11px; font-style: italic; margin-top: 5px; display: inline-block;","color: #c00; font-size: 10px; font-weight: 700; margin-top: 15px; display: block;"
+        );
+      }, []);
+
+      useEffect(() => {
+        const bar = document.getElementById('progress');
+        const fn = () => {
+          if (bar) bar.style.width = (window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100) + '%';
+        };
+        window.addEventListener('scroll', fn, { passive: true });
+        
         const obs = new IntersectionObserver(entries => {
           entries.forEach(e => {
             if (e.isIntersecting) e.target.classList.add('visible');
           });
         }, { threshold: 0.08 });
         
-        const fn = () => {
-          document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-        };
+        const attach = () => document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+        attach();
+        setTimeout(attach, 300);
         
-        fn();
-        setTimeout(fn, 500);
-        return () => obs.disconnect();
+        return () => {
+          window.removeEventListener('scroll', fn);
+          obs.disconnect();
+        };
       }, []);
 
       return (
@@ -1473,9 +1485,6 @@
           <Cursor />
           <Header mobMenu={mobMenu} setMobMenu={setMobMenu} />
           <MobMenu open={mobMenu} setOpen={setMobMenu} />
-
-          <Hero />
-          <Ticker />
 
           <section id="scroll-section">
             <ContainerScroll
@@ -1504,7 +1513,7 @@
 
           <footer>
             <img src="favicon.png" alt="Splotch" style={{ height: 26, filter: 'invert(1)', opacity: 0.35 }} />
-            <div style={{ display: 'flex', gap: '2rem' }}>
+            <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
               <a onClick={() => setTermsOpen(true)}>Terms & Conditions</a>
               <a onClick={() => setReturnOpen(true)}>Request Return</a>
               <a href="https://www.instagram.com/splotchglobal" target="_blank">Instagram</a>
