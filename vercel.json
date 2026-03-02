@@ -1,9 +1,19 @@
 {
-  "cleanUrls": true,
   "redirects": [
     {
       "source": "/unisex",
-      "destination": "/index.html",
+      "destination": "/#shop",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "splotch.vercel.app"
+        }
+      ],
+      "destination": "https://splotch.in/$1",
       "permanent": true
     }
   ],
