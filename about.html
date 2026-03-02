@@ -3,184 +3,419 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About | Splotch Urban Techwear</title>
+
+  <meta name="google-site-verification" content="O_5PvbzTUcfIR6BAsC8lE8vyy0nEluGbPNQgihyIveg" />
+  <title>About | Splotch — Bangalore Streetwear</title>
+  <meta name="description" content="Splotch is an independent streetwear brand engineered in Bangalore, India. Created in 2026 by 3 guys. Read our story, philosophy, and principles.">
+  <meta name="keywords" content="about splotch, streetwear india, bangalore fashion brand, contemporary apparel story, independent fashion india, oversized t-shirts">
+  <link rel="canonical" href="https://splotch.in/about.html">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://splotch.in/about.html">
+  <meta property="og:title" content="About Splotch | Bangalore Streetwear">
+  <meta property="og:description" content="The story behind Splotch. Zero compromise. Created in 2026 by 3 guys.">
+  <meta property="og:image" content="https://splotch.vercel.app/splotch-og-image.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Splotch",
+    "url": "https://splotch.in/about.html",
+    "logo": "https://splotch.in/favicon.png",
+    "foundingDate": "2026",
+    "description": "An independent streetwear brand engineered in Bangalore, India. Created by 3 guys.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Bangalore",
+      "addressCountry": "IN"
+    }
+  }
+  </script>
+
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+  
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <style>
-    /* CUSTOM ELASTIC CURSOR */
-    @media (pointer: fine) {
-      body, button, a, input, textarea, select, img { cursor: none !important; }
-      *, *::before, *::after { cursor: none !important; }
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    try {
+      const app = initializeApp({
+        apiKey: "AIzaSyCeq4FeU1LQKTyZAIJd7HL834rEUqQ0eTQ",
+        authDomain: "splotchclothing.firebaseapp.com",
+        projectId: "splotchclothing",
+        storageBucket: "splotchclothing.firebasestorage.app",
+        messagingSenderId: "791501370137",
+        appId: "1:791501370137:web:4ccc972b997d9d06f8cb88"
+      });
+      window.landingDb = getFirestore(app);
+      window.landingCollection = collection;
+      window.landingAddDoc = addDoc;
+    } catch(e) { 
+      console.warn('Firebase init failed:', e); 
     }
-    @media (pointer: coarse) {
-      .cursor-dot { display: none !important; }
-    }
-    
-    :root { --B: #111111; --W: #FFFFFF; }
-    html { scroll-behavior: smooth; }
-    body { background: var(--W); color: var(--B); font-family: 'Inter', sans-serif; overflow-x: hidden; }
-    ::selection { background: var(--B); color: var(--W); }
-
-    .cursor-dot {
-      position: fixed; top: 0; left: 0; width: 28px; height: 28px; border: 2px solid #fff;
-      border-radius: 50% !important; transform: translate(-50%, -50%); pointer-events: none;
-      z-index: 99999; mix-blend-mode: difference;
-      transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), height 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .cursor-dot.pulse { width: 10px; height: 10px; background-color: #fff; }
-
-    /* DYNAMIC TITLES (No Shadow) */
-    .dyn-title { display: inline-block; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); }
-    .dyn-title:hover { transform: translate(-4px, -4px); }
-
-    /* HEADER */
-    header { position: sticky; top: 0; z-index: 500; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; transition: box-shadow 0.3s, background 0.3s; }
-    .glass-nav { background: rgba(255, 255, 255, 0.65) !important; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
-    
-    .nav-signin { background: #111; color: #fff; border: 2px solid #111; padding: 6px 14px; font-size: 9px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; transition: all 0.2s; text-decoration: none; }
-    .nav-signin:hover { background: transparent; color: #111; }
-
-    .nl { position: relative; color: #111; text-decoration: none; font-weight: 700; font-size: 10px; letter-spacing: 0.18em; }
-    .nl::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #111; transition: width 0.2s; }
-    .nl:hover::after { width: 100%; }
-
-    .grain-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9998; opacity: 0.15; background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E'); }
-    
-    .content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; padding: 6rem 2rem; border-bottom: 2px solid #111; }
-    .manifesto-box { border: 2px solid #111; padding: 3rem; background: #fafafa; position: relative; }
-    .manifesto-box::before { content: 'MANIFESTO'; position: absolute; top: -10px; left: 20px; background: #111; color: #fff; font-size: 8px; font-weight: 900; padding: 2px 8px; letter-spacing: 0.2em; }
-
-    ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: #fff; } ::-webkit-scrollbar-thumb { background: #111; }
-    img { -webkit-user-select: none; user-select: none; }
-
-    @media (max-width: 768px) { 
-      .content-grid { grid-template-columns: 1fr; gap: 2rem; } 
-      .desk-nav { display: none !important; }
-    }
-  </style>
-</head>
-<body>
-  <div id="root"></div>
-
-  <script type="text/babel">
-    const { useState, useEffect } = React;
-
-    function CustomCursor() {
-      const [pulse, setPulse] = useState(false);
-      const [pos, setPos] = useState({ x: -100, y: -100 });
-      useEffect(() => {
-        const move = (e) => setPos({ x: e.clientX, y: e.clientY });
-        const down = () => setPulse(true);
-        const up = () => setPulse(false);
-        window.addEventListener('mousemove', move);
-        window.addEventListener('mousedown', down);
-        window.addEventListener('mouseup', up);
-        return () => { window.removeEventListener('mousemove', move); window.removeEventListener('mousedown', down); window.removeEventListener('mouseup', up); };
-      }, []);
-      return ( <div className={`cursor-dot ${pulse ? 'pulse' : ''}`} style={{ left: `${pos.x}px`, top: `${pos.y}px` }}></div> );
-    }
-
-    const TopoSVG = ({ color="#111" }) => (
-      <svg viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style={{ position:'absolute', top:0, left:0, width:'100%', height:'100%', opacity:0.07, pointerEvents:'none' }}>
-        {["M0,250 Q150,220 300,250 T600,235 T900,248 T1200,238", "M0,270 Q130,242 260,270 T520,255 T780,268 T1040,252 T1200,265"].map((d,i)=>( <path key={i} d={d} fill="none" stroke={color} strokeWidth={0.65}/> ))}
-      </svg>
-    );
-
-    function AboutPage() {
-      const [scrolled,setScrolled]=useState(false);
-      useEffect(()=>{
-        const fn=()=>setScrolled(window.scrollY>30);
-        window.addEventListener("scroll",fn,{passive:true});
-        return ()=>window.removeEventListener("scroll",fn);
-      },[]);
-
-      return (
-        <div style={{ minHeight: '100vh', background: '#fff' }}>
-          <CustomCursor />
-          <div className="grain-overlay"></div>
-          
-          <header className={scrolled ? "glass-nav" : ""} style={{ overflow:"visible" }}>
-            <a href="/" style={{ background:"none", border:"none", display:"flex", alignItems:"center", padding:0, position:"relative", paddingLeft:"10px", textDecoration:"none" }}>
-              <img src="favicon.png" alt="Splotch" style={{ height:32, width:"auto", display:"block", transform:"scale(2.2)", transformOrigin:"left center" }}/>
-            </a>
-            
-            <nav className="desk-nav" style={{ display:"flex", gap:"2.5rem", alignItems:"center" }}>
-              <a href="/" className="nl">HOME</a>
-              <a href="/#shop" className="nl">SHOP</a>
-              <a href="/about.html" className="nl">ABOUT</a>
-              <a href="/#contact" className="nl">CONTACT</a>
-            </nav>
-            
-            <div style={{ display:"flex", alignItems:"center", gap:"1.2rem" }}>
-              <a href="/" className="nav-signin desk-nav">SIGN IN</a>
-              <a href="/#shop" style={{ textDecoration:"none", background:"#111", color:"#fff", border:"2px solid #111", padding:"7px 14px", fontSize:10, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase" }}>
-                CART
-              </a>
-            </div>
-          </header>
-
-          <section style={{ position: 'relative', padding: '8rem 2rem', background: '#111', color: '#fff', overflow: 'hidden' }}>
-            <TopoSVG color="#fff" />
-            <h1 className="dyn-title" style={{ fontFamily: 'Playfair Display', fontSize: 'clamp(60px, 12vw, 180px)', fontStyle: 'italic', lineHeight: 0.85, position: 'relative', zIndex: 1 }}>
-              We Chart <br/> New Ground.
-            </h1>
-            <p style={{ marginTop: '2rem', fontSize: '14px', letterSpacing: '0.3em', fontWeight: 900, color: 'rgba(255,255,255,0.4)', position: 'relative', zIndex: 1 }}>EST. 2023 // BANGALORE, IN</p>
-          </section>
-
-          <section className="content-grid">
-            <div>
-              <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.3em', color: '#c00', marginBottom: '1.5rem' }}>THE ORIGIN</div>
-              <h2 className="dyn-title" style={{ fontFamily: 'Playfair Display', fontSize: '42px', marginBottom: '2rem' }}>Utility for the <br/>Urban Jungle.</h2>
-              <p style={{ lineHeight: 1.8, color: '#555', marginBottom: '1.5rem' }}>
-                Splotch was born from a single obsession: what does truly functional Indian streetwear look like? We moved away from chasing Western trends to focus on the terrain of our own cities.
-              </p>
-              <p style={{ lineHeight: 1.8, color: '#555' }}>
-                Every piece is engineered in our Bangalore studio. We don't just design clothes; we conceive systems—interconnected garments built for endurance, versatility, and aesthetic restraint.
-              </p>
-            </div>
-            <div className="manifesto-box">
-              <p style={{ fontFamily: 'Playfair Display', fontSize: '24px', fontStyle: 'italic', lineHeight: 1.5, color: '#111' }}>
-                "Two colors. Zero compromise. Complexity lives in the structure, not the palette. We don't make products—we make statements."
-              </p>
-              <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem' }}>
-                 <div style={{ width: '40px', height: '2px', background: '#111', alignSelf: 'center' }}></div>
-                 <span style={{ fontSize: '10px', fontWeight: 900, letterSpacing: '0.1em', color: '#111' }}>SPLOTCH DESIGN LAB</span>
-              </div>
-            </div>
-          </section>
-
-          <section style={{ padding: '6rem 2rem', textAlign: 'center', paddingBottom: '8rem' }}>
-             <h2 className="dyn-title" style={{ fontFamily: 'Playfair Display', fontSize: 'clamp(40px, 6vw, 80px)', marginBottom: '4rem', color: '#111' }}>The Principles.</h2>
-             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2px', background: '#111', border: '2px solid #111' }}>
-                {[
-                  { t: "INTENTION", d: "Every stitch is deliberate. If a feature doesn't serve a purpose, it doesn't exist." },
-                  { t: "LIMITED RUNS", d: "No mass production. We drop in limited quantities to ensure quality and exclusivity." },
-                  { t: "TERRITORY", d: "Inspired by topographic maps and urban blueprints. Charting new aesthetic territory." }
-                ].map(p => (
-                  <div key={p.t} style={{ background: '#fff', padding: '3rem 2rem', textAlign: 'left' }}>
-                    <h3 style={{ fontWeight: 900, fontSize: '12px', letterSpacing: '0.2em', marginBottom: '1rem', color: '#c00' }}>{p.t}</h3>
-                    <p style={{ fontSize: '14px', lineHeight: 1.6, color: '#666' }}>{p.d}</p>
-                  </div>
-                ))}
-             </div>
-          </section>
-          
-          <div style={{ background: '#111', padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem', borderTop: '2px solid #222' }}>
-            <img src="favicon.png" alt="Splotch" style={{ height: 28, filter: 'invert(1)', opacity: 0.6 }} />
-            <p style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)' }}>
-              © 2026 Splotch. All rights reserved.
-            </p>
-          </div>
-
-        </div>
-      );
-    }
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<AboutPage />);
   </script>
-</body>
-</html>
+
+  <style>
+    :root {
+      --B:#111111;
+      --W:#FFFFFF;
+      --R:#DC1C1C;
+    }
+    
+    *, *::before, *::after {
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+    
+    html {
+      scroll-behavior:smooth;
+    }
+    
+    body {
+      background:var(--W);
+      color:var(--B);
+      font-family:'Inter',sans-serif;
+      overflow-x:hidden;
+    }
+    
+    ::selection {
+      background:var(--B);
+      color:var(--W);
+    }
+
+    @media (pointer: fine) {
+      body,button,a,*,*::before,*::after {
+        cursor:none !important;
+      }
+    }
+    
+    @media (pointer: coarse) {
+      .cursor-dot {
+        display:none !important;
+      }
+    }
+    
+    .cursor-dot {
+      position:fixed;
+      width:24px;
+      height:24px;
+      border:1.5px solid #fff;
+      border-radius:50% !important;
+      transform:translate(-50%,-50%);
+      pointer-events:none;
+      z-index:99999;
+      mix-blend-mode:difference;
+      transition:width .25s cubic-bezier(.175,.885,.32,1.275), height .25s;
+      top:0;
+      left:0;
+    }
+    
+    .cursor-dot.hovered {
+      width:44px;
+      height:44px;
+    }
+    
+    .cursor-dot.clicked {
+      width:8px;
+      height:8px;
+      background:#fff;
+    }
+
+    .grain {
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:9998;
+      opacity:0.12;
+      background-image:url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E');
+    }
+
+    header {
+      position:sticky;
+      top:0;
+      z-index:500;
+      height:52px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 2rem;
+      border-bottom:1.5px solid rgba(17,17,17,0.12);
+      background:rgba(255,255,255,0.85);
+      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+      transition:border-color .3s, background .3s;
+    } 
+    
+    header.scrolled {
+      background:rgba(255,255,255,0.97);
+      border-color:rgba(17,17,17,0.18);
+      box-shadow:0 1px 0 rgba(0,0,0,0.06);
+    }
+    
+    .nl {
+      position:relative;
+      color:rgba(17,17,17,0.55);
+      text-decoration:none;
+      font-weight:700;
+      font-size:9.5px;
+      letter-spacing:0.22em;
+      text-transform:uppercase;
+      transition:color .2s;
+    }
+    
+    .nl:hover { color:#111; }
+    .nl.active-link { color:#111; }
+    .nl::after { content:''; position:absolute; bottom:-2px; left:0; width:0; height:1.5px; background:#111; transition:width .2s; }
+    .nl:hover::after, .nl.active-link::after { width:100%; }
+    
+    .enter-btn {
+      background:#111;
+      color:#fff;
+      border:none;
+      padding:8px 18px;
+      font-size:9px;
+      font-weight:900;
+      letter-spacing:0.22em;
+      text-transform:uppercase;
+      text-decoration:none;
+      display:inline-block;
+      transition:background .2s, transform .15s;
+    }
+    
+    .enter-btn:hover {
+      background:var(--R);
+      transform:translate(-1px,-1px);
+    }
+
+    @media (max-width: 768px) {
+      .desk-nav { display:none !important; }
+      .mob-ham {
+        display:flex !important;
+        background:none;
+        border:1.5px solid rgba(17,17,17,0.25);
+        width:36px;
+        height:36px;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        gap:5px;
+      }
+      .mob-ham span { display:block; width:14px; height:1.5px; background:#111; }
+    }
+    
+    @media (min-width: 769px) {
+      .mob-ham, .mob-menu { display:none !important; }
+    }
+
+    #progress {
+      position:fixed;
+      top:0;
+      left:0;
+      height:2px;
+      background:var(--R);
+      z-index:9997;
+      width:0%;
+      transition:width .1s linear;
+    }
+
+    #about-hero {
+      position:relative;
+      background:#111;
+      color:#fff;
+      padding:9rem 2rem 7rem;
+      overflow:hidden;
+      border-bottom:2px solid #111;
+    }
+    
+    #about-hero canvas {
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      pointer-events:none;
+    }
+    
+    .about-hero-inner {
+      position:relative;
+      z-index:2;
+      max-width:1200px;
+      margin:0 auto;
+    }
+    
+    .about-h1 {
+      font-family:'Playfair Display',serif;
+      font-style:italic;
+      font-weight:700;
+      font-size:clamp(56px,12vw,170px);
+      line-height:0.88;
+      letter-spacing:-0.04em;
+      color:#fff;
+    }
+    
+    .about-badge {
+      display:inline-block;
+      border:1px solid rgba(255,255,255,0.15);
+      padding:4px 12px;
+      font-size:8px;
+      font-weight:700;
+      letter-spacing:0.3em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,0.35);
+      margin-bottom:1.5rem;
+    }
+
+    .slabel {
+      font-size:9px;
+      font-weight:700;
+      letter-spacing:0.35em;
+      text-transform:uppercase;
+      border-left:2px solid rgba(17,17,17,0.15);
+      padding-left:10px;
+      color:rgba(17,17,17,0.35);
+      margin-bottom:2rem;
+      display:inline-block;
+    }
+    
+    .slabel.inv {
+      border-color:rgba(255,255,255,0.18);
+      color:rgba(255,255,255,0.3);
+    }
+
+    #origin {
+      padding:7rem 2rem;
+      border-bottom:2px solid #111;
+    }
+    
+    .origin-grid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:5rem;
+      align-items:start;
+      max-width:1200px;
+      margin:0 auto;
+    }
+    
+    @media (max-width:768px) {
+      .origin-grid { grid-template-columns:1fr; gap:3rem; }
+    }
+    
+    .manifesto-box {
+      border:2px solid #111;
+      padding:3rem;
+      background:#fafafa;
+      position:relative;
+    }
+    
+    .manifesto-box::before {
+      content:'MANIFESTO';
+      position:absolute;
+      top:-12px;
+      left:20px;
+      background:#111;
+      color:#fff;
+      font-size:7px;
+      font-weight:900;
+      padding:3px 10px;
+      letter-spacing:0.25em;
+    }
+
+    #numbers {
+      background:#111;
+      color:#fff;
+      padding:6rem 2rem;
+      border-top:2px solid #111;
+      border-bottom:2px solid #111;
+    }
+    
+    .numbers-grid {
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:0;
+      max-width:1200px;
+      margin:0 auto;
+    }
+    
+    @media (max-width:768px) {
+      .numbers-grid { grid-template-columns:1fr 1fr; }
+    }
+    
+    .num-cell {
+      padding:2.5rem 2rem;
+      border-right:1px solid rgba(255,255,255,0.07);
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    
+    .num-cell:last-child {
+      border-right:none;
+    }
+    
+    @media (max-width:768px) {
+      .num-cell:nth-child(2) { border-right:none; }
+      .num-cell:nth-child(3) { border-right:1px solid rgba(255,255,255,0.07); }
+    }
+    
+    .num-big {
+      font-family:'Playfair Display',serif;
+      font-style:italic;
+      font-size:clamp(48px,7vw,88px);
+      font-weight:700;
+      line-height:1;
+      color:#fff;
+    }
+    
+    .num-lbl {
+      font-size:9px;
+      font-weight:700;
+      letter-spacing:0.22em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,0.3);
+    }
+
+    #principles {
+      padding:7rem 2rem;
+      border-bottom:2px solid #111;
+    }
+    
+    .principles-grid {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:2px;
+      background:#111;
+      border:2px solid #111;
+      max-width:1200px;
+      margin:0 auto;
+    }
+    
+    @media (max-width:640px) {
+      .principles-grid { grid-template-columns:1fr; }
+    }
+    
+    .prin-card {
+      background:#fff;
+      padding:3rem 2rem;
+      transition:background .25s, color .25s, transform .2s;
+    }
+    
+    .prin-card:hover {
+      background:#111;
+      color:#fff;
+    }
+    
+    .prin-card:hover .prin-num { color:rgba(255,255,255,0.06); }
+    .prin-card:hover .prin-title { color:#fff; }
+    .prin-card:hover .prin-desc { color:rgba(255,255,255,0.5); }
+    
+    .prin-num {
+      font-family:'Playfair Display',serif;
+      font-style:italic;
+      font
