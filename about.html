@@ -64,358 +64,1079 @@
 
   <style>
     :root {
-      --B:#111111;
-      --W:#FFFFFF;
-      --R:#DC1C1C;
+      --B: #111111;
+      --W: #FFFFFF;
+      --R: #DC1C1C;
     }
     
     *, *::before, *::after {
-      box-sizing:border-box;
-      margin:0;
-      padding:0;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
     
     html {
-      scroll-behavior:smooth;
+      scroll-behavior: smooth;
     }
     
     body {
-      background:var(--W);
-      color:var(--B);
-      font-family:'Inter',sans-serif;
-      overflow-x:hidden;
+      background: var(--W);
+      color: var(--B);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
     }
     
     ::selection {
-      background:var(--B);
-      color:var(--W);
+      background: var(--B);
+      color: var(--W);
     }
 
     @media (pointer: fine) {
-      body,button,a,*,*::before,*::after {
-        cursor:none !important;
+      body, button, a, *, *::before, *::after {
+        cursor: none !important;
       }
     }
     
     @media (pointer: coarse) {
       .cursor-dot {
-        display:none !important;
+        display: none !important;
       }
     }
     
     .cursor-dot {
-      position:fixed;
-      width:24px;
-      height:24px;
-      border:1.5px solid #fff;
-      border-radius:50% !important;
-      transform:translate(-50%,-50%);
-      pointer-events:none;
-      z-index:99999;
-      mix-blend-mode:difference;
-      transition:width .25s cubic-bezier(.175,.885,.32,1.275), height .25s;
-      top:0;
-      left:0;
+      position: fixed;
+      width: 24px;
+      height: 24px;
+      border: 1.5px solid #fff;
+      border-radius: 50% !important;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 99999;
+      mix-blend-mode: difference;
+      transition: width 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), height 0.25s;
+      top: 0;
+      left: 0;
     }
     
     .cursor-dot.hovered {
-      width:44px;
-      height:44px;
+      width: 44px;
+      height: 44px;
     }
     
     .cursor-dot.clicked {
-      width:8px;
-      height:8px;
-      background:#fff;
+      width: 8px;
+      height: 8px;
+      background: #fff;
     }
 
     .grain {
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      z-index:9998;
-      opacity:0.12;
-      background-image:url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E');
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.12;
+      background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E');
     }
 
     header {
-      position:sticky;
-      top:0;
-      z-index:500;
-      height:52px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:0 2rem;
-      border-bottom:1.5px solid rgba(17,17,17,0.12);
-      background:rgba(255,255,255,0.85);
-      backdrop-filter:blur(16px);
-      -webkit-backdrop-filter:blur(16px);
-      transition:border-color .3s, background .3s;
+      position: sticky;
+      top: 0;
+      z-index: 500;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      border-bottom: 1.5px solid rgba(17, 17, 17, 0.12);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: border-color 0.3s, background 0.3s;
     } 
     
     header.scrolled {
-      background:rgba(255,255,255,0.97);
-      border-color:rgba(17,17,17,0.18);
-      box-shadow:0 1px 0 rgba(0,0,0,0.06);
+      background: rgba(255, 255, 255, 0.97);
+      border-color: rgba(17, 17, 17, 0.18);
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
     }
     
     .nl {
-      position:relative;
-      color:rgba(17,17,17,0.55);
-      text-decoration:none;
-      font-weight:700;
-      font-size:9.5px;
-      letter-spacing:0.22em;
-      text-transform:uppercase;
-      transition:color .2s;
+      position: relative;
+      color: rgba(17, 17, 17, 0.55);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 9.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+      cursor: pointer;
     }
     
-    .nl:hover { color:#111; }
-    .nl.active-link { color:#111; }
-    .nl::after { content:''; position:absolute; bottom:-2px; left:0; width:0; height:1.5px; background:#111; transition:width .2s; }
-    .nl:hover::after, .nl.active-link::after { width:100%; }
+    .nl:hover { color: #111; }
+    .nl.active-link { color: #111; }
+    .nl::after { 
+      content: ''; 
+      position: absolute; 
+      bottom: -2px; 
+      left: 0; 
+      width: 0; 
+      height: 1.5px; 
+      background: #111; 
+      transition: width 0.2s; 
+    }
+    .nl:hover::after, .nl.active-link::after { width: 100%; }
     
     .enter-btn {
-      background:#111;
-      color:#fff;
-      border:none;
-      padding:8px 18px;
-      font-size:9px;
-      font-weight:900;
-      letter-spacing:0.22em;
-      text-transform:uppercase;
-      text-decoration:none;
-      display:inline-block;
-      transition:background .2s, transform .15s;
+      background: #111;
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s, transform 0.15s;
+      cursor: pointer;
     }
     
     .enter-btn:hover {
-      background:var(--R);
-      transform:translate(-1px,-1px);
+      background: var(--R);
+      transform: translate(-1px, -1px);
     }
 
     @media (max-width: 768px) {
-      .desk-nav { display:none !important; }
+      .desk-nav { display: none !important; }
       .mob-ham {
-        display:flex !important;
-        background:none;
-        border:1.5px solid rgba(17,17,17,0.25);
-        width:36px;
-        height:36px;
-        flex-direction:column;
-        align-items:center;
-        justify-content:center;
-        gap:5px;
+        display: flex !important;
+        background: none;
+        border: 1.5px solid rgba(17, 17, 17, 0.25);
+        width: 36px;
+        height: 36px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        cursor: pointer;
       }
-      .mob-ham span { display:block; width:14px; height:1.5px; background:#111; }
+      .mob-ham span { display: block; width: 14px; height: 1.5px; background: #111; }
     }
     
     @media (min-width: 769px) {
-      .mob-ham, .mob-menu { display:none !important; }
+      .mob-ham, .mob-menu { display: none !important; }
     }
 
     #progress {
-      position:fixed;
-      top:0;
-      left:0;
-      height:2px;
-      background:var(--R);
-      z-index:9997;
-      width:0%;
-      transition:width .1s linear;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: var(--R);
+      z-index: 9997;
+      width: 0%;
+      transition: width 0.1s linear;
     }
 
     #about-hero {
-      position:relative;
-      background:#111;
-      color:#fff;
-      padding:9rem 2rem 7rem;
-      overflow:hidden;
-      border-bottom:2px solid #111;
+      position: relative;
+      background: #111;
+      color: #fff;
+      padding: 9rem 2rem 7rem;
+      overflow: hidden;
+      border-bottom: 2px solid #111;
     }
     
     #about-hero canvas {
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      pointer-events:none;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
     }
     
     .about-hero-inner {
-      position:relative;
-      z-index:2;
-      max-width:1200px;
-      margin:0 auto;
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      margin: 0 auto;
     }
     
     .about-h1 {
-      font-family:'Playfair Display',serif;
-      font-style:italic;
-      font-weight:700;
-      font-size:clamp(56px,12vw,170px);
-      line-height:0.88;
-      letter-spacing:-0.04em;
-      color:#fff;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-weight: 700;
+      font-size: clamp(56px, 12vw, 170px);
+      line-height: 0.88;
+      letter-spacing: -0.04em;
+      color: #fff;
     }
     
     .about-badge {
-      display:inline-block;
-      border:1px solid rgba(255,255,255,0.15);
-      padding:4px 12px;
-      font-size:8px;
-      font-weight:700;
-      letter-spacing:0.3em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,0.35);
-      margin-bottom:1.5rem;
+      display: inline-block;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 4px 12px;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.35);
+      margin-bottom: 1.5rem;
     }
 
     .slabel {
-      font-size:9px;
-      font-weight:700;
-      letter-spacing:0.35em;
-      text-transform:uppercase;
-      border-left:2px solid rgba(17,17,17,0.15);
-      padding-left:10px;
-      color:rgba(17,17,17,0.35);
-      margin-bottom:2rem;
-      display:inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      border-left: 2px solid rgba(17, 17, 17, 0.15);
+      padding-left: 10px;
+      color: rgba(17, 17, 17, 0.35);
+      margin-bottom: 2rem;
+      display: inline-block;
     }
     
     .slabel.inv {
-      border-color:rgba(255,255,255,0.18);
-      color:rgba(255,255,255,0.3);
+      border-color: rgba(255, 255, 255, 0.18);
+      color: rgba(255, 255, 255, 0.3);
     }
 
     #origin {
-      padding:7rem 2rem;
-      border-bottom:2px solid #111;
+      padding: 7rem 2rem;
+      border-bottom: 2px solid #111;
     }
     
     .origin-grid {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:5rem;
-      align-items:start;
-      max-width:1200px;
-      margin:0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+      max-width: 1200px;
+      margin: 0 auto;
     }
     
-    @media (max-width:768px) {
-      .origin-grid { grid-template-columns:1fr; gap:3rem; }
+    @media (max-width: 768px) {
+      .origin-grid { grid-template-columns: 1fr; gap: 3rem; }
     }
     
     .manifesto-box {
-      border:2px solid #111;
-      padding:3rem;
-      background:#fafafa;
-      position:relative;
+      border: 2px solid #111;
+      padding: 3rem;
+      background: #fafafa;
+      position: relative;
     }
     
     .manifesto-box::before {
-      content:'MANIFESTO';
-      position:absolute;
-      top:-12px;
-      left:20px;
-      background:#111;
-      color:#fff;
-      font-size:7px;
-      font-weight:900;
-      padding:3px 10px;
-      letter-spacing:0.25em;
+      content: 'MANIFESTO';
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      background: #111;
+      color: #fff;
+      font-size: 7px;
+      font-weight: 900;
+      padding: 3px 10px;
+      letter-spacing: 0.25em;
     }
 
     #numbers {
-      background:#111;
-      color:#fff;
-      padding:6rem 2rem;
-      border-top:2px solid #111;
-      border-bottom:2px solid #111;
+      background: #111;
+      color: #fff;
+      padding: 6rem 2rem;
+      border-top: 2px solid #111;
+      border-bottom: 2px solid #111;
     }
     
     .numbers-grid {
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:0;
-      max-width:1200px;
-      margin:0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      max-width: 1200px;
+      margin: 0 auto;
     }
     
-    @media (max-width:768px) {
-      .numbers-grid { grid-template-columns:1fr 1fr; }
+    @media (max-width: 768px) {
+      .numbers-grid { grid-template-columns: 1fr 1fr; }
     }
     
     .num-cell {
-      padding:2.5rem 2rem;
-      border-right:1px solid rgba(255,255,255,0.07);
-      display:flex;
-      flex-direction:column;
-      gap:8px;
+      padding: 2.5rem 2rem;
+      border-right: 1px solid rgba(255, 255, 255, 0.07);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
     
     .num-cell:last-child {
-      border-right:none;
+      border-right: none;
     }
     
-    @media (max-width:768px) {
-      .num-cell:nth-child(2) { border-right:none; }
-      .num-cell:nth-child(3) { border-right:1px solid rgba(255,255,255,0.07); }
+    @media (max-width: 768px) {
+      .num-cell:nth-child(2) { border-right: none; }
+      .num-cell:nth-child(3) { border-right: 1px solid rgba(255, 255, 255, 0.07); }
     }
     
     .num-big {
-      font-family:'Playfair Display',serif;
-      font-style:italic;
-      font-size:clamp(48px,7vw,88px);
-      font-weight:700;
-      line-height:1;
-      color:#fff;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(48px, 7vw, 88px);
+      font-weight: 700;
+      line-height: 1;
+      color: #fff;
     }
     
     .num-lbl {
-      font-size:9px;
-      font-weight:700;
-      letter-spacing:0.22em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,0.3);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.3);
     }
 
     #principles {
-      padding:7rem 2rem;
-      border-bottom:2px solid #111;
+      padding: 7rem 2rem;
+      border-bottom: 2px solid #111;
     }
     
     .principles-grid {
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:2px;
-      background:#111;
-      border:2px solid #111;
-      max-width:1200px;
-      margin:0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: #111;
+      border: 2px solid #111;
+      max-width: 1200px;
+      margin: 0 auto;
     }
     
-    @media (max-width:640px) {
-      .principles-grid { grid-template-columns:1fr; }
+    @media (max-width: 640px) {
+      .principles-grid { grid-template-columns: 1fr; }
     }
     
     .prin-card {
-      background:#fff;
-      padding:3rem 2rem;
-      transition:background .25s, color .25s, transform .2s;
+      background: #fff;
+      padding: 3rem 2rem;
+      transition: background 0.25s, color 0.25s, transform 0.2s;
     }
     
     .prin-card:hover {
-      background:#111;
-      color:#fff;
+      background: #111;
+      color: #fff;
     }
     
-    .prin-card:hover .prin-num { color:rgba(255,255,255,0.06); }
-    .prin-card:hover .prin-title { color:#fff; }
-    .prin-card:hover .prin-desc { color:rgba(255,255,255,0.5); }
+    .prin-card:hover .prin-num { color: rgba(255, 255, 255, 0.06); }
+    .prin-card:hover .prin-title { color: #fff; }
+    .prin-card:hover .prin-desc { color: rgba(255, 255, 255, 0.5); }
     
     .prin-num {
-      font-family:'Playfair Display',serif;
-      font-style:italic;
-      font
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 64px;
+      font-weight: 700;
+      color: rgba(0, 0, 0, 0.04);
+      line-height: 1;
+      margin-bottom: -1rem;
+    }
+    
+    .prin-title {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #111;
+      margin-bottom: 1rem;
+    }
+    
+    .prin-desc {
+      font-size: 13px;
+      line-height: 1.75;
+      color: rgba(0, 0, 0, 0.5);
+    }
+
+    #timeline {
+      background: #0a0a0a;
+      color: #fff;
+      padding: 7rem 2rem;
+      border-top: 2px solid #111;
+      border-bottom: 2px solid #111;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .tl-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      max-width: 1200px;
+      margin: 2rem auto 0;
+    }
+    
+    @media (max-width: 640px) {
+      .tl-grid { grid-template-columns: 1fr; }
+    }
+    
+    .tl-cell {
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      padding: 2.5rem 2rem;
+      transition: background 0.25s;
+    }
+    
+    .tl-cell:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+    
+    .tl-year {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 40px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.12);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    
+    .tl-title {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 0.8rem;
+    }
+    
+    .tl-desc {
+      font-size: 12px;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    #about-cta {
+      background: #fff;
+      padding: 8rem 2rem;
+      text-align: center;
+      border-top: 2px solid #111;
+    }
+    
+    .chrome-effect {
+      background-image: linear-gradient(
+        to bottom,
+        #ffffff 0%,
+        #a1a1a1 40%,
+        #111111 48%,
+        #333333 50%,
+        #a1a1a1 60%,
+        #ffffff 100%
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(0, 0, 0, 0.2);
+      filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.15));
+    }
+    
+    .about-cta-btn {
+      display: inline-block;
+      background: #111;
+      color: #fff;
+      padding: 16px 48px;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 2px solid #111;
+      transition: background 0.2s, color 0.2s, transform 0.15s, box-shadow 0.15s;
+    }
+    
+    .about-cta-btn:hover {
+      background: transparent;
+      color: #111;
+      transform: translate(-2px, -2px);
+      box-shadow: 4px 4px 0 #111;
+    }
+
+    .about-footer {
+      background: #111;
+      color: rgba(255, 255, 255, 0.2);
+      padding: 1.8rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .about-footer a {
+      color: rgba(255, 255, 255, 0.3);
+      text-decoration: none;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+    
+    .about-footer a:hover {
+      color: #fff;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1), transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .reveal-d1 { transition-delay: 0.1s; }
+    .reveal-d2 { transition-delay: 0.2s; }
+    .reveal-d3 { transition-delay: 0.3s; }
+    .reveal-d4 { transition-delay: 0.4s; }
+    
+    .dyn-title {
+      display: inline-block;
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    
+    .dyn-title:hover {
+      transform: translate(-3px, -3px);
+    }
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: #fff; }
+    ::-webkit-scrollbar-thumb { background: #111; }
+    
+    /* Modal Standard Styles */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(17,17,17,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 1rem;
+    }
+    
+    .modal-content {
+      background: #fff;
+      color: #111;
+      padding: 2.5rem;
+      max-width: 600px;
+      width: 100%;
+      border: 3px solid #111;
+      position: relative;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: none;
+      border: 1.5px solid #111;
+      width: 34px;
+      height: 34px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="progress"></div>
+  <div class="cursor-dot" id="cursor"></div>
+  <div class="grain"></div>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    function Cursor() {
+      useEffect(() => {
+        const el = document.getElementById('cursor');
+        if (!el) return;
+        
+        const move = (e) => {
+          el.style.left = e.clientX + 'px';
+          el.style.top = e.clientY + 'px';
+        };
+        
+        const down = () => {
+          el.classList.remove('hovered');
+          el.classList.add('clicked');
+        };
+        
+        const up = () => {
+          el.classList.remove('clicked');
+        };
+        
+        const hover = () => {
+          el.classList.add('hovered');
+        };
+        
+        const unhover = () => {
+          el.classList.remove('hovered');
+        };
+        
+        window.addEventListener('mousemove', move);
+        window.addEventListener('mousedown', down);
+        window.addEventListener('mouseup', up);
+        
+        document.querySelectorAll('a,button,input,select').forEach(n => {
+          n.addEventListener('mouseenter', hover);
+          n.addEventListener('mouseleave', unhover);
+        });
+        
+        return () => {
+          window.removeEventListener('mousemove', move);
+          window.removeEventListener('mousedown', down);
+          window.removeEventListener('mouseup', up);
+        };
+      }, []);
+      
+      return null;
+    }
+
+    function Header({ mobMenu, setMobMenu }) {
+      const [scrolled, setScrolled] = useState(false);
+      
+      useEffect(() => {
+        const fn = () => setScrolled(window.scrollY > 40);
+        window.addEventListener('scroll', fn, { passive: true });
+        return () => window.removeEventListener('scroll', fn);
+      }, []);
+      
+      return (
+        <header className={scrolled ? 'scrolled' : ''}>
+          <a href="/" style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', padding: 0, paddingLeft: 10, textDecoration: 'none' }}>
+            <img src="favicon.png" alt="Splotch" style={{ height: 32, width: 'auto', display: 'block', transform: 'scale(2.2)', transformOrigin: 'left center' }} />
+          </a>
+          <nav className="desk-nav" style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
+            <a href="/" className="nl">HOME</a>
+            <a href="/shop.html" className="nl">SHOP</a>
+            <a href="/about.html" className="nl active-link">ABOUT</a>
+          </nav>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <a href="/shop.html" className="enter-btn desk-nav">Enter Store</a>
+            <button className="mob-ham" onClick={() => setMobMenu(true)}>
+              <span /><span /><span />
+            </button>
+          </div>
+        </header>
+      );
+    }
+
+    function MobMenu({ open, setOpen }) {
+      const btnSt = { background: 'none', border: 'none', textAlign: 'left', fontFamily: 'Inter', fontWeight: 900, fontSize: 'clamp(40px,11vw,64px)', letterSpacing: '-0.04em', textTransform: 'uppercase', color: '#fff', lineHeight: 1.1, borderBottom: '1px solid rgba(255,255,255,0.07)', padding: '0.6rem 0', textDecoration: 'none', display: 'block', width: '100%' };
+      
+      return (
+        <div className="mob-menu" style={{ position: 'fixed', inset: 0, zIndex: 600, background: '#0a0a0a', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '3rem 2rem', transform: open ? 'translateX(0)' : 'translateX(100%)', transition: 'transform .4s cubic-bezier(.76,0,.24,1)' }}>
+          <button onClick={() => setOpen(false)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: '1.5px solid rgba(255,255,255,0.2)', width: 42, height: 42, color: '#fff', fontSize: 18, fontWeight: 700 }}>✕</button>
+          <img src="favicon.png" alt="Splotch" style={{ height: 48, width: 'auto', marginBottom: '3rem', opacity: 0.8, filter: 'invert(1)' }} />
+          <a href="/" style={btnSt}>HOME</a>
+          <a href="/shop.html" style={btnSt}>SHOP</a>
+          <a href="/about.html" style={{ ...btnSt, color: 'rgba(255,255,255,0.5)' }}>ABOUT</a>
+          <div style={{ marginTop: '2.5rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+            <a href="/shop.html" style={{ display: 'inline-block', background: '#fff', color: '#111', padding: '13px 28px', fontSize: 10, fontWeight: 900, letterSpacing: '0.2em', textTransform: 'uppercase', textDecoration: 'none' }}>Enter Store →</a>
+          </div>
+        </div>
+      );
+    }
+
+    function AboutHero() {
+      const canvasRef = useRef(null);
+      
+      useEffect(() => {
+        const c = canvasRef.current;
+        if (!c) return;
+        const ctx = c.getContext('2d');
+        let t = 0, raf;
+        
+        const resize = () => {
+          c.width = c.offsetWidth;
+          c.height = c.offsetHeight;
+        };
+        resize();
+        window.addEventListener('resize', resize);
+        
+        const draw = () => {
+          ctx.clearRect(0, 0, c.width, c.height);
+          for (let i = 0; i < 18; i++) {
+            const baseY = (c.height / 17) * i;
+            const alpha = 0.03 + (i % 4 === 0 ? 0.035 : 0);
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
+            ctx.lineWidth = i % 5 === 0 ? 1 : 0.5;
+            for (let x = 0; x <= c.width; x += 3) {
+              const yy = baseY + Math.sin(x * 0.0038 + t + i * 0.5) * 26 + Math.sin(x * 0.0075 + t * 1.3 + i) * 12;
+              x === 0 ? ctx.moveTo(x, yy) : ctx.lineTo(x, yy);
+            }
+            ctx.stroke();
+          }
+          
+          [[c.width * 0.15, c.height * 0.5, 100, 38, 0], [c.width * 0.8, c.height * 0.45, 130, 45, 1.2]].forEach(([cx, cy, rx, ry, ph]) => {
+            const ox = Math.sin(t * 0.22 + ph) * 18;
+            for (let r = 1; r <= 3; r++) {
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(255,255,255,${0.02 + r * 0.01})`;
+              ctx.lineWidth = 0.5;
+              ctx.ellipse(cx + ox, cy, rx + r * 35, ry + r * 12, 0.1, 0, Math.PI * 2);
+              ctx.stroke();
+            }
+          });
+          
+          t += 0.006;
+          raf = requestAnimationFrame(draw);
+        };
+        
+        raf = requestAnimationFrame(draw);
+        return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
+      }, []);
+
+      return (
+        <section id="about-hero">
+          <canvas ref={canvasRef} />
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 20% 50%, transparent 30%, rgba(0,0,0,0.65) 100%)', zIndex: 1, pointerEvents: 'none' }} />
+          <div className="about-hero-inner">
+            <div className="about-badge">EST. 2026 // BANGALORE, IN</div>
+            <h1 className="about-h1 reveal">We Chart<br />New Ground.</h1>
+            <p className="reveal reveal-d1" style={{ marginTop: '2rem', fontSize: 12, fontWeight: 700, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', maxWidth: 420 }}>
+              Independent. Obsessive. Built for the streets of tomorrow.
+            </p>
+          </div>
+        </section>
+      );
+    }
+
+    function Origin() {
+      return (
+        <section id="origin">
+          <div className="origin-grid">
+            <div>
+              <span className="slabel reveal">The Origin</span>
+              <h2 className="dyn-title reveal reveal-d1" style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(40px,5.5vw,68px)', letterSpacing: '-0.03em', lineHeight: 0.9, marginBottom: '2rem' }}>
+                Utility for the<br />Urban Jungle.
+              </h2>
+              <p className="reveal reveal-d2" style={{ fontSize: 14, lineHeight: 1.85, color: 'rgba(0,0,0,0.55)', marginBottom: '1.5rem' }}>
+                Splotch was born in 2026 from a single obsession between 3 guys: what does truly functional Indian streetwear look like? We moved away from chasing Western trends to focus on the terrain of our own cities — the chaos, the density, the texture of Bangalore.
+              </p>
+              <p className="reveal reveal-d3" style={{ fontSize: 14, lineHeight: 1.85, color: 'rgba(0,0,0,0.55)', marginBottom: '2rem' }}>
+                Every piece is engineered in our Bangalore studio. We don't just design clothes; we conceive systems — interconnected garments built for endurance, versatility, and aesthetic restraint. Each run is capped at 200 units, archived when gone.
+              </p>
+              <div className="reveal reveal-d4" style={{ display: 'inline-flex', gap: '2rem', borderTop: '1px solid rgba(0,0,0,0.08)', paddingTop: '1.5rem' }}>
+                {[['200', 'Units per run'], ['100%', 'Organic cotton'], ['3', 'Guys founded it']].map(([n, l]) => (
+                  <div key={l} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <span style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 28, letterSpacing: '-0.02em' }}>{n}</span>
+                    <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(0,0,0,0.3)' }}>{l}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="reveal reveal-d2">
+              <div className="manifesto-box">
+                <p style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontSize: 'clamp(20px,2.8vw,28px)', lineHeight: 1.55, color: '#111', marginBottom: '2rem' }}>
+                  "Two colors. Zero compromise. Complexity lives in the structure, not the palette. We don't make products — we make statements."
+                </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem' }}>
+                  <div style={{ width: 36, height: 1.5, background: 'rgba(0,0,0,0.2)' }} />
+                  <span style={{ fontSize: 8, fontWeight: 900, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(0,0,0,0.3)' }}>
+                    SPLOTCH DESIGN LAB
+                  </span>
+                </div>
+                <div style={{ background: '#111', padding: '1.8rem', position: 'relative' }}>
+                  <div style={{ position: 'absolute', inset: 0, opacity: 0.06 }}>
+                    <svg viewBox="0 0 400 200" width="100%" height="100%">
+                      {[40, 70, 100, 130, 160].map((y, i) => <path key={i} d={`M0,${y} Q100,${y-14} 200,${y} T400,${y-8}`} fill="none" stroke="#fff" strokeWidth="0.8"/>)}
+                    </svg>
+                  </div>
+                  <div style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.2rem' }}>
+                    {[['Material', '100% Organic Cotton'], ['Fit', 'Oversized'], ['Origin', 'Bangalore, IN'], ['Runs', '< 200 units']].map(([k, v]) => (
+                      <div key={k} style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', paddingBottom: '0.8rem' }}>
+                        <div style={{ fontSize: 7, fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 4 }}>{k}</div>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.75)', letterSpacing: '0.05em' }}>{v}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Numbers() {
+      const stats = [
+        { n: '200', unit: 'max', l: 'Units per run — always' },
+        { n: '26', unit: 'est', l: 'Founded in 2026' },
+        { n: '3', unit: 'guys', l: 'Engineered the vision' },
+        { n: '0', unit: 'x', l: 'Mass production. Never.' }
+      ];
+      
+      return (
+        <section id="numbers">
+          <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+            <span className="slabel inv reveal">By the Numbers</span>
+            <div className="numbers-grid">
+              {stats.map((s, i) => (
+                <div key={i} className={`num-cell reveal reveal-d${i + 1}`}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+                    <span className="num-big">{s.n}</span>
+                    <span style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontSize: 20, color: 'rgba(255,255,255,0.2)', fontWeight: 700 }}>{s.unit}</span>
+                  </div>
+                  <span className="num-lbl">{s.l}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Principles() {
+      const items = [
+        { n: '01', t: 'Intention', d: 'Every stitch is deliberate. If a feature doesn\'t serve a purpose, it doesn\'t exist. We eliminate the decorative to make room for the essential.' },
+        { n: '02', t: 'Limited Runs', d: 'We cap every collection at 200 units. No mass production. No compromise on quality. No restocks. Once archived, it\'s history.' },
+        { n: '03', t: 'Territory', d: 'Inspired by topographic maps and urban blueprints. We chart new aesthetic territory with every collection. We don\'t trend-follow — we lead.' }
+      ];
+      
+      return (
+        <section id="principles">
+          <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+            <span className="slabel reveal">Our Principles</span>
+            <h2 className="dyn-title reveal reveal-d1" style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(44px,7vw,96px)', letterSpacing: '-0.03em', lineHeight: 0.88, color: '#111', marginBottom: '3.5rem' }}>
+              The Principles.
+            </h2>
+            <div className="principles-grid">
+              {items.map((p, i) => (
+                <div key={i} className={`prin-card reveal reveal-d${i + 1}`}>
+                  <div className="prin-num">{p.n}</div>
+                  <div className="prin-title">{p.t}</div>
+                  <div className="prin-desc">{p.d}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Timeline() {
+      const events = [
+        { yr: '2026', t: 'The Spark', d: 'Splotch was founded in Bangalore by 3 guys with a singular obsession: build Indian streetwear that doesn\'t chase Western trends.' },
+        { yr: '2026', t: 'First Drop', d: 'The first Collection launched. 200 units. Sold out rapidly. Zero restocks. The proof of concept became a statement.' },
+        { yr: '∞', t: 'The Future', d: 'Limited runs. No mass production. Pure aesthetic conviction. The work continues.' }
+      ];
+      
+      const canvasRef = useRef(null);
+      
+      useEffect(() => {
+        const c = canvasRef.current;
+        if (!c) return;
+        const ctx = c.getContext('2d');
+        c.width = c.offsetWidth;
+        c.height = c.offsetHeight;
+        let t = 0, raf;
+        
+        const draw = () => {
+          ctx.clearRect(0, 0, c.width, c.height);
+          for (let i = 0; i < 10; i++) {
+            const y = (c.height / 10) * i + c.height / 20;
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(255,255,255,${0.015 + (i % 3 === 0 ? 0.02 : 0)})`;
+            ctx.lineWidth = 0.5;
+            for (let x = 0; x <= c.width; x += 4) {
+              const yy = y + Math.sin(x * 0.004 + t + i * 0.5) * 20 + Math.sin(x * 0.009 + t * 1.2 + i) * 10;
+              x === 0 ? ctx.moveTo(x, yy) : ctx.lineTo(x, yy);
+            }
+            ctx.stroke();
+          }
+          t += 0.005;
+          raf = requestAnimationFrame(draw);
+        };
+        
+        raf = requestAnimationFrame(draw);
+        return () => cancelAnimationFrame(raf);
+      }, []);
+      
+      return (
+        <section id="timeline">
+          <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }} />
+          <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+            <span className="slabel inv reveal">Our Story</span>
+            <h2 className="dyn-title reveal reveal-d1" style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(44px,7vw,96px)', letterSpacing: '-0.03em', lineHeight: 0.88, color: '#fff', marginBottom: '3.5rem' }}>
+              The Journey.
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+              {events.map((e, i) => (
+                <div key={i} className={`reveal reveal-d${Math.min(i + 1, 4)}`} style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '2rem', borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '2rem 0', alignItems: 'start' }}>
+                  <span style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(28px,4vw,48px)', color: 'rgba(255,255,255,0.15)', lineHeight: 1 }}>{e.yr}</span>
+                  <div>
+                    <div style={{ fontSize: 9, fontWeight: 900, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: 8 }}>{e.t}</div>
+                    <p style={{ fontSize: 13, lineHeight: 1.75, color: 'rgba(255,255,255,0.4)' }}>{e.d}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function AboutCTA() {
+      return (
+        <section id="about-cta">
+          <span className="slabel dark reveal" style={{ display: 'table', margin: '0 auto 2rem' }}>Enter The Store</span>
+          <h2 className="dyn-title chrome-effect reveal reveal-d1" style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(40px,7vw,96px)', letterSpacing: '-0.03em', lineHeight: 0.9, marginBottom: '3rem' }}>
+            Ready to upgrade<br />your aesthetics?
+          </h2>
+          <br/>
+          <a href="/shop.html" className="about-cta-btn reveal reveal-d2">Shop the Collection →</a>
+        </section>
+      );
+    }
+
+    function TermsModal({ onClose }) {
+      return (
+        <div className="modal-overlay" onClick={onClose} style={{ animation: "fadeIn .2s ease" }}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <button className="modal-close" onClick={onClose}>✕</button>
+            <h2 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 28, marginBottom: "1rem" }}>Terms & Conditions</h2>
+            <div style={{ fontSize: 12, lineHeight: 1.8, color: "rgba(0,0,0,0.7)" }}>
+              <p style={{ marginBottom: "1rem" }}><strong>1. General Conditions</strong><br/>By visiting our site and/or purchasing something from us, you engage in our "Service" and agree to be bound by the following terms and conditions. Splotch reserves the right to refuse service to anyone for any reason at any time.</p>
+              <p style={{ marginBottom: "1rem" }}><strong>2. Products & Exclusivity</strong><br/>All Splotch runs are strictly limited. We do not mass produce. Once an item is sold out, it is permanently archived. We have made every effort to display as accurately as possible the colors and images of our products.</p>
+              <p style={{ marginBottom: "1rem" }}><strong>3. Billing & Accuracy</strong><br/>You agree to provide current, complete and accurate purchase and account information for all purchases made at our store.</p>
+              <p style={{ marginBottom: "1rem" }}><strong>4. Returns & Refunds</strong><br/>We maintain a strict 7-day return policy. Returns and refunds are only allowed within 7 days of receiving the product. Items must be unworn, unwashed, and in original packaging. Use the "Request Return" link in the footer to initiate the process.</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
+    function ReturnModal({ onClose }) {
+      const [form, setForm] = useState({ orderId: "", email: "", reason: "" });
+      const [loading, setLoading] = useState(false);
+      const [sent, setSent] = useState(false);
+      const [errMsg, setErrMsg] = useState("");
+      
+      const submit = async (e) => {
+        e.preventDefault();
+        if (!form.orderId || !form.email || !form.reason) return;
+        setLoading(true); setErrMsg("");
+        try {
+          if (!window.landingDb || !window.landingAddDoc) throw new Error("Firebase not connected.");
+          await window.landingAddDoc(window.landingCollection(window.landingDb, "messages"), {
+            name: "RETURN REQUEST",
+            email: form.email,
+            message: `Order ID: ${form.orderId}\nReason: ${form.reason}`,
+            timestamp: new Date()
+          });
+          setSent(true);
+        } catch (err) {
+          setErrMsg("Failed to send request. Please try again later.");
+        } finally {
+          setLoading(false);
+        }
+      };
+      
+      const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", padding: "12px", fontSize: 12, fontFamily: "Inter", marginBottom: "1rem" };
+      
+      return (
+        <div className="modal-overlay" onClick={onClose} style={{ animation: "fadeIn .2s ease" }}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <button className="modal-close" onClick={onClose}>✕</button>
+            <h2 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 28, marginBottom: "0.5rem" }}>Request Return.</h2>
+            <p style={{ fontSize: 12, color: "rgba(0,0,0,0.5)", marginBottom: "2rem" }}>Returns are only accepted within 7 days of delivery.</p>
+            
+            {errMsg && <div style={{ background: "#c00", color: "#fff", padding: "10px", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "1.5rem" }}>{errMsg}</div>}
+            
+            {sent ? (
+              <div style={{ background: "#f0f0f0", padding: "2rem", textAlign: "center" }}>
+                <p style={{ fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", fontSize: 12, color: "#111" }}>Request Sent Successfully.</p>
+                <p style={{ fontSize: 11, color: "#666", marginTop: "1rem" }}>Our team will review your request and contact you via email within 24-48 hours.</p>
+              </div>
+            ) : (
+              <form onSubmit={submit}>
+                <input type="text" placeholder="Order ID (e.g. pay_XXXXX)" value={form.orderId} onChange={e => setForm({ ...form, orderId: e.target.value })} style={iSt} required />
+                <input type="email" placeholder="Email Address used for order" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} style={iSt} required />
+                <textarea placeholder="Reason for return" value={form.reason} rows={4} onChange={e => setForm({ ...form, reason: e.target.value })} style={{ ...iSt, resize: "none" }} required />
+                <button type="submit" disabled={loading} style={{ width: "100%", background: "#111", color: "#fff", border: "3px solid #111", padding: "14px", fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", cursor: "pointer" }}>
+                  {loading ? "Submitting..." : "Submit Return Request"}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    function App() {
+      const [mobMenu, setMobMenu] = useState(false);
+      const [termsOpen, setTermsOpen] = useState(false);
+      const [returnOpen, setReturnOpen] = useState(false);
+
+      useEffect(() => {
+        const bar = document.getElementById('progress');
+        const fn = () => {
+          if (bar) bar.style.width = (window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100) + '%';
+        };
+        window.addEventListener('scroll', fn, { passive: true });
+        
+        const obs = new IntersectionObserver(entries => {
+          entries.forEach(e => {
+            if (e.isIntersecting) e.target.classList.add('visible');
+          });
+        }, { threshold: 0.08 });
+        
+        const attach = () => document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+        attach();
+        setTimeout(attach, 300);
+        
+        return () => {
+          window.removeEventListener('scroll', fn);
+          obs.disconnect();
+        };
+      }, []);
+
+      return (
+        <div style={{ minHeight: '100vh', background: '#fff' }}>
+          <Cursor />
+          <Header mobMenu={mobMenu} setMobMenu={setMobMenu} />
+          <MobMenu open={mobMenu} setOpen={setMobMenu} />
+          
+          <AboutHero />
+          <Origin />
+          <Numbers />
+          <Principles />
+          <Timeline />
+          <AboutCTA />
+          
+          <footer className="about-footer">
+            <img src="favicon.png" alt="Splotch" style={{ height: 26, opacity: 0.4 }} />
+            <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+              <a onClick={() => setTermsOpen(true)}>Terms & Conditions</a>
+              <a onClick={() => setReturnOpen(true)}>Request Return</a>
+              <a href="https://www.instagram.com/splotchglobal" target="_blank">Instagram</a>
+              <a href="https://x.com/splotchglobal" target="_blank">Twitter</a>
+              <a href="/">Home</a>
+              <a href="/shop.html">Shop</a>
+            </div>
+            <span>© 2026 Splotch. All rights reserved.</span>
+          </footer>
+
+          {termsOpen && <TermsModal onClose={() => setTermsOpen(false)} />}
+          {returnOpen && <ReturnModal onClose={() => setReturnOpen(false)} />}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
