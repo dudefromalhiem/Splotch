@@ -387,18 +387,43 @@ function Cursor() {
           el.style.top = e.clientY + 'px';
         };
         
-        const down = () => el.classList.add('clicked');
-        const up = () => el.classList.remove('clicked');
+        const down = () => {
+          el.classList.remove('hovered'); // Drops the large ring
+          el.classList.add('clicked');    // Triggers the tiny solid dot
+        };
         
-        // Upgraded hover logic: This constantly checks the element under the cursor
-        // so it works perfectly with products loaded later from Firebase!
+        const up = (e) => {
+          el.classList.remove('clicked'); // Removes the tiny dot
+          
+          // Re-checks if we are still over a clickable item when the mouse is released
+          if (e.target && e.target.closest && e.target.closest('a, button, input, select, .prod-card, .port-card, .ps-card')) {
+            el.classList.add('hovered');
+          }
+        };
+        
         const handleMouseOver = (e) => {
-          if (e.target.closest('a, button, input, select, .prod-card, .port-card')) {
+          if (e.target && e.target.closest && e.target.closest('a, button, input, select, .prod-card, .port-card, .ps-card')) {
             el.classList.add('hovered');
           } else {
             el.classList.remove('hovered');
           }
         };
+        
+        window.addEventListener('mousemove', move);
+        window.addEventListener('mousedown', down);
+        window.addEventListener('mouseup', up);
+        window.addEventListener('mouseover', handleMouseOver);
+        
+        return () => {
+          window.removeEventListener('mousemove', move);
+          window.removeEventListener('mousedown', down);
+          window.removeEventListener('mouseup', up);
+          window.removeEventListener('mouseover', handleMouseOver);
+        };
+      }, []);
+      
+      return null;
+    }
         
         window.addEventListener('mousemove', move);
         window.addEventListener('mousedown', down);
