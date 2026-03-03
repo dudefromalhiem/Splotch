@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    const isMaintenanceMode = false; // Change to false to turn the site back on
+    
+    if (isMaintenanceMode) {
+      window.location.replace("/waitroom.html");
+    }
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -126,37 +133,12 @@
         cursor: none !important;
       }
     }
-    
-    @media (pointer: coarse) {
-      .cursor-dot {
-        display: none !important;
-      }
-    }
-    
-.cursor-dot {
-      position: fixed;
-      width: 24px;
-      height: 24px;
-      border: 1.5px solid #fff; /* Changed from #111 to #fff */
-      border-radius: 50% !important;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      z-index: 99999;
-      mix-blend-mode: difference; /* Added this back! */
-      transition: width 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), height 0.25s;
-      top: 0;
-      left: 0;
-    }
-    
-    .cursor-dot.hovered {
-      width: 44px;
-      height: 44px;
-    }
-    
-    .cursor-dot.clicked {
-      width: 8px;
-      height: 8px;
-      background: #fff; /* Changed from #111 to #fff */
+
+    /* ── LIQUID PAINT CURSOR ── */
+    #liquid-cursor-canvas {
+      position: fixed; inset: 0;
+      z-index: 9999; pointer-events: none;
+      mix-blend-mode: difference;
     }
 
     .grain {
@@ -182,6 +164,7 @@
       border-bottom: 1.5px solid rgba(255,255,255,0.08);
       background: rgba(17,17,17,0.7);
       backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       transition: border-color .3s, background .3s;
     }
     
@@ -446,7 +429,6 @@
       pointer-events: none;
     }
 
-    /* 3D Container Scroll Product CSS */
     #product-scroll-strip {
       width: 100%;
       height: 100%;
@@ -755,7 +737,6 @@
     ::-webkit-scrollbar-track { background: #111; }
     ::-webkit-scrollbar-thumb { background: #fff; }
 
-    /* Modal Standard Styles */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -803,10 +784,13 @@
 <body>
 
   <div id="progress"></div>
-  <div class="cursor-dot" id="cursor"></div>
   <div class="grain"></div>
+  <!-- Liquid Paint Cursor Canvas -->
+  <canvas id="liquid-cursor-canvas"></canvas>
   <div id="root"></div>
 
+  <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+  
   <script type="text/babel">
     const { useState, useEffect, useRef, useCallback } = React;
     const { useScroll, useTransform, motion } = window.Motion;
@@ -900,52 +884,6 @@
       }, []);
     }
 
-    function Cursor() {
-      useEffect(() => {
-        const el = document.getElementById('cursor');
-        if (!el) return;
-        
-        const move = (e) => {
-          el.style.left = e.clientX + 'px';
-          el.style.top = e.clientY + 'px';
-        };
-        
-        const down = () => {
-          el.classList.remove('hovered');
-          el.classList.add('clicked');
-        };
-        
-        const up = () => {
-          el.classList.remove('clicked');
-        };
-        
-        const hover = () => {
-          el.classList.add('hovered');
-        };
-        
-        const unhover = () => {
-          el.classList.remove('hovered');
-        };
-        
-        window.addEventListener('mousemove', move);
-        window.addEventListener('mousedown', down);
-        window.addEventListener('mouseup', up);
-        
-        document.querySelectorAll('a,button,input,select,.display-card-link').forEach(n => {
-          n.addEventListener('mouseenter', hover);
-          n.addEventListener('mouseleave', unhover);
-        });
-        
-        return () => {
-          window.removeEventListener('mousemove', move);
-          window.removeEventListener('mousedown', down);
-          window.removeEventListener('mouseup', up);
-        };
-      }, []);
-      
-      return null;
-    }
-
     function ScrollProgress() {
       useEffect(() => {
         const bar = document.getElementById('progress');
@@ -960,18 +898,14 @@
       return null;
     }
 
-    // AGGRESSIVE 3D SHADOW SYSTEM FOR MAIN PAGE
     function buildAggressive3D(mx, my) {
       const layers = [];
-      // Deep red extrusion
       for(let i=1; i<=8; i++) {
         layers.push(`${(mx * i * 2).toFixed(1)}px ${(my * i * 2).toFixed(1)}px 0px #DC1C1C`);
       }
-      // Dark grey deep extrusion
       for(let i=9; i<=14; i++) {
         layers.push(`${(mx * i * 2).toFixed(1)}px ${(my * i * 2).toFixed(1)}px 0px #1a1a1a`);
       }
-      // Massive drop shadow
       layers.push(`${(mx * 16 * 2).toFixed(1)}px ${(my * 16 * 2).toFixed(1)}px 40px rgba(0,0,0,0.9)`);
       return layers.join(', ');
     }
@@ -980,7 +914,6 @@
       const canvasRef = useRef(null);
       useCanvasBg(canvasRef);
       
-      // Start slightly off-center so the 3D effect is visible immediately on mobile
       const [smooth, setSmooth] = useState({ x: 0.6, y: 0.6 });
       const targetRef = useRef({ x: 0.6, y: 0.6 });
       const curRef = useRef({ x: 0.6, y: 0.6 });
@@ -1064,7 +997,6 @@
       }, []);
       
       const rotate = useTransform(scrollYProgress, [0, 1], [22, 0]);
-      // Scaled up for mobile visibility without breaking scroll
       const scale = useTransform(scrollYProgress, [0, 1], isMobile ? [0.9, 1] : [1.06, 1]);
       const translate = useTransform(scrollYProgress, [0, 1], [0, -100]);
 
@@ -1378,9 +1310,9 @@
             <h2 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 28, marginBottom: "1rem" }}>Terms & Conditions</h2>
             <div style={{ fontSize: 12, lineHeight: 1.8, color: "rgba(0,0,0,0.7)" }}>
               <p style={{ marginBottom: "1rem" }}><strong>1. General Conditions</strong><br/>By visiting our site and/or purchasing something from us, you engage in our "Service" and agree to be bound by the following terms and conditions. Splotch reserves the right to refuse service to anyone for any reason at any time.</p>
-              <p style={{ marginBottom: "1rem" }}><strong>2. Products & Exclusivity</strong><br/>All Splotch runs are strictly limited. We do not mass produce. Once an item is sold out, it is permanently archived. We have made every effort to display as accurately as possible the colors and images of our products.</p>
+              <p style={{ marginBottom: "1rem" }}><strong>2. Products & Exclusivity</strong><br/>All Splotch runs are strictly limited. We do not mass produce. Once an item is sold out, it is permanently archived.</p>
               <p style={{ marginBottom: "1rem" }}><strong>3. Billing & Accuracy</strong><br/>You agree to provide current, complete and accurate purchase and account information for all purchases made at our store.</p>
-              <p style={{ marginBottom: "1rem" }}><strong>4. Returns & Refunds</strong><br/>We maintain a strict 7-day return policy. Returns and refunds are only allowed within 7 days of receiving the product. Items must be unworn, unwashed, and in original packaging. Use the "Request Return" button to initiate the process.</p>
+              <p style={{ marginBottom: "1rem" }}><strong>4. Returns & Refunds</strong><br/>We maintain a strict 7-day return policy. Items must be unworn, unwashed, and in original packaging.</p>
             </div>
           </div>
         </div>
@@ -1400,39 +1332,33 @@
         try {
           if (!window.landingDb || !window.landingAddDoc) throw new Error("Firebase not connected.");
           await window.landingAddDoc(window.landingCollection(window.landingDb, "messages"), {
-            name: "RETURN REQUEST",
-            email: form.email,
+            name: "RETURN REQUEST", email: form.email,
             message: `Order ID: ${form.orderId}\nReason: ${form.reason}`,
             timestamp: new Date()
           });
           setSent(true);
         } catch (err) {
           setErrMsg("Failed to send request. Please try again later.");
-        } finally {
-          setLoading(false);
-        }
+        } finally { setLoading(false); }
       };
       
       const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", padding: "12px", fontSize: 12, fontFamily: "Inter", marginBottom: "1rem" };
       
       return (
-        <div className="modal-overlay" onClick={onClose} style={{ animation: "fadeIn .2s ease" }}>
+        <div className="modal-overlay" onClick={onClose}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={onClose}>✕</button>
             <h2 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 28, marginBottom: "0.5rem" }}>Request Return.</h2>
             <p style={{ fontSize: 12, color: "rgba(0,0,0,0.5)", marginBottom: "2rem" }}>Returns are only accepted within 7 days of delivery.</p>
-            
-            {errMsg && <div style={{ background: "#c00", color: "#fff", padding: "10px", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "1.5rem" }}>{errMsg}</div>}
-            
+            {errMsg && <div style={{ background: "#c00", color: "#fff", padding: "10px", fontSize: 10, fontWeight: 700, marginBottom: "1.5rem" }}>{errMsg}</div>}
             {sent ? (
               <div style={{ background: "#f0f0f0", padding: "2rem", textAlign: "center" }}>
-                <p style={{ fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", fontSize: 12, color: "#111" }}>Request Sent Successfully.</p>
-                <p style={{ fontSize: 11, color: "#666", marginTop: "1rem" }}>Our team will review your request and contact you via email within 24-48 hours.</p>
+                <p style={{ fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", fontSize: 12 }}>Request Sent Successfully.</p>
               </div>
             ) : (
               <form onSubmit={submit}>
-                <input type="text" placeholder="Order ID (e.g. pay_XXXXX)" value={form.orderId} onChange={e => setForm({ ...form, orderId: e.target.value })} style={iSt} required />
-                <input type="email" placeholder="Email Address used for order" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} style={iSt} required />
+                <input type="text" placeholder="Order ID" value={form.orderId} onChange={e => setForm({ ...form, orderId: e.target.value })} style={iSt} required />
+                <input type="email" placeholder="Email Address" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} style={iSt} required />
                 <textarea placeholder="Reason for return" value={form.reason} rows={4} onChange={e => setForm({ ...form, reason: e.target.value })} style={{ ...iSt, resize: "none" }} required />
                 <button type="submit" disabled={loading} style={{ width: "100%", background: "#111", color: "#fff", border: "3px solid #111", padding: "14px", fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", cursor: "pointer" }}>
                   {loading ? "Submitting..." : "Submit Return Request"}
@@ -1450,39 +1376,28 @@
       const [returnOpen, setReturnOpen] = useState(false);
       
       useEffect(() => {
-        console.log(
-          "%c[SYSTEM_ROOT] ACCESS GRANTED\n%c // ENGINEERED BY DUDEFROMALHIEM \n%c WELCOME TO THE NEXT FRONTIER OF STREETWEAR. Z E R O  C O M P R O M I S E.\n%c Dudefromalhiem made this. If you are reading this, welcome.",
-          "color: #c00; font-size: 20px; font-weight: 900;","color: #fff; font-size: 13px; font-weight: 700; background: #111; padding: 4px; margin-top: 5px; display: inline-block;","color: #666; font-size: 11px; font-style: italic; margin-top: 5px; display: inline-block;","color: #c00; font-size: 10px; font-weight: 700; margin-top: 15px; display: block;"
-        );
+        console.log("%c[SYSTEM_ROOT] ACCESS GRANTED\n%c // ENGINEERED BY DUDEFROMALHIEM \n%c WELCOME TO THE NEXT FRONTIER OF STREETWEAR. Z E R O  C O M P R O M I S E.","color: #c00; font-size: 20px; font-weight: 900;","color: #fff; font-size: 13px; font-weight: 700; background: #111; padding: 4px;","color: #666; font-size: 11px; font-style: italic;");
       }, []);
 
       useEffect(() => {
         const bar = document.getElementById('progress');
-        const fn = () => {
-          if (bar) bar.style.width = (window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100) + '%';
-        };
+        const fn = () => { if (bar) bar.style.width = (window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100) + '%'; };
         window.addEventListener('scroll', fn, { passive: true });
         
         const obs = new IntersectionObserver(entries => {
-          entries.forEach(e => {
-            if (e.isIntersecting) e.target.classList.add('visible');
-          });
+          entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
         }, { threshold: 0.08 });
         
         const attach = () => document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
         attach();
         setTimeout(attach, 300);
         
-        return () => {
-          window.removeEventListener('scroll', fn);
-          obs.disconnect();
-        };
+        return () => { window.removeEventListener('scroll', fn); obs.disconnect(); };
       }, []);
 
-return (
+      return (
         <div style={{ minHeight: '100vh', background: '#111', overflowX: 'hidden', position: 'relative' }}>
           <ScrollProgress />
-          <Cursor />
           <Header mobMenu={mobMenu} setMobMenu={setMobMenu} />
           <MobMenu open={mobMenu} setOpen={setMobMenu} />
           <Hero />
@@ -1491,15 +1406,9 @@ return (
             <ContainerScroll
               titleComponent={
                 <div style={{ marginBottom: '2rem' }}>
-                  <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', display: 'block', marginBottom: '1.2rem' }}>
-                    Engineered in Bangalore
-                  </span>
-                  <h2 style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(36px,6vw,80px)', color: '#fff', lineHeight: 1, letterSpacing: '-0.03em', marginBottom: '0.5rem' }}>
-                    Pure Form. Strict Utility.
-                  </h2>
-                  <span style={{ fontFamily: 'Inter', fontWeight: 900, fontSize: 'clamp(52px,10vw,130px)', letterSpacing: '-0.05em', textTransform: 'uppercase', color: '#fff', lineHeight: 0.85, display: 'block' }}>
-                    THE ARCHIVE.
-                  </span>
+                  <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', display: 'block', marginBottom: '1.2rem' }}>Engineered in Bangalore</span>
+                  <h2 style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(36px,6vw,80px)', color: '#fff', lineHeight: 1, letterSpacing: '-0.03em', marginBottom: '0.5rem' }}>Pure Form. Strict Utility.</h2>
+                  <span style={{ fontFamily: 'Inter', fontWeight: 900, fontSize: 'clamp(52px,10vw,130px)', letterSpacing: '-0.05em', textTransform: 'uppercase', color: '#fff', lineHeight: 0.85, display: 'block' }}>THE ARCHIVE.</span>
                 </div>
               }
             >
@@ -1529,7 +1438,7 @@ return (
           <div style={{ background: '#050505', padding: '2rem', borderTop: '1px solid rgba(255,255,255,0.03)' }}>
             <p style={{ maxWidth: 800, margin: '0 auto', fontSize: 9, lineHeight: 2, color: 'rgba(255,255,255,0.12)', fontWeight: 500, letterSpacing: '0.12em', textAlign: 'center', textTransform: 'uppercase' }}>
               Every order includes premium packaging, custom stickers, and a personalized handwritten note.<br/><br/>
-              Splotch is an independent streetwear clothing brand engineered in Bangalore, India. Premium oversized t-shirts, limited-drop techwear, and urban utility clothing for the modern aesthetic. Zero mass production. Every run limited to 200 units. Explore Collection 001. Contemporary Indian streetwear. Style beyond seasons. Created in 2026.
+              Splotch is an independent streetwear clothing brand engineered in Bangalore, India. Premium oversized t-shirts, limited-drop techwear, and urban utility clothing. Zero mass production. Every run limited to 200 units. Explore Collection 001. Style beyond seasons. Created in 2026.
             </p>
           </div>
           
@@ -1540,6 +1449,66 @@ return (
     }
 
     ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+
+  <!-- ═══ LIQUID PAINT CURSOR ═══ -->
+<script>
+  (function(){
+    var cvs=document.getElementById('liquid-cursor-canvas');
+    if (!cvs) return;
+    var ctx=cvs.getContext('2d');
+    var BASE_R=8, EASE=0.35, MAX_STRETCH=26, MIN_SQUASH=3;
+    var currentR=BASE_R;
+    var mouse={x:window.innerWidth/2,y:window.innerHeight/2};
+    var drop={x:mouse.x,y:mouse.y};
+    var isClicking=false;
+    
+    function resize(){cvs.width=window.innerWidth;cvs.height=window.innerHeight;}
+    resize();
+    window.addEventListener('resize',resize);
+    window.addEventListener('mousemove',function(e){mouse.x=e.clientX;mouse.y=e.clientY;});
+    
+    // Physics Click Events
+    window.addEventListener('mousedown', function(){ isClicking=true; });
+    window.addEventListener('mouseup', function(){ isClicking=false; });
+    window.addEventListener('touchstart', function(){ isClicking=true; });
+    window.addEventListener('touchend', function(){ isClicking=false; });
+
+    (function animate(){
+      ctx.clearRect(0,0,cvs.width,cvs.height);
+      
+      // Spring target for clicking (compress to 35% size)
+      var targetR = isClicking ? BASE_R * 0.35 : BASE_R;
+      currentR += (targetR - currentR) * 0.4; // Springy snap effect
+      
+      var dx=mouse.x-drop.x, dy=mouse.y-drop.y;
+      drop.x+=dx*EASE; drop.y+=dy*EASE;
+      
+      var speed=Math.sqrt(dx*dx+dy*dy);
+      var angle=Math.atan2(dy,dx);
+      
+      // Calculate stretch and squash based on movement and click state
+      var stretch=Math.min(speed*0.40, MAX_STRETCH);
+      if(isClicking) stretch *= 0.1; // Don't stretch while squashed
+      
+      var majorR=currentR+stretch*0.5;
+      var minorR=Math.max(currentR-speed*0.10, MIN_SQUASH);
+      
+      ctx.save();
+      ctx.translate(drop.x,drop.y);
+      ctx.rotate(angle);
+      
+      // Main droplet body
+      ctx.beginPath();
+      ctx.ellipse(-(stretch*0.5),0,majorR,minorR,0,0,Math.PI*2);
+      ctx.fillStyle='#ffffff';
+      ctx.fill();
+      
+      ctx.restore();
+      requestAnimationFrame(animate);
+    })();
+  })();
+  </script>
   </script>
 </body>
 </html>

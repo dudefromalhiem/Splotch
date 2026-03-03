@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Splotch | Archive Maintenance</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================
+       CSS RESET & ROOT TOKENS
+       ========================================== */
+    :root { --ash: #111111; --white: #ffffff; }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100vw; height: 100vh; overflow: hidden;
+      background: var(--ash);
+      font-family: 'Inter', sans-serif;
+      cursor: none !important;
+    }
+
+    /* ==========================================
+       GRAIN TEXTURE OVERLAY  (z: 9998)
+       ========================================== */
+    .grain {
+      position: fixed; inset: 0; pointer-events: none;
+      z-index: 9998; opacity: 0.12;
+      background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E');
+    }
+
+    /* ==========================================
+       CINEMATIC CORNER VIGNETTE  (z: 5)
+       Two stacked radial gradients. The outer one
+       deeply darkens all four corners. The inner one
+       adds a secondary soft fall-off so the centre
+       reads as a genuinely lit "stage". Neither
+       touches the central 45% of the screen.
+       ========================================== */
+    .vignette {
+      position: fixed; inset: 0; pointer-events: none; z-index: 5;
+      background:
+        radial-gradient(ellipse 100% 85% at 50% 50%,
+          transparent 45%, rgba(0,0,0,0.60) 100%),
+        radial-gradient(ellipse 72% 62% at 50% 50%,
+          transparent 52%, rgba(0,0,0,0.28) 100%);
+    }
+
+    /* ==========================================
+       MOUSE-REACTIVE LIGHT LEAK  (z: 2)
+       A large, single radial glow whose centre is
+       always the *mirror* of the cursor position.
+       When you move toward the top-left, the glow
+       drifts to the bottom-right — as if you're
+       orbiting a stationary studio light source.
+       JS writes --lx / --ly each rAF tick.
+       ========================================== */
+    .light-leak {
+      position: fixed; inset: 0; pointer-events: none; z-index: 2;
+      background: radial-gradient(
+        ellipse 58% 48% at var(--lx, 50%) var(--ly, 50%),
+        rgba(255,255,255,0.030) 0%, transparent 68%
+      );
+      will-change: background;
+    }
+
+    /* ==========================================
+       REACTIVE 3-D CSS GRID  (z: 0)
+       ========================================== */
+    #grid-wrapper {
+      position: absolute; inset: 0; z-index: 0;
+      perspective: 1000px; overflow: hidden;
+    }
+
+    #grid-plane {
+      position: absolute; inset: -60%;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      transform-origin: center center;
+      will-change: transform;
+      mask-image: radial-gradient(ellipse 60% 55% at 50% 50%, black 10%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse 60% 55% at 50% 50%, black 10%, transparent 75%);
+    }
+
+    /* THREE.JS  (z: 1) */
+    #three-canvas { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+
+    /* PARTICLE DUST  (z: 3) */
+    #particle-canvas { position: fixed; inset: 0; z-index: 3; pointer-events: none; }
+
+    /* LIQUID CURSOR  (z: 9999) */
+    #liquid-cursor-canvas { position: fixed; inset: 0; z-index: 9999; pointer-events: none; }
+
+    /* ==========================================
+       UI OVERLAY  (z: 10)
+       ========================================== */
+    .ui-layer {
+      position: absolute; inset: 0; z-index: 10;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end;
+      padding-bottom: 9vh; pointer-events: none;
+      animation: uiFadeIn 2.6s cubic-bezier(0.16,1,0.3,1) 0.6s both;
+    }
+
+    @keyframes uiFadeIn {
+      0%   { opacity: 0; transform: translateY(14px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .brand-logo {
+      width: 40px; margin-bottom: 18px;
+      filter: invert(1); opacity: 0.82;
+    }
+
+    .maintenance-label {
+      color: rgba(255,255,255,0.4);
+      font-size: 9.5px; font-weight: 700;
+      letter-spacing: 0.38em; text-transform: uppercase;
+      display: flex; align-items: center; gap: 14px;
+    }
+
+    .maintenance-label::before,
+    .maintenance-label::after {
+      content: ''; display: block;
+      width: 28px; height: 1px;
+      background: rgba(255,255,255,0.18);
+    }
+
+    /* Sub-label: a very slow, barely-there breathing pulse */
+    .sub-label {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: rgba(255,255,255,0.25);
+      font-size: 14px; margin-top: 9px;
+      letter-spacing: 0.04em;
+      animation: breathe 5.5s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 1;    }
+      50%       { opacity: 0.48; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="grain"></div>
+  <div class="vignette"></div>
+  <div class="light-leak" id="light-leak"></div>
+
+  <div id="grid-wrapper">
+    <div id="grid-plane"></div>
+  </div>
+
+  <div id="three-canvas"></div>
+
+  <canvas id="particle-canvas"></canvas>
+  <canvas id="liquid-cursor-canvas"></canvas>
+
+  <div class="ui-layer">
+    <img src="splotchnobg.png" alt="SPLOTCH" class="brand-logo"
+         onerror="this.style.display='none'">
+    <div class="maintenance-label">Archive Maintenance</div>
+    <div class="sub-label">Zero Compromise.</div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <script>
+  /* =================================================================
+     SPLOTCH — WAITROOM  /  waitroom.html
+     Six visual systems sharing one mouse state object.
+     =================================================================
+
+     System 0  — Shared mouse + smooth-mouse state
+     System 1  — Reactive CSS 3D Grid
+     System 2  — Mouse-Reactive Light Leak
+     System 3  — Studio Dust Particle Field
+     System 4  — Liquid Paint Cursor (physics + glow)
+     System 5  — Three.js Chrome Text
+                   A: Studio environment map
+                   B: Horizontal groove bump map
+                   C: MeshStandardMaterial chrome
+                   D: Entrance drop animation
+                   E: Auto-rotation + camera breath
+                   F: Mouse parallax tilt
+     ================================================================= */
+
+
+  // =================================================================
+  // SYSTEM 0 — SHARED MOUSE STATE
+  //   mouse       → raw, updated on every mousemove event.
+  //   smoothMouse → exponentially lerped (factor 0.04) — used by
+  //                 systems that need extra damping.
+  // =================================================================
+  const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+  const smoothMouse = { x: mouse.x, y: mouse.y };
+
+  window.addEventListener('mousemove', e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  (function tickSmooth() {
+    smoothMouse.x += (mouse.x - smoothMouse.x) * 0.04;
+    smoothMouse.y += (mouse.y - smoothMouse.y) * 0.04;
+    requestAnimationFrame(tickSmooth);
+  })();
+
+
+  // =================================================================
+  // SYSTEM 1 — REACTIVE CSS 3D GRID
+  //   Driven by smoothMouse for a heavy-plate, damped feel.
+  //   The plane tilts *opposite* to the cursor direction.
+  // =================================================================
+  const gridPlane = document.getElementById('grid-plane');
+
+  (function tickGrid() {
+    const cx = window.innerWidth  / 2;
+    const cy = window.innerHeight / 2;
+    const rotX = (smoothMouse.y - cy) * -0.013;
+    const rotY = (smoothMouse.x - cx) *  0.013;
+    gridPlane.style.transform =
+      `rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(-60px)`;
+    requestAnimationFrame(tickGrid);
+  })();
+
+
+  // =================================================================
+  // SYSTEM 2 — MOUSE-REACTIVE LIGHT LEAK
+  //   The glow centre is the mirror image of the cursor position
+  //   (100% - normalised cursor %), driven by smoothMouse.
+  //   Result: moving cursor top-left shifts glow to bottom-right.
+  // =================================================================
+  const lightLeak = document.getElementById('light-leak');
+
+  (function tickLightLeak() {
+    const lx = 100 - (smoothMouse.x / window.innerWidth)  * 100;
+    const ly = 100 - (smoothMouse.y / window.innerHeight) * 100;
+    lightLeak.style.setProperty('--lx', `${lx.toFixed(2)}%`);
+    lightLeak.style.setProperty('--ly', `${ly.toFixed(2)}%`);
+    requestAnimationFrame(tickLightLeak);
+  })();
+
+
+  // =================================================================
+  // SYSTEM 3 — STUDIO DUST PARTICLE FIELD  (Canvas 2D)
+  //
+  //   55 white particles at radius 0.3–1.5 px, opacity 0.06–0.28.
+  //   Each drifts upward at a unique slow speed with a sinusoidal
+  //   horizontal sway parameterised by a random phase offset.
+  //   Particles wrap: exiting the top reappears at the bottom
+  //   at a random X, ensuring continuous density.
+  //
+  //   These simulate the motes of dust that float through the beam
+  //   of a focused studio light — almost subliminal, but the space
+  //   feels alive and three-dimensional with them present.
+  // =================================================================
+  const pCvs = document.getElementById('particle-canvas');
+  const pCtx = pCvs.getContext('2d');
+
+  function resizeParticleCanvas() {
+    pCvs.width  = window.innerWidth;
+    pCvs.height = window.innerHeight;
+  }
+  resizeParticleCanvas();
+  window.addEventListener('resize', resizeParticleCanvas);
+
+  const PARTICLE_COUNT = 55;
+  const particles = Array.from({ length: PARTICLE_COUNT }, () => ({
+    x:       Math.random() * window.innerWidth,
+    y:       Math.random() * window.innerHeight,
+    r:       Math.random() * 1.2 + 0.3,
+    vy:      -(Math.random() * 0.28 + 0.06),
+    vx:      (Math.random() - 0.5) * 0.10,
+    opacity: Math.random() * 0.22 + 0.06,
+    phase:   Math.random() * Math.PI * 2,
+  }));
+
+  let pTick = 0;
+
+  (function animateParticles() {
+    pCtx.clearRect(0, 0, pCvs.width, pCvs.height);
+    pTick += 0.008;
+
+    for (const p of particles) {
+      p.x += p.vx + Math.sin(pTick + p.phase) * 0.16;
+      p.y += p.vy;
+
+      if (p.y + p.r < 0) { p.y = pCvs.height + p.r; p.x = Math.random() * pCvs.width; }
+      if (p.x < -p.r)              p.x = pCvs.width + p.r;
+      if (p.x > pCvs.width + p.r)  p.x = -p.r;
+
+      pCtx.beginPath();
+      pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      pCtx.fillStyle = `rgba(255,255,255,${p.opacity})`;
+      pCtx.fill();
+    }
+    requestAnimationFrame(animateParticles);
+  })();
+
+
+  // =================================================================
+  // SYSTEM 4 — LIQUID PAINT DROPLET CURSOR  (Canvas 2D physics)
+  //
+  //   Physics: exponential ease (0.35) chases real cursor.
+  //   Shape: velocity → stretch/squash ellipse aligned to motion.
+  //
+  //   NEW — Soft glow layer:
+  //   Before drawing the solid blob, a shadowBlur circle is drawn
+  //   at the same position with a transparent fill. The shadow
+  //   renderer produces the radial halo. shadowBlur is cleared
+  //   before the solid fill so the blob itself stays crisp.
+  //   Effect: the droplet has a gentle luminous aura, giving it
+  //   presence against both the dark field and bright chrome.
+  // =================================================================
+  const cursorCanvas = document.getElementById('liquid-cursor-canvas');
+  const ctx2d        = cursorCanvas.getContext('2d');
+
+  function resizeCursorCanvas() {
+    cursorCanvas.width  = window.innerWidth;
+    cursorCanvas.height = window.innerHeight;
+  }
+  resizeCursorCanvas();
+  window.addEventListener('resize', resizeCursorCanvas);
+
+  const BASE_R = 8, EASE = 0.35, MAX_STRETCH = 26, MIN_SQUASH = 3;
+  const drop = { x: mouse.x, y: mouse.y };
+
+  (function animateCursor() {
+    ctx2d.clearRect(0, 0, cursorCanvas.width, cursorCanvas.height);
+
+    const dx = mouse.x - drop.x;
+    const dy = mouse.y - drop.y;
+    drop.x += dx * EASE;
+    drop.y += dy * EASE;
+
+    const speed   = Math.sqrt(dx * dx + dy * dy);
+    const angle   = Math.atan2(dy, dx);
+    const stretch = Math.min(speed * 0.40, MAX_STRETCH);
+    const majorR  = BASE_R + stretch * 0.5;
+    const minorR  = Math.max(BASE_R - speed * 0.10, MIN_SQUASH);
+
+    ctx2d.save();
+    ctx2d.translate(drop.x, drop.y);
+    ctx2d.rotate(angle);
+
+    // Glow pass — shadowBlur at 20px, tiny transparent circle
+    ctx2d.shadowColor = 'rgba(255,255,255,0.55)';
+    ctx2d.shadowBlur  = 20;
+    ctx2d.beginPath();
+    ctx2d.arc(-(stretch * 0.5), 0, minorR * 0.7, 0, Math.PI * 2);
+    ctx2d.fillStyle = 'rgba(255,255,255,0)';
+    ctx2d.fill();
+
+    // Solid blob — no shadow
+    ctx2d.shadowBlur  = 0;
+    ctx2d.shadowColor = 'transparent';
+    ctx2d.beginPath();
+    ctx2d.ellipse(-(stretch * 0.5), 0, majorR, minorR, 0, 0, Math.PI * 2);
+    ctx2d.fillStyle = '#ffffff';
+    ctx2d.fill();
+
+    ctx2d.restore();
+    requestAnimationFrame(animateCursor);
+  })();
+
+
+  // =================================================================
+  // SYSTEM 5 — THREE.JS  SLICED CHROME 3-D TEXT
+  // =================================================================
+
+  const threeMount = document.getElementById('three-canvas');
+  const scene      = new THREE.Scene();
+  const camera     = new THREE.PerspectiveCamera(
+    45, window.innerWidth / window.innerHeight, 1, 500
+  );
+  camera.position.z = 70;
+
+  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  threeMount.appendChild(renderer.domElement);
+
+  // -----------------------------------------------------------------
+  // 5-A: STUDIO ENVIRONMENT MAP
+  //   NEW: added a second cold highlight (blue-white) at top-right
+  //   of the env canvas. Chrome reflects both warm and cold sources,
+  //   making the metal read as multi-dimensional rather than flat.
+  // -----------------------------------------------------------------
+  const ENV_W = 1024, ENV_H = 512;
+  const envCvs = document.createElement('canvas');
+  envCvs.width = ENV_W; envCvs.height = ENV_H;
+  const envCtx = envCvs.getContext('2d');
+
+  envCtx.fillStyle = '#0a0a0a';
+  envCtx.fillRect(0, 0, ENV_W, ENV_H);
+
+  // Warm top fill (large softbox)
+  envCtx.fillStyle = 'rgba(255,252,245,0.92)';
+  envCtx.fillRect(80, 30, 440, 90);
+
+  // Cold top-right accent (blue-white strip box) — NEW
+  envCtx.fillStyle = 'rgba(200,222,255,0.65)';
+  envCtx.fillRect(580, 18, 200, 55);
+
+  // Right rim
+  envCtx.fillStyle = 'rgba(255,255,255,0.78)';
+  envCtx.fillRect(820, 120, 60, 260);
+
+  // Floor bounce
+  envCtx.fillStyle = 'rgba(255,255,255,0.55)';
+  envCtx.fillRect(180, 460, 520, 18);
+
+  // Left cool accent
+  envCtx.fillStyle = 'rgba(180,210,255,0.30)';
+  envCtx.fillRect(30, 180, 45, 220);
+
+  // Softbox diffusion blur
+  (function blurCvs(cvs, r) {
+    const c = cvs.getContext('2d');
+    const tmp = document.createElement('canvas');
+    tmp.width = cvs.width; tmp.height = cvs.height;
+    const tc = tmp.getContext('2d');
+    tc.filter = `blur(${r}px)`;
+    tc.drawImage(cvs, 0, 0);
+    c.clearRect(0, 0, cvs.width, cvs.height);
+    c.drawImage(tmp, 0, 0);
+  })(envCvs, 22);
+
+  const envTexture = new THREE.CanvasTexture(envCvs);
+  envTexture.mapping = THREE.EquirectangularReflectionMapping;
+  scene.environment = envTexture;
+
+  // -----------------------------------------------------------------
+  // 5-B: HORIZONTAL GROOVE BUMP MAP
+  // -----------------------------------------------------------------
+  const bumpCvs = document.createElement('canvas');
+  bumpCvs.width = 8; bumpCvs.height = 128;
+  const bumpCtx = bumpCvs.getContext('2d');
+  bumpCtx.fillStyle = '#ffffff';
+  bumpCtx.fillRect(0, 0, 8, 128);
+  bumpCtx.fillStyle = '#000000';
+  for (let y = 0; y < 128; y += 18) bumpCtx.fillRect(0, y, 8, 3);
+  const bumpTexture = new THREE.CanvasTexture(bumpCvs);
+  bumpTexture.wrapS = THREE.RepeatWrapping;
+  bumpTexture.wrapT = THREE.RepeatWrapping;
+  bumpTexture.repeat.set(1, 1);
+
+  // -----------------------------------------------------------------
+  // 5-C: LIGHTING
+  //   NEW: topLight (cold directional) added to hit the upper bevels,
+  //   distinguishing them from the warm-lit flat faces.
+  // -----------------------------------------------------------------
+  const keyLight = new THREE.DirectionalLight(0xffffff, 1.8);
+  keyLight.position.set(12, 24, 30);
+  scene.add(keyLight);
+
+  const rimLight = new THREE.DirectionalLight(0xc8dcff, 1.0);
+  rimLight.position.set(-20, -5, 10);
+  scene.add(rimLight);
+
+  const topLight = new THREE.DirectionalLight(0xddeeff, 0.65); // NEW
+  topLight.position.set(0, 40, 5);
+  scene.add(topLight);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.22));
+
+  // Chrome material (transparent: true for entrance animation)
+  const chromeMat = new THREE.MeshStandardMaterial({
+    color:           0xf0f0f0,
+    metalness:       1.0,
+    roughness:       0.08,
+    envMap:          envTexture,
+    envMapIntensity: 2.5,
+    bumpMap:         bumpTexture,
+    bumpScale:       0.22,
+    transparent:     true,
+    opacity:         0.0,   // driven by entrance anim
+  });
+
+  // -----------------------------------------------------------------
+  // 5-D: FONT LOAD + TEXT GEOMETRY
+  // -----------------------------------------------------------------
+  let textMesh     = null;
+  let entranceDone = false;
+  let entryFrame   = 0;
+  const ENTRY_FRAMES = 88;
+
+  // Cubic ease-out
+  const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+
+  const fontLoader = new THREE.FontLoader();
+  fontLoader.load(
+    'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/fonts/helvetiker_bold.typeface.json',
+    function(font) {
+      const geo = new THREE.TextGeometry('SPLOTCH', {
+        font, size: 9, height: 3.5, curveSegments: 8,
+        bevelEnabled: true, bevelThickness: 0.18,
+        bevelSize: 0.12, bevelSegments: 5,
+      });
+      geo.center();
+      textMesh = new THREE.Mesh(geo, chromeMat);
+      textMesh.rotation.x = -0.10;
+      textMesh.position.y = -14; // entrance start: below stage
+      // Parallax accumulator properties
+      textMesh._px = 0;
+      textMesh._py = 0;
+      scene.add(textMesh);
+    }
+  );
+
+  // -----------------------------------------------------------------
+  // 5-E & 5-F: RENDER LOOP
+  //   Entrance (D): Y from -14 → 0, opacity 0 → 1, easeOutCubic.
+  //   Auto-rotation (E): +0.003 rad/frame on Y axis.
+  //   Camera breath (E): sinusoidal Y and Z drift.
+  //   Mouse parallax (F): smoothMouse → ±0.06 rad tilt layered on
+  //     rotation.x; camera.position.x shifts opposite to parallax Y
+  //     for a subtle orbital feel.
+  // -----------------------------------------------------------------
+  let globalClock = 0;
+
+  (function render3D() {
+    requestAnimationFrame(render3D);
+    globalClock += 0.004;
+
+    if (textMesh) {
+
+      // D: Entrance animation
+      if (!entranceDone) {
+        entryFrame++;
+        const t = Math.min(entryFrame / ENTRY_FRAMES, 1);
+        const e = easeOutCubic(t);
+        textMesh.position.y = -14 + 14 * e;
+        chromeMat.opacity   = e;
+        if (t >= 1) {
+          entranceDone          = true;
+          chromeMat.transparent = false;
+          chromeMat.opacity     = 1;
+        }
+      }
+
+      // E: Auto-rotation
+      textMesh.rotation.y += 0.003;
+
+      // F: Mouse parallax — very gentle tilt toward cursor
+      const cx = window.innerWidth  / 2;
+      const cy = window.innerHeight / 2;
+      const targetPX = ((smoothMouse.y - cy) / cy) * -0.06;
+      const targetPY = ((smoothMouse.x - cx) / cx) *  0.06;
+      textMesh._px += (targetPX - textMesh._px) * 0.055;
+      textMesh._py += (targetPY - textMesh._py) * 0.055;
+
+      // Apply tilt to X rotation (Y is already accumulating the spin)
+      textMesh.rotation.x = -0.10 + textMesh._px;
+
+      // Camera parallax X: shift camera opposite to parallax Y tilt
+      camera.position.x = textMesh._py * -9;
+
+      // E: Camera breath
+      camera.position.y = Math.sin(globalClock * 0.7)  * 0.8;
+      camera.position.z = 70 + Math.sin(globalClock * 0.4) * 1.2;
+      camera.lookAt(scene.position);
+    }
+
+    renderer.render(scene, camera);
+  })();
+
+  // Resize handler
+  window.addEventListener('resize', () => {
+    const w = window.innerWidth, h = window.innerHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+    resizeCursorCanvas();
+    resizeParticleCanvas();
+  });
+
+  </script>
+</body>
+</html>

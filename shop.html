@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <script>
+    const isMaintenanceMode = false; // Change to false to turn the site back on
+    if (isMaintenanceMode) {
+      window.location.replace("/waitroom.html");
+    }
+  </script>
+
   <title>Shop | Splotch — Premium Streetwear Collection</title>
   <meta name="description" content="Shop the latest limited drops from Splotch. Contemporary streetwear, premium oversized t-shirts, and urban utility gear engineered in Bangalore, India. Created in 2026.">
   <meta name="keywords" content="shop splotch, splotch clothing store, streetwear india, buy streetwear online, oversized t-shirts india, modern fashion, clothes in india">
@@ -95,41 +102,21 @@
     input, textarea, select, button { font-family: inherit; border-radius: 0 !important; outline: none; }
     img { -webkit-user-select: none; user-select: none; }
     
+    /* ── LIQUID PAINT CURSOR CSS ── */
     @media (pointer: fine) { 
-      body, button, a, input, textarea, select, img, .prod-card { cursor: none !important; } 
-      *, *::before, *::after { cursor: none !important; } 
+      body, button, a, input, textarea, select, img, .prod-card, *, *::before, *::after { 
+        cursor: none !important; 
+      } 
     }
     
     @media (pointer: coarse) { 
-      .cursor-dot { display: none !important; } 
+      #liquid-cursor-canvas { display: none !important; } 
     }
     
-    body.custom-cursor-active, body.custom-cursor-active button, body.custom-cursor-active a, body.custom-cursor-active input, body.custom-cursor-active textarea, body.custom-cursor-active select, body.custom-cursor-active img, body.custom-cursor-active .prod-card, body.custom-cursor-active * { cursor: none !important; }
-    
-.cursor-dot { 
-      position: fixed; 
-      top: 0; 
-      left: 0; 
-      width: 24px; 
-      height: 24px; 
-      border: 1.5px solid #fff; 
-      border-radius: 50% !important; 
-      transform: translate(-50%, -50%); 
-      pointer-events: none; 
-      z-index: 99999; 
-      mix-blend-mode: difference; 
-      transition: width 0.25s cubic-bezier(0.175,0.885,0.32,1.275), height 0.25s; 
-    }
-    
-    .cursor-dot.hovered {
-      width: 44px;
-      height: 44px;
-    }
-    
-    .cursor-dot.clicked {
-      width: 8px;
-      height: 8px;
-      background: #fff;
+    #liquid-cursor-canvas {
+      position: fixed; inset: 0;
+      z-index: 99999; pointer-events: none;
+      mix-blend-mode: difference;
     }
     
     .dyn-title { display: inline-block; transition: transform 0.3s cubic-bezier(0.25,1,0.5,1); }
@@ -137,31 +124,110 @@
     .outline-text { color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,0.35); transition: all 0.3s; }
     .outline-text:hover { -webkit-text-stroke: 1.5px #fff; }
     
-    header { position: sticky; top: 0; z-index: 500; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; border-bottom: 2px solid #111; background: #fff; transition: box-shadow 0.3s, background 0.3s; }
-    .glass-nav { background: rgba(255,255,255,0.68) !important; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 2px 0 #111; }
+    /* ── INDEX.HTML MATCHING HEADER CSS ── */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 500;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      border-bottom: 1.5px solid rgba(255,255,255,0.08);
+      background: rgba(17,17,17,0.7);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      transition: border-color .3s, background .3s;
+    }
     
+    header.scrolled {
+      background: rgba(17,17,17,0.95);
+      border-color: rgba(255,255,255,0.15);
+    }
+    
+    .nl {
+      position: relative;
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 9.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      transition: color .2s;
+    }
+    
+    .nl:hover {
+      color: #fff;
+    }
+    
+    .nl::after {
+      content:'';
+      position:absolute;
+      bottom:-2px;
+      left:0;
+      width:0;
+      height:1.5px;
+      background:#fff;
+      transition:width .2s;
+    }
+    
+    .nl:hover::after {
+      width:100%;
+    }
+    
+    .enter-btn {
+      background: #fff;
+      color: #111;
+      border: none;
+      padding: 8px 18px;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-block;
+      transition: background .2s, color .2s, transform .15s;
+    }
+    
+    .enter-btn:hover {
+      background: var(--R);
+      color: #fff;
+      transform: translate(-1px,-1px);
+    }
+
+    .logo-btn { 
+      background: none; 
+      border: none; 
+      display: block; 
+      padding: 0; 
+      position: relative; 
+      padding-left: 10px; 
+      text-decoration: none; 
+    }
+    .logo-btn:focus { outline: none; }
+    
+    /* ── SHOP SPECIFIC HEADER ELEMENTS ── */
     .user-menu-container { position: relative; }
-    .user-badge { background: #111; color: #fff; border: 2px solid #111; padding: 6px 14px; font-size: 9px; font-weight: 900; letter-spacing: 0.15em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; transition: background 0.2s, color 0.2s; }
-    .user-menu-container:hover .user-badge { background: transparent; color: #111; }
-    .user-dropdown { position: absolute; top: 100%; right: 0; background: #fff; border: 2px solid #111; border-top: none; display: none; flex-direction: column; min-width: 100%; box-shadow: 3px 3px 0 #000; z-index: 1001; }
+    .user-badge { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.3); padding: 6px 14px; font-size: 9px; font-weight: 900; letter-spacing: 0.15em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; transition: background 0.2s, color 0.2s; cursor: none !important;}
+    .user-menu-container:hover .user-badge { background: #fff; color: #111; border-color: #fff; }
+    .user-dropdown { position: absolute; top: 100%; right: 0; background: #fff; border: 2px solid #111; display: none; flex-direction: column; min-width: 100%; box-shadow: 3px 3px 0 #000; z-index: 1001; }
     .user-menu-container:hover .user-dropdown { display: flex; animation: fadeIn 0.18s; }
-    .user-dropdown-btn { background: transparent; color: #111; border: none; padding: 12px 16px; font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; text-align: left; transition: background 0.2s, color 0.2s; cursor: pointer; }
+    .user-dropdown-btn { background: transparent; color: #111; border: none; padding: 12px 16px; font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; text-align: left; transition: background 0.2s, color 0.2s; cursor: none !important; }
     .user-dropdown-btn:hover { background: #111; color: #fff; }
     
-    .nav-signin { background: #111; color: #fff; border: 2px solid #111; padding: 6px 14px; font-size: 9px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; transition: all 0.2s; cursor: pointer; }
-    .nav-signin:hover { background: transparent; color: #111; }
+    .nav-signin { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.3); padding: 6px 14px; font-size: 9px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; transition: all 0.2s; cursor: none !important; }
+    .nav-signin:hover { background: #fff; color: #111; border-color: #fff;}
     
-    .nl { position: relative; color: #111; text-decoration: none; font-weight: 700; font-size: 10px; letter-spacing: 0.18em; cursor: pointer; }
-    .nl::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #111; transition: width 0.2s; }
-    .nl:hover::after { width: 100%; }
-    
-    .size-btn { background: transparent; color: #111; border: 1.5px solid #111; padding: 6px 0; width: 34px; text-align: center; font-size: 10px; font-weight: 700; transition: all 0.2s; cursor: pointer; }
+    .size-btn { background: transparent; color: #111; border: 1.5px solid #111; padding: 6px 0; width: 34px; text-align: center; font-size: 10px; font-weight: 700; transition: all 0.2s; }
     .size-btn.active { background: #111; color: #fff; }
     .size-btn.soldout { opacity: 0.28; text-decoration: line-through; }
     
     .prod-card { transition: box-shadow 0.25s, transform 0.25s; }
     .prod-card:hover { box-shadow: 6px 6px 0 #111; transform: translate(-2px,-2px); }
-    .prod-cta-btn, .flip-toggle { transition: background 0.2s, color 0.2s; cursor: pointer; }
+    .prod-cta-btn, .flip-toggle { transition: background 0.2s, color 0.2s; }
     .prod-cta-btn:hover:not(:disabled), .flip-toggle:hover { background: #111 !important; color: #fff !important; }
     
     .port-card .port-overlay { opacity: 0; transition: opacity 0.3s ease; }
@@ -174,7 +240,7 @@
     .flip-front, .flip-back { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
     .flip-back { transform: rotateY(180deg); }
     
-    .grain-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9998; opacity: 0.15; background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E'); }
+    .grain-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9998; opacity: 0.12; background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E'); }
     .topo-parallax-wrap { position: absolute; top: -50vh; bottom: -50vh; left: 0; right: 0; pointer-events: none; z-index: 0; will-change: transform; }
     
     .reveal { opacity: 0; transform: translateY(44px); transition: opacity 0.78s cubic-bezier(0.22,1,0.36,1), transform 0.78s cubic-bezier(0.22,1,0.36,1); }
@@ -195,18 +261,15 @@
     .footer-animated-bg::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center 30%,transparent 10%,#111 80%); pointer-events: none; z-index: 0; }
     
     .cyber-text-container { perspective: 1000px; display: inline-block; position: relative; z-index: 2; }
-    .cyber-text { color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,0.2); background: linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.8) 50%,transparent 100%); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; animation: textShine 5s linear infinite; transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); cursor: crosshair; position: relative; display: inline-block; padding-bottom: 0.15em; }
+    .cyber-text { color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,0.2); background: linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.8) 50%,transparent 100%); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; animation: textShine 5s linear infinite; transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); display: inline-block; padding-bottom: 0.15em; }
     @keyframes textShine { 0%{background-position:200% center} 100%{background-position:-200% center} }
     .cyber-text:hover { transform: translateZ(40px) rotateX(15deg) skewX(-5deg); -webkit-text-stroke: 1.5px rgba(255,255,255,0.9); text-shadow: 0 0 20px rgba(255,255,255,0.5),-3px 3px 0 rgba(200,0,0,0.8),3px -3px 0 rgba(0,200,255,0.8); }
     
-    .ghost-credit { opacity: 0.15; transition: opacity 0.4s ease; cursor: crosshair; }
+    .ghost-credit { opacity: 0.15; transition: opacity 0.4s ease; }
     .ghost-credit:hover { opacity: 0.8; }
     
-    .social-link { color: rgba(255,255,255,0.3); text-decoration: none; transition: color 0.3s,transform 0.3s; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; }
+    .social-link { color: rgba(255,255,255,0.3); text-decoration: none; transition: color 0.3s,transform 0.3s; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; }
     .social-link:hover { color: #fff; transform: translateY(-2px); display: inline-block; }
-    
-    .logo-btn { background: none; border: none; display: block; padding: 0; position: relative; padding-left: 10px; text-decoration: none; cursor: pointer; }
-    .logo-btn:focus { outline: none; }
 
     /* Modal Standard Styles */
     .modal-overlay {
@@ -242,7 +305,6 @@
       height: 34px;
       font-size: 14px;
       font-weight: 700;
-      cursor: pointer;
     }
 
     /* Multi-image Portfolio Carousel Navigation */
@@ -258,54 +320,36 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
       z-index: 20;
       transition: background 0.2s;
     }
-    .carousel-btn:hover {
-      background: rgba(17,17,17,0.9);
-    }
+    .carousel-btn:hover { background: rgba(17,17,17,0.9); }
     .carousel-btn.left { left: 10px; }
     .carousel-btn.right { right: 10px; }
 
-    /* Testimonials Fixes */
     .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #111; border: 2px solid #111; }
     .testi-card { background: #fff; padding: 2.5rem 1.8rem; transition: background 0.25s, color 0.25s, transform 0.2s; }
     .testi-card:hover { background: #111; color: #fff; }
-    .testi-card:hover .testi-q { color: rgba(255,255,255,0.8); }
-    .testi-card:hover .testi-name { color: #fff; }
-    .testi-card:hover .testi-res { color: rgba(255,255,255,0.5); }
-    .testi-card:hover .testi-quote-mark { color: rgba(255,255,255,0.1); }
+    .testi-card:hover .testi-q { color: rgba(255,255,255,0.8) !important; }
+    .testi-card:hover .testi-name { color: #fff !important; }
+    .testi-card:hover .testi-res { color: rgba(255,255,255,0.5) !important; }
+    .testi-card:hover .testi-quote-mark { color: rgba(255,255,255,0.1) !important; }
 
     @media (max-width: 768px) {
       .desk-nav { display: none !important; }
-      .mob-ham { display: flex !important; background: none; border: 2px solid #111; width: 34px; height: 34px; flex-direction: column; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; cursor: pointer; }
-      .mob-ham span { display: block; width: 14px; height: 1.5px; background: #111; flex-shrink: 0; }
-      .product-grid, .port-grid, .two-col, .testi-grid { grid-template-columns: 1fr !important; }
-      .contact-grid { grid-template-columns: 1fr !important; }
-      .admin-form-grid { grid-template-columns: 1fr !important; }
+      .mob-ham { display: flex !important; background: none; border: 1.5px solid rgba(255,255,255,0.3); width: 36px; height: 36px; flex-direction: column; align-items: center; justify-content: center; gap: 5px; flex-shrink: 0; }
+      .mob-ham span { display: block; width: 14px; height: 1.5px; background: #fff; flex-shrink: 0; }
+      .product-grid, .port-grid, .two-col, .testi-grid, .contact-grid, .admin-form-grid { grid-template-columns: 1fr !important; }
     }
     @media (min-width: 769px) { 
       .mob-ham, .mob-menu { display: none !important; } 
     }
-    /* Testimonials Hover & Mobile Border Fix */
-.testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #111; border: 2px solid #111; }
-.testi-card { background: #fff; padding: 2.5rem 1.8rem; transition: background 0.25s, color 0.25s, transform 0.2s; }
-.testi-card:hover { background: #111; color: #fff; }
-.testi-card:hover .testi-q { color: rgba(255,255,255,0.8) !important; }
-.testi-card:hover .testi-name { color: #fff !important; }
-.testi-card:hover .testi-res { color: rgba(255,255,255,0.5) !important; }
-.testi-card:hover .testi-quote-mark { color: rgba(255,255,255,0.1) !important; }
-
-@media (max-width: 768px) {
-  .testi-grid { grid-template-columns: 1fr !important; }
-}
   </style>
 </head>
 <body>
   <div id="progress"></div>
-  <div class="cursor-dot" id="cursor"></div>
-  <div class="grain"></div>
+  <div class="grain-overlay"></div>
+  <canvas id="liquid-cursor-canvas"></canvas>
   <div id="root"></div>
 
   <script type="text/babel">
@@ -377,52 +421,6 @@
       </div>
     );
 
-function Cursor() {
-      useEffect(() => {
-        const el = document.getElementById('cursor');
-        if (!el) return;
-        
-        const move = (e) => {
-          el.style.left = e.clientX + 'px';
-          el.style.top = e.clientY + 'px';
-        };
-        
-        const down = () => {
-          el.classList.remove('hovered');
-          el.classList.add('clicked');
-        };
-        
-        const up = (e) => {
-          el.classList.remove('clicked');
-          if (e.target && e.target.closest && e.target.closest('a, button, input, select, .prod-card, .port-card, .ps-card')) {
-            el.classList.add('hovered');
-          }
-        };
-        
-        const handleMouseOver = (e) => {
-          if (e.target && e.target.closest && e.target.closest('a, button, input, select, .prod-card, .port-card, .ps-card')) {
-            el.classList.add('hovered');
-          } else {
-            el.classList.remove('hovered');
-          }
-        };
-        
-        window.addEventListener('mousemove', move);
-        window.addEventListener('mousedown', down);
-        window.addEventListener('mouseup', up);
-        window.addEventListener('mouseover', handleMouseOver);
-        
-        return () => {
-          window.removeEventListener('mousemove', move);
-          window.removeEventListener('mousedown', down);
-          window.removeEventListener('mouseup', up);
-          window.removeEventListener('mouseover', handleMouseOver);
-        };
-      }, []);
-      
-      return null;
-    }
-
     function ScrollProgress() {
       const [w,setW]=useState(0);
       useEffect(()=>{
@@ -437,7 +435,7 @@ function Cursor() {
       const items=["STYLE BEYOND SEASONS","—","COLLECTION 001","—","MADE IN INDIA","—","LIMITED RUNS. NO RESTOCKS.","—","splotch.in","—"];
       const d=[...items,...items];
       return (
-        <div style={{background:"#111",height:28,overflow:"hidden",display:"flex",alignItems:"center",borderBottom:"2px solid #222",position:"sticky",top:48,zIndex:499}}>
+        <div style={{background:"#111",height:28,overflow:"hidden",display:"flex",alignItems:"center",borderBottom:"2px solid #222",position:"sticky",top:52,zIndex:499}}>
           <div style={{display:"flex",animation:"ticker 32s linear infinite",whiteSpace:"nowrap"}}>
             {d.map((t,i)=><span key={i} style={{marginRight:"2rem",fontSize:9,fontWeight:700,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(255,255,255,0.45)",flexShrink:0}}>{t}</span>)}
           </div>
@@ -452,10 +450,10 @@ function Cursor() {
             <button className="modal-close" onClick={onClose}>✕</button>
             <h2 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 28, marginBottom: "1rem" }}>Terms & Conditions</h2>
             <div style={{ fontSize: 12, lineHeight: 1.8, color: "rgba(0,0,0,0.7)" }}>
-              <p style={{ marginBottom: "1rem" }}><strong>1. General Conditions</strong><br/>By visiting our site and/or purchasing something from us, you engage in our "Service" and agree to be bound by the following terms and conditions. Splotch reserves the right to refuse service to anyone for any reason at any time.</p>
-              <p style={{ marginBottom: "1rem" }}><strong>2. Products & Exclusivity</strong><br/>All Splotch runs are strictly limited. We do not mass produce. Once an item is sold out, it is permanently archived. We have made every effort to display as accurately as possible the colors and images of our products.</p>
+              <p style={{ marginBottom: "1rem" }}><strong>1. General Conditions</strong><br/>By visiting our site and/or purchasing something from us, you engage in our "Service" and agree to be bound by the following terms and conditions.</p>
+              <p style={{ marginBottom: "1rem" }}><strong>2. Products & Exclusivity</strong><br/>All Splotch runs are strictly limited. We do not mass produce. Once an item is sold out, it is permanently archived.</p>
               <p style={{ marginBottom: "1rem" }}><strong>3. Billing & Accuracy</strong><br/>You agree to provide current, complete and accurate purchase and account information for all purchases made at our store.</p>
-              <p style={{ marginBottom: "1rem" }}><strong>4. Returns & Refunds</strong><br/>We maintain a strict 7-day return policy. Returns and refunds are only allowed within 7 days of receiving the product. Items must be unworn, unwashed, and in original packaging. Use the "Request Return" link in the footer to initiate the process.</p>
+              <p style={{ marginBottom: "1rem" }}><strong>4. Returns & Refunds</strong><br/>We maintain a strict 7-day return policy. Items must be unworn, unwashed, and in original packaging.</p>
             </div>
           </div>
         </div>
@@ -509,7 +507,7 @@ function Cursor() {
                 <input type="text" placeholder="Order ID (e.g. pay_XXXXX)" value={form.orderId} onChange={e => setForm({ ...form, orderId: e.target.value })} style={iSt} required />
                 <input type="email" placeholder="Email Address used for order" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} style={iSt} required />
                 <textarea placeholder="Reason for return" value={form.reason} rows={4} onChange={e => setForm({ ...form, reason: e.target.value })} style={{ ...iSt, resize: "none" }} required />
-                <button type="submit" disabled={loading} style={{ width: "100%", background: "#111", color: "#fff", border: "3px solid #111", padding: "14px", fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", cursor: "pointer" }}>
+                <button type="submit" disabled={loading} style={{ width: "100%", background: "#111", color: "#fff", border: "3px solid #111", padding: "14px", fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase" }}>
                   {loading ? "Submitting..." : "Submit Return Request"}
                 </button>
               </form>
@@ -562,14 +560,14 @@ function Cursor() {
       return (
         <div style={{position:"fixed",inset:0,zIndex:1000,background:"rgba(17,17,17,0.85)",display:"flex",alignItems:"center",justifyContent:"center",animation:"fadeIn .2s ease"}}>
           <div style={{background:"#fff",border:"3px solid #111",width:"100%",maxWidth:400,position:"relative",padding:"2.5rem"}}>
-            <button onClick={onClose} style={{position:"absolute",top:14,right:14,background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700,cursor:"pointer"}}>✕</button>
+            <button onClick={onClose} style={{position:"absolute",top:14,right:14,background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700}}>✕</button>
             <h2 style={{fontFamily:"Playfair Display",fontWeight:700,fontSize:28,marginBottom:"0.5rem"}}>{isLogin?"Welcome Back.":"Join Splotch."}</h2>
             <p style={{fontSize:12,color:"rgba(0,0,0,0.5)",marginBottom:"2rem"}}>Secure your access to exclusive drops.</p>
             {err&&<div style={{background:"#c00",color:"#fff",padding:"10px",fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:"1.5rem"}}>{err}</div>}
             <form onSubmit={handleEmailAuth}>
               <input type="email" placeholder="Email Address" value={email} onChange={e=>setEmail(e.target.value)} style={iSt} required/>
               <input type="password" placeholder="Password (Min 6 characters)" value={pw} onChange={e=>setPw(e.target.value)} style={iSt} required/>
-              <button type="submit" disabled={loading} style={{width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"1rem",cursor:"pointer"}}>
+              <button type="submit" disabled={loading} style={{width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"1rem"}}>
                 {loading?"Processing...":(isLogin?"Log In":"Sign Up")}
               </button>
             </form>
@@ -578,12 +576,12 @@ function Cursor() {
               <span style={{fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.1em",color:"rgba(0,0,0,0.3)"}}>OR</span>
               <div style={{flex:1,height:1,background:"rgba(0,0,0,0.1)"}}></div>
             </div>
-            <button onClick={handleGoogle} style={{width:"100%",background:"#fff",color:"#111",border:"2px solid rgba(0,0,0,0.2)",padding:"12px",fontSize:11,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",display:"flex",justifyContent:"center",alignItems:"center",gap:"10px",cursor:"pointer"}}>
+            <button onClick={handleGoogle} style={{width:"100%",background:"#fff",color:"#111",border:"2px solid rgba(0,0,0,0.2)",padding:"12px",fontSize:11,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",display:"flex",justifyContent:"center",alignItems:"center",gap:"10px"}}>
               <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
               Continue with Google
             </button>
             <div style={{textAlign:"center",marginTop:"2rem"}}>
-              <button onClick={()=>setIsLogin(!isLogin)} style={{background:"none",border:"none",fontSize:11,fontWeight:600,color:"#111",textDecoration:"underline",cursor:"pointer"}}>
+              <button onClick={()=>setIsLogin(!isLogin)} style={{background:"none",border:"none",fontSize:11,fontWeight:600,color:"#111",textDecoration:"underline"}}>
                 {isLogin?"Need an account? Sign up.":"Already have an account? Log in."}
               </button>
             </div>
@@ -592,7 +590,7 @@ function Cursor() {
       );
     }
 
-    function Header({cartCount,onCartOpen,onLogoClick,setMobMenu,user,onAuthClick,handleLogout,openUserOrders}) {
+function Header({cartCount,onCartOpen,onLogoClick,setMobMenu,user,onAuthClick,handleLogout,openUserOrders}) {
       const [scrolled,setScrolled]=useState(false);
       useEffect(()=>{
         const fn=()=>setScrolled(window.scrollY>30);
@@ -600,25 +598,23 @@ function Cursor() {
         return()=>window.removeEventListener("scroll",fn);
       },[]);
       
-      const scrollTo=(id)=>document.getElementById(id)?.scrollIntoView({behavior:"smooth"});
       const safeName=user?(user.displayName||user.email||'USER').split('@')[0].toUpperCase():'';
       
       return (
-        <header className={scrolled?"glass-nav":""} style={{overflow:"visible"}}>
-          <button className="logo-btn" onClick={(e) => { e.preventDefault(); onLogoClick(); }} title="Splotch" style={{background:"none",border:"none",cursor:"pointer"}}>
-            <img src={LOGO_SRC} alt="Splotch" style={{height:32,width:"auto",display:"block",transform:"scale(2.2)",transformOrigin:"left center"}}/>
+        <header className={scrolled ? 'scrolled' : ''}>
+          <button className="logo-btn" onClick={(e) => { e.preventDefault(); window.location.href='/'; }} title="Splotch">
+            <img src={LOGO_SRC} alt="Splotch" style={{ height: 32, width: 'auto', display: 'block', transform: 'scale(2.2)', transformOrigin: 'left center', filter: 'invert(1)' }} />
           </button>
           
-          <nav className="desk-nav" style={{display:"flex",gap:"2.5rem",alignItems:"center"}}>
+          <nav className="desk-nav" style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
             <a href="/" className="nl">HOME</a>
-            <button onClick={()=>scrollTo('shop')} className="nl" style={{background:"none",border:"none",cursor:"pointer"}}>SHOP</button>
+            <a href="/shop.html" className="nl">SHOP</a>
             <a href="/about.html" className="nl">ABOUT</a>
-            <button onClick={()=>scrollTo('contact')} className="nl" style={{background:"none",border:"none",cursor:"pointer"}}>CONTACT</button>
           </nav>
           
-          <div style={{display:"flex",alignItems:"center",gap:"1.2rem"}}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
             <div className="auth-container desk-nav">
-              {user?(
+              {user ? (
                 <div className="user-menu-container">
                   <div className="user-badge">{safeName}<span style={{fontSize:'7px',opacity:0.6,marginLeft:4}}>▼</span></div>
                   <div className="user-dropdown">
@@ -626,48 +622,49 @@ function Cursor() {
                     <button className="user-dropdown-btn" onClick={handleLogout}>Logout</button>
                   </div>
                 </div>
-              ):(
+              ) : (
                 <button className="nav-signin" onClick={onAuthClick}>SIGN IN</button>
               )}
             </div>
             
             <button className="mob-ham" onClick={()=>setMobMenu(o=>!o)}>
-              <span></span><span></span><span></span>
+              <span /><span /><span />
             </button>
             
-            <button onClick={onCartOpen} style={{background:"#111",color:"#fff",border:"2px solid #111",padding:"7px 14px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",display:"flex",alignItems:"center",gap:6,cursor:"pointer"}}>
-              CART
-              {cartCount>0&&<span style={{background:"#fff",color:"#111",width:16,height:16,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:900}}>{cartCount}</span>}
-            </button>
+            {/* Note: The cart button only exists on shop.html, so if pasting this in about.html, you can omit the cart button or leave it safely ignored */}
+            {onCartOpen && (
+              <button onClick={onCartOpen} className="enter-btn" style={{display:"flex", alignItems:"center", gap:6, background:"#fff", color:"#111"}}>
+                CART
+                {cartCount>0&&<span style={{background:"#111",color:"#fff",width:16,height:16,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:900,borderRadius:'50%'}}>{cartCount}</span>}
+              </button>
+            )}
           </div>
         </header>
       );
     }
 
     function MobMenu({open,setOpen,user,onAuthClick,handleLogout,openUserOrders}) {
-      const go=(id)=>{document.getElementById(id)?.scrollIntoView({behavior:"smooth"});setOpen(false);};
       const safeName=user?(user.displayName||user.email||'USER').split('@')[0].toUpperCase():'';
-      const btnSt={background:"none",border:"none",textAlign:"left",fontFamily:"Inter",fontWeight:900,fontSize:"clamp(38px,10vw,60px)",letterSpacing:"-0.04em",textTransform:"uppercase",color:"#fff",lineHeight:1.1,borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"0.5rem 0",textDecoration:"none",display:"block"};
+      const btnSt={background:"none",border:"none",textAlign:"left",fontFamily:"Inter",fontWeight:900,fontSize:"clamp(38px,10vw,60px)",letterSpacing:"-0.04em",textTransform:"uppercase",color:"#fff",lineHeight:1.1,borderBottom:"1px solid rgba(255,255,255,0.07)",padding:"0.5rem 0",textDecoration:"none",display:"block",width:"100%"};
       
       return (
-        <div className="mob-menu" style={{position:"fixed",inset:0,zIndex:600,background:"#111",display:"flex",flexDirection:"column",justifyContent:"center",padding:"3rem 2rem",transform:open?"translateX(0)":"translateX(100%)",transition:"transform .4s cubic-bezier(.76,0,.24,1)"}}>
-          <button onClick={()=>setOpen(false)} style={{position:"absolute",top:16,right:16,background:"none",border:"2px solid rgba(255,255,255,0.2)",width:42,height:42,color:"#fff",fontSize:18,fontWeight:700,cursor:"pointer"}}>✕</button>
-          <img src={LOGO_SRC} alt="Splotch" style={{height:48,width:"auto",marginBottom:"2.5rem",opacity:0.9,filter:"invert(1)"}}/>
+        <div className="mob-menu" style={{position:"fixed",inset:0,zIndex:600,background:"#0a0a0a",display:"flex",flexDirection:"column",justifyContent:"center",padding:"3rem 2rem",transform:open?"translateX(0)":"translateX(100%)",transition:"transform .4s cubic-bezier(.76,0,.24,1)"}}>
+          <button onClick={()=>setOpen(false)} style={{position:"absolute",top:16,right:16,background:"none",border:"1.5px solid rgba(255,255,255,0.2)",width:42,height:42,color:"#fff",fontSize:18,fontWeight:700}}>✕</button>
+          <img src={LOGO_SRC} alt="Splotch" style={{height:48,width:"auto",marginBottom:"2.5rem",opacity:0.8,filter:"invert(1)"}}/>
           
           <a href="/" style={btnSt}>HOME</a>
-          <button onClick={()=>go('shop')} style={btnSt}>SHOP</button>
+          <a href="/shop.html" style={btnSt}>SHOP</a>
           <a href="/about.html" style={btnSt}>ABOUT</a>
-          <button onClick={()=>go('contact')} style={btnSt}>CONTACT</button>
           
           <div style={{marginTop:'2rem',borderTop:'1px solid rgba(255,255,255,0.1)',paddingTop:'2rem'}}>
             {user?(
               <React.Fragment>
                 <span style={{color:'#fff',fontSize:12,fontWeight:700,letterSpacing:'0.2em',textTransform:'uppercase',display:'block',marginBottom:'1rem'}}>WELCOME, {safeName}</span>
-                <button onClick={()=>{openUserOrders();setOpen(false);}} style={{background:'transparent',color:'#fff',border:'1px solid #fff',padding:'10px 20px',fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',marginRight:10,cursor:"pointer"}}>My Orders</button>
-                <button onClick={()=>{handleLogout();setOpen(false);}} style={{background:'transparent',color:'#fff',border:'1px solid #fff',padding:'10px 20px',fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',cursor:"pointer"}}>Logout</button>
+                <button onClick={()=>{openUserOrders();setOpen(false);}} style={{background:'transparent',color:'#fff',border:'1px solid #fff',padding:'10px 20px',fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase',marginRight:10}}>My Orders</button>
+                <button onClick={()=>{handleLogout();setOpen(false);}} style={{background:'transparent',color:'#fff',border:'1px solid #fff',padding:'10px 20px',fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase'}}>Logout</button>
               </React.Fragment>
             ):(
-              <button onClick={()=>{onAuthClick();setOpen(false);}} style={{background:'#fff',color:'#111',border:'none',padding:'12px 24px',fontSize:11,fontWeight:900,letterSpacing:'0.15em',textTransform:'uppercase',cursor:"pointer"}}>Sign In</button>
+              <button onClick={()=>{if(onAuthClick)onAuthClick();setOpen(false);}} style={{background:'#fff',color:'#111',border:'none',padding:'12px 24px',fontSize:11,fontWeight:900,letterSpacing:'0.15em',textTransform:'uppercase'}}>Sign In</button>
             )}
           </div>
         </div>
@@ -702,7 +699,7 @@ function Cursor() {
           <div style={{background:"#fff",border:"3px solid #111",width:"100%",maxWidth:600,maxHeight:"80vh",display:"flex",flexDirection:"column"}}>
             <div style={{padding:"1.2rem 1.8rem",borderBottom:"2px solid #111",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <span style={{fontFamily:"Playfair Display",fontWeight:700,fontSize:22}}>My Orders</span>
-              <button onClick={onClose} style={{background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700,cursor:"pointer"}}>✕</button>
+              <button onClick={onClose} style={{background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700}}>✕</button>
             </div>
             <div style={{flex:1,overflow:"auto",padding:"1.5rem"}}>
               {loading?(
@@ -912,7 +909,7 @@ function Cursor() {
           <div style={{position:"absolute",top:0,right:0,bottom:0,width:"100%",maxWidth:400,background:"#fff",borderLeft:"3px solid #111",display:"flex",flexDirection:"column"}}>
             <div style={{padding:"1.2rem 1.8rem",borderBottom:"2px solid #111",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <span style={{fontFamily:"Playfair Display",fontWeight:700,fontSize:20}}>{step==='cart'?`Cart (${cart.length})`:step==='shipping'?"Shipping Info":"Verify Phone"}</span>
-              <button onClick={onClose} style={{background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700,cursor:"pointer"}}>✕</button>
+              <button onClick={onClose} style={{background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700}}>✕</button>
             </div>
             
             <div id="recaptcha-container"></div>
@@ -925,9 +922,9 @@ function Cursor() {
                       <img src={LOGO_SRC} alt="" style={{height:40,opacity:.15,marginBottom:12}}/>
                       <div style={{fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase"}}>Your cart is empty</div>
                     </div>
-                  ):cart.map((item)=>(
+                  ):(cart.map((item)=>(
                     <div key={item.cartItemId} style={{display:"flex",gap:"1rem",alignItems:"center",borderBottom:"1px solid rgba(0,0,0,0.07)",padding:"0.9rem 0"}}>
-                      <input type="checkbox" checked={selectedIds.includes(item.cartItemId)} onChange={()=>toggleSelect(item.cartItemId)} style={{width:18,height:18,cursor:"pointer"}}/>
+                      <input type="checkbox" checked={selectedIds.includes(item.cartItemId)} onChange={()=>toggleSelect(item.cartItemId)} style={{width:18,height:18}}/>
                       <div style={{width:58,height:58,background:"#111",flexShrink:0,overflow:"hidden",opacity:selectedIds.includes(item.cartItemId)?1:0.4}}>
                         {item.frontImage?<img src={item.frontImage} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,0.15)",fontSize:18}}>◎</div>}
                       </div>
@@ -936,9 +933,9 @@ function Cursor() {
                         <div style={{fontSize:10,color:"#666",marginTop:2}}>SIZE: {item.selectedSize}</div>
                         <div style={{fontSize:12,fontWeight:600,color:"#c00",marginTop:2}}>{item.price}</div>
                       </div>
-                      <button onClick={()=>setCart(c=>c.filter(j=>j.cartItemId!==item.cartItemId))} style={{background:"none",border:"1px solid rgba(0,0,0,0.12)",width:26,height:26,fontSize:11,flexShrink:0,cursor:"pointer"}}>✕</button>
+                      <button onClick={()=>setCart(c=>c.filter(j=>j.cartItemId!==item.cartItemId))} style={{background:"none",border:"1px solid rgba(0,0,0,0.12)",width:26,height:26,fontSize:11,flexShrink:0}}>✕</button>
                     </div>
-                  ))}
+                  )))}
                 </div>
                 {cart.length>0&&(
                   <div style={{padding:"1.2rem 1.8rem",borderTop:"2px solid #111"}}>
@@ -949,8 +946,8 @@ function Cursor() {
                       <span style={{fontSize:11,fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase"}}>Total ({selectedCartItems.length} selected)</span>
                       <span style={{fontSize:17,fontWeight:900,letterSpacing:"-0.02em"}}>₹{total.toLocaleString("en-IN")}</span>
                     </div>
-                    <button onClick={initiateCheckout} disabled={selectedCartItems.length===0} style={{width:"100%",background:selectedCartItems.length===0?"#666":"#111",color:"#fff",border:`3px solid ${selectedCartItems.length===0?"#666":"#111"}`,padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",transition:"background 0.2s",cursor:selectedCartItems.length===0?"not-allowed":"pointer"}}>Secure Checkout →</button>
-                    <button onClick={()=>setCart([])} style={{width:"100%",background:"transparent",color:"rgba(0,0,0,0.35)",border:"none",padding:"8px",fontSize:9,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase",marginTop:4,cursor:"pointer"}}>Clear All</button>
+                    <button onClick={initiateCheckout} disabled={selectedCartItems.length===0} style={{width:"100%",background:selectedCartItems.length===0?"#666":"#111",color:"#fff",border:`3px solid ${selectedCartItems.length===0?"#666":"#111"}`,padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",transition:"background 0.2s"}}>Secure Checkout →</button>
+                    <button onClick={()=>setCart([])} style={{width:"100%",background:"transparent",color:"rgba(0,0,0,0.35)",border:"none",padding:"8px",fontSize:9,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase",marginTop:4}}>Clear All</button>
                   </div>
                 )}
               </React.Fragment>
@@ -980,8 +977,8 @@ function Cursor() {
                   <input type="text" placeholder="6-digit Pincode" value={shipping.pincode} onChange={e=>setShipping(s=>({...s,pincode:e.target.value}))} style={{...iSt,marginBottom:"1.5rem"}}/>
                 </div>
                 <div style={{padding:"1.2rem 1.8rem",borderTop:"2px solid #111"}}>
-                  <button onClick={requestOTP} disabled={loading} style={{width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:8,transition:"background 0.2s",cursor:loading?"not-allowed":"pointer"}}>{loading?"Processing...":(ENABLE_OTP_VERIFICATION?`Send OTP & Pay ₹${total}`:`Pay ₹${total} Now`)}</button>
-                  <button onClick={()=>setStep('cart')} style={{width:"100%",background:"transparent",color:"#111",border:"2px solid rgba(0,0,0,0.2)",padding:"10px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",cursor:"pointer"}}>← Back to Cart</button>
+                  <button onClick={requestOTP} disabled={loading} style={{width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:8,transition:"background 0.2s"}}>{loading?"Processing...":(ENABLE_OTP_VERIFICATION?`Send OTP & Pay ₹${total}`:`Pay ₹${total} Now`)}</button>
+                  <button onClick={()=>setStep('cart')} style={{width:"100%",background:"transparent",color:"#111",border:"2px solid rgba(0,0,0,0.2)",padding:"10px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase"}}>← Back to Cart</button>
                 </div>
               </div>
             )}
@@ -994,8 +991,8 @@ function Cursor() {
                   <input type="text" placeholder="123456" value={otp} onChange={e=>setOtp(e.target.value.replace(/\D/g,'').slice(0,6))} style={{...iSt,marginBottom:"1.5rem",textAlign:"center",fontSize:18,letterSpacing:"0.2em"}}/>
                 </div>
                 <div style={{padding:"1.2rem 1.8rem",borderTop:"2px solid #111"}}>
-                  <button onClick={verifyOTP} disabled={loading||otp.length<6} style={{width:"100%",background:otp.length<6?"#666":"#111",color:"#fff",border:`3px solid ${otp.length<6?"#666":"#111"}`,padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:8,transition:"background 0.2s",cursor:loading||otp.length<6?"not-allowed":"pointer"}}>{loading?"Verifying...":`Verify & Pay ₹${total}`}</button>
-                  <button onClick={()=>setStep('shipping')} style={{width:"100%",background:"transparent",color:"#111",border:"2px solid rgba(0,0,0,0.2)",padding:"10px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",cursor:"pointer"}}>← Edit Phone Number</button>
+                  <button onClick={verifyOTP} disabled={loading||otp.length<6} style={{width:"100%",background:otp.length<6?"#666":"#111",color:"#fff",border:`3px solid ${otp.length<6?"#666":"#111"}`,padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:8,transition:"background 0.2s"}}>{loading?"Verifying...":`Verify & Pay ₹${total}`}</button>
+                  <button onClick={()=>setStep('shipping')} style={{width:"100%",background:"transparent",color:"#111",border:"2px solid rgba(0,0,0,0.2)",padding:"10px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase"}}>← Edit Phone Number</button>
                 </div>
               </div>
             )}
@@ -1007,6 +1004,19 @@ function Cursor() {
     function QuickView({product,onClose,onAdd}) {
       const [flipped,setFlipped]=useState(false);
       const [added,setAdded]=useState(false);
+      useEffect(() => {
+        // Smoothly hide grain overlay
+        document.querySelectorAll('.grain, .grain-overlay').forEach(el => {
+          el.style.transition = 'opacity 0.3s ease';
+          el.style.opacity = '0';
+        });
+        // Bring it back when modal closes
+        return () => {
+          document.querySelectorAll('.grain, .grain-overlay').forEach(el => {
+            el.style.opacity = '0.12';
+          });
+        };
+      }, []);
       if(!product)return null;
       
       const sizeArray=product.sizes?product.sizes.split(',').map(s=>s.trim()):["OS"];
@@ -1031,14 +1041,14 @@ function Cursor() {
               {product.hasBack&&(
                 <div style={{position:"absolute",bottom:14,left:0,right:0,display:"flex",justifyContent:"center",gap:6,zIndex:10}}>
                   {["Front","Back"].map((s,i)=>(
-                    <button key={s} onClick={()=>setFlipped(i===1)} style={{background:(flipped===(i===1))?"#fff":"transparent",color:(flipped===(i===1))?"#111":"rgba(255,255,255,0.5)",border:"1.5px solid rgba(255,255,255,0.25)",padding:"5px 14px",fontSize:9,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase",cursor:"pointer"}}>{s}</button>
+                    <button key={s} onClick={()=>setFlipped(i===1)} style={{background:(flipped===(i===1))?"#fff":"transparent",color:(flipped===(i===1))?"#111":"rgba(255,255,255,0.5)",border:"1.5px solid rgba(255,255,255,0.25)",padding:"5px 14px",fontSize:9,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase"}}>{s}</button>
                   ))}
                 </div>
               )}
             </div>
             <div style={{padding:"2.5rem 2rem",display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
               <div>
-                <button onClick={onClose} style={{float:"right",background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700,cursor:"pointer"}}>✕</button>
+                <button onClick={onClose} style={{float:"right",background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700}}>✕</button>
                 <div style={{fontSize:9,fontWeight:700,letterSpacing:"0.25em",textTransform:"uppercase",color:"rgba(0,0,0,0.3)",marginBottom:6,clear:"both"}}>{product.category}</div>
                 <h2 style={{fontFamily:"Playfair Display",fontWeight:700,fontSize:26,letterSpacing:"-0.02em",marginBottom:"0.6rem"}}>{product.name}</h2>
                 <div style={{fontWeight:700,fontSize:19,marginBottom:"1.2rem"}}>
@@ -1063,7 +1073,7 @@ function Cursor() {
                   ))}
                 </div>
               </div>
-              <button disabled={isSoldOut||currentSizeSoldOut} onClick={()=>{onAdd({...product,selectedSize:selSize});setAdded(true);setTimeout(()=>setAdded(false),2000);}} style={{background:added?"#444":"#111",color:"#fff",border:"3px solid #111",padding:"15px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginTop:"1.5rem",transition:"background .2s",opacity:(isSoldOut||currentSizeSoldOut)?0.5:1,cursor:isSoldOut||currentSizeSoldOut?"not-allowed":"pointer"}}>
+              <button disabled={isSoldOut||currentSizeSoldOut} onClick={()=>{onAdd({...product,selectedSize:selSize});setAdded(true);setTimeout(()=>setAdded(false),2000);}} style={{background:added?"#444":"#111",color:"#fff",border:"3px solid #111",padding:"15px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginTop:"1.5rem",transition:"background .2s",opacity:(isSoldOut||currentSizeSoldOut)?0.5:1}}>
                 {(isSoldOut||currentSizeSoldOut)?"Sold Out":(added?"✓ Added to Cart":"Add to Cart")}
               </button>
             </div>
@@ -1093,10 +1103,10 @@ function Cursor() {
       return (
         <div className="prod-card" style={{border:"2px solid #111",background:"#fff",position:"relative",display:"flex",flexDirection:"column"}}>
           {product.tag&&<div style={{position:"absolute",top:12,left:12,zIndex:10,background:"#111",color:"#fff",fontSize:8,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",padding:"3px 8px"}}>{product.tag}</div>}
-          {product.hasBack&&<button className="flip-toggle" onClick={e=>{e.stopPropagation();setFlipped(f=>!f);}} style={{position:"absolute",top:12,right:12,zIndex:10,background:flipped?"#111":"rgba(255,255,255,0.92)",color:flipped?"#fff":"#111",border:"1.5px solid #111",fontSize:8,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",padding:"4px 9px",cursor:"pointer"}}>{flipped?"◀ Front":"Back ▶"}</button>}
+          {product.hasBack&&<button className="flip-toggle" onClick={e=>{e.stopPropagation();setFlipped(f=>!f);}} style={{position:"absolute",top:12,right:12,zIndex:10,background:flipped?"#111":"rgba(255,255,255,0.92)",color:flipped?"#fff":"#111",border:"1.5px solid #111",fontSize:8,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",padding:"4px 9px"}}>{flipped?"◀ Front":"Back ▶"}</button>}
           {isSoldOut&&<div style={{position:"absolute",inset:0,zIndex:20,background:"rgba(255,255,255,0.9)",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontWeight:900,fontSize:16,letterSpacing:"0.1em",textTransform:"uppercase",color:"#c00"}}>SOLD OUT</span></div>}
           
-          <div style={{aspectRatio:"3/4",overflow:"hidden",perspective:"1200px",cursor:"pointer"}} className={flipped?"flipped":""} onClick={()=>onQV(product)}>
+          <div style={{aspectRatio:"3/4",overflow:"hidden",perspective:"1200px"}} className={flipped?"flipped":""} onClick={()=>onQV(product)}>
             <div className="flip-inner">
               <div className="flip-front">{product.frontImage?<img src={product.frontImage} alt="" onError={e=>{e.target.style.display='none'}} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>:<ImgPlaceholder label={product.name+"· Front"}/>}</div>
               {product.hasBack&&<div className="flip-back">{product.backImage?<img src={product.backImage} alt="" onError={e=>{e.target.style.display='none'}} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>:<ImgPlaceholder label={product.name+"· Back"} dark={false}/>}</div>}
@@ -1116,7 +1126,7 @@ function Cursor() {
             </div>
             <div style={{fontSize:9,color:"rgba(0,0,0,0.4)",fontWeight:600,marginBottom:"0.8rem"}}>{isSizeSoldOut(selSize)?"Out of stock":`${getSizeStock(product,selSize)} left`}</div>
             
-            <button className="prod-cta-btn" disabled={isSoldOut||isSizeSoldOut(selSize)} onClick={doAdd} style={{marginTop:"auto",display:"block",width:"100%",background:added?"#111":"#fff",color:added?"#fff":"#111",border:"2px solid #111",padding:"10px",fontSize:10,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase",opacity:(isSoldOut||isSizeSoldOut(selSize))?0.5:1,cursor:isSoldOut||isSizeSoldOut(selSize)?"not-allowed":"pointer"}}>
+            <button className="prod-cta-btn" disabled={isSoldOut||isSizeSoldOut(selSize)} onClick={doAdd} style={{marginTop:"auto",display:"block",width:"100%",background:added?"#111":"#fff",color:added?"#fff":"#111",border:"2px solid #111",padding:"10px",fontSize:10,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase",opacity:(isSoldOut||isSizeSoldOut(selSize))?0.5:1}}>
               {added?"✓ Added":"Add to Cart"}
             </button>
           </div>
@@ -1144,13 +1154,13 @@ function Cursor() {
       return (
         <div>
           <div style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",marginBottom:7}}>{label}</div>
-          <div className={`drop-zone${drag?" over":""}`} onClick={()=>ref.current?.click()} onDragOver={e=>{e.preventDefault();setDrag(true);}} onDragLeave={()=>setDrag(false)} onDrop={e=>{e.preventDefault();setDrag(false);read(e.dataTransfer.files[0]);}} style={{border:"2px dashed rgba(0,0,0,0.18)",padding:"0.9rem",textAlign:"center",background:drag?"rgba(0,0,0,0.03)":"#fafafa",minHeight:110,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,cursor:"pointer"}}>
+          <div className={`drop-zone${drag?" over":""}`} onClick={()=>ref.current?.click()} onDragOver={e=>{e.preventDefault();setDrag(true);}} onDragLeave={()=>setDrag(false)} onDrop={e=>{e.preventDefault();setDrag(false);read(e.dataTransfer.files[0]);}} style={{border:"2px dashed rgba(0,0,0,0.18)",padding:"0.9rem",textAlign:"center",background:drag?"rgba(0,0,0,0.03)":"#fafafa",minHeight:110,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8}}>
             {compressing?(
               <span style={{fontSize:10,fontWeight:600,color:"rgba(0,0,0,0.4)"}}>Compressing…</span>
             ):value?(
               <React.Fragment>
                 <img src={value} alt="" style={{maxHeight:90,maxWidth:"100%",objectFit:"contain"}}/>
-                <button onClick={e=>{e.stopPropagation();onChange(null);}} style={{background:"#111",color:"#fff",border:"none",fontSize:8,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",padding:"3px 9px",cursor:"pointer"}}>Remove</button>
+                <button onClick={e=>{e.stopPropagation();onChange(null);}} style={{background:"#111",color:"#fff",border:"none",fontSize:8,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",padding:"3px 9px"}}>Remove</button>
               </React.Fragment>
             ):(
               <React.Fragment>
@@ -1322,13 +1332,13 @@ function Cursor() {
       if(!authed)return (
         <div style={{position:"fixed",inset:0,zIndex:1000,background:"#111",display:"flex",alignItems:"center",justifyContent:"center",animation:"fadeIn .2s"}}>
           <div style={{background:"#fff",border:"3px solid #111",padding:"2.5rem",width:"100%",maxWidth:380,position:"relative"}}>
-            <button onClick={onClose} style={{position:"absolute",top:14,right:14,background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700,cursor:"pointer"}}>✕</button>
+            <button onClick={onClose} style={{position:"absolute",top:14,right:14,background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:14,fontWeight:700}}>✕</button>
             <img src={LOGO_SRC} alt="Splotch" style={{height:44,marginBottom:"1.5rem"}}/>
             <h2 style={{fontFamily:"Playfair Display",fontWeight:700,fontSize:26,marginBottom:"0.4rem"}}>Admin Portal</h2>
             <p style={{fontSize:12,color:"rgba(0,0,0,0.4)",marginBottom:"1.8rem"}}>Authenticate to access the global backend.</p>
             <input className="admin-input" type="email" placeholder="Admin Email" value={email} onChange={e=>setEmail(e.target.value)} style={{...iSt,marginBottom:"0.5rem"}}/>
             <input className="admin-input" type="password" placeholder="Password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&login()} style={{...iSt,marginBottom:"0.9rem"}}/>
-            <button onClick={login} style={{width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"13px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",cursor:"pointer"}}>Secure Unlock</button>
+            <button onClick={login} style={{width:"100%",background:"#111",color:"#fff",border:"3px solid #111",padding:"13px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase"}}>Secure Unlock</button>
             {pwErr&&<p style={{color:"#c00",fontSize:10,fontWeight:700,marginTop:10,textAlign:"center"}}>{pwErr}</p>}
           </div>
         </div>
@@ -1345,9 +1355,9 @@ function Cursor() {
             </div>
             <div style={{display:"flex",gap:"0.6rem"}}>
               {["products","portfolio","orders","messages"].map(t=>(
-                <button key={t} onClick={()=>{setTab(t);if(t==="products")setEditId(null);if(t==="portfolio")setPortEditId(null);}} style={{background:tab===t?"#fff":"transparent",color:tab===t?"#111":"#fff",border:"2px solid #fff",padding:"7px 16px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",cursor:"pointer"}}>{t.toUpperCase()}</button>
+                <button key={t} onClick={()=>{setTab(t);if(t==="products")setEditId(null);if(t==="portfolio")setPortEditId(null);}} style={{background:tab===t?"#fff":"transparent",color:tab===t?"#111":"#fff",border:"2px solid #fff",padding:"7px 16px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase"}}>{t.toUpperCase()}</button>
               ))}
-              <button onClick={onClose} style={{background:"transparent",color:"rgba(255,255,255,0.5)",border:"1.5px solid rgba(255,255,255,0.18)",width:38,height:38,fontSize:15,fontWeight:700,cursor:"pointer"}}>✕</button>
+              <button onClick={onClose} style={{background:"transparent",color:"rgba(255,255,255,0.5)",border:"1.5px solid rgba(255,255,255,0.18)",width:38,height:38,fontSize:15,fontWeight:700}}>✕</button>
             </div>
           </div>
           <div style={{background:"#fffbe6",borderBottom:"2px solid #e6c000",padding:"10px 2rem",fontSize:11,color:"#7a6000",fontWeight:600}}>⚠️ Images are compressed & stored as base64 in Firestore.</div>
@@ -1355,11 +1365,11 @@ function Cursor() {
             {tab==="products"&&(
               <div style={{display:"grid",gridTemplateColumns:editId?"1fr 1.6fr":"1fr",gap:"2rem"}} className="admin-form-grid">
                 <div>
-                  <button onClick={()=>{setForm(blankProduct);setEditId("new");}} style={{width:"100%",padding:"15px",background:"#111",color:"#fff",fontWeight:900,marginBottom:"1rem",cursor:"pointer"}}>+ CREATE NEW PRODUCT</button>
+                  <button onClick={()=>{setForm(blankProduct);setEditId("new");}} style={{width:"100%",padding:"15px",background:"#111",color:"#fff",fontWeight:900,marginBottom:"1rem"}}>+ CREATE NEW PRODUCT</button>
                   {products.map(p=>{
                     const ts=getTotalStock(p);
                     return(
-                      <div key={p.id} onClick={()=>{setForm({...p,sizeStock:p.sizeStock||{S:10,M:10,L:10,XL:10}});setEditId(p.id);}} style={{display:"flex",alignItems:"center",gap:"0.9rem",border:"2px solid #111",padding:"0.9rem 1rem",background:editId===p.id?"#111":"#fff",color:editId===p.id?"#fff":"#111",marginBottom:"4px",cursor:"pointer"}}>
+                      <div key={p.id} onClick={()=>{setForm({...p,sizeStock:p.sizeStock||{S:10,M:10,L:10,XL:10}});setEditId(p.id);}} style={{display:"flex",alignItems:"center",gap:"0.9rem",border:"2px solid #111",padding:"0.9rem 1rem",background:editId===p.id?"#111":"#fff",color:editId===p.id?"#fff":"#111",marginBottom:"4px"}}>
                         <div style={{width:52,height:52,background:"#333",flexShrink:0,overflow:"hidden"}}>{p.frontImage?<img src={p.frontImage} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,color:"rgba(255,255,255,0.15)"}}>◎</div>}</div>
                         <div style={{flex:1,minWidth:0}}>
                           <div style={{fontWeight:700,fontSize:13,textTransform:"uppercase",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{p.name}</div>
@@ -1368,7 +1378,7 @@ function Cursor() {
                         </div>
                         <div style={{display:"flex",flexDirection:"column",gap:3,flexShrink:0,alignItems:"flex-end"}}>
                           <span style={{fontSize:8,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 5px",background:ts<=0?"#c00":"transparent",color:ts<=0?"#fff":editId===p.id?"rgba(255,255,255,0.4)":"rgba(0,0,0,0.4)",border:`1px solid ${ts<=0?"#c00":editId===p.id?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.12)"}`}}>{ts<=0?"Sold Out":`Stock: ${ts}`}</span>
-                          <button onClick={e=>{e.stopPropagation();removeProduct(p.id);}} style={{fontSize:7,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 5px",background:"transparent",color:"rgba(180,0,0,0.55)",border:"1px solid rgba(180,0,0,0.18)",cursor:"pointer"}}>Delete</button>
+                          <button onClick={e=>{e.stopPropagation();removeProduct(p.id);}} style={{fontSize:7,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 5px",background:"transparent",color:"rgba(180,0,0,0.55)",border:"1px solid rgba(180,0,0,0.18)"}}>Delete</button>
                         </div>
                       </div>
                     );
@@ -1378,7 +1388,7 @@ function Cursor() {
                   <div style={{padding:"2rem",background:"#fafafa",border:"2px solid #111"}}>
                     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"1.8rem"}}>
                       <h3 style={{fontFamily:"Playfair Display",fontWeight:700,fontSize:22}}>{editId==="new"?"New Product":"Edit Product"}</h3>
-                      <button onClick={()=>{setEditId(null);setForm(blankProduct);}} style={{background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:13,fontWeight:700,cursor:"pointer"}}>✕</button>
+                      <button onClick={()=>{setEditId(null);setForm(blankProduct);}} style={{background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:13,fontWeight:700}}>✕</button>
                     </div>
                     <div className="admin-form-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"1.3rem"}}>
                       <div style={{gridColumn:"1/-1"}}><label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6}}>Product Name *</label><input className="admin-input" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Terrain Tee 001" style={iSt}/></div>
@@ -1407,13 +1417,13 @@ function Cursor() {
                       
                       <div style={{gridColumn:"1/-1"}}><label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6}}>Description</label><textarea className="admin-input" rows={3} value={form.description} onChange={e=>setForm({...form,description:e.target.value})} placeholder="Short description..." style={{...iSt,resize:"none"}}/></div>
                       <div style={{gridColumn:"1/-1",display:"flex",gap:"0.8rem",alignItems:"center"}}>
-                        <button type="button" onClick={()=>setForm({...form,hasBack:!form.hasBack,backImage:form.hasBack?null:form.backImage})} style={{background:form.hasBack?"#111":"#fff",color:form.hasBack?"#fff":"#111",border:"2px solid #111",padding:"9px 18px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",cursor:"pointer"}}>{form.hasBack?"✓ Front + Back":"Front Only"}</button>
+                        <button type="button" onClick={()=>setForm({...form,hasBack:!form.hasBack,backImage:form.hasBack?null:form.backImage})} style={{background:form.hasBack?"#111":"#fff",color:form.hasBack?"#fff":"#111",border:"2px solid #111",padding:"9px 18px",fontSize:10,fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase"}}>{form.hasBack?"✓ Front + Back":"Front Only"}</button>
                         <span style={{fontSize:11,color:"rgba(0,0,0,0.35)"}}>Toggle back photo</span>
                       </div>
                       <div style={{gridColumn:form.hasBack?"1/2":"1/-1"}}><ImgUpload value={form.frontImage} onChange={v=>setForm({...form,frontImage:v})} label="Front Image *"/></div>
                       {form.hasBack&&<div style={{gridColumn:"2/4"}}><ImgUpload value={form.backImage} onChange={v=>setForm({...form,backImage:v})} label="Back Image"/></div>}
                     </div>
-                    <button type="button" onClick={saveProduct} disabled={saving} style={{width:"100%",background:saving?"#666":"#111",color:"#fff",border:`3px solid ${saving?"#666":"#111"}`,padding:"14px 36px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginTop:"1.8rem",cursor:"pointer"}}>{saving?"Saving…":(editId==="new"?"Add Product":"Save Changes")}</button>
+                    <button type="button" onClick={saveProduct} disabled={saving} style={{width:"100%",background:saving?"#666":"#111",color:"#fff",border:`3px solid ${saving?"#666":"#111"}`,padding:"14px 36px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginTop:"1.8rem"}}>{saving?"Saving…":(editId==="new"?"Add Product":"Save Changes")}</button>
                   </div>
                 )}
               </div>
@@ -1421,13 +1431,13 @@ function Cursor() {
             {tab==="portfolio"&&(
               <div style={{display:"grid",gridTemplateColumns:portEditId?"1fr 1.4fr":"1fr",gap:"2rem"}} className="admin-form-grid">
                 <div>
-                  <button onClick={()=>{setPortForm({...blankPort,order:portfolio.length});setPortEditId("new");}} style={{width:"100%",padding:"15px",background:"#111",color:"#fff",fontWeight:900,marginBottom:"1rem",cursor:"pointer"}}>+ ADD PORTFOLIO ITEM</button>
+                  <button onClick={()=>{setPortForm({...blankPort,order:portfolio.length});setPortEditId("new");}} style={{width:"100%",padding:"15px",background:"#111",color:"#fff",fontWeight:900,marginBottom:"1rem"}}>+ ADD PORTFOLIO ITEM</button>
                   {portfolio.map(p=>(
                     <div key={p.id} onClick={()=>{
                         const imgs = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
                         setPortForm({...p, images: imgs});
                         setPortEditId(p.id);
-                      }} style={{display:"flex",alignItems:"center",gap:"0.9rem",border:"2px solid #111",padding:"0.9rem 1rem",background:portEditId===p.id?"#111":"#fff",color:portEditId===p.id?"#fff":"#111",marginBottom:"4px",cursor:"pointer"}}>
+                      }} style={{display:"flex",alignItems:"center",gap:"0.9rem",border:"2px solid #111",padding:"0.9rem 1rem",background:portEditId===p.id?"#111":"#fff",color:portEditId===p.id?"#fff":"#111",marginBottom:"4px"}}>
                       
                       <div style={{width:52,height:52,background:"#333",flexShrink:0,overflow:"hidden"}}>
                         {p.images && p.images.length > 0 ? (
@@ -1444,7 +1454,7 @@ function Cursor() {
                         <div style={{fontSize:11,color:portEditId===p.id?"rgba(255,255,255,0.7)":"rgba(0,0,0,0.4)",marginTop:1}}>{p.cat}</div>
                       </div>
                       
-                      <button onClick={e=>{e.stopPropagation();removePortItem(p.id);}} style={{fontSize:7,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 5px",background:"transparent",color:"rgba(180,0,0,0.55)",border:"1px solid rgba(180,0,0,0.18)",flexShrink:0,cursor:"pointer"}}>Delete</button>
+                      <button onClick={e=>{e.stopPropagation();removePortItem(p.id);}} style={{fontSize:7,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 5px",background:"transparent",color:"rgba(180,0,0,0.55)",border:"1px solid rgba(180,0,0,0.18)",flexShrink:0}}>Delete</button>
                     </div>
                   ))}
                 </div>
@@ -1452,7 +1462,7 @@ function Cursor() {
                   <div style={{padding:"2rem",background:"#fafafa",border:"2px solid #111"}}>
                     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"1.8rem"}}>
                       <h3 style={{fontFamily:"Playfair Display",fontWeight:700,fontSize:22}}>{portEditId==="new"?"New Portfolio Item":"Edit Portfolio Item"}</h3>
-                      <button onClick={()=>{setPortEditId(null);setPortForm(blankPort);}} style={{background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:13,fontWeight:700,cursor:"pointer"}}>✕</button>
+                      <button onClick={()=>{setPortEditId(null);setPortForm(blankPort);}} style={{background:"none",border:"1.5px solid #111",width:34,height:34,fontSize:13,fontWeight:700}}>✕</button>
                     </div>
                     <div style={{display:"grid",gap:"1.3rem"}}>
                       <div><label style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(0,0,0,0.4)",display:"block",marginBottom:6}}>Title *</label><input className="admin-input" value={portForm.label} onChange={e=>setPortForm({...portForm,label:e.target.value})} placeholder="Terrain Vol.001" style={iSt}/></div>
@@ -1472,14 +1482,14 @@ function Cursor() {
                                   const newImgs = [...portForm.images];
                                   newImgs.splice(idx, 1);
                                   setPortForm({...portForm, images: newImgs});
-                                }} style={{position:"absolute", top:"-5px", right:"-5px", background:"#c00", color:"#fff", border:"none", width:"20px", height:"20px", borderRadius:"50%", fontSize:"10px", fontWeight:900, cursor:"pointer"}}>✕</button>
+                                }} style={{position:"absolute", top:"-5px", right:"-5px", background:"#c00", color:"#fff", border:"none", width:"20px", height:"20px", borderRadius:"50%", fontSize:"10px", fontWeight:900}}>✕</button>
                               </div>
                             ))}
                           </div>
                         )}
                       </div>
                     </div>
-                    <button type="button" onClick={savePortItem} disabled={saving} style={{width:"100%",background:saving?"#666":"#111",color:"#fff",border:`3px solid ${saving?"#666":"#111"}`,padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginTop:"1.8rem",cursor:"pointer"}}>{saving?"Saving…":(portEditId==="new"?"Add to Portfolio":"Save Portfolio Item")}</button>
+                    <button type="button" onClick={savePortItem} disabled={saving} style={{width:"100%",background:saving?"#666":"#111",color:"#fff",border:`3px solid ${saving?"#666":"#111"}`,padding:"14px",fontSize:11,fontWeight:700,letterSpacing:"0.2em",textTransform:"uppercase",marginTop:"1.8rem"}}>{saving?"Saving…":(portEditId==="new"?"Add to Portfolio":"Save Portfolio Item")}</button>
                   </div>
                 )}
               </div>
@@ -1502,7 +1512,7 @@ function Cursor() {
                     </div>
                     <div style={{marginTop:"15px",paddingTop:"15px",borderTop:"1px solid #ddd",display:"flex",alignItems:"center",gap:"10px"}}>
                       <strong style={{fontSize:"11px",textTransform:"uppercase",letterSpacing:"0.1em"}}>Status:</strong>
-                      <select style={{padding:"6px",fontSize:"11px",fontWeight:700,border:"2px solid #111",textTransform:"uppercase",cursor:"pointer"}} value={o.status||"Processing"} onChange={async(e)=>{
+                      <select style={{padding:"6px",fontSize:"11px",fontWeight:700,border:"2px solid #111",textTransform:"uppercase"}} value={o.status||"Processing"} onChange={async(e)=>{
                         const ns=e.target.value;
                         try{
                           const updatePayload = {status:ns};
@@ -1534,7 +1544,7 @@ function Cursor() {
                       </div>
                       <div style={{fontSize:"12px",marginBottom:"10px"}}><strong>Email:</strong> <a href={`mailto:${m.email}`}>{m.email}</a></div>
                       <div style={{padding:"12px",background:"#fff",border:"1px solid #ddd",fontSize:"13px",lineHeight:1.6,whiteSpace:"pre-wrap"}}>{m.message}</div>
-                      <button onClick={()=>removeMessage(m.id)} style={{marginTop:"10px",fontSize:9,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"5px 10px",background:"transparent",color:"rgba(180,0,0,0.55)",border:"1px solid rgba(180,0,0,0.18)",cursor:"pointer"}}>Delete Message</button>
+                      <button onClick={()=>removeMessage(m.id)} style={{marginTop:"10px",fontSize:9,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",padding:"5px 10px",background:"transparent",color:"rgba(180,0,0,0.55)",border:"1px solid rgba(180,0,0,0.18)"}}>Delete Message</button>
                     </div>
                   );
                 })}
@@ -1550,7 +1560,7 @@ function Cursor() {
       const filtered=filter==="All"?products:products.filter(p=>p.category===filter);
       
       return (
-        <section id="shop" style={{background:"#fff",borderBottom:"3px solid #111"}}>
+        <section id="shop" style={{background:"#fff",borderBottom:"3px solid #111", paddingTop: "6rem"}}>
           <div style={{background:"#111",padding:"4rem 2rem 3.5rem",position:"relative",overflow:"hidden",borderBottom:"2px solid #222"}}>
             <div className="topo-parallax-wrap" style={{opacity:0.07}}><TopoSVG color="#fff"/></div>
             <div style={{position:"relative",zIndex:1}}>
@@ -1561,7 +1571,7 @@ function Cursor() {
           <div style={{borderBottom:"2px solid #111",display:"flex",alignItems:"center",overflowX:"auto", paddingLeft: "1rem"}}>
             <span style={{fontWeight: 900, fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', marginRight: '1rem', color: '#111'}}>Filters:</span>
             {cats.map(c=>(
-              <button key={c} onClick={()=>setFilter(c)} style={{background:filter===c?"#111":"transparent",color:filter===c?"#fff":"rgba(0,0,0,0.4)",border:"none",borderRight:"1px solid rgba(0,0,0,0.08)",padding:"13px 18px",fontSize:10,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase",whiteSpace:"nowrap",transition:"all .2s",cursor:"pointer"}}>{c}</button>
+              <button key={c} onClick={()=>setFilter(c)} style={{background:filter===c?"#111":"transparent",color:filter===c?"#fff":"rgba(0,0,0,0.4)",border:"none",borderRight:"1px solid rgba(0,0,0,0.08)",padding:"13px 18px",fontSize:10,fontWeight:700,letterSpacing:"0.18em",textTransform:"uppercase",whiteSpace:"nowrap",transition:"all .2s"}}>{c}</button>
             ))}
             <div style={{marginLeft:"auto",padding:"0 1rem",fontSize:10,fontWeight:700,letterSpacing:"0.12em",color:"rgba(0,0,0,0.25)",textTransform:"uppercase",whiteSpace:"nowrap"}}>
               {filtered.length} item{filtered.length!==1?"s":""}
@@ -1773,7 +1783,7 @@ function Cursor() {
                     <input type="text" placeholder="Name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} style={iSt}/>
                     <input type="email" placeholder="Email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} style={iSt}/>
                     <textarea placeholder="Message" value={form.message} rows={4} onChange={e=>setForm({...form,message:e.target.value})} style={{...iSt,resize:"none"}}/>
-                    <button type="submit" disabled={loading} style={{background:"#fff",color:"#111",border:"3px solid #fff",padding:"15px 40px",fontSize:11,fontWeight:900,letterSpacing:"0.2em",textTransform:"uppercase",marginTop:"1rem",cursor:"pointer"}}>{loading?"Sending...":"Send Message →"}</button>
+                    <button type="submit" disabled={loading} style={{background:"#fff",color:"#111",border:"3px solid #fff",padding:"15px 40px",fontSize:11,fontWeight:900,letterSpacing:"0.2em",textTransform:"uppercase",marginTop:"1rem"}}>{loading?"Sending...":"Send Message →"}</button>
                   </form>
                 )}
               </div>
@@ -1813,8 +1823,8 @@ function Cursor() {
             </div>
             <div style={{borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:"2rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1.5rem"}}>
               <div style={{display:"flex",gap:"2rem", flexWrap:"wrap"}}>
-                <a onClick={() => setTermsOpen(true)} className="social-link" style={{cursor:"pointer"}}>Terms & Conditions</a>
-                <a onClick={() => setReturnOpen(true)} className="social-link" style={{cursor:"pointer"}}>Request Return</a>
+                <a onClick={() => setTermsOpen(true)} className="social-link" style={{cursor:"none"}}>Terms & Conditions</a>
+                <a onClick={() => setReturnOpen(true)} className="social-link" style={{cursor:"none"}}>Request Return</a>
                 <a href="https://www.instagram.com/splotchglobal" target="_blank" className="social-link">Instagram</a>
                 <a href="https://x.com/splotchglobal" className="social-link">X(Formerly Twitter)</a>
               </div>
@@ -1842,14 +1852,11 @@ function Cursor() {
       const [mobMenu,setMobMenu]=useState(false);
       const [filter,setFilter]=useState("All");
       const [logoClicks,setLogoClicks]=useState(0);
-      const logoTimerRef=useRef(null);
       const [user,setUser]=useState(null);
+      const logoTimerRef=useRef(null);
 
       useEffect(()=>{
-        console.log(
-          "%c[SYSTEM_ROOT] ACCESS GRANTED\n%c // ENGINEERED BY DUDEFROMALHIEM \n%c WELCOME TO THE NEXT FRONTIER OF STREETWEAR. Z E R O  C O M P R O M I S E.\n%c Dudefromalhiem made this. If you are reading this, welcome.",
-          "color: #c00; font-size: 20px; font-weight: 900;","color: #fff; font-size: 13px; font-weight: 700; background: #111; padding: 4px; margin-top: 5px; display: inline-block;","color: #666; font-size: 11px; font-style: italic; margin-top: 5px; display: inline-block;","color: #c00; font-size: 10px; font-weight: 700; margin-top: 15px; display: block;"
-        );
+        console.log("%c[SYSTEM_ROOT] ACCESS GRANTED\n%c // ENGINEERED BY DUDEFROMALHIEM \n%c WELCOME TO THE NEXT FRONTIER OF STREETWEAR. Z E R O  C O M P R O M I S E.","color: #c00; font-size: 20px; font-weight: 900;","color: #fff; font-size: 13px; font-weight: 700; background: #111; padding: 4px;","color: #666; font-size: 11px; font-style: italic;");
       },[]);
 
       useEffect(()=>{
@@ -1928,7 +1935,6 @@ function Cursor() {
 
       return (
         <div style={{minHeight:"100vh",background:"#fff",position:"relative",overflowX:"hidden"}}>
-          <Cursor />
           <div className="grain-overlay"/>
           <ScrollProgress/>
           
@@ -1953,6 +1959,65 @@ function Cursor() {
     }
 
     ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  </script>
+
+<script>
+  (function(){
+    var cvs=document.getElementById('liquid-cursor-canvas');
+    if (!cvs) return;
+    var ctx=cvs.getContext('2d');
+    var BASE_R=8, EASE=0.35, MAX_STRETCH=26, MIN_SQUASH=3;
+    var currentR=BASE_R;
+    var mouse={x:window.innerWidth/2,y:window.innerHeight/2};
+    var drop={x:mouse.x,y:mouse.y};
+    var isClicking=false;
+    
+    function resize(){cvs.width=window.innerWidth;cvs.height=window.innerHeight;}
+    resize();
+    window.addEventListener('resize',resize);
+    window.addEventListener('mousemove',function(e){mouse.x=e.clientX;mouse.y=e.clientY;});
+    
+    // Physics Click Events
+    window.addEventListener('mousedown', function(){ isClicking=true; });
+    window.addEventListener('mouseup', function(){ isClicking=false; });
+    window.addEventListener('touchstart', function(){ isClicking=true; });
+    window.addEventListener('touchend', function(){ isClicking=false; });
+
+    (function animate(){
+      ctx.clearRect(0,0,cvs.width,cvs.height);
+      
+      // Spring target for clicking (compress to 35% size)
+      var targetR = isClicking ? BASE_R * 0.35 : BASE_R;
+      currentR += (targetR - currentR) * 0.4; // Springy snap effect
+      
+      var dx=mouse.x-drop.x, dy=mouse.y-drop.y;
+      drop.x+=dx*EASE; drop.y+=dy*EASE;
+      
+      var speed=Math.sqrt(dx*dx+dy*dy);
+      var angle=Math.atan2(dy,dx);
+      
+      // Calculate stretch and squash based on movement and click state
+      var stretch=Math.min(speed*0.40, MAX_STRETCH);
+      if(isClicking) stretch *= 0.1; // Don't stretch while squashed
+      
+      var majorR=currentR+stretch*0.5;
+      var minorR=Math.max(currentR-speed*0.10, MIN_SQUASH);
+      
+      ctx.save();
+      ctx.translate(drop.x,drop.y);
+      ctx.rotate(angle);
+      
+      // Main droplet body
+      ctx.beginPath();
+      ctx.ellipse(-(stretch*0.5),0,majorR,minorR,0,0,Math.PI*2);
+      ctx.fillStyle='#ffffff';
+      ctx.fill();
+      
+      ctx.restore();
+      requestAnimationFrame(animate);
+    })();
+  })();
+  </script>
   </script>
 </body>
 </html>
