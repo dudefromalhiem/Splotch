@@ -11,5 +11,17 @@ firebase-config.js
 firebase.json
 .firebaserc
 
-# Mac system files (if applicable)
+# Mac system files
 .DS_Store
+
+# Editor config (no reason to deploy)
+.vscode/
+.idea/
+
+# TypeScript dev files
+typings/
+*.d.ts
+
+# Build artifacts
+dist/
+.vercel/
