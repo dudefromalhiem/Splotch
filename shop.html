@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <script>
-    const isMaintenanceMode = false; // Change to false to turn the site back on
+    const isMaintenanceMode = false;
     if (isMaintenanceMode) {
       window.location.replace("/waitroom.html");
     }
@@ -105,9 +105,7 @@
       --R: #DC1C1C;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       background: var(--W);
@@ -118,713 +116,466 @@
       padding: 0;
     }
 
-    *,
-    *::before,
-    *::after {
+    *, *::before, *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       border-radius: 0 !important;
     }
 
-    ::selection {
-      background: var(--B);
-      color: var(--W);
-    }
+    ::selection { background: var(--B); color: var(--W); }
 
-    input,
-    textarea,
-    select,
-    button {
+    input, textarea, select, button {
       font-family: inherit;
       border-radius: 0 !important;
       outline: none;
     }
 
-    img {
-      -webkit-user-select: none;
-      user-select: none;
-    }
+    img { -webkit-user-select: none; user-select: none; }
 
     /* ── LIQUID PAINT CURSOR CSS ── */
     @media (pointer: fine) {
-
-      body,
-      button,
-      a,
-      input,
-      textarea,
-      select,
-      img,
-      .prod-card,
-      *,
-      *::before,
-      *::after {
-        cursor: none !important;
-      }
+      body, button, a, input, textarea, select, img, .prod-card,
+      *, *::before, *::after { cursor: none !important; }
     }
-
-    @media (pointer: coarse) {
-      #liquid-cursor-canvas {
-        display: none !important;
-      }
-    }
+    @media (pointer: coarse) { #liquid-cursor-canvas { display: none !important; } }
 
     #liquid-cursor-canvas {
-      position: fixed;
-      inset: 0;
-      z-index: 99999;
-      pointer-events: none;
+      position: fixed; inset: 0;
+      z-index: 99999; pointer-events: none;
       mix-blend-mode: difference;
     }
+
+    /* ══════════════════════════════════════
+       SHOP LOADER
+    ══════════════════════════════════════ */
+    #shop-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 100000;
+      pointer-events: all;
+      overflow: hidden;
+    }
+
+    /* Two shutter panels */
+    .shutter-top,
+    .shutter-bottom {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background: #0a0a0a;
+      transition: transform 0.75s cubic-bezier(0.76, 0, 0.24, 1);
+      will-change: transform;
+    }
+
+    .shutter-top { top: 0; transform-origin: top; }
+    .shutter-bottom { bottom: 0; transform-origin: bottom; }
+
+    #shop-loader.opening .shutter-top { transform: translateY(-100%); }
+    #shop-loader.opening .shutter-bottom { transform: translateY(100%); }
+
+    /* Scanline sweep on top panel */
+    .shutter-top::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, rgba(220,28,28,0.6) 30%, rgba(220,28,28,1) 50%, rgba(220,28,28,0.6) 70%, transparent 100%);
+      bottom: 0;
+      animation: scanMove 1.8s ease-in-out infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes scanMove {
+      0%   { transform: translateY(0) scaleX(0.6); opacity: 0; }
+      20%  { opacity: 1; transform: scaleX(1); }
+      80%  { opacity: 1; }
+      100% { transform: translateY(-120px) scaleX(0.6); opacity: 0; }
+    }
+
+    /* Center content (sits above both panels via stacking) */
+    .loader-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      pointer-events: none;
+      gap: 0;
+    }
+
+    .loader-logo {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      filter: invert(1);
+      opacity: 0;
+      transform: scale(0.85);
+      animation: loaderLogoIn 0.5s 0.15s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes loaderLogoIn {
+      to { opacity: 0.9; transform: scale(1); }
+    }
+
+    .loader-brand {
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: clamp(42px, 8vw, 88px);
+      letter-spacing: -0.05em;
+      text-transform: uppercase;
+      color: #fff;
+      line-height: 1;
+      margin-top: 1.2rem;
+      opacity: 0;
+      animation: loaderBrandIn 0.5s 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes loaderBrandIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Terminal status lines */
+    .loader-terminal {
+      margin-top: 2.5rem;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.08em;
+      text-align: center;
+      min-height: 18px;
+      opacity: 0;
+      animation: loaderBrandIn 0.4s 0.6s ease forwards;
+    }
+
+    .loader-terminal .t-line { display: block; }
+    .loader-terminal .t-cursor {
+      display: inline-block;
+      width: 7px;
+      height: 12px;
+      background: rgba(220,28,28,0.9);
+      vertical-align: middle;
+      margin-left: 2px;
+      animation: blink 0.9s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    /* Progress bar at bottom */
+    .loader-progress-track {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: rgba(255,255,255,0.06);
+      z-index: 3;
+    }
+
+    .loader-progress-fill {
+      height: 100%;
+      background: var(--R);
+      width: 0%;
+      transition: width 0.25s ease;
+      box-shadow: 0 0 8px rgba(220,28,28,0.7);
+    }
+
+    /* Horizontal divider line across center */
+    .loader-divider {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent);
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+
+    /* Fade out entire loader after shutter opens */
+    #shop-loader.done {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease 0.7s;
+    }
+
+    /* Grain on loader */
+    .loader-grain {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.08;
+      pointer-events: none;
+      background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E');
+    }
+
+    /* Corner coords */
+    .loader-corner {
+      position: absolute;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.12);
+      z-index: 3;
+      font-family: 'Courier New', monospace;
+      opacity: 0;
+      animation: loaderBrandIn 0.4s 0.5s ease forwards;
+    }
+    .loader-corner.tl { top: 1.5rem; left: 2rem; }
+    .loader-corner.tr { top: 1.5rem; right: 2rem; text-align: right; }
+    .loader-corner.bl { bottom: 1.5rem; left: 2rem; }
+    .loader-corner.br { bottom: 1.5rem; right: 2rem; text-align: right; }
+    /* ══════════════════════════════════════ */
 
     .dyn-title {
       display: inline-block;
       transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     }
-
-    .dyn-title:hover {
-      transform: translate(-4px, -4px);
-    }
+    .dyn-title:hover { transform: translate(-4px, -4px); }
 
     .outline-text {
       color: transparent;
       -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.35);
       transition: all 0.3s;
     }
+    .outline-text:hover { -webkit-text-stroke: 1.5px #fff; }
 
-    .outline-text:hover {
-      -webkit-text-stroke: 1.5px #fff;
-    }
-
-    /* ── INDEX.HTML MATCHING HEADER CSS ── */
     header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 500;
-      height: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 500; height: 52px;
+      display: flex; align-items: center; justify-content: space-between;
       padding: 0 2rem;
       border-bottom: 1.5px solid rgba(255, 255, 255, 0.08);
       background: rgba(17, 17, 17, 0.7);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
       transition: border-color .3s, background .3s;
     }
-
     header.scrolled {
       background: rgba(17, 17, 17, 0.95);
       border-color: rgba(255, 255, 255, 0.15);
     }
 
     .nl {
-      position: relative;
-      color: rgba(255, 255, 255, 0.65);
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 9.5px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      transition: color .2s;
+      position: relative; color: rgba(255, 255, 255, 0.65);
+      text-decoration: none; font-weight: 700; font-size: 9.5px;
+      letter-spacing: 0.22em; text-transform: uppercase; transition: color .2s;
     }
-
-    .nl:hover {
-      color: #fff;
-    }
-
+    .nl:hover { color: #fff; }
     .nl::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0;
-      height: 1.5px;
-      background: #fff;
-      transition: width .2s;
+      content: ''; position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 1.5px; background: #fff; transition: width .2s;
     }
-
-    .nl:hover::after {
-      width: 100%;
-    }
+    .nl:hover::after { width: 100%; }
 
     .enter-btn {
-      background: #fff;
-      color: #111;
-      border: none;
-      padding: 8px 18px;
-      font-size: 9px;
-      font-weight: 900;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      text-decoration: none;
-      display: inline-block;
+      background: #fff; color: #111; border: none;
+      padding: 8px 18px; font-size: 9px; font-weight: 900;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      text-decoration: none; display: inline-block;
       transition: background .2s, color .2s, transform .15s;
     }
+    .enter-btn:hover { background: var(--R); color: #fff; transform: translate(-1px, -1px); }
 
-    .enter-btn:hover {
-      background: var(--R);
-      color: #fff;
-      transform: translate(-1px, -1px);
-    }
+    .logo-btn { background: none; border: none; display: block; padding: 0; position: relative; padding-left: 10px; text-decoration: none; }
+    .logo-btn:focus { outline: none; }
 
-    .logo-btn {
-      background: none;
-      border: none;
-      display: block;
-      padding: 0;
-      position: relative;
-      padding-left: 10px;
-      text-decoration: none;
-    }
-
-    .logo-btn:focus {
-      outline: none;
-    }
-
-    /* ── SHOP SPECIFIC HEADER ELEMENTS ── */
-    .user-menu-container {
-      position: relative;
-    }
-
+    .user-menu-container { position: relative; }
     .user-badge {
-      background: transparent;
-      color: #fff;
+      background: transparent; color: #fff;
       border: 1.5px solid rgba(255, 255, 255, 0.3);
-      padding: 6px 14px;
-      font-size: 9px;
-      font-weight: 900;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: background 0.2s, color 0.2s;
-      cursor: none !important;
+      padding: 6px 14px; font-size: 9px; font-weight: 900;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      display: flex; align-items: center; gap: 8px;
+      transition: background 0.2s, color 0.2s; cursor: none !important;
     }
-
-    .user-menu-container:hover .user-badge {
-      background: #fff;
-      color: #111;
-      border-color: #fff;
-    }
+    .user-menu-container:hover .user-badge { background: #fff; color: #111; border-color: #fff; }
 
     .user-dropdown {
-      position: absolute;
-      top: 100%;
-      right: 0;
-      background: #fff;
-      border: 2px solid #111;
-      display: none;
-      flex-direction: column;
-      min-width: 100%;
-      box-shadow: 3px 3px 0 #000;
-      z-index: 1001;
+      position: absolute; top: 100%; right: 0;
+      background: #fff; border: 2px solid #111;
+      display: none; flex-direction: column;
+      min-width: 100%; box-shadow: 3px 3px 0 #000; z-index: 1001;
     }
-
-    .user-menu-container:hover .user-dropdown {
-      display: flex;
-      animation: fadeIn 0.18s;
-    }
+    .user-menu-container:hover .user-dropdown { display: flex; animation: fadeIn 0.18s; }
 
     .user-dropdown-btn {
-      background: transparent;
-      color: #111;
-      border: none;
-      padding: 12px 16px;
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      text-align: left;
-      transition: background 0.2s, color 0.2s;
-      cursor: none !important;
+      background: transparent; color: #111; border: none;
+      padding: 12px 16px; font-size: 9px; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase; text-align: left;
+      transition: background 0.2s, color 0.2s; cursor: none !important;
     }
-
-    .user-dropdown-btn:hover {
-      background: #111;
-      color: #fff;
-    }
+    .user-dropdown-btn:hover { background: #111; color: #fff; }
 
     .nav-signin {
-      background: transparent;
-      color: #fff;
+      background: transparent; color: #fff;
       border: 1.5px solid rgba(255, 255, 255, 0.3);
-      padding: 6px 14px;
-      font-size: 9px;
-      font-weight: 900;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      transition: all 0.2s;
-      cursor: none !important;
+      padding: 6px 14px; font-size: 9px; font-weight: 900;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      transition: all 0.2s; cursor: none !important;
     }
-
-    .nav-signin:hover {
-      background: #fff;
-      color: #111;
-      border-color: #fff;
-    }
+    .nav-signin:hover { background: #fff; color: #111; border-color: #fff; }
 
     .size-btn {
-      background: transparent;
-      color: #111;
-      border: 1.5px solid #111;
-      padding: 6px 0;
-      width: 34px;
-      text-align: center;
-      font-size: 10px;
-      font-weight: 700;
-      transition: all 0.2s;
+      background: transparent; color: #111; border: 1.5px solid #111;
+      padding: 6px 0; width: 34px; text-align: center;
+      font-size: 10px; font-weight: 700; transition: all 0.2s;
     }
+    .size-btn.active { background: #111; color: #fff; }
+    .size-btn.soldout { opacity: 0.28; text-decoration: line-through; }
 
-    .size-btn.active {
-      background: #111;
-      color: #fff;
-    }
+    .prod-card { transition: box-shadow 0.25s, transform 0.25s; }
+    .prod-card:hover { box-shadow: 6px 6px 0 #111; transform: translate(-2px, -2px); }
 
-    .size-btn.soldout {
-      opacity: 0.28;
-      text-decoration: line-through;
-    }
+    .prod-cta-btn, .flip-toggle { transition: background 0.2s, color 0.2s; }
+    .prod-cta-btn:hover:not(:disabled), .flip-toggle:hover { background: #111 !important; color: #fff !important; }
 
-    .prod-card {
-      transition: box-shadow 0.25s, transform 0.25s;
-    }
-
-    .prod-card:hover {
-      box-shadow: 6px 6px 0 #111;
-      transform: translate(-2px, -2px);
-    }
-
-    .prod-cta-btn,
-    .flip-toggle {
-      transition: background 0.2s, color 0.2s;
-    }
-
-    .prod-cta-btn:hover:not(:disabled),
-    .flip-toggle:hover {
-      background: #111 !important;
-      color: #fff !important;
-    }
-
-    .port-card .port-overlay {
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .port-card:hover .port-overlay {
-      opacity: 1;
-    }
-
-    .port-card .port-text {
-      transform: translateY(10px);
-      opacity: 0;
-      transition: transform 0.4s ease, opacity 0.4s ease;
-    }
-
-    .port-card:hover .port-text {
-      transform: translateY(0);
-      opacity: 1;
-    }
+    .port-card .port-overlay { opacity: 0; transition: opacity 0.3s ease; }
+    .port-card:hover .port-overlay { opacity: 1; }
+    .port-card .port-text { transform: translateY(10px); opacity: 0; transition: transform 0.4s ease, opacity 0.4s ease; }
+    .port-card:hover .port-text { transform: translateY(0); opacity: 1; }
 
     .flip-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
+      position: relative; width: 100%; height: 100%;
       transition: transform 0.65s cubic-bezier(0.76, 0, 0.24, 1);
       transform-style: preserve-3d;
     }
-
-    .flipped .flip-inner {
-      transform: rotateY(180deg);
-    }
-
-    .flip-front,
-    .flip-back {
-      position: absolute;
-      inset: 0;
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
-    }
-
-    .flip-back {
-      transform: rotateY(180deg);
-    }
+    .flipped .flip-inner { transform: rotateY(180deg); }
+    .flip-front, .flip-back { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+    .flip-back { transform: rotateY(180deg); }
 
     .grain-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 9998;
-      opacity: 0.12;
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      pointer-events: none; z-index: 9998; opacity: 0.12;
       background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E');
     }
 
-    .topo-parallax-wrap {
-      position: absolute;
-      top: -50vh;
-      bottom: -50vh;
-      left: 0;
-      right: 0;
-      pointer-events: none;
-      z-index: 0;
-      will-change: transform;
-    }
+    .topo-parallax-wrap { position: absolute; top: -50vh; bottom: -50vh; left: 0; right: 0; pointer-events: none; z-index: 0; will-change: transform; }
 
-    .reveal {
-      opacity: 0;
-      transform: translateY(44px);
-      transition: opacity 0.78s cubic-bezier(0.22, 1, 0.36, 1), transform 0.78s cubic-bezier(0.22, 1, 0.36, 1);
-    }
+    .reveal { opacity: 0; transform: translateY(44px); transition: opacity 0.78s cubic-bezier(0.22, 1, 0.36, 1), transform 0.78s cubic-bezier(0.22, 1, 0.36, 1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-d1 { transition-delay: 0.08s; }
+    .reveal-d2 { transition-delay: 0.2s; }
+    .reveal-d3 { transition-delay: 0.32s; }
+    .reveal-d4 { transition-delay: 0.44s; }
 
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    .reveal-d1 {
-      transition-delay: 0.08s;
-    }
+    .admin-input:focus, .drop-zone.over { border-color: #111 !important; }
 
-    .reveal-d2 {
-      transition-delay: 0.2s;
-    }
-
-    .reveal-d3 {
-      transition-delay: 0.32s;
-    }
-
-    .reveal-d4 {
-      transition-delay: 0.44s;
-    }
-
-    @keyframes ticker {
-      from {
-        transform: translateX(0);
-      }
-
-      to {
-        transform: translateX(-50%);
-      }
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-
-      to {
-        opacity: 1;
-      }
-    }
-
-    .admin-input:focus,
-    .drop-zone.over {
-      border-color: #111 !important;
-    }
-
-    ::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: #fff;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #111;
-    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #fff; }
+    ::-webkit-scrollbar-thumb { background: #111; }
 
     .footer-animated-bg {
       background-color: #050505;
-      background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
       background-size: 40px 40px;
       animation: gridScroll 3s linear infinite;
       position: relative;
     }
-
-    @keyframes gridScroll {
-      0% {
-        background-position: 0px 0px
-      }
-
-      100% {
-        background-position: 0px 40px
-      }
-    }
-
+    @keyframes gridScroll { 0% { background-position: 0px 0px } 100% { background-position: 0px 40px } }
     .footer-animated-bg::before {
-      content: '';
-      position: absolute;
-      inset: 0;
+      content: ''; position: absolute; inset: 0;
       background: radial-gradient(circle at center 30%, transparent 10%, #111 80%);
-      pointer-events: none;
-      z-index: 0;
+      pointer-events: none; z-index: 0;
     }
 
-    .cyber-text-container {
-      perspective: 1000px;
-      display: inline-block;
-      position: relative;
-      z-index: 2;
-    }
-
+    .cyber-text-container { perspective: 1000px; display: inline-block; position: relative; z-index: 2; }
     .cyber-text {
       color: transparent;
-      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.2);
-      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.8) 50%, transparent 100%);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      background-clip: text;
-      animation: textShine 5s linear infinite;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      display: inline-block;
-      padding-bottom: 0.15em;
+      -webkit-text-stroke: 1.5px rgba(255,255,255,0.2);
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.8) 50%, transparent 100%);
+      background-size: 200% auto; -webkit-background-clip: text; background-clip: text;
+      animation: textShine 5s linear infinite; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: inline-block; padding-bottom: 0.15em;
     }
-
-    @keyframes textShine {
-      0% {
-        background-position: 200% center
-      }
-
-      100% {
-        background-position: -200% center
-      }
-    }
-
+    @keyframes textShine { 0% { background-position: 200% center } 100% { background-position: -200% center } }
     .cyber-text:hover {
       transform: translateZ(40px) rotateX(15deg) skewX(-5deg);
-      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9);
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5), -3px 3px 0 rgba(200, 0, 0, 0.8), 3px -3px 0 rgba(0, 200, 255, 0.8);
+      -webkit-text-stroke: 1.5px rgba(255,255,255,0.9);
+      text-shadow: 0 0 20px rgba(255,255,255,0.5), -3px 3px 0 rgba(200,0,0,0.8), 3px -3px 0 rgba(0,200,255,0.8);
     }
 
-    .ghost-credit {
-      opacity: 0.15;
-      transition: opacity 0.4s ease;
-    }
-
-    .ghost-credit:hover {
-      opacity: 0.8;
-    }
+    .ghost-credit { opacity: 0.15; transition: opacity 0.4s ease; }
+    .ghost-credit:hover { opacity: 0.8; }
 
     .social-link {
-      color: rgba(255, 255, 255, 0.3);
-      text-decoration: none;
-      transition: color 0.3s, transform 0.3s;
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
+      color: rgba(255,255,255,0.3); text-decoration: none;
+      transition: color 0.3s, transform 0.3s; font-size: 10px;
+      letter-spacing: 0.15em; text-transform: uppercase;
     }
+    .social-link:hover { color: #fff; transform: translateY(-2px); display: inline-block; }
 
-    .social-link:hover {
-      color: #fff;
-      transform: translateY(-2px);
-      display: inline-block;
-    }
-
-    /* Modal Standard Styles */
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(17, 17, 17, 0.85);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-      padding: 1rem;
+      position: fixed; inset: 0; background: rgba(17,17,17,0.85);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2000; padding: 1rem;
     }
-
     .modal-content {
-      background: #fff;
-      color: #111;
-      padding: 2.5rem;
-      max-width: 600px;
-      width: 100%;
-      border: 3px solid #111;
-      position: relative;
-      max-height: 85vh;
-      overflow-y: auto;
+      background: #fff; color: #111; padding: 2.5rem;
+      max-width: 600px; width: 100%; border: 3px solid #111;
+      position: relative; max-height: 85vh; overflow-y: auto;
     }
-
     .modal-close {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      background: none;
-      border: 1.5px solid #111;
-      width: 34px;
-      height: 34px;
-      font-size: 14px;
-      font-weight: 700;
+      position: absolute; top: 14px; right: 14px;
+      background: none; border: 1.5px solid #111;
+      width: 34px; height: 34px; font-size: 14px; font-weight: 700;
     }
 
-    /* Multi-image Portfolio Carousel Navigation */
     .carousel-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(17, 17, 17, 0.5);
-      color: #fff;
-      border: none;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 20;
-      transition: background 0.2s;
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(17,17,17,0.5); color: #fff; border: none;
+      width: 32px; height: 32px; display: flex; align-items: center;
+      justify-content: center; z-index: 20; transition: background 0.2s;
     }
+    .carousel-btn:hover { background: rgba(17,17,17,0.9); }
+    .carousel-btn.left { left: 10px; }
+    .carousel-btn.right { right: 10px; }
 
-    .carousel-btn:hover {
-      background: rgba(17, 17, 17, 0.9);
-    }
-
-    .carousel-btn.left {
-      left: 10px;
-    }
-
-    .carousel-btn.right {
-      right: 10px;
-    }
-
-    .testi-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2px;
-      background: #111;
-      border: 2px solid #111;
-    }
-
-    .testi-card {
-      background: #fff;
-      padding: 2.5rem 1.8rem;
-      transition: background 0.25s, color 0.25s, transform 0.2s;
-    }
-
-    .testi-card:hover {
-      background: #111;
-      color: #fff;
-    }
-
-    .testi-card:hover .testi-q {
-      color: rgba(255, 255, 255, 0.8) !important;
-    }
-
-    .testi-card:hover .testi-name {
-      color: #fff !important;
-    }
-
-    .testi-card:hover .testi-res {
-      color: rgba(255, 255, 255, 0.5) !important;
-    }
-
-    .testi-card:hover .testi-quote-mark {
-      color: rgba(255, 255, 255, 0.1) !important;
-    }
+    .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #111; border: 2px solid #111; }
+    .testi-card { background: #fff; padding: 2.5rem 1.8rem; transition: background 0.25s, color 0.25s, transform 0.2s; }
+    .testi-card:hover { background: #111; color: #fff; }
+    .testi-card:hover .testi-q { color: rgba(255,255,255,0.8) !important; }
+    .testi-card:hover .testi-name { color: #fff !important; }
+    .testi-card:hover .testi-res { color: rgba(255,255,255,0.5) !important; }
+    .testi-card:hover .testi-quote-mark { color: rgba(255,255,255,0.1) !important; }
 
     @media (max-width: 768px) {
-      .desk-nav {
-        display: none !important;
-      }
-
+      .desk-nav { display: none !important; }
       .mob-ham {
-        display: flex !important;
-        background: none;
-        border: 1.5px solid rgba(255, 255, 255, 0.3);
-        width: 36px;
-        height: 36px;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 5px;
-        flex-shrink: 0;
+        display: flex !important; background: none;
+        border: 1.5px solid rgba(255,255,255,0.3);
+        width: 36px; height: 36px; flex-direction: column;
+        align-items: center; justify-content: center; gap: 5px; flex-shrink: 0;
       }
-
-      .mob-ham span {
-        display: block;
-        width: 14px;
-        height: 1.5px;
-        background: #fff;
-        flex-shrink: 0;
-      }
-
-      .product-grid,
-      .port-grid,
-      .two-col,
-      .testi-grid,
-      .contact-grid,
-      .admin-form-grid {
-        grid-template-columns: 1fr !important;
-      }
+      .mob-ham span { display: block; width: 14px; height: 1.5px; background: #fff; flex-shrink: 0; }
+      .product-grid, .port-grid, .two-col, .testi-grid, .contact-grid, .admin-form-grid { grid-template-columns: 1fr !important; }
+      .loader-corner.bl, .loader-corner.br { display: none; }
     }
+    @media (min-width: 769px) { .mob-ham, .mob-menu { display: none !important; } }
 
-    @media (min-width: 769px) {
-
-      .mob-ham,
-      .mob-menu {
-        display: none !important;
-      }
-    }
-
-    /* ── PREORDER FEATURE STYLES ── */
     .preorder-badge {
-      background: #d4a017;
-      color: #fff;
-      font-size: 8px;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      padding: 3px 8px;
+      background: #d4a017; color: #fff; font-size: 8px; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase; padding: 3px 8px;
       animation: preorderPulse 2.5s ease-in-out infinite;
     }
-
-    .preorder-estimate {
-      font-size: 10px;
-      font-weight: 600;
-      color: #d4a017;
-      letter-spacing: 0.05em;
-    }
-
-    .preorder-cta {
-      background: #d4a017 !important;
-      color: #fff !important;
-      border-color: #d4a017 !important;
-    }
-
-    .preorder-cta:hover:not(:disabled) {
-      background: #b8860b !important;
-      color: #fff !important;
-      border-color: #b8860b !important;
-    }
-
+    .preorder-estimate { font-size: 10px; font-weight: 600; color: #d4a017; letter-spacing: 0.05em; }
+    .preorder-cta { background: #d4a017 !important; color: #fff !important; border-color: #d4a017 !important; }
+    .preorder-cta:hover:not(:disabled) { background: #b8860b !important; color: #fff !important; border-color: #b8860b !important; }
     .preorder-cart-tag {
-      background: #d4a017;
-      color: #fff;
-      font-size: 7px;
-      font-weight: 900;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      padding: 2px 6px;
-      display: inline-block;
+      background: #d4a017; color: #fff; font-size: 7px; font-weight: 900;
+      letter-spacing: 0.15em; text-transform: uppercase; padding: 2px 6px; display: inline-block;
     }
-
-    @keyframes preorderPulse {
-
-      0%,
-      100% {
-        opacity: 1;
-      }
-
-      50% {
-        opacity: 0.7;
-      }
-    }
+    @keyframes preorderPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
   </style>
 </head>
 
@@ -886,7 +637,7 @@
 
     const TopoSVG = ({ color = "#111", style = {} }) => (
       <svg viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style={{ width: "100%", height: "100%", ...style }}>
-        {["M0,250 Q150,220 300,250 T600,235 T900,248 T1200,238", "M0,270 Q130,242 260,270 T520,255 T780,268 T1040,252 T1200,265", "M0,230 Q170,202 340,230 T680,217 T1020,228 T1200,220", "M0,290 Q110,264 220,290 T440,276 T660,290 T880,272 T1100,288 T1200,282", "M0,210 Q190,183 380,210 T760,198 T1140,208 T1200,203"].map((d, i) => (
+        {["M0,250 Q150,220 300,250 T600,235 T900,248 T1200,238","M0,270 Q130,242 260,270 T520,255 T780,268 T1040,252 T1200,265","M0,230 Q170,202 340,230 T680,217 T1020,228 T1200,220","M0,290 Q110,264 220,290 T440,276 T660,290 T880,272 T1100,288 T1200,282","M0,210 Q190,183 380,210 T760,198 T1140,208 T1200,203"].map((d, i) => (
           <path key={i} d={d} fill="none" stroke={color} strokeWidth={i < 2 ? 1 : 0.65} />
         ))}
         <ellipse cx="300" cy="250" rx="240" ry="65" fill="none" stroke={color} strokeWidth="0.75" />
@@ -902,6 +653,38 @@
         <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: dark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.25)", position: "relative", zIndex: 1 }}>{label}</span>
       </div>
     );
+
+    /* ══════════════════════════════════════
+       SHOP LOADER COMPONENT
+    ══════════════════════════════════════ */
+    function ShopLoader({ progress, status, opening, done }) {
+      return (
+        <div id="shop-loader" className={`${opening ? 'opening' : ''} ${done ? 'done' : ''}`}>
+          <div className="loader-grain" />
+          <div className="shutter-top" />
+          <div className="shutter-bottom" />
+          <div className="loader-divider" />
+
+          <div className="loader-corner tl">SPLOTCH.IN</div>
+          <div className="loader-corner tr">COLLECTION 001</div>
+          <div className="loader-corner bl">BANGALORE, IN</div>
+          <div className="loader-corner br">© 2026</div>
+
+          <div className="loader-center">
+            <img src={LOGO_SRC} alt="Splotch" className="loader-logo" />
+            <div className="loader-brand">SPLOTCH</div>
+            <div className="loader-terminal">
+              <span className="t-line">{status}<span className="t-cursor" /></span>
+            </div>
+          </div>
+
+          <div className="loader-progress-track">
+            <div className="loader-progress-fill" style={{ width: progress + '%' }} />
+          </div>
+        </div>
+      );
+    }
+    /* ══════════════════════════════════════ */
 
     function ScrollProgress() {
       const [w, setW] = useState(0);
@@ -955,17 +738,14 @@
         try {
           if (!window.fbDb || !window.fbAddDoc) throw new Error("Firebase not connected.");
           await window.fbAddDoc(window.fbCollection(window.fbDb, "messages"), {
-            name: "RETURN REQUEST",
-            email: form.email,
+            name: "RETURN REQUEST", email: form.email,
             message: `Order ID: ${form.orderId}\nReason: ${form.reason}`,
             timestamp: new Date()
           });
           setSent(true);
         } catch (err) {
           setErrMsg("Failed to send request. Please try again later.");
-        } finally {
-          setLoading(false);
-        }
+        } finally { setLoading(false); }
       };
 
       const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", padding: "12px", fontSize: 12, fontFamily: "Inter", marginBottom: "1rem" };
@@ -976,9 +756,7 @@
             <button className="modal-close" onClick={onClose}>✕</button>
             <h2 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 28, marginBottom: "0.5rem" }}>Request Return.</h2>
             <p style={{ fontSize: 12, color: "rgba(0,0,0,0.5)", marginBottom: "2rem" }}>Returns are only accepted within 7 days of delivery.</p>
-
             {errMsg && <div style={{ background: "#c00", color: "#fff", padding: "10px", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "1.5rem" }}>{errMsg}</div>}
-
             {sent ? (
               <div style={{ background: "#f0f0f0", padding: "2rem", textAlign: "center" }}>
                 <p style={{ fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", fontSize: 12, color: "#111" }}>Request Sent Successfully.</p>
@@ -1009,22 +787,14 @@
       const handleEmailAuth = async (e) => {
         e.preventDefault();
         if (!email || !pw) { setErr("Email and password required"); return; }
-        setLoading(true);
-        setErr("");
-
+        setLoading(true); setErr("");
         try {
           if (!window.fbAuth) throw new Error("Firebase Auth not loaded");
-          if (isLogin) {
-            await window.fbSignInWithEmailAndPassword(window.fbAuth, email, pw);
-          } else {
-            await window.fbCreateUserWithEmailAndPassword(window.fbAuth, email, pw);
-          }
+          if (isLogin) { await window.fbSignInWithEmailAndPassword(window.fbAuth, email, pw); }
+          else { await window.fbCreateUserWithEmailAndPassword(window.fbAuth, email, pw); }
           onSuccess();
-        } catch (error) {
-          setErr(error.message.replace("Firebase: ", ""));
-        } finally {
-          setLoading(false);
-        }
+        } catch (error) { setErr(error.message.replace("Firebase: ", "")); }
+        finally { setLoading(false); }
       };
 
       const handleGoogle = async () => {
@@ -1032,9 +802,7 @@
           if (!window.fbAuth) throw new Error("Firebase Auth not loaded");
           await window.fbSignInWithPopup(window.fbAuth, window.fbProvider);
           onSuccess();
-        } catch (e) {
-          setErr(e.message);
-        }
+        } catch (e) { setErr(e.message); }
       };
 
       const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", padding: "12px", fontSize: 12, fontFamily: "Inter", marginBottom: "1rem" };
@@ -1059,7 +827,7 @@
               <div style={{ flex: 1, height: 1, background: "rgba(0,0,0,0.1)" }}></div>
             </div>
             <button onClick={handleGoogle} style={{ width: "100%", background: "#fff", color: "#111", border: "2px solid rgba(0,0,0,0.2)", padding: "12px", fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}>
-              <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" /><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" /><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" /><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" /></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
               Continue with Google
             </button>
             <div style={{ textAlign: "center", marginTop: "2rem" }}>
@@ -1079,7 +847,6 @@
         window.addEventListener("scroll", fn, { passive: true });
         return () => window.removeEventListener("scroll", fn);
       }, []);
-
       const safeName = user ? (user.displayName || user.email || 'USER').split('@')[0].toUpperCase() : '';
 
       return (
@@ -1087,13 +854,11 @@
           <button className="logo-btn" onClick={(e) => { e.preventDefault(); window.location.href = '/'; }} title="Splotch">
             <img src={LOGO_SRC} alt="Splotch" style={{ height: 32, width: 'auto', display: 'block', transform: 'scale(2.2)', transformOrigin: 'left center', filter: 'invert(1)' }} />
           </button>
-
           <nav className="desk-nav" style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
             <a href="/" className="nl">HOME</a>
             <a href="/shop.html" className="nl">SHOP</a>
             <a href="/about.html" className="nl">ABOUT</a>
           </nav>
-
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
             <div className="auth-container desk-nav">
               {user ? (
@@ -1108,12 +873,9 @@
                 <button className="nav-signin" onClick={onAuthClick}>SIGN IN</button>
               )}
             </div>
-
             <button className="mob-ham" onClick={() => setMobMenu(o => !o)}>
               <span /><span /><span />
             </button>
-
-            {/* Note: The cart button only exists on shop.html, so if pasting this in about.html, you can omit the cart button or leave it safely ignored */}
             {onCartOpen && (
               <button onClick={onCartOpen} className="enter-btn" style={{ display: "flex", alignItems: "center", gap: 6, background: "#fff", color: "#111" }}>
                 CART
@@ -1128,16 +890,13 @@
     function MobMenu({ open, setOpen, user, onAuthClick, handleLogout, openUserOrders }) {
       const safeName = user ? (user.displayName || user.email || 'USER').split('@')[0].toUpperCase() : '';
       const btnSt = { background: "none", border: "none", textAlign: "left", fontFamily: "Inter", fontWeight: 900, fontSize: "clamp(38px,10vw,60px)", letterSpacing: "-0.04em", textTransform: "uppercase", color: "#fff", lineHeight: 1.1, borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "0.5rem 0", textDecoration: "none", display: "block", width: "100%" };
-
       return (
         <div className="mob-menu" style={{ position: "fixed", inset: 0, zIndex: 600, background: "#0a0a0a", display: "flex", flexDirection: "column", justifyContent: "center", padding: "3rem 2rem", transform: open ? "translateX(0)" : "translateX(100%)", transition: "transform .4s cubic-bezier(.76,0,.24,1)" }}>
           <button onClick={() => setOpen(false)} style={{ position: "absolute", top: 16, right: 16, background: "none", border: "1.5px solid rgba(255,255,255,0.2)", width: 42, height: 42, color: "#fff", fontSize: 18, fontWeight: 700 }}>✕</button>
           <img src={LOGO_SRC} alt="Splotch" style={{ height: 48, width: "auto", marginBottom: "2.5rem", opacity: 0.8, filter: "invert(1)" }} />
-
           <a href="/" style={btnSt}>HOME</a>
           <a href="/shop.html" style={btnSt}>SHOP</a>
           <a href="/about.html" style={btnSt}>ABOUT</a>
-
           <div style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem' }}>
             {user ? (
               <React.Fragment>
@@ -1156,7 +915,6 @@
     function UserOrdersModal({ user, onClose }) {
       const [orders, setOrders] = useState([]);
       const [loading, setLoading] = useState(true);
-
       useEffect(() => {
         const fetchOrders = async () => {
           if (!window.fbDb || !window.fbWhere) return;
@@ -1167,11 +925,8 @@
             snap.forEach(doc => fetched.push({ id: doc.id, ...doc.data() }));
             fetched.sort((a, b) => b.timestamp?.seconds - a.timestamp?.seconds);
             setOrders(fetched);
-          } catch (err) {
-            console.error("Failed to load user orders:", err);
-          } finally {
-            setLoading(false);
-          }
+          } catch (err) { console.error("Failed to load user orders:", err); }
+          finally { setLoading(false); }
         };
         fetchOrders();
       }, [user]);
@@ -1191,7 +946,7 @@
               ) : orders.map(o => {
                 const date = o.timestamp ? new Date(o.timestamp.seconds * 1000).toLocaleDateString() : "Recent";
                 const status = o.status || "Processing";
-                const statusColor = status === "Delivered" ? "#008000" : status === "Shipped" ? "#0055ff" : status.includes("Preorder") ? "#d4a017" : "#d4a017";
+                const statusColor = status === "Delivered" ? "#008000" : status === "Shipped" ? "#0055ff" : "#d4a017";
                 return (
                   <div key={o.id} style={{ border: "2px solid #111", padding: "1.2rem", marginBottom: "1rem", background: "#fafafa" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #ddd", paddingBottom: "10px", marginBottom: "10px" }}>
@@ -1238,10 +993,7 @@
 
       useEffect(() => {
         if (step === 'shipping' && ENABLE_OTP_VERIFICATION) {
-          if (window.recaptchaVerifier) {
-            window.recaptchaVerifier.clear();
-            window.recaptchaVerifier = null;
-          }
+          if (window.recaptchaVerifier) { window.recaptchaVerifier.clear(); window.recaptchaVerifier = null; }
           window.recaptchaVerifier = new window.fbRecaptchaVerifier(window.fbAuth, 'recaptcha-container', { 'size': 'invisible' });
         }
       }, [step]);
@@ -1251,28 +1003,16 @@
       const total = selectedCartItems.reduce((s, i) => s + (parseInt((i.price || "0").replace(/[^0-9]/g, "")) || 0), 0);
 
       const initiateCheckout = () => {
-        if (selectedCartItems.length === 0) {
-          alert("Please select at least one item to checkout.");
-          return;
-        }
-        if (!user) {
-          onAuthClick();
-          return;
-        }
+        if (selectedCartItems.length === 0) { alert("Please select at least one item to checkout."); return; }
+        if (!user) { onAuthClick(); return; }
         setStep('shipping');
       };
 
       const requestOTP = async () => {
         if (!shipping.name || shipping.phone.length !== 10 || !shipping.address || !shipping.city || !shipping.state || !shipping.pincode) {
-          alert("Please fill in all shipping details. Ensure phone number is exactly 10 digits.");
-          return;
+          alert("Please fill in all shipping details. Ensure phone number is exactly 10 digits."); return;
         }
-
-        if (!ENABLE_OTP_VERIFICATION) {
-          processPayment();
-          return;
-        }
-
+        if (!ENABLE_OTP_VERIFICATION) { processPayment(); return; }
         setLoading(true);
         try {
           const confResult = await window.fbLinkWithPhoneNumber(user, "+91" + shipping.phone, window.recaptchaVerifier);
@@ -1280,31 +1020,20 @@
           setStep('otp');
           alert("OTP sent to +91" + shipping.phone);
         } catch (error) {
-          if (error.code === 'auth/credential-already-in-use') {
-            alert("Phone number recognized. Proceeding to secure gateway...");
-            processPayment();
-          } else {
-            alert("Phone verification skipped. Proceeding directly to secure gateway...");
-            processPayment();
-          }
+          if (error.code === 'auth/credential-already-in-use') { alert("Phone number recognized. Proceeding to secure gateway..."); processPayment(); }
+          else { alert("Phone verification skipped. Proceeding directly to secure gateway..."); processPayment(); }
         }
         setLoading(false);
       };
 
       const verifyOTP = async () => {
-        if (otp.length < 6) {
-          alert("Enter a valid 6-digit OTP");
-          return;
-        }
+        if (otp.length < 6) { alert("Enter a valid 6-digit OTP"); return; }
         setLoading(true);
         try {
           await confirmationResult.confirm(otp);
           alert("Phone verified! Proceeding to payment...");
           processPayment();
-        } catch (error) {
-          alert("Invalid OTP. Please try again.");
-          setLoading(false);
-        }
+        } catch (error) { alert("Invalid OTP. Please try again."); setLoading(false); }
       };
 
       const processPayment = async () => {
@@ -1313,62 +1042,40 @@
           const response = await fetch('/api/createOrder', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount: total }) });
           const data = await response.json();
           if (!response.ok) throw new Error(data.error || "Failed to create order");
-
           const options = {
-            key: data.keyId,
-            amount: total * 100,
-            currency: "INR",
-            name: "Splotch",
-            description: "Apparel Order",
-            image: LOGO_SRC,
-            order_id: data.orderId,
+            key: data.keyId, amount: total * 100, currency: "INR",
+            name: "Splotch", description: "Apparel Order", image: LOGO_SRC, order_id: data.orderId,
             handler: async function (rzpRes) {
               try {
                 if (!window.fbDb) throw new Error("Firebase DB not available.");
-
                 const hasPreorderItems = selectedCartItems.some(i => i.isPreorderItem);
                 await window.fbAddDoc(window.fbCollection(window.fbDb, "orders"), {
-                  items: selectedCartItems,
-                  total,
-                  paymentId: rzpRes.razorpay_payment_id,
-                  orderId: rzpRes.razorpay_order_id,
-                  userId: user.uid,
-                  userEmail: user.email,
-                  userName: shipping.name,
-                  shipping,
-                  timestamp: new Date(),
+                  items: selectedCartItems, total, paymentId: rzpRes.razorpay_payment_id,
+                  orderId: rzpRes.razorpay_order_id, userId: user.uid, userEmail: user.email,
+                  userName: shipping.name, shipping, timestamp: new Date(),
                   status: hasPreorderItems ? "Preorder — Awaiting Stock" : "Processing",
                   orderType: hasPreorderItems ? "preorder" : "standard"
                 });
-
                 for (const item of selectedCartItems) {
                   if (item.id && !item.isPreorderItem) {
                     try {
                       await window.fbUpdateDoc(window.fbDoc(window.fbDb, "products", item.id), { [`sizeStock.${item.selectedSize}`]: window.fbIncrement(-1) });
-                      if (setProducts) {
-                        setProducts(prev => prev.map(p => {
-                          if (p.id === item.id && p.sizeStock && p.sizeStock[item.selectedSize] > 0) {
-                            return { ...p, sizeStock: { ...p.sizeStock, [item.selectedSize]: p.sizeStock[item.selectedSize] - 1 } };
-                          }
-                          return p;
-                        }));
-                      }
+                      if (setProducts) setProducts(prev => prev.map(p => {
+                        if (p.id === item.id && p.sizeStock && p.sizeStock[item.selectedSize] > 0) return { ...p, sizeStock: { ...p.sizeStock, [item.selectedSize]: p.sizeStock[item.selectedSize] - 1 } };
+                        return p;
+                      }));
                     } catch (e) { console.error(`Stock decrement failed for ${item.id}`); }
                   }
                 }
-
                 if (window.emailjs) {
                   try {
                     await window.emailjs.send("service_wm633dr", "template_xtcij6q", {
-                      name: shipping.name,
-                      email: user.email,
-                      order_id: rzpRes.razorpay_order_id || data.orderId,
-                      total,
+                      name: shipping.name, email: user.email,
+                      order_id: rzpRes.razorpay_order_id || data.orderId, total,
                       items: selectedCartItems.map(i => `${i.name} (Size: ${i.selectedSize})`).join('\n')
                     });
                   } catch (emailErr) { console.warn("Receipt email failed.", emailErr); }
                 }
-
                 alert("Payment successful! Order placed.");
                 setCart(prev => prev.filter(item => !selectedIds.includes(item.cartItemId)));
                 onClose();
@@ -1378,11 +1085,8 @@
             theme: { color: "#111111" }
           };
           new window.Razorpay(options).open();
-        } catch (err) {
-          alert("Checkout error: " + err.message);
-        } finally {
-          setLoading(false);
-        }
+        } catch (err) { alert("Checkout error: " + err.message); }
+        finally { setLoading(false); }
       };
 
       const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", background: "#f9f9f9", padding: "12px", fontSize: 13, fontFamily: "Inter" };
@@ -1395,9 +1099,7 @@
               <span style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 20 }}>{step === 'cart' ? `Cart (${cart.length})` : step === 'shipping' ? "Shipping Info" : "Verify Phone"}</span>
               <button onClick={onClose} style={{ background: "none", border: "1.5px solid #111", width: 34, height: 34, fontSize: 14, fontWeight: 700 }}>✕</button>
             </div>
-
             <div id="recaptcha-container"></div>
-
             {step === 'cart' && (
               <React.Fragment>
                 <div style={{ flex: 1, overflow: "auto", padding: "0.8rem 1.8rem" }}>
@@ -1423,13 +1125,9 @@
                 </div>
                 {cart.length > 0 && (
                   <div style={{ padding: "1.2rem 1.8rem", borderTop: "2px solid #111" }}>
-                    <div style={{ background: '#111', color: '#fff', padding: '8px', fontSize: '9px', textAlign: 'center', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1rem' }}>
-                      📦 Includes premium packaging & custom stickers
-                    </div>
+                    <div style={{ background: '#111', color: '#fff', padding: '8px', fontSize: '9px', textAlign: 'center', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1rem' }}>📦 Includes premium packaging & custom stickers</div>
                     {selectedCartItems.some(i => i.isPreorderItem) && (
-                      <div style={{ background: '#d4a017', color: '#fff', padding: '8px', fontSize: '9px', textAlign: 'center', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1rem' }}>
-                        ⚠️ Contains preorder items — {selectedCartItems.filter(i => i.isPreorderItem).map(i => i.preorderEstimate).filter(Boolean)[0] || 'delivery date TBD'}
-                      </div>
+                      <div style={{ background: '#d4a017', color: '#fff', padding: '8px', fontSize: '9px', textAlign: 'center', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1rem' }}>⚠️ Contains preorder items — {selectedCartItems.filter(i => i.isPreorderItem).map(i => i.preorderEstimate).filter(Boolean)[0] || 'delivery date TBD'}</div>
                     )}
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.9rem" }}>
                       <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>Total ({selectedCartItems.length} selected)</span>
@@ -1441,37 +1139,31 @@
                 )}
               </React.Fragment>
             )}
-
             {step === 'shipping' && (
               <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
                 <div style={{ flex: 1, overflow: "auto", padding: "1.5rem 1.8rem" }}>
                   <label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.5)", display: "block", marginBottom: 6 }}>Full Name *</label>
                   <input type="text" placeholder="John Doe" value={shipping.name} onChange={e => setShipping(s => ({ ...s, name: e.target.value }))} style={{ ...iSt, marginBottom: "1rem" }} />
-
                   <label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.5)", display: "block", marginBottom: 6 }}>Phone Number *</label>
                   <div style={{ display: "flex", marginBottom: "1.5rem" }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "12px", background: "#eee", border: "2px solid rgba(0,0,0,0.14)", borderRight: "none", fontSize: 13, fontFamily: "Inter", fontWeight: 600 }}>+91</div>
                     <input type="tel" placeholder="10-digit mobile" value={shipping.phone} onChange={e => setShipping(s => ({ ...s, phone: e.target.value.replace(/\D/g, '').slice(0, 10) }))} style={{ ...iSt, marginBottom: 0, flex: 1 }} />
                   </div>
-
                   <label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.5)", display: "block", marginBottom: 6 }}>House/Flat No. & Street *</label>
                   <input type="text" placeholder="Address Line 1" value={shipping.address} onChange={e => setShipping(s => ({ ...s, address: e.target.value }))} style={{ ...iSt, marginBottom: "1rem" }} />
-
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
                     <div><label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.5)", display: "block", marginBottom: 6 }}>City *</label><input type="text" placeholder="City" value={shipping.city} onChange={e => setShipping(s => ({ ...s, city: e.target.value }))} style={iSt} /></div>
                     <div><label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.5)", display: "block", marginBottom: 6 }}>State *</label><input type="text" placeholder="State" value={shipping.state} onChange={e => setShipping(s => ({ ...s, state: e.target.value }))} style={iSt} /></div>
                   </div>
-
                   <label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.5)", display: "block", marginBottom: 6 }}>Pincode *</label>
                   <input type="text" placeholder="6-digit Pincode" value={shipping.pincode} onChange={e => setShipping(s => ({ ...s, pincode: e.target.value }))} style={{ ...iSt, marginBottom: "1.5rem" }} />
                 </div>
                 <div style={{ padding: "1.2rem 1.8rem", borderTop: "2px solid #111" }}>
-                  <button onClick={requestOTP} disabled={loading} style={{ width: "100%", background: "#111", color: "#fff", border: "3px solid #111", padding: "14px", fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 8, transition: "background 0.2s" }}>{loading ? "Processing..." : (ENABLE_OTP_VERIFICATION ? `Send OTP & Pay ₹${total}` : `Pay ₹${total} Now`)}</button>
+                  <button onClick={requestOTP} disabled={loading} style={{ width: "100%", background: "#111", color: "#fff", border: "3px solid #111", padding: "14px", fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 8 }}>{loading ? "Processing..." : (ENABLE_OTP_VERIFICATION ? `Send OTP & Pay ₹${total}` : `Pay ₹${total} Now`)}</button>
                   <button onClick={() => setStep('cart')} style={{ width: "100%", background: "transparent", color: "#111", border: "2px solid rgba(0,0,0,0.2)", padding: "10px", fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase" }}>← Back to Cart</button>
                 </div>
               </div>
             )}
-
             {step === 'otp' && (
               <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
                 <div style={{ flex: 1, padding: "1.5rem 1.8rem", textAlign: "center" }}>
@@ -1480,7 +1172,7 @@
                   <input type="text" placeholder="123456" value={otp} onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))} style={{ ...iSt, marginBottom: "1.5rem", textAlign: "center", fontSize: 18, letterSpacing: "0.2em" }} />
                 </div>
                 <div style={{ padding: "1.2rem 1.8rem", borderTop: "2px solid #111" }}>
-                  <button onClick={verifyOTP} disabled={loading || otp.length < 6} style={{ width: "100%", background: otp.length < 6 ? "#666" : "#111", color: "#fff", border: `3px solid ${otp.length < 6 ? "#666" : "#111"}`, padding: "14px", fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 8, transition: "background 0.2s" }}>{loading ? "Verifying..." : `Verify & Pay ₹${total}`}</button>
+                  <button onClick={verifyOTP} disabled={loading || otp.length < 6} style={{ width: "100%", background: otp.length < 6 ? "#666" : "#111", color: "#fff", border: `3px solid ${otp.length < 6 ? "#666" : "#111"}`, padding: "14px", fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 8 }}>{loading ? "Verifying..." : `Verify & Pay ₹${total}`}</button>
                   <button onClick={() => setStep('shipping')} style={{ width: "100%", background: "transparent", color: "#111", border: "2px solid rgba(0,0,0,0.2)", padding: "10px", fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase" }}>← Edit Phone Number</button>
                 </div>
               </div>
@@ -1494,23 +1186,12 @@
       const [flipped, setFlipped] = useState(false);
       const [added, setAdded] = useState(false);
       useEffect(() => {
-        // Smoothly hide grain overlay
-        document.querySelectorAll('.grain, .grain-overlay').forEach(el => {
-          el.style.transition = 'opacity 0.3s ease';
-          el.style.opacity = '0';
-        });
-        // Bring it back when modal closes
-        return () => {
-          document.querySelectorAll('.grain, .grain-overlay').forEach(el => {
-            el.style.opacity = '0.12';
-          });
-        };
+        document.querySelectorAll('.grain, .grain-overlay').forEach(el => { el.style.transition = 'opacity 0.3s ease'; el.style.opacity = '0'; });
+        return () => { document.querySelectorAll('.grain, .grain-overlay').forEach(el => { el.style.opacity = '0.12'; }); };
       }, []);
       if (!product) return null;
-
       const sizeArray = product.sizes ? product.sizes.split(',').map(s => s.trim()) : ["OS"];
       const [selSize, setSelSize] = useState(sizeArray.find(s => getSizeStock(product, s) > 0) || sizeArray[0]);
-
       const isSizeSoldOut = s => getSizeStock(product, s) <= 0;
       const isSoldOut = getTotalStock(product) <= 0;
       const currentSizeSoldOut = isSizeSoldOut(selSize);
@@ -1546,9 +1227,7 @@
                   <span style={{ color: product.compareAtPrice ? "#c00" : "#111" }}>{product.price}</span>
                 </div>
                 <div style={{ display: "flex", gap: "5px", marginBottom: "0.5rem", flexWrap: "wrap" }}>
-                  {sizeArray.map(s =>
-                    <button key={s} onClick={() => { if (!isSizeSoldOut(s)) setSelSize(s); }} className={`size-btn ${selSize === s ? 'active' : ''} ${isSizeSoldOut(s) ? 'soldout' : ''}`} disabled={isSizeSoldOut(s)}>{s}</button>
-                  )}
+                  {sizeArray.map(s => <button key={s} onClick={() => { if (!isSizeSoldOut(s)) setSelSize(s); }} className={`size-btn ${selSize === s ? 'active' : ''} ${isSizeSoldOut(s) ? 'soldout' : ''}`} disabled={isSizeSoldOut(s)}>{s}</button>)}
                 </div>
                 <div style={{ fontSize: 10, color: isPreorder && currentSizeSoldOut ? "#d4a017" : "rgba(0,0,0,0.4)", fontWeight: 600, marginBottom: isPreorder && product.preorderEstimate ? "0.5rem" : "1.5rem" }}>
                   {isPreorder && currentSizeSoldOut ? "📦 Preorder available" : (currentSizeSoldOut ? "❌ Out of stock in this size" : `✓ ${getSizeStock(product, selSize)} left in ${selSize}`)}
@@ -1576,21 +1255,16 @@
     function ProdCard({ product, onQV, onAdd }) {
       const [flipped, setFlipped] = useState(false);
       const [added, setAdded] = useState(false);
-
       const sizeArray = product.sizes ? product.sizes.split(',').map(s => s.trim()) : ["OS"];
       const [selSize, setSelSize] = useState(sizeArray.find(s => getSizeStock(product, s) > 0) || sizeArray[0]);
-
       const isSizeSoldOut = s => getSizeStock(product, s) <= 0;
       const isSoldOut = getTotalStock(product) <= 0;
-
       const isPreorder = product.preorderEnabled;
-
       const doAdd = e => {
         e.stopPropagation();
         if (isSizeSoldOut(selSize) && !isPreorder) return;
         onAdd({ ...product, selectedSize: selSize, isPreorderItem: isPreorder });
-        setAdded(true);
-        setTimeout(() => setAdded(false), 1800);
+        setAdded(true); setTimeout(() => setAdded(false), 1800);
       };
 
       return (
@@ -1599,14 +1273,12 @@
           {product.hasBack && <button className="flip-toggle" onClick={e => { e.stopPropagation(); setFlipped(f => !f); }} style={{ position: "absolute", top: 12, right: 12, zIndex: 10, background: flipped ? "#111" : "rgba(255,255,255,0.92)", color: flipped ? "#fff" : "#111", border: "1.5px solid #111", fontSize: 8, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", padding: "4px 9px" }}>{flipped ? "◀ Front" : "Back ▶"}</button>}
           {isSoldOut && !isPreorder && <div style={{ position: "absolute", inset: 0, zIndex: 20, background: "rgba(255,255,255,0.9)", display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontWeight: 900, fontSize: 16, letterSpacing: "0.1em", textTransform: "uppercase", color: "#c00" }}>SOLD OUT</span></div>}
           {isPreorder && <div className="preorder-badge" style={{ position: "absolute", top: product.tag ? 30 : 12, left: 12, zIndex: 10 }}>{product.preorderLabel || "Pre-order"}</div>}
-
           <div style={{ aspectRatio: "3/4", overflow: "hidden", perspective: "1200px" }} className={flipped ? "flipped" : ""} onClick={() => onQV(product)}>
             <div className="flip-inner">
               <div className="flip-front">{product.frontImage ? <img src={product.frontImage} alt="" onError={e => { e.target.style.display = 'none' }} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} /> : <ImgPlaceholder label={product.name + "· Front"} />}</div>
               {product.hasBack && <div className="flip-back">{product.backImage ? <img src={product.backImage} alt="" onError={e => { e.target.style.display = 'none' }} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} /> : <ImgPlaceholder label={product.name + "· Back"} dark={false} />}</div>}
             </div>
           </div>
-
           <div style={{ padding: "1rem 1.2rem", borderTop: "2px solid #111", flex: 1, display: "flex", flexDirection: "column" }}>
             <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.3)", marginBottom: 3 }}>{product.category}</div>
             <div style={{ fontWeight: 900, fontSize: 15, textTransform: "uppercase", letterSpacing: "-0.01em", marginBottom: 5 }}>{product.name}</div>
@@ -1614,13 +1286,11 @@
               {product.compareAtPrice && <span style={{ textDecoration: "line-through", opacity: 0.6, marginRight: "8px", fontWeight: 600 }}>{product.compareAtPrice}</span>}
               <span style={{ color: product.compareAtPrice ? "#c00" : "#111", fontWeight: 900 }}>{product.price}</span>
             </div>
-
             <div style={{ display: "flex", gap: "5px", marginBottom: "0.4rem", flexWrap: "wrap" }}>
               {sizeArray.map(s => <button key={s} onClick={e => { e.stopPropagation(); if (!isSizeSoldOut(s)) setSelSize(s); }} className={`size-btn ${selSize === s ? 'active' : ''} ${isSizeSoldOut(s) ? 'soldout' : ''}`} disabled={isSizeSoldOut(s)}>{s}</button>)}
             </div>
             <div style={{ fontSize: 9, color: "rgba(0,0,0,0.4)", fontWeight: 600, marginBottom: isPreorder && product.preorderEstimate ? "0.3rem" : "0.8rem" }}>{isPreorder && isSizeSoldOut(selSize) ? "Preorder available" : (isSizeSoldOut(selSize) ? "Out of stock" : `${getSizeStock(product, selSize)} left`)}</div>
             {isPreorder && product.preorderEstimate && <div className="preorder-estimate" style={{ marginBottom: "0.8rem" }}>📦 {product.preorderEstimate}</div>}
-
             <button className={`prod-cta-btn${isPreorder ? ' preorder-cta' : ''}`} disabled={(!isPreorder && (isSoldOut || isSizeSoldOut(selSize)))} onClick={doAdd} style={{ marginTop: "auto", display: "block", width: "100%", background: added ? "#111" : (isPreorder ? "#d4a017" : "#fff"), color: added ? "#fff" : (isPreorder ? "#fff" : "#111"), border: "2px solid " + (isPreorder ? "#d4a017" : "#111"), padding: "10px", fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", opacity: (!isPreorder && (isSoldOut || isSizeSoldOut(selSize))) ? 0.5 : 1 }}>
               {added ? "✓ Added" : (isPreorder ? (product.preorderLabel || "Pre-order") : (isSoldOut || isSizeSoldOut(selSize)) ? "Sold Out" : "Add to Cart")}
             </button>
@@ -1633,19 +1303,13 @@
       const ref = useRef();
       const [drag, setDrag] = useState(false);
       const [compressing, setCompressing] = useState(false);
-
       const read = async (file) => {
         if (!file) return;
         setCompressing(true);
         const reader = new FileReader();
-        reader.onload = async (e) => {
-          const compressed = await compressImage(e.target.result);
-          onChange(compressed);
-          setCompressing(false);
-        };
+        reader.onload = async (e) => { const compressed = await compressImage(e.target.result); onChange(compressed); setCompressing(false); };
         reader.readAsDataURL(file);
       };
-
       return (
         <div>
           <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.4)", marginBottom: 7 }}>{label}</div>
@@ -1681,10 +1345,8 @@
       const [messages, setMessages] = useState([]);
       const [saving, setSaving] = useState(false);
       const [orderFilter, setOrderFilter] = useState("All");
-
       const blankProduct = { name: "", cost: "", price: "₹1", compareAtPrice: "₹1,100", tag: "", description: "", category: "T-Shirts", frontImage: null, backImage: null, hasBack: false, sizes: "S, M, L, XL", sizeStock: { S: 10, M: 10, L: 10, XL: 10 }, preorderEnabled: false, preorderLabel: "Pre-order", preorderEstimate: "" };
       const blankPort = { label: "", cat: "", images: [], order: portfolio.length };
-
       const [form, setForm] = useState(blankProduct);
       const [portForm, setPortForm] = useState(blankPort);
       const [portEditId, setPortEditId] = useState(null);
@@ -1699,25 +1361,15 @@
                 const now = new Date().getTime();
                 const sevenDays = 7 * 24 * 60 * 60 * 1000;
                 const validOrders = [];
-
                 for (const d of snap.docs) {
                   const data = d.data();
                   let shouldDelete = false;
-
                   if (data.status === "Delivered" && data.deliveredAt) {
                     const deliveredTime = data.deliveredAt.seconds ? data.deliveredAt.seconds * 1000 : (data.deliveredAt.getTime ? data.deliveredAt.getTime() : 0);
-                    if (deliveredTime > 0 && (now - deliveredTime) > sevenDays) {
-                      shouldDelete = true;
-                    }
+                    if (deliveredTime > 0 && (now - deliveredTime) > sevenDays) shouldDelete = true;
                   }
-
-                  if (shouldDelete) {
-                    try {
-                      await window.fbDeleteDoc(window.fbDoc(window.fbDb, "orders", d.id));
-                    } catch (e) { console.error("Auto-delete failed", e); }
-                  } else {
-                    validOrders.push({ id: d.id, ...data });
-                  }
+                  if (shouldDelete) { try { await window.fbDeleteDoc(window.fbDoc(window.fbDb, "orders", d.id)); } catch (e) { console.error("Auto-delete failed", e); } }
+                  else validOrders.push({ id: d.id, ...data });
                 }
                 setOrders(validOrders);
               } catch (e) { console.error(e); }
@@ -1736,16 +1388,9 @@
         try {
           if (!window.fbAuth) throw new Error("Firebase Auth not connected.");
           const res = await window.fbSignInWithEmailAndPassword(window.fbAuth, email, pw);
-          if (res.user.email === "splotchglobal@gmail.com") {
-            setAuthed(true);
-            setPwErr("");
-          } else {
-            setPwErr("Not authorized as Admin.");
-            await window.fbSignOut(window.fbAuth);
-          }
-        } catch (err) {
-          setPwErr(err.message.replace("Firebase: ", ""));
-        }
+          if (res.user.email === "splotchglobal@gmail.com") { setAuthed(true); setPwErr(""); }
+          else { setPwErr("Not authorized as Admin."); await window.fbSignOut(window.fbAuth); }
+        } catch (err) { setPwErr(err.message.replace("Firebase: ", "")); }
       };
 
       const handleSizesChange = (v) => {
@@ -1764,12 +1409,9 @@
           if (!window.fbDb || !window.fbSetDoc) throw new Error("Firebase not connected.");
           await withTimeout(window.fbSetDoc(window.fbDoc(window.fbDb, "products", newId), updated, { merge: true }));
           setProducts(editId === "new" ? [...products, updated] : products.map(p => p.id === editId ? updated : p));
-          setEditId(null);
-          setForm(blankProduct);
+          setEditId(null); setForm(blankProduct);
           alert("✓ Product saved!");
-        } catch (err) {
-          alert("Save failed:\n" + err.message);
-        }
+        } catch (err) { alert("Save failed:\n" + err.message); }
         setSaving(false);
       };
 
@@ -1782,12 +1424,9 @@
           if (!window.fbDb || !window.fbSetDoc) throw new Error("Firebase not connected.");
           await withTimeout(window.fbSetDoc(window.fbDoc(window.fbDb, "portfolio", newId), updated, { merge: true }));
           setPortfolio(portEditId === "new" ? [...portfolio, updated] : portfolio.map(p => p.id === portEditId ? updated : p));
-          setPortEditId(null);
-          setPortForm(blankPort);
+          setPortEditId(null); setPortForm(blankPort);
           alert("✓ Portfolio item saved!");
-        } catch (err) {
-          alert("Save failed:\n" + err.message);
-        }
+        } catch (err) { alert("Save failed:\n" + err.message); }
         setSaving(false);
       };
 
@@ -1797,9 +1436,7 @@
           await window.fbDeleteDoc(window.fbDoc(window.fbDb, "products", id));
           setProducts(products.filter(p => p.id !== id));
           if (editId === id) { setEditId(null); setForm(blankProduct); }
-        } catch (err) {
-          alert("Delete failed: " + err.message);
-        }
+        } catch (err) { alert("Delete failed: " + err.message); }
       };
 
       const removePortItem = async (id) => {
@@ -1808,9 +1445,7 @@
           await window.fbDeleteDoc(window.fbDoc(window.fbDb, "portfolio", id));
           setPortfolio(portfolio.filter(p => p.id !== id));
           if (portEditId === id) { setPortEditId(null); setPortForm(blankPort); }
-        } catch (err) {
-          alert("Delete failed: " + err.message);
-        }
+        } catch (err) { alert("Delete failed: " + err.message); }
       };
 
       const removeMessage = async (id) => {
@@ -1818,9 +1453,7 @@
         try {
           await window.fbDeleteDoc(window.fbDoc(window.fbDb, "messages", id));
           setMessages(messages.filter(m => m.id !== id));
-        } catch (err) {
-          alert("Delete failed: " + err.message);
-        }
+        } catch (err) { alert("Delete failed: " + err.message); }
       };
 
       const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", background: "#fff", padding: "10px 12px", fontSize: 13, fontFamily: "Inter" };
@@ -1893,7 +1526,6 @@
                       <div><label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.4)", display: "block", marginBottom: 6 }}>Tag</label><input className="admin-input" value={form.tag} onChange={e => setForm({ ...form, tag: e.target.value })} placeholder="New Drop" style={iSt} /></div>
                       <div style={{ gridColumn: "1/-1" }}><label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.4)", display: "block", marginBottom: 6 }}>Category</label><input className="admin-input" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} placeholder="T-Shirts" style={iSt} /></div>
                       <div style={{ gridColumn: "1/-1" }}><label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.4)", display: "block", marginBottom: 6 }}>Sizes (comma-separated)</label><input className="admin-input" value={form.sizes} onChange={e => handleSizesChange(e.target.value)} placeholder="S, M, L, XL" style={iSt} /></div>
-
                       {sizeArr.length > 0 && (
                         <div style={{ gridColumn: "1/-1" }}>
                           <label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.4)", display: "block", marginBottom: 10 }}>Stock Per Size *</label>
@@ -1905,19 +1537,14 @@
                               </div>
                             ))}
                           </div>
-                          <div style={{ marginTop: 8, padding: "8px 12px", background: "#f0f0f0", fontSize: 10, fontWeight: 700, color: "rgba(0,0,0,0.5)" }}>
-                            Total: {sizeArr.reduce((t, s) => t + (parseInt(form.sizeStock?.[s]) || 0), 0)} units
-                          </div>
+                          <div style={{ marginTop: 8, padding: "8px 12px", background: "#f0f0f0", fontSize: 10, fontWeight: 700, color: "rgba(0,0,0,0.5)" }}>Total: {sizeArr.reduce((t, s) => t + (parseInt(form.sizeStock?.[s]) || 0), 0)} units</div>
                         </div>
                       )}
-
                       <div style={{ gridColumn: "1/-1" }}><label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.4)", display: "block", marginBottom: 6 }}>Description</label><textarea className="admin-input" rows={3} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Short description..." style={{ ...iSt, resize: "none" }} /></div>
                       <div style={{ gridColumn: "1/-1", display: "flex", gap: "0.8rem", alignItems: "center" }}>
                         <button type="button" onClick={() => setForm({ ...form, hasBack: !form.hasBack, backImage: form.hasBack ? null : form.backImage })} style={{ background: form.hasBack ? "#111" : "#fff", color: form.hasBack ? "#fff" : "#111", border: "2px solid #111", padding: "9px 18px", fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase" }}>{form.hasBack ? "✓ Front + Back" : "Front Only"}</button>
                         <span style={{ fontSize: 11, color: "rgba(0,0,0,0.35)" }}>Toggle back photo</span>
                       </div>
-
-                      {/* ── PREORDER TOGGLE SECTION ── */}
                       <div style={{ gridColumn: "1/-1", borderTop: "2px solid rgba(0,0,0,0.08)", paddingTop: "1.3rem", marginTop: "0.5rem" }}>
                         <div style={{ display: "flex", gap: "0.8rem", alignItems: "center", marginBottom: form.preorderEnabled ? "1.2rem" : 0 }}>
                           <button type="button" onClick={() => setForm({ ...form, preorderEnabled: !form.preorderEnabled })} style={{ background: form.preorderEnabled ? "#d4a017" : "#fff", color: form.preorderEnabled ? "#fff" : "#111", border: "2px solid " + (form.preorderEnabled ? "#d4a017" : "#111"), padding: "9px 18px", fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase" }}>{form.preorderEnabled ? "✓ Preorder Enabled" : "Enable Preorder"}</button>
@@ -1925,19 +1552,11 @@
                         </div>
                         {form.preorderEnabled && (
                           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-                            <div>
-                              <label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.4)", display: "block", marginBottom: 6 }}>Preorder Label</label>
-                              <input className="admin-input" value={form.preorderLabel || "Pre-order"} onChange={e => setForm({ ...form, preorderLabel: e.target.value })} placeholder="Pre-order" style={iSt} />
-                            </div>
-                            <div>
-                              <label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.4)", display: "block", marginBottom: 6 }}>Estimated Delivery</label>
-                              <input className="admin-input" value={form.preorderEstimate || ""} onChange={e => setForm({ ...form, preorderEstimate: e.target.value })} placeholder="e.g. Ships by April 2026" style={iSt} />
-                            </div>
+                            <div><label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.4)", display: "block", marginBottom: 6 }}>Preorder Label</label><input className="admin-input" value={form.preorderLabel || "Pre-order"} onChange={e => setForm({ ...form, preorderLabel: e.target.value })} placeholder="Pre-order" style={iSt} /></div>
+                            <div><label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.4)", display: "block", marginBottom: 6 }}>Estimated Delivery</label><input className="admin-input" value={form.preorderEstimate || ""} onChange={e => setForm({ ...form, preorderEstimate: e.target.value })} placeholder="e.g. Ships by April 2026" style={iSt} /></div>
                           </div>
                         )}
                       </div>
-                      {/* ── END PREORDER TOGGLE SECTION ── */}
-
                       <div style={{ gridColumn: form.hasBack ? "1/2" : "1/-1" }}><ImgUpload value={form.frontImage} onChange={v => setForm({ ...form, frontImage: v })} label="Front Image *" /></div>
                       {form.hasBack && <div style={{ gridColumn: "2/4" }}><ImgUpload value={form.backImage} onChange={v => setForm({ ...form, backImage: v })} label="Back Image" /></div>}
                     </div>
@@ -1951,27 +1570,14 @@
                 <div>
                   <button onClick={() => { setPortForm({ ...blankPort, order: portfolio.length }); setPortEditId("new"); }} style={{ width: "100%", padding: "15px", background: "#111", color: "#fff", fontWeight: 900, marginBottom: "1rem" }}>+ ADD PORTFOLIO ITEM</button>
                   {portfolio.map(p => (
-                    <div key={p.id} onClick={() => {
-                      const imgs = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
-                      setPortForm({ ...p, images: imgs });
-                      setPortEditId(p.id);
-                    }} style={{ display: "flex", alignItems: "center", gap: "0.9rem", border: "2px solid #111", padding: "0.9rem 1rem", background: portEditId === p.id ? "#111" : "#fff", color: portEditId === p.id ? "#fff" : "#111", marginBottom: "4px" }}>
-
+                    <div key={p.id} onClick={() => { const imgs = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : []); setPortForm({ ...p, images: imgs }); setPortEditId(p.id); }} style={{ display: "flex", alignItems: "center", gap: "0.9rem", border: "2px solid #111", padding: "0.9rem 1rem", background: portEditId === p.id ? "#111" : "#fff", color: portEditId === p.id ? "#fff" : "#111", marginBottom: "4px" }}>
                       <div style={{ width: 52, height: 52, background: "#333", flexShrink: 0, overflow: "hidden" }}>
-                        {p.images && p.images.length > 0 ? (
-                          <img src={p.images[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                        ) : p.image ? (
-                          <img src={p.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                        ) : (
-                          <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, color: "rgba(255,255,255,0.15)" }}>◎</div>
-                        )}
+                        {p.images && p.images.length > 0 ? <img src={p.images[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : p.image ? <img src={p.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, color: "rgba(255,255,255,0.15)" }}>◎</div>}
                       </div>
-
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontWeight: 700, fontSize: 13, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.label || "Untitled"}</div>
                         <div style={{ fontSize: 11, color: portEditId === p.id ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.4)", marginTop: 1 }}>{p.cat}</div>
                       </div>
-
                       <button onClick={e => { e.stopPropagation(); removePortItem(p.id); }} style={{ fontSize: 7, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", padding: "2px 5px", background: "transparent", color: "rgba(180,0,0,0.55)", border: "1px solid rgba(180,0,0,0.18)", flexShrink: 0 }}>Delete</button>
                     </div>
                   ))}
@@ -1986,21 +1592,15 @@
                       <div><label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.4)", display: "block", marginBottom: 6 }}>Title *</label><input className="admin-input" value={portForm.label} onChange={e => setPortForm({ ...portForm, label: e.target.value })} placeholder="Terrain Vol.001" style={iSt} /></div>
                       <div><label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.4)", display: "block", marginBottom: 6 }}>Category / Tag</label><input className="admin-input" value={portForm.cat} onChange={e => setPortForm({ ...portForm, cat: e.target.value })} placeholder="Capsule Drop" style={iSt} /></div>
                       <div><label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.4)", display: "block", marginBottom: 6 }}>Display Order</label><input type="number" className="admin-input" value={portForm.order} onChange={e => setPortForm({ ...portForm, order: parseInt(e.target.value) || 0 })} style={iSt} /></div>
-
                       <div>
                         <label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.4)", display: "block", marginBottom: 6 }}>Portfolio Images (Add Multiple)</label>
-                        <ImgUpload value={null} onChange={v => { if (v) { setPortForm({ ...portForm, images: [...(portForm.images || []), v] }); } }} label="Add an Image" />
-
+                        <ImgUpload value={null} onChange={v => { if (v) setPortForm({ ...portForm, images: [...(portForm.images || []), v] }); }} label="Add an Image" />
                         {(portForm.images && portForm.images.length > 0) && (
                           <div style={{ display: "flex", gap: "10px", overflowX: "auto", marginTop: "15px", padding: "10px 0", borderTop: "1px solid #ddd" }}>
                             {portForm.images.map((img, idx) => (
                               <div key={idx} style={{ position: "relative", flexShrink: 0 }}>
                                 <img src={img} style={{ height: "80px", width: "80px", objectFit: "cover", border: "2px solid #111" }} />
-                                <button onClick={() => {
-                                  const newImgs = [...portForm.images];
-                                  newImgs.splice(idx, 1);
-                                  setPortForm({ ...portForm, images: newImgs });
-                                }} style={{ position: "absolute", top: "-5px", right: "-5px", background: "#c00", color: "#fff", border: "none", width: "20px", height: "20px", borderRadius: "50%", fontSize: "10px", fontWeight: 900 }}>✕</button>
+                                <button onClick={() => { const newImgs = [...portForm.images]; newImgs.splice(idx, 1); setPortForm({ ...portForm, images: newImgs }); }} style={{ position: "absolute", top: "-5px", right: "-5px", background: "#c00", color: "#fff", border: "none", width: "20px", height: "20px", borderRadius: "50%", fontSize: "10px", fontWeight: 900 }}>✕</button>
                               </div>
                             ))}
                           </div>
@@ -2017,11 +1617,12 @@
                 <h2 style={{ fontFamily: "Playfair Display", marginBottom: "1rem" }}>Order Dashboard</h2>
                 <div style={{ display: "flex", gap: "0", borderBottom: "2px solid #111", marginBottom: "1.5rem", overflowX: "auto" }}>
                   {["All", "Processing", "Preorder", "Shipped", "Delivered"].map(f => (
-                    <button key={f} onClick={() => setOrderFilter(f)} style={{ background: orderFilter === f ? "#111" : "transparent", color: orderFilter === f ? "#fff" : "rgba(0,0,0,0.4)", border: "none", borderRight: "1px solid rgba(0,0,0,0.08)", padding: "10px 18px", fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", whiteSpace: "nowrap", transition: "all .2s" }}>{f} ({f === "All" ? orders.length : orders.filter(o => f === "Preorder" ? (o.orderType === "preorder" || (o.status || "").includes("Preorder")) : (o.status || "Processing") === f).length})</button>
+                    <button key={f} onClick={() => setOrderFilter(f)} style={{ background: orderFilter === f ? "#111" : "transparent", color: orderFilter === f ? "#fff" : "rgba(0,0,0,0.4)", border: "none", borderRight: "1px solid rgba(0,0,0,0.08)", padding: "10px 18px", fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{f} ({f === "All" ? orders.length : orders.filter(o => f === "Preorder" ? (o.orderType === "preorder" || (o.status || "").includes("Preorder")) : (o.status || "Processing") === f).length})</button>
                   ))}
                 </div>
                 {(() => {
-                  const filteredOrders = orderFilter === "All" ? orders : orders.filter(o => orderFilter === "Preorder" ? (o.orderType === "preorder" || (o.status || "").includes("Preorder")) : (o.status || "Processing") === orderFilter); return filteredOrders.length === 0 ? <p style={{ color: "rgba(0,0,0,0.4)" }}>No {orderFilter.toLowerCase()} orders.</p> : filteredOrders.map(o => (
+                  const filteredOrders = orderFilter === "All" ? orders : orders.filter(o => orderFilter === "Preorder" ? (o.orderType === "preorder" || (o.status || "").includes("Preorder")) : (o.status || "Processing") === orderFilter);
+                  return filteredOrders.length === 0 ? <p style={{ color: "rgba(0,0,0,0.4)" }}>No {orderFilter.toLowerCase()} orders.</p> : filteredOrders.map(o => (
                     <div key={o.id} style={{ border: "2px solid #111", padding: "1.5rem", marginBottom: "1rem", background: "#fafafa" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #ddd", paddingBottom: "10px", marginBottom: "10px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}><strong>ORDER: {o.orderId || o.id}</strong>{o.orderType === "preorder" && <span className="preorder-cart-tag">PREORDER</span>}</div>
@@ -2084,7 +1685,6 @@
     function Shop({ products, onQV, onAdd, filter, setFilter }) {
       const cats = ["All", ...Array.from(new Set(products.map(p => p.category)))];
       const filtered = filter === "All" ? products : products.filter(p => p.category === filter);
-
       return (
         <section id="shop" style={{ background: "#fff", borderBottom: "3px solid #111", paddingTop: "6rem" }}>
           <div style={{ background: "#111", padding: "4rem 2rem 3.5rem", position: "relative", overflow: "hidden", borderBottom: "2px solid #222" }}>
@@ -2097,11 +1697,9 @@
           <div style={{ borderBottom: "2px solid #111", display: "flex", alignItems: "center", overflowX: "auto", paddingLeft: "1rem" }}>
             <span style={{ fontWeight: 900, fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', marginRight: '1rem', color: '#111' }}>Filters:</span>
             {cats.map(c => (
-              <button key={c} onClick={() => setFilter(c)} style={{ background: filter === c ? "#111" : "transparent", color: filter === c ? "#fff" : "rgba(0,0,0,0.4)", border: "none", borderRight: "1px solid rgba(0,0,0,0.08)", padding: "13px 18px", fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", whiteSpace: "nowrap", transition: "all .2s" }}>{c}</button>
+              <button key={c} onClick={() => setFilter(c)} style={{ background: filter === c ? "#111" : "transparent", color: filter === c ? "#fff" : "rgba(0,0,0,0.4)", border: "none", borderRight: "1px solid rgba(0,0,0,0.08)", padding: "13px 18px", fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{c}</button>
             ))}
-            <div style={{ marginLeft: "auto", padding: "0 1rem", fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(0,0,0,0.25)", textTransform: "uppercase", whiteSpace: "nowrap" }}>
-              {filtered.length} item{filtered.length !== 1 ? "s" : ""}
-            </div>
+            <div style={{ marginLeft: "auto", padding: "0 1rem", fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(0,0,0,0.25)", textTransform: "uppercase", whiteSpace: "nowrap" }}>{filtered.length} item{filtered.length !== 1 ? "s" : ""}</div>
           </div>
           <div style={{ padding: "2.5rem 2rem" }}>
             {filtered.length === 0 ? (
@@ -2126,17 +1724,11 @@
     function PortCard({ w, idxBase }) {
       const [curIdx, setCurIdx] = useState(0);
       const images = w.images && w.images.length > 0 ? w.images : (w.image ? [w.image] : []);
-
       const next = (e) => { e.stopPropagation(); setCurIdx((i) => (i + 1) % images.length); };
       const prev = (e) => { e.stopPropagation(); setCurIdx((i) => (i - 1 + images.length) % images.length); };
-
       let startX = 0;
       const handleTouchStart = (e) => { startX = e.touches[0].clientX; };
-      const handleTouchEnd = (e) => {
-        const diff = startX - e.changedTouches[0].clientX;
-        if (diff > 40) next(e);
-        if (diff < -40) prev(e);
-      };
+      const handleTouchEnd = (e) => { const diff = startX - e.changedTouches[0].clientX; if (diff > 40) next(e); if (diff < -40) prev(e); };
 
       return (
         <div className={`port-card reveal reveal-d${(idxBase % 3) + 1}`} style={{ position: "relative", background: "#111", aspectRatio: "1/1", overflow: "hidden", border: "2px solid #111" }} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
@@ -2148,9 +1740,7 @@
                   <button className="carousel-btn left" onClick={prev}>‹</button>
                   <button className="carousel-btn right" onClick={next}>›</button>
                   <div style={{ position: 'absolute', bottom: '10px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '4px', zIndex: 20 }}>
-                    {images.map((_, i) => (
-                      <div key={i} style={{ width: '6px', height: '6px', borderRadius: '50%', background: i === curIdx ? '#fff' : 'rgba(255,255,255,0.3)' }} />
-                    ))}
+                    {images.map((_, i) => <div key={i} style={{ width: '6px', height: '6px', borderRadius: '50%', background: i === curIdx ? '#fff' : 'rgba(255,255,255,0.3)' }} />)}
                   </div>
                 </React.Fragment>
               )}
@@ -2174,15 +1764,12 @@
 
     function TheWork({ portfolio }) {
       const sorted = useMemo(() => [...portfolio].sort((a, b) => (a.order || 0) - (b.order || 0)), [portfolio]);
-
       return (
         <section id="work" style={{ background: "#f9f9f9", borderBottom: "3px solid #111", padding: "6rem 2rem" }}>
           <SLabel>Portfolio — The Work</SLabel>
           <h2 className="dyn-title" style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: "clamp(50px,9vw,120px)", letterSpacing: "-0.04em", lineHeight: 0.88, marginBottom: "3.5rem", fontStyle: "italic" }}>The Work.</h2>
           <div className="port-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "10px" }}>
-            {sorted.map((w, i) => (
-              <PortCard key={w.id} w={w} idxBase={i} />
-            ))}
+            {sorted.map((w, i) => <PortCard key={w.id} w={w} idxBase={i} />)}
           </div>
         </section>
       );
@@ -2195,7 +1782,6 @@
         "Concept-first design — every collection maps a new aesthetic territory",
         "End-to-end transparency — from sketch to final stitch, nothing is hidden"
       ];
-
       return (
         <section id="why" style={{ background: "#111", borderBottom: "3px solid #111", padding: "6rem 2rem", position: "relative", overflow: "hidden" }}>
           <div className="topo-parallax-wrap" style={{ opacity: 0.08 }}><TopoSVG color="#fff" /></div>
@@ -2227,7 +1813,6 @@
         { q: "Every single piece of clothing exceeded expectations in fit, durability, and pure aesthetic conviction.", name: "Advik", residence: "Bangalore" },
         { q: "Wasn't expecting this level of quality at this price. The Shadow Tee fits perfectly oversized and the print hasn't faded at all.", name: "Shubhum", residence: "Bangalore" }
       ];
-
       return (
         <section style={{ background: "#fff", borderBottom: "3px solid #111", padding: "6rem 2rem" }}>
           <SLabel>What People Say</SLabel>
@@ -2252,45 +1837,21 @@
       const [sent, setSent] = useState(false);
       const [loading, setLoading] = useState(false);
       const [errMsg, setErrMsg] = useState("");
-
       const submit = async (e) => {
         e.preventDefault();
         if (!form.name || !form.email || !form.message) return;
-        setLoading(true);
-        setErrMsg("");
+        setLoading(true); setErrMsg("");
         try {
           if (!window.fbAddDoc || !window.fbDb) throw new Error("Firebase is not connected.");
-          await withTimeout(window.fbAddDoc(window.fbCollection(window.fbDb, "messages"), {
-            name: form.name,
-            email: form.email,
-            message: form.message,
-            timestamp: new Date()
-          }));
-
-          if (window.emailjs) {
-            try {
-              await window.emailjs.send("service_wm633dr", "template_igjj8ga", {
-                name: form.name,
-                email: form.email,
-                message: form.message
-              });
-            } catch (emailErr) {
-              console.warn("EmailJS failed:", emailErr);
-            }
-          }
-
-          setSent(true);
-          setTimeout(() => setSent(false), 5000);
+          await withTimeout(window.fbAddDoc(window.fbCollection(window.fbDb, "messages"), { name: form.name, email: form.email, message: form.message, timestamp: new Date() }));
+          if (window.emailjs) { try { await window.emailjs.send("service_wm633dr", "template_igjj8ga", { name: form.name, email: form.email, message: form.message }); } catch (emailErr) { console.warn("EmailJS failed:", emailErr); } }
+          setSent(true); setTimeout(() => setSent(false), 5000);
           setForm({ name: "", email: "", message: "" });
         } catch (err) {
-          setErrMsg(err.code === "permission-denied" ? "Firebase permission denied. Go to Firebase Console → Firestore → Rules and set: allow read, write: if true;" : "Failed to send: " + err.message);
-        } finally {
-          setLoading(false);
-        }
+          setErrMsg(err.code === "permission-denied" ? "Firebase permission denied." : "Failed to send: " + err.message);
+        } finally { setLoading(false); }
       };
-
       const iSt = { display: "block", width: "100%", background: "transparent", border: "none", borderBottom: "2px solid #333", color: "#fff", padding: "15px", fontFamily: "Inter", marginBottom: "1rem" };
-
       return (
         <section id="contact" style={{ background: "#111", borderBottom: "3px solid #111", padding: "6rem 2rem", position: "relative", overflow: "hidden" }}>
           <div className="topo-parallax-wrap" style={{ opacity: 0.07 }}><TopoSVG color="#fff" /></div>
@@ -2331,7 +1892,6 @@
     function Footer() {
       const [termsOpen, setTermsOpen] = useState(false);
       const [returnOpen, setReturnOpen] = useState(false);
-
       return (
         <footer className="footer-animated-bg" style={{ padding: "6rem 2rem 3rem", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "relative", zIndex: 1, textAlign: "center" }}>
@@ -2366,10 +1926,13 @@
       );
     }
 
+    /* ══════════════════════════════════════
+       APP — with loader state machine
+    ══════════════════════════════════════ */
     function App() {
       const [products, setProducts] = useState([]);
       const [portfolio, setPortfolio] = useState([]);
-      const [cart, setCart] = useState(() => { const d = localStorage.getItem('splotch_cart_v1'); return d ? JSON.parse(d) : []; });
+      const [cart, setCart] = useState(() => { try { const d = localStorage.getItem('splotch_cart_v1'); return d ? JSON.parse(d) : []; } catch { return []; } });
       const [qv, setQV] = useState(null);
       const [adminOpen, setAdminOpen] = useState(false);
       const [cartOpen, setCartOpen] = useState(false);
@@ -2381,8 +1944,62 @@
       const [user, setUser] = useState(null);
       const logoTimerRef = useRef(null);
 
+      // ── Loader state ──
+      const [loaderProgress, setLoaderProgress] = useState(0);
+      const [loaderStatus, setLoaderStatus] = useState("INITIALIZING...");
+      const [loaderOpening, setLoaderOpening] = useState(false);
+      const [loaderDone, setLoaderDone] = useState(false);
+      const dataReadyRef = useRef(false);
+      const minTimeRef = useRef(false);
+
+      const BOOT_SEQUENCE = [
+        { p: 15,  t: 0,    s: "INITIALIZING SYSTEM..." },
+        { p: 35,  t: 420,  s: "CONNECTING TO DATABASE..." },
+        { p: 55,  t: 820,  s: "FETCHING COLLECTION 001..." },
+        { p: 75,  t: 1300, s: "AUTHENTICATING SESSION..." },
+        { p: 90,  t: 1700, s: "LOADING ASSETS..." },
+        { p: 100, t: 2100, s: "READY." },
+      ];
+
+      // Run the boot progress animation
       useEffect(() => {
-        console.log("%c[SYSTEM_ROOT] ACCESS GRANTED\n%c // ENGINEERED BY DUDEFROMALHIEM \n%c WELCOME TO THE NEXT FRONTIER OF STREETWEAR. Z E R O  C O M P R O M I S E.", "color: #c00; font-size: 20px; font-weight: 900;", "color: #fff; font-size: 13px; font-weight: 700; background: #111; padding: 4px;", "color: #666; font-size: 11px; font-style: italic;");
+        BOOT_SEQUENCE.forEach(({ p, t, s }) => {
+          setTimeout(() => { setLoaderProgress(p); setLoaderStatus(s); }, t);
+        });
+        // Minimum display time: 2.4s
+        setTimeout(() => {
+          minTimeRef.current = true;
+          if (dataReadyRef.current) triggerOpen();
+        }, 2400);
+      }, []);
+
+      const triggerOpen = () => {
+        setLoaderProgress(100);
+        setLoaderStatus("READY.");
+        setTimeout(() => {
+          setLoaderOpening(true);
+          setTimeout(() => setLoaderDone(true), 800);
+        }, 300);
+      };
+
+      // ── Updated Easter Egg console.log ──
+      useEffect(() => {
+        console.log(
+          "%c" +
+          "  ╭──────────────────────────────────────────────────────────╮\n" +
+          "  │                                                          │\n" +
+          "  │   █████╗ ██╗     ██╗  ██╗██╗███████╗███╗   ███╗         │\n" +
+          "  │  ██╔══██╗██║     ██║  ██║██║██╔════╝████╗ ████║         │\n" +
+          "  │  ███████║██║     ███████║██║█████╗  ██╔████╔██║         │\n" +
+          "  │  ██╔══██║██║     ██╔══██║██║██╔══╝  ██║╚██╔╝██║         │\n" +
+          "  │  ██║  ██║███████╗██║  ██║██║███████╗██║ ╚═╝ ██║         │\n" +
+          "  │  ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚═╝     ╚═╝         │\n" +
+          "  │                                                          │\n" +
+          "  │  ▸ splotch.in          engineered by dudefromalhiem      │\n" +
+          "  │  ▸ collection 001      zero mass production              │\n" +
+          "  ╰──────────────────────────────────────────────────────────╯",
+          "color: #d4863a; font-family: 'Courier New', monospace; font-size: 11px; line-height: 1.4;"
+        );
       }, []);
 
       useEffect(() => {
@@ -2395,25 +2012,28 @@
         return () => window.removeEventListener("keydown", handler);
       }, []);
 
-      useEffect(() => { localStorage.setItem('splotch_cart_v1', JSON.stringify(cart)); }, [cart]);
+      useEffect(() => { try { localStorage.setItem('splotch_cart_v1', JSON.stringify(cart)); } catch {} }, [cart]);
 
       useEffect(() => {
         const initData = async () => {
-          if (!window.fbDb || !window.fbGetDocs) return;
+          if (!window.fbDb || !window.fbGetDocs) {
+            dataReadyRef.current = true;
+            if (minTimeRef.current) triggerOpen();
+            return;
+          }
           try {
             const snap = await window.fbGetDocs(window.fbCollection(window.fbDb, "products"));
             if (snap.empty) {
-              DEFAULT_PRODUCTS.forEach(p => window.fbSetDoc(window.fbDoc(window.fbDb, "products", p.id), p).catch(e => console.warn(e)));
+              DEFAULT_PRODUCTS.forEach(p => window.fbSetDoc(window.fbDoc(window.fbDb, "products", p.id), p).catch(() => {}));
               setProducts(DEFAULT_PRODUCTS);
             } else {
               const fetched = [];
               snap.forEach(d => fetched.push({ id: d.id, ...d.data() }));
               setProducts(fetched);
             }
-
             const portSnap = await window.fbGetDocs(window.fbCollection(window.fbDb, "portfolio"));
             if (portSnap.empty) {
-              DEFAULT_PORTFOLIO.forEach(p => window.fbSetDoc(window.fbDoc(window.fbDb, "portfolio", p.id), p).catch(e => console.warn(e)));
+              DEFAULT_PORTFOLIO.forEach(p => window.fbSetDoc(window.fbDoc(window.fbDb, "portfolio", p.id), p).catch(() => {}));
               setPortfolio(DEFAULT_PORTFOLIO);
             } else {
               const fetchedPort = [];
@@ -2424,19 +2044,31 @@
             console.error("Data load error:", e);
             setProducts(DEFAULT_PRODUCTS);
             setPortfolio(DEFAULT_PORTFOLIO);
+          } finally {
+            dataReadyRef.current = true;
+            if (minTimeRef.current) triggerOpen();
           }
         };
 
         if (window.fbDb) initData();
-        else window.addEventListener('firebase-ready', initData);
-        return () => window.removeEventListener('firebase-ready', initData);
+        else {
+          window.addEventListener('firebase-ready', initData, { once: true });
+          // Fallback: if firebase never fires, still open after 3.5s
+          setTimeout(() => {
+            if (!dataReadyRef.current) {
+              setProducts(DEFAULT_PRODUCTS);
+              setPortfolio(DEFAULT_PORTFOLIO);
+              dataReadyRef.current = true;
+              if (minTimeRef.current) triggerOpen();
+            }
+          }, 3500);
+        }
       }, []);
 
       useEffect(() => {
         const initAuth = () => { if (window.fbAuth) window.fbOnAuthStateChanged(window.fbAuth, u => setUser(u)); };
         if (window.fbAuth) initAuth();
-        else window.addEventListener('firebase-ready', initAuth);
-        return () => window.removeEventListener('firebase-ready', initAuth);
+        else window.addEventListener('firebase-ready', initAuth, { once: true });
       }, []);
 
       useEffect(() => {
@@ -2449,11 +2081,7 @@
         const next = logoClicks + 1;
         setLogoClicks(next);
         if (logoTimerRef.current) clearTimeout(logoTimerRef.current);
-        if (next >= 6) {
-          setAdminOpen(true);
-          setLogoClicks(0);
-          return;
-        }
+        if (next >= 6) { setAdminOpen(true); setLogoClicks(0); return; }
         logoTimerRef.current = setTimeout(() => setLogoClicks(0), 3000);
       };
 
@@ -2461,13 +2089,19 @@
 
       return (
         <div style={{ minHeight: "100vh", background: "#fff", position: "relative", overflowX: "hidden" }}>
+          {/* ── Loader ── */}
+          <ShopLoader
+            progress={loaderProgress}
+            status={loaderStatus}
+            opening={loaderOpening}
+            done={loaderDone}
+          />
+
           <div className="grain-overlay" />
           <ScrollProgress />
-
           <Header cartCount={cart.length} onCartOpen={() => setCartOpen(true)} onLogoClick={handleLogoClick} setMobMenu={setMobMenu} user={user} onAuthClick={() => setAuthOpen(true)} handleLogout={() => window.fbSignOut(window.fbAuth)} openUserOrders={() => setOrdersOpen(true)} />
           <Ticker />
           <MobMenu open={mobMenu} setOpen={setMobMenu} user={user} onAuthClick={() => setAuthOpen(true)} handleLogout={() => window.fbSignOut(window.fbAuth)} openUserOrders={() => setOrdersOpen(true)} />
-
           <Shop products={products} onQV={setQV} onAdd={addToCart} filter={filter} setFilter={setFilter} />
           <TheWork portfolio={portfolio} />
           <WhySplotch />
@@ -2497,54 +2131,37 @@
       var mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
       var drop = { x: mouse.x, y: mouse.y };
       var isClicking = false;
-
       function resize() { cvs.width = window.innerWidth; cvs.height = window.innerHeight; }
       resize();
       window.addEventListener('resize', resize);
       window.addEventListener('mousemove', function (e) { mouse.x = e.clientX; mouse.y = e.clientY; });
-
-      // Physics Click Events
       window.addEventListener('mousedown', function () { isClicking = true; });
       window.addEventListener('mouseup', function () { isClicking = false; });
       window.addEventListener('touchstart', function () { isClicking = true; });
       window.addEventListener('touchend', function () { isClicking = false; });
-
       (function animate() {
         ctx.clearRect(0, 0, cvs.width, cvs.height);
-
-        // Spring target for clicking (compress to 35% size)
         var targetR = isClicking ? BASE_R * 0.35 : BASE_R;
-        currentR += (targetR - currentR) * 0.4; // Springy snap effect
-
+        currentR += (targetR - currentR) * 0.4;
         var dx = mouse.x - drop.x, dy = mouse.y - drop.y;
         drop.x += dx * EASE; drop.y += dy * EASE;
-
         var speed = Math.sqrt(dx * dx + dy * dy);
         var angle = Math.atan2(dy, dx);
-
-        // Calculate stretch and squash based on movement and click state
         var stretch = Math.min(speed * 0.40, MAX_STRETCH);
-        if (isClicking) stretch *= 0.1; // Don't stretch while squashed
-
+        if (isClicking) stretch *= 0.1;
         var majorR = currentR + stretch * 0.5;
         var minorR = Math.max(currentR - speed * 0.10, MIN_SQUASH);
-
         ctx.save();
         ctx.translate(drop.x, drop.y);
         ctx.rotate(angle);
-
-        // Main droplet body
         ctx.beginPath();
         ctx.ellipse(-(stretch * 0.5), 0, majorR, minorR, 0, 0, Math.PI * 2);
         ctx.fillStyle = '#ffffff';
         ctx.fill();
-
         ctx.restore();
         requestAnimationFrame(animate);
       })();
     })();
   </script>
-  </script>
 </body>
-
 </html>
