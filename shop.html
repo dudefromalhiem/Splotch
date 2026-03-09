@@ -105,7 +105,9 @@
       --R: #DC1C1C;
     }
 
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       background: var(--W);
@@ -116,33 +118,63 @@
       padding: 0;
     }
 
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       border-radius: 0 !important;
     }
 
-    ::selection { background: var(--B); color: var(--W); }
+    ::selection {
+      background: var(--B);
+      color: var(--W);
+    }
 
-    input, textarea, select, button {
+    input,
+    textarea,
+    select,
+    button {
       font-family: inherit;
       border-radius: 0 !important;
       outline: none;
     }
 
-    img { -webkit-user-select: none; user-select: none; }
+    img {
+      -webkit-user-select: none;
+      user-select: none;
+    }
 
     /* ── LIQUID PAINT CURSOR CSS ── */
     @media (pointer: fine) {
-      body, button, a, input, textarea, select, img, .prod-card,
-      *, *::before, *::after { cursor: none !important; }
+
+      body,
+      button,
+      a,
+      input,
+      textarea,
+      select,
+      img,
+      .prod-card,
+      *,
+      *::before,
+      *::after {
+        cursor: none !important;
+      }
     }
-    @media (pointer: coarse) { #liquid-cursor-canvas { display: none !important; } }
+
+    @media (pointer: coarse) {
+      #liquid-cursor-canvas {
+        display: none !important;
+      }
+    }
 
     #liquid-cursor-canvas {
-      position: fixed; inset: 0;
-      z-index: 99999; pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      pointer-events: none;
       mix-blend-mode: difference;
     }
 
@@ -169,29 +201,56 @@
       will-change: transform;
     }
 
-    .shutter-top { top: 0; transform-origin: top; }
-    .shutter-bottom { bottom: 0; transform-origin: bottom; }
+    .shutter-top {
+      top: 0;
+      transform-origin: top;
+    }
 
-    #shop-loader.opening .shutter-top { transform: translateY(-100%); }
-    #shop-loader.opening .shutter-bottom { transform: translateY(100%); }
+    .shutter-bottom {
+      bottom: 0;
+      transform-origin: bottom;
+    }
+
+    #shop-loader.opening .shutter-top {
+      transform: translateY(-100%);
+    }
+
+    #shop-loader.opening .shutter-bottom {
+      transform: translateY(100%);
+    }
 
     /* Scanline sweep on top panel */
     .shutter-top::after {
       content: '';
       position: absolute;
-      left: 0; right: 0;
+      left: 0;
+      right: 0;
       height: 2px;
-      background: linear-gradient(90deg, transparent 0%, rgba(220,28,28,0.6) 30%, rgba(220,28,28,1) 50%, rgba(220,28,28,0.6) 70%, transparent 100%);
+      background: linear-gradient(90deg, transparent 0%, rgba(220, 28, 28, 0.6) 30%, rgba(220, 28, 28, 1) 50%, rgba(220, 28, 28, 0.6) 70%, transparent 100%);
       bottom: 0;
       animation: scanMove 1.8s ease-in-out infinite;
       opacity: 0.7;
     }
 
     @keyframes scanMove {
-      0%   { transform: translateY(0) scaleX(0.6); opacity: 0; }
-      20%  { opacity: 1; transform: scaleX(1); }
-      80%  { opacity: 1; }
-      100% { transform: translateY(-120px) scaleX(0.6); opacity: 0; }
+      0% {
+        transform: translateY(0) scaleX(0.6);
+        opacity: 0;
+      }
+
+      20% {
+        opacity: 1;
+        transform: scaleX(1);
+      }
+
+      80% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-120px) scaleX(0.6);
+        opacity: 0;
+      }
     }
 
     /* Center content (sits above both panels via stacking) */
@@ -218,7 +277,10 @@
     }
 
     @keyframes loaderLogoIn {
-      to { opacity: 0.9; transform: scale(1); }
+      to {
+        opacity: 0.9;
+        transform: scale(1);
+      }
     }
 
     .loader-brand {
@@ -235,8 +297,15 @@
     }
 
     @keyframes loaderBrandIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* Terminal status lines */
@@ -244,7 +313,7 @@
       margin-top: 2.5rem;
       font-family: 'Courier New', monospace;
       font-size: 11px;
-      color: rgba(255,255,255,0.35);
+      color: rgba(255, 255, 255, 0.35);
       letter-spacing: 0.08em;
       text-align: center;
       min-height: 18px;
@@ -252,20 +321,30 @@
       animation: loaderBrandIn 0.4s 0.6s ease forwards;
     }
 
-    .loader-terminal .t-line { display: block; }
+    .loader-terminal .t-line {
+      display: block;
+    }
+
     .loader-terminal .t-cursor {
       display: inline-block;
       width: 7px;
       height: 12px;
-      background: rgba(220,28,28,0.9);
+      background: rgba(220, 28, 28, 0.9);
       vertical-align: middle;
       margin-left: 2px;
       animation: blink 0.9s step-end infinite;
     }
 
     @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
     }
 
     /* Progress bar at bottom */
@@ -275,7 +354,7 @@
       left: 0;
       right: 0;
       height: 3px;
-      background: rgba(255,255,255,0.06);
+      background: rgba(255, 255, 255, 0.06);
       z-index: 3;
     }
 
@@ -284,7 +363,7 @@
       background: var(--R);
       width: 0%;
       transition: width 0.25s ease;
-      box-shadow: 0 0 8px rgba(220,28,28,0.7);
+      box-shadow: 0 0 8px rgba(220, 28, 28, 0.7);
     }
 
     /* Horizontal divider line across center */
@@ -294,7 +373,7 @@
       left: 0;
       right: 0;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06) 20%, rgba(255, 255, 255, 0.06) 80%, transparent);
       transform: translateY(-50%);
       z-index: 1;
     }
@@ -323,259 +402,684 @@
       font-weight: 700;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.12);
+      color: rgba(255, 255, 255, 0.12);
       z-index: 3;
       font-family: 'Courier New', monospace;
       opacity: 0;
       animation: loaderBrandIn 0.4s 0.5s ease forwards;
     }
-    .loader-corner.tl { top: 1.5rem; left: 2rem; }
-    .loader-corner.tr { top: 1.5rem; right: 2rem; text-align: right; }
-    .loader-corner.bl { bottom: 1.5rem; left: 2rem; }
-    .loader-corner.br { bottom: 1.5rem; right: 2rem; text-align: right; }
+
+    .loader-corner.tl {
+      top: 1.5rem;
+      left: 2rem;
+    }
+
+    .loader-corner.tr {
+      top: 1.5rem;
+      right: 2rem;
+      text-align: right;
+    }
+
+    .loader-corner.bl {
+      bottom: 1.5rem;
+      left: 2rem;
+    }
+
+    .loader-corner.br {
+      bottom: 1.5rem;
+      right: 2rem;
+      text-align: right;
+    }
+
     /* ══════════════════════════════════════ */
 
     .dyn-title {
       display: inline-block;
       transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     }
-    .dyn-title:hover { transform: translate(-4px, -4px); }
+
+    .dyn-title:hover {
+      transform: translate(-4px, -4px);
+    }
 
     .outline-text {
       color: transparent;
       -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.35);
       transition: all 0.3s;
     }
-    .outline-text:hover { -webkit-text-stroke: 1.5px #fff; }
+
+    .outline-text:hover {
+      -webkit-text-stroke: 1.5px #fff;
+    }
 
     header {
-      position: fixed; top: 0; left: 0; right: 0;
-      z-index: 500; height: 52px;
-      display: flex; align-items: center; justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 500;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       padding: 0 2rem;
       border-bottom: 1.5px solid rgba(255, 255, 255, 0.08);
       background: rgba(17, 17, 17, 0.7);
-      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       transition: border-color .3s, background .3s;
     }
+
     header.scrolled {
       background: rgba(17, 17, 17, 0.95);
       border-color: rgba(255, 255, 255, 0.15);
     }
 
     .nl {
-      position: relative; color: rgba(255, 255, 255, 0.65);
-      text-decoration: none; font-weight: 700; font-size: 9.5px;
-      letter-spacing: 0.22em; text-transform: uppercase; transition: color .2s;
+      position: relative;
+      color: rgba(255, 255, 255, 0.65);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 9.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      transition: color .2s;
     }
-    .nl:hover { color: #fff; }
+
+    .nl:hover {
+      color: #fff;
+    }
+
     .nl::after {
-      content: ''; position: absolute; bottom: -2px; left: 0;
-      width: 0; height: 1.5px; background: #fff; transition: width .2s;
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: #fff;
+      transition: width .2s;
     }
-    .nl:hover::after { width: 100%; }
+
+    .nl:hover::after {
+      width: 100%;
+    }
 
     .enter-btn {
-      background: #fff; color: #111; border: none;
-      padding: 8px 18px; font-size: 9px; font-weight: 900;
-      letter-spacing: 0.22em; text-transform: uppercase;
-      text-decoration: none; display: inline-block;
+      background: #fff;
+      color: #111;
+      border: none;
+      padding: 8px 18px;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-block;
       transition: background .2s, color .2s, transform .15s;
     }
-    .enter-btn:hover { background: var(--R); color: #fff; transform: translate(-1px, -1px); }
 
-    .logo-btn { background: none; border: none; display: block; padding: 0; position: relative; padding-left: 10px; text-decoration: none; }
-    .logo-btn:focus { outline: none; }
-
-    .user-menu-container { position: relative; }
-    .user-badge {
-      background: transparent; color: #fff;
-      border: 1.5px solid rgba(255, 255, 255, 0.3);
-      padding: 6px 14px; font-size: 9px; font-weight: 900;
-      letter-spacing: 0.15em; text-transform: uppercase;
-      display: flex; align-items: center; gap: 8px;
-      transition: background 0.2s, color 0.2s; cursor: none !important;
+    .enter-btn:hover {
+      background: var(--R);
+      color: #fff;
+      transform: translate(-1px, -1px);
     }
-    .user-menu-container:hover .user-badge { background: #fff; color: #111; border-color: #fff; }
+
+    .logo-btn {
+      background: none;
+      border: none;
+      display: block;
+      padding: 0;
+      position: relative;
+      padding-left: 10px;
+      text-decoration: none;
+    }
+
+    .logo-btn:focus {
+      outline: none;
+    }
+
+    .user-menu-container {
+      position: relative;
+    }
+
+    .user-badge {
+      background: transparent;
+      color: #fff;
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      padding: 6px 14px;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s, color 0.2s;
+      cursor: none !important;
+    }
+
+    .user-menu-container:hover .user-badge {
+      background: #fff;
+      color: #111;
+      border-color: #fff;
+    }
 
     .user-dropdown {
-      position: absolute; top: 100%; right: 0;
-      background: #fff; border: 2px solid #111;
-      display: none; flex-direction: column;
-      min-width: 100%; box-shadow: 3px 3px 0 #000; z-index: 1001;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: #fff;
+      border: 2px solid #111;
+      display: none;
+      flex-direction: column;
+      min-width: 100%;
+      box-shadow: 3px 3px 0 #000;
+      z-index: 1001;
     }
-    .user-menu-container:hover .user-dropdown { display: flex; animation: fadeIn 0.18s; }
+
+    .user-menu-container:hover .user-dropdown {
+      display: flex;
+      animation: fadeIn 0.18s;
+    }
 
     .user-dropdown-btn {
-      background: transparent; color: #111; border: none;
-      padding: 12px 16px; font-size: 9px; font-weight: 700;
-      letter-spacing: 0.15em; text-transform: uppercase; text-align: left;
-      transition: background 0.2s, color 0.2s; cursor: none !important;
+      background: transparent;
+      color: #111;
+      border: none;
+      padding: 12px 16px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-align: left;
+      transition: background 0.2s, color 0.2s;
+      cursor: none !important;
     }
-    .user-dropdown-btn:hover { background: #111; color: #fff; }
+
+    .user-dropdown-btn:hover {
+      background: #111;
+      color: #fff;
+    }
 
     .nav-signin {
-      background: transparent; color: #fff;
+      background: transparent;
+      color: #fff;
       border: 1.5px solid rgba(255, 255, 255, 0.3);
-      padding: 6px 14px; font-size: 9px; font-weight: 900;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      transition: all 0.2s; cursor: none !important;
+      padding: 6px 14px;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      transition: all 0.2s;
+      cursor: none !important;
     }
-    .nav-signin:hover { background: #fff; color: #111; border-color: #fff; }
+
+    .nav-signin:hover {
+      background: #fff;
+      color: #111;
+      border-color: #fff;
+    }
 
     .size-btn {
-      background: transparent; color: #111; border: 1.5px solid #111;
-      padding: 6px 0; width: 34px; text-align: center;
-      font-size: 10px; font-weight: 700; transition: all 0.2s;
+      background: transparent;
+      color: #111;
+      border: 1.5px solid #111;
+      padding: 6px 0;
+      width: 34px;
+      text-align: center;
+      font-size: 10px;
+      font-weight: 700;
+      transition: all 0.2s;
     }
-    .size-btn.active { background: #111; color: #fff; }
-    .size-btn.soldout { opacity: 0.28; text-decoration: line-through; }
 
-    .prod-card { transition: box-shadow 0.25s, transform 0.25s; }
-    .prod-card:hover { box-shadow: 6px 6px 0 #111; transform: translate(-2px, -2px); }
+    .size-btn.active {
+      background: #111;
+      color: #fff;
+    }
 
-    .prod-cta-btn, .flip-toggle { transition: background 0.2s, color 0.2s; }
-    .prod-cta-btn:hover:not(:disabled), .flip-toggle:hover { background: #111 !important; color: #fff !important; }
+    .size-btn.soldout {
+      opacity: 0.28;
+      text-decoration: line-through;
+    }
 
-    .port-card .port-overlay { opacity: 0; transition: opacity 0.3s ease; }
-    .port-card:hover .port-overlay { opacity: 1; }
-    .port-card .port-text { transform: translateY(10px); opacity: 0; transition: transform 0.4s ease, opacity 0.4s ease; }
-    .port-card:hover .port-text { transform: translateY(0); opacity: 1; }
+    .prod-card {
+      transition: box-shadow 0.25s, transform 0.25s;
+    }
+
+    .prod-card:hover {
+      box-shadow: 6px 6px 0 #111;
+      transform: translate(-2px, -2px);
+    }
+
+    .prod-cta-btn,
+    .flip-toggle {
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .prod-cta-btn:hover:not(:disabled),
+    .flip-toggle:hover {
+      background: #111 !important;
+      color: #fff !important;
+    }
+
+    .port-card .port-overlay {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .port-card:hover .port-overlay {
+      opacity: 1;
+    }
+
+    .port-card .port-text {
+      transform: translateY(10px);
+      opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+
+    .port-card:hover .port-text {
+      transform: translateY(0);
+      opacity: 1;
+    }
 
     .flip-inner {
-      position: relative; width: 100%; height: 100%;
+      position: relative;
+      width: 100%;
+      height: 100%;
       transition: transform 0.65s cubic-bezier(0.76, 0, 0.24, 1);
       transform-style: preserve-3d;
     }
-    .flipped .flip-inner { transform: rotateY(180deg); }
-    .flip-front, .flip-back { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
-    .flip-back { transform: rotateY(180deg); }
+
+    .flipped .flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-front,
+    .flip-back {
+      position: absolute;
+      inset: 0;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+
+    .flip-back {
+      transform: rotateY(180deg);
+    }
 
     .grain-overlay {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      pointer-events: none; z-index: 9998; opacity: 0.12;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.12;
       background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E');
     }
 
-    .topo-parallax-wrap { position: absolute; top: -50vh; bottom: -50vh; left: 0; right: 0; pointer-events: none; z-index: 0; will-change: transform; }
+    .topo-parallax-wrap {
+      position: absolute;
+      top: -50vh;
+      bottom: -50vh;
+      left: 0;
+      right: 0;
+      pointer-events: none;
+      z-index: 0;
+      will-change: transform;
+    }
 
-    .reveal { opacity: 0; transform: translateY(44px); transition: opacity 0.78s cubic-bezier(0.22, 1, 0.36, 1), transform 0.78s cubic-bezier(0.22, 1, 0.36, 1); }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-    .reveal-d1 { transition-delay: 0.08s; }
-    .reveal-d2 { transition-delay: 0.2s; }
-    .reveal-d3 { transition-delay: 0.32s; }
-    .reveal-d4 { transition-delay: 0.44s; }
+    .reveal {
+      opacity: 0;
+      transform: translateY(44px);
+      transition: opacity 0.78s cubic-bezier(0.22, 1, 0.36, 1), transform 0.78s cubic-bezier(0.22, 1, 0.36, 1);
+    }
 
-    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
-    .admin-input:focus, .drop-zone.over { border-color: #111 !important; }
+    .reveal-d1 {
+      transition-delay: 0.08s;
+    }
 
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: #fff; }
-    ::-webkit-scrollbar-thumb { background: #111; }
+    .reveal-d2 {
+      transition-delay: 0.2s;
+    }
+
+    .reveal-d3 {
+      transition-delay: 0.32s;
+    }
+
+    .reveal-d4 {
+      transition-delay: 0.44s;
+    }
+
+    @keyframes ticker {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .admin-input:focus,
+    .drop-zone.over {
+      border-color: #111 !important;
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #fff;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #111;
+    }
 
     .footer-animated-bg {
       background-color: #050505;
-      background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
       background-size: 40px 40px;
       animation: gridScroll 3s linear infinite;
       position: relative;
     }
-    @keyframes gridScroll { 0% { background-position: 0px 0px } 100% { background-position: 0px 40px } }
-    .footer-animated-bg::before {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(circle at center 30%, transparent 10%, #111 80%);
-      pointer-events: none; z-index: 0;
+
+    @keyframes gridScroll {
+      0% {
+        background-position: 0px 0px
+      }
+
+      100% {
+        background-position: 0px 40px
+      }
     }
 
-    .cyber-text-container { perspective: 1000px; display: inline-block; position: relative; z-index: 2; }
+    .footer-animated-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center 30%, transparent 10%, #111 80%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .cyber-text-container {
+      perspective: 1000px;
+      display: inline-block;
+      position: relative;
+      z-index: 2;
+    }
+
     .cyber-text {
       color: transparent;
-      -webkit-text-stroke: 1.5px rgba(255,255,255,0.2);
-      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.8) 50%, transparent 100%);
-      background-size: 200% auto; -webkit-background-clip: text; background-clip: text;
-      animation: textShine 5s linear infinite; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      display: inline-block; padding-bottom: 0.15em;
+      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.2);
+      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.8) 50%, transparent 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: textShine 5s linear infinite;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: inline-block;
+      padding-bottom: 0.15em;
     }
-    @keyframes textShine { 0% { background-position: 200% center } 100% { background-position: -200% center } }
+
+    @keyframes textShine {
+      0% {
+        background-position: 200% center
+      }
+
+      100% {
+        background-position: -200% center
+      }
+    }
+
     .cyber-text:hover {
       transform: translateZ(40px) rotateX(15deg) skewX(-5deg);
-      -webkit-text-stroke: 1.5px rgba(255,255,255,0.9);
-      text-shadow: 0 0 20px rgba(255,255,255,0.5), -3px 3px 0 rgba(200,0,0,0.8), 3px -3px 0 rgba(0,200,255,0.8);
+      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9);
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5), -3px 3px 0 rgba(200, 0, 0, 0.8), 3px -3px 0 rgba(0, 200, 255, 0.8);
     }
 
-    .ghost-credit { opacity: 0.15; transition: opacity 0.4s ease; }
-    .ghost-credit:hover { opacity: 0.8; }
+    .ghost-credit {
+      opacity: 0.15;
+      transition: opacity 0.4s ease;
+    }
+
+    .ghost-credit:hover {
+      opacity: 0.8;
+    }
 
     .social-link {
-      color: rgba(255,255,255,0.3); text-decoration: none;
-      transition: color 0.3s, transform 0.3s; font-size: 10px;
-      letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.3);
+      text-decoration: none;
+      transition: color 0.3s, transform 0.3s;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
     }
-    .social-link:hover { color: #fff; transform: translateY(-2px); display: inline-block; }
+
+    .social-link:hover {
+      color: #fff;
+      transform: translateY(-2px);
+      display: inline-block;
+    }
 
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(17,17,17,0.85);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 2000; padding: 1rem;
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 17, 17, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 1rem;
     }
+
     .modal-content {
-      background: #fff; color: #111; padding: 2.5rem;
-      max-width: 600px; width: 100%; border: 3px solid #111;
-      position: relative; max-height: 85vh; overflow-y: auto;
+      background: #fff;
+      color: #111;
+      padding: 2.5rem;
+      max-width: 600px;
+      width: 100%;
+      border: 3px solid #111;
+      position: relative;
+      max-height: 85vh;
+      overflow-y: auto;
     }
+
     .modal-close {
-      position: absolute; top: 14px; right: 14px;
-      background: none; border: 1.5px solid #111;
-      width: 34px; height: 34px; font-size: 14px; font-weight: 700;
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: none;
+      border: 1.5px solid #111;
+      width: 34px;
+      height: 34px;
+      font-size: 14px;
+      font-weight: 700;
     }
 
     .carousel-btn {
-      position: absolute; top: 50%; transform: translateY(-50%);
-      background: rgba(17,17,17,0.5); color: #fff; border: none;
-      width: 32px; height: 32px; display: flex; align-items: center;
-      justify-content: center; z-index: 20; transition: background 0.2s;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(17, 17, 17, 0.5);
+      color: #fff;
+      border: none;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      transition: background 0.2s;
     }
-    .carousel-btn:hover { background: rgba(17,17,17,0.9); }
-    .carousel-btn.left { left: 10px; }
-    .carousel-btn.right { right: 10px; }
 
-    .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #111; border: 2px solid #111; }
-    .testi-card { background: #fff; padding: 2.5rem 1.8rem; transition: background 0.25s, color 0.25s, transform 0.2s; }
-    .testi-card:hover { background: #111; color: #fff; }
-    .testi-card:hover .testi-q { color: rgba(255,255,255,0.8) !important; }
-    .testi-card:hover .testi-name { color: #fff !important; }
-    .testi-card:hover .testi-res { color: rgba(255,255,255,0.5) !important; }
-    .testi-card:hover .testi-quote-mark { color: rgba(255,255,255,0.1) !important; }
+    .carousel-btn:hover {
+      background: rgba(17, 17, 17, 0.9);
+    }
+
+    .carousel-btn.left {
+      left: 10px;
+    }
+
+    .carousel-btn.right {
+      right: 10px;
+    }
+
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: #111;
+      border: 2px solid #111;
+    }
+
+    .testi-card {
+      background: #fff;
+      padding: 2.5rem 1.8rem;
+      transition: background 0.25s, color 0.25s, transform 0.2s;
+    }
+
+    .testi-card:hover {
+      background: #111;
+      color: #fff;
+    }
+
+    .testi-card:hover .testi-q {
+      color: rgba(255, 255, 255, 0.8) !important;
+    }
+
+    .testi-card:hover .testi-name {
+      color: #fff !important;
+    }
+
+    .testi-card:hover .testi-res {
+      color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    .testi-card:hover .testi-quote-mark {
+      color: rgba(255, 255, 255, 0.1) !important;
+    }
 
     @media (max-width: 768px) {
-      .desk-nav { display: none !important; }
-      .mob-ham {
-        display: flex !important; background: none;
-        border: 1.5px solid rgba(255,255,255,0.3);
-        width: 36px; height: 36px; flex-direction: column;
-        align-items: center; justify-content: center; gap: 5px; flex-shrink: 0;
+      .desk-nav {
+        display: none !important;
       }
-      .mob-ham span { display: block; width: 14px; height: 1.5px; background: #fff; flex-shrink: 0; }
-      .product-grid, .port-grid, .two-col, .testi-grid, .contact-grid, .admin-form-grid { grid-template-columns: 1fr !important; }
-      .loader-corner.bl, .loader-corner.br { display: none; }
+
+      .mob-ham {
+        display: flex !important;
+        background: none;
+        border: 1.5px solid rgba(255, 255, 255, 0.3);
+        width: 36px;
+        height: 36px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        flex-shrink: 0;
+      }
+
+      .mob-ham span {
+        display: block;
+        width: 14px;
+        height: 1.5px;
+        background: #fff;
+        flex-shrink: 0;
+      }
+
+      .product-grid,
+      .port-grid,
+      .two-col,
+      .testi-grid,
+      .contact-grid,
+      .admin-form-grid {
+        grid-template-columns: 1fr !important;
+      }
+
+      .loader-corner.bl,
+      .loader-corner.br {
+        display: none;
+      }
     }
-    @media (min-width: 769px) { .mob-ham, .mob-menu { display: none !important; } }
+
+    @media (min-width: 769px) {
+
+      .mob-ham,
+      .mob-menu {
+        display: none !important;
+      }
+    }
 
     .preorder-badge {
-      background: #d4a017; color: #fff; font-size: 8px; font-weight: 700;
-      letter-spacing: 0.2em; text-transform: uppercase; padding: 3px 8px;
+      background: #d4a017;
+      color: #fff;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 3px 8px;
       animation: preorderPulse 2.5s ease-in-out infinite;
     }
-    .preorder-estimate { font-size: 10px; font-weight: 600; color: #d4a017; letter-spacing: 0.05em; }
-    .preorder-cta { background: #d4a017 !important; color: #fff !important; border-color: #d4a017 !important; }
-    .preorder-cta:hover:not(:disabled) { background: #b8860b !important; color: #fff !important; border-color: #b8860b !important; }
-    .preorder-cart-tag {
-      background: #d4a017; color: #fff; font-size: 7px; font-weight: 900;
-      letter-spacing: 0.15em; text-transform: uppercase; padding: 2px 6px; display: inline-block;
+
+    .preorder-estimate {
+      font-size: 10px;
+      font-weight: 600;
+      color: #d4a017;
+      letter-spacing: 0.05em;
     }
-    @keyframes preorderPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+    .preorder-cta {
+      background: #d4a017 !important;
+      color: #fff !important;
+      border-color: #d4a017 !important;
+    }
+
+    .preorder-cta:hover:not(:disabled) {
+      background: #b8860b !important;
+      color: #fff !important;
+      border-color: #b8860b !important;
+    }
+
+    .preorder-cart-tag {
+      background: #d4a017;
+      color: #fff;
+      font-size: 7px;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      display: inline-block;
+    }
+
+    @keyframes preorderPulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.7;
+      }
+    }
   </style>
 </head>
 
@@ -637,7 +1141,7 @@
 
     const TopoSVG = ({ color = "#111", style = {} }) => (
       <svg viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style={{ width: "100%", height: "100%", ...style }}>
-        {["M0,250 Q150,220 300,250 T600,235 T900,248 T1200,238","M0,270 Q130,242 260,270 T520,255 T780,268 T1040,252 T1200,265","M0,230 Q170,202 340,230 T680,217 T1020,228 T1200,220","M0,290 Q110,264 220,290 T440,276 T660,290 T880,272 T1100,288 T1200,282","M0,210 Q190,183 380,210 T760,198 T1140,208 T1200,203"].map((d, i) => (
+        {["M0,250 Q150,220 300,250 T600,235 T900,248 T1200,238", "M0,270 Q130,242 260,270 T520,255 T780,268 T1040,252 T1200,265", "M0,230 Q170,202 340,230 T680,217 T1020,228 T1200,220", "M0,290 Q110,264 220,290 T440,276 T660,290 T880,272 T1100,288 T1200,282", "M0,210 Q190,183 380,210 T760,198 T1140,208 T1200,203"].map((d, i) => (
           <path key={i} d={d} fill="none" stroke={color} strokeWidth={i < 2 ? 1 : 0.65} />
         ))}
         <ellipse cx="300" cy="250" rx="240" ry="65" fill="none" stroke={color} strokeWidth="0.75" />
@@ -827,7 +1331,7 @@
               <div style={{ flex: 1, height: 1, background: "rgba(0,0,0,0.1)" }}></div>
             </div>
             <button onClick={handleGoogle} style={{ width: "100%", background: "#fff", color: "#111", border: "2px solid rgba(0,0,0,0.2)", padding: "12px", fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}>
-              <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" /><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" /><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" /><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" /></svg>
               Continue with Google
             </button>
             <div style={{ textAlign: "center", marginTop: "2rem" }}>
@@ -982,6 +1486,10 @@
       const [selectedIds, setSelectedIds] = useState(cart.map(i => i.cartItemId));
       const [otp, setOtp] = useState("");
       const [confirmationResult, setConfirmationResult] = useState(null);
+      const [promoInput, setPromoInput] = useState("");
+      const [appliedPromo, setAppliedPromo] = useState(null);
+      const [promoErr, setPromoErr] = useState("");
+      const [applyingPromo, setApplyingPromo] = useState(false);
 
       useEffect(() => {
         const newIds = cart.map(i => i.cartItemId);
@@ -1000,7 +1508,27 @@
 
       const toggleSelect = (id) => setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
       const selectedCartItems = cart.filter(item => selectedIds.includes(item.cartItemId));
-      const total = selectedCartItems.reduce((s, i) => s + (parseInt((i.price || "0").replace(/[^0-9]/g, "")) || 0), 0);
+      const subtotal = selectedCartItems.reduce((s, i) => s + (parseInt((i.price || "0").replace(/[^0-9]/g, "")) || 0), 0);
+      const discount = appliedPromo ? (parseInt(appliedPromo.discountAmount) || 0) : 0;
+      const total = Math.max(0, subtotal - discount);
+
+      const handleApplyPromo = async () => {
+        if (!promoInput.trim()) return;
+        setApplyingPromo(true); setPromoErr("");
+        try {
+          const q = window.fbQuery(window.fbCollection(window.fbDb, "promos"), window.fbWhere("code", "==", promoInput.trim().toUpperCase()));
+          const snap = await window.fbGetDocs(q);
+          if (snap.empty) { setPromoErr("Invalid promo code."); setAppliedPromo(null); }
+          else {
+            const promo = snap.docs[0].data();
+            if (promo.isActive) { setAppliedPromo(promo); setPromoInput(""); }
+            else { setPromoErr("This promo code is inactive."); setAppliedPromo(null); }
+          }
+        } catch (e) { setPromoErr("Error validating code."); setAppliedPromo(null); }
+        setApplyingPromo(false);
+      };
+
+      const removePromo = () => { setAppliedPromo(null); setPromoErr(""); };
 
       const initiateCheckout = () => {
         if (selectedCartItems.length === 0) { alert("Please select at least one item to checkout."); return; }
@@ -1050,7 +1578,7 @@
                 if (!window.fbDb) throw new Error("Firebase DB not available.");
                 const hasPreorderItems = selectedCartItems.some(i => i.isPreorderItem);
                 await window.fbAddDoc(window.fbCollection(window.fbDb, "orders"), {
-                  items: selectedCartItems, total, paymentId: rzpRes.razorpay_payment_id,
+                  items: selectedCartItems, total, subtotal, discount, appliedPromo: appliedPromo ? appliedPromo.code : null, paymentId: rzpRes.razorpay_payment_id,
                   orderId: rzpRes.razorpay_order_id, userId: user.uid, userEmail: user.email,
                   userName: shipping.name, shipping, timestamp: new Date(),
                   status: hasPreorderItems ? "Preorder — Awaiting Stock" : "Processing",
@@ -1129,8 +1657,37 @@
                     {selectedCartItems.some(i => i.isPreorderItem) && (
                       <div style={{ background: '#d4a017', color: '#fff', padding: '8px', fontSize: '9px', textAlign: 'center', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1rem' }}>⚠️ Contains preorder items — {selectedCartItems.filter(i => i.isPreorderItem).map(i => i.preorderEstimate).filter(Boolean)[0] || 'delivery date TBD'}</div>
                     )}
-                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.9rem" }}>
-                      <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>Total ({selectedCartItems.length} selected)</span>
+                    {/* PROMO CODE SECTION */}
+                    <div style={{ marginBottom: "1.2rem" }}>
+                      {!appliedPromo ? (
+                        <div style={{ display: "flex", gap: "8px" }}>
+                          <input type="text" placeholder="Promo Code" value={promoInput} onChange={e => setPromoInput(e.target.value.toUpperCase())} style={{ flex: 1, border: "2px solid rgba(0,0,0,0.14)", padding: "8px 12px", fontSize: 11, fontFamily: "Inter", textTransform: "uppercase", letterSpacing: "0.05em", background: "#f9f9f9" }} />
+                          <button onClick={handleApplyPromo} disabled={applyingPromo || !promoInput.trim()} style={{ background: "#111", color: "#fff", border: "none", padding: "0 16px", fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", opacity: (applyingPromo || !promoInput.trim()) ? 0.6 : 1, cursor: "pointer" }}>{applyingPromo ? "..." : "Apply"}</button>
+                        </div>
+                      ) : (
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#f0fdf4", border: "1px solid #bbf7d0", padding: "8px 12px" }}>
+                          <div>
+                            <span style={{ fontSize: 10, fontWeight: 800, color: "#166534", letterSpacing: "0.1em" }}>{appliedPromo.code} APPLIED</span>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: "#15803d", marginTop: 2 }}>-₹{appliedPromo.discountAmount}</div>
+                          </div>
+                          <button onClick={removePromo} style={{ background: "none", border: "1px solid rgba(22,101,52,0.3)", padding: "4px 8px", fontSize: 9, color: "#166534", fontWeight: 800, letterSpacing: "0.05em", textTransform: "uppercase", cursor: "pointer" }}>Remove</button>
+                        </div>
+                      )}
+                      {promoErr && <div style={{ color: "#c00", fontSize: 10, fontWeight: 700, marginTop: 8, letterSpacing: "0.05em" }}>{promoErr}</div>}
+                    </div>
+
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: appliedPromo ? "0.4rem" : "0.9rem" }}>
+                      <span style={{ fontSize: 10, fontWeight: 600, color: "rgba(0,0,0,0.6)", textTransform: "uppercase" }}>Subtotal ({selectedCartItems.length} items)</span>
+                      <span style={{ fontSize: 12, fontWeight: 600 }}>₹{subtotal.toLocaleString("en-IN")}</span>
+                    </div>
+                    {appliedPromo && (
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.9rem", color: "#166534" }}>
+                        <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase" }}>Discount ({appliedPromo.code})</span>
+                        <span style={{ fontSize: 12, fontWeight: 800 }}>-₹{discount.toLocaleString("en-IN")}</span>
+                      </div>
+                    )}
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.9rem", borderTop: appliedPromo ? "1px solid rgba(0,0,0,0.08)" : "none", paddingTop: appliedPromo ? "0.6rem" : 0 }}>
+                      <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase" }}>Total To Pay</span>
                       <span style={{ fontSize: 17, fontWeight: 900, letterSpacing: "-0.02em" }}>₹{total.toLocaleString("en-IN")}</span>
                     </div>
                     <button onClick={initiateCheckout} disabled={selectedCartItems.length === 0} style={{ width: "100%", background: selectedCartItems.length === 0 ? "#666" : "#111", color: "#fff", border: `3px solid ${selectedCartItems.length === 0 ? "#666" : "#111"}`, padding: "14px", fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", transition: "background 0.2s" }}>Secure Checkout →</button>
@@ -1343,6 +1900,10 @@
       const [tab, setTab] = useState("products");
       const [orders, setOrders] = useState([]);
       const [messages, setMessages] = useState([]);
+      const [promos, setPromos] = useState([]);
+      const blankPromo = { code: "", discountAmount: 0, isActive: true };
+      const [promoForm, setPromoForm] = useState(blankPromo);
+      const [promoEditId, setPromoEditId] = useState(null);
       const [saving, setSaving] = useState(false);
       const [orderFilter, setOrderFilter] = useState("All");
       const blankProduct = { name: "", cost: "", price: "₹1", compareAtPrice: "₹1,100", tag: "", description: "", category: "T-Shirts", frontImage: null, backImage: null, hasBack: false, sizes: "S, M, L, XL", sizeStock: { S: 10, M: 10, L: 10, XL: 10 }, preorderEnabled: false, preorderLabel: "Pre-order", preorderEstimate: "" };
@@ -1379,6 +1940,11 @@
           if (tab === "messages") {
             window.fbGetDocs(window.fbQuery(window.fbCollection(window.fbDb, "messages"), window.fbOrderBy("timestamp", "desc")))
               .then(snap => { const m = []; snap.forEach(d => m.push({ id: d.id, ...d.data() })); setMessages(m); })
+              .catch(e => console.error(e));
+          }
+          if (tab === "promos") {
+            window.fbGetDocs(window.fbQuery(window.fbCollection(window.fbDb, "promos"), window.fbOrderBy("code")))
+              .then(snap => { const p = []; snap.forEach(d => p.push({ id: d.id, ...d.data() })); setPromos(p); })
               .catch(e => console.error(e));
           }
         }
@@ -1456,6 +2022,31 @@
         } catch (err) { alert("Delete failed: " + err.message); }
       };
 
+      const savePromo = async () => {
+        if (!promoForm.code || !promoForm.discountAmount) { alert("Code and discount required."); return; }
+        setSaving(true);
+        const codeUpper = promoForm.code.toUpperCase().trim();
+        const newId = promoEditId === "new" ? "promo-" + Date.now() : promoEditId;
+        const updated = { ...promoForm, code: codeUpper, id: newId };
+        try {
+          if (!window.fbDb || !window.fbSetDoc) throw new Error("Firebase not connected.");
+          await withTimeout(window.fbSetDoc(window.fbDoc(window.fbDb, "promos", newId), updated, { merge: true }));
+          setPromos(promoEditId === "new" ? [...promos, updated] : promos.map(p => p.id === promoEditId ? updated : p));
+          setPromoEditId(null); setPromoForm(blankPromo);
+          alert("✓ Promo code saved!");
+        } catch (err) { alert("Save failed:\n" + err.message); }
+        setSaving(false);
+      };
+
+      const removePromo = async (id) => {
+        if (!window.confirm("Delete this promo code?")) return;
+        try {
+          await window.fbDeleteDoc(window.fbDoc(window.fbDb, "promos", id));
+          setPromos(promos.filter(p => p.id !== id));
+          if (promoEditId === id) { setPromoEditId(null); setPromoForm(blankPromo); }
+        } catch (err) { alert("Delete failed: " + err.message); }
+      };
+
       const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", background: "#fff", padding: "10px 12px", fontSize: 13, fontFamily: "Inter" };
 
       if (!authed) return (
@@ -1483,8 +2074,8 @@
               <span style={{ fontFamily: "Inter", fontWeight: 700, fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(255,255,255,0.5)" }} className="desk-nav">/ Admin</span>
             </div>
             <div style={{ display: "flex", gap: "0.6rem" }}>
-              {["products", "portfolio", "orders", "messages"].map(t => (
-                <button key={t} onClick={() => { setTab(t); if (t === "products") setEditId(null); if (t === "portfolio") setPortEditId(null); }} style={{ background: tab === t ? "#fff" : "transparent", color: tab === t ? "#111" : "#fff", border: "2px solid #fff", padding: "7px 16px", fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase" }}>{t.toUpperCase()}</button>
+              {["products", "portfolio", "promos", "orders", "messages"].map(t => (
+                <button key={t} onClick={() => { setTab(t); if (t === "products") setEditId(null); if (t === "portfolio") setPortEditId(null); if (t === "promos") setPromoEditId(null); }} style={{ background: tab === t ? "#fff" : "transparent", color: tab === t ? "#111" : "#fff", border: "2px solid #fff", padding: "7px 16px", fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase" }}>{t.toUpperCase()}</button>
               ))}
               <button onClick={onClose} style={{ background: "transparent", color: "rgba(255,255,255,0.5)", border: "1.5px solid rgba(255,255,255,0.18)", width: 38, height: 38, fontSize: 15, fontWeight: 700 }}>✕</button>
             </div>
@@ -1675,6 +2266,43 @@
                     </div>
                   );
                 })}
+              </div>
+            )}
+            {tab === "promos" && (
+              <div style={{ display: "grid", gridTemplateColumns: promoEditId ? "1fr 1.4fr" : "1fr", gap: "2rem" }} className="admin-form-grid">
+                <div>
+                  <button onClick={() => { setPromoForm(blankPromo); setPromoEditId("new"); }} style={{ width: "100%", padding: "15px", background: "#111", color: "#fff", fontWeight: 900, marginBottom: "1rem", border: "none", fontSize: 11, letterSpacing: "0.1em" }}>+ ADD PROMO CODE</button>
+                  {promos.length === 0 && <p style={{ color: "rgba(0,0,0,0.4)", fontSize: 12 }}>No promo codes found.</p>}
+                  {promos.map(p => (
+                    <div key={p.id} onClick={() => { setPromoForm(p); setPromoEditId(p.id); }} style={{ display: "flex", alignItems: "center", gap: "0.9rem", border: "2px solid #111", padding: "1rem 1.2rem", background: promoEditId === p.id ? "#111" : "#fff", color: promoEditId === p.id ? "#fff" : "#111", marginBottom: "8px", cursor: "pointer" }}>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontWeight: 900, fontSize: 16, letterSpacing: "0.05em", textTransform: "uppercase" }}>{p.code}</div>
+                        <div style={{ fontSize: 12, marginTop: 4, fontWeight: 600, color: promoEditId === p.id ? "rgba(255,255,255,0.7)" : "#c00" }}>-₹{p.discountAmount}</div>
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "flex-end" }}>
+                        <span style={{ fontSize: 9, fontWeight: 900, letterSpacing: "0.1em", textTransform: "uppercase", padding: "3px 6px", border: `2px solid ${p.isActive ? '#008000' : '#c00'}`, color: p.isActive ? '#008000' : '#c00', background: promoEditId === p.id ? "#fff" : "transparent" }}>{p.isActive ? "ACTIVE" : "INACTIVE"}</span>
+                        <button onClick={e => { e.stopPropagation(); removePromo(p.id); }} style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", padding: "3px 6px", background: "transparent", color: "rgba(180,0,0,0.55)", border: "1.5px solid rgba(180,0,0,0.18)" }}>Delete</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {promoEditId && (
+                  <div style={{ padding: "2rem", background: "#fafafa", border: "2px solid #111" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2rem" }}>
+                      <h3 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 24 }}>{promoEditId === "new" ? "New Promo Code" : "Edit Promo Code"}</h3>
+                      <button onClick={() => { setPromoEditId(null); setPromoForm(blankPromo); }} style={{ background: "none", border: "2px solid #111", width: 34, height: 34, fontSize: 13, fontWeight: 900 }}>✕</button>
+                    </div>
+                    <div style={{ display: "grid", gap: "1.5rem" }}>
+                      <div><label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(0,0,0,0.5)", display: "block", marginBottom: 8 }}>Promo Code *</label><input className="admin-input" value={promoForm.code} onChange={e => setPromoForm({ ...promoForm, code: e.target.value.toUpperCase() })} placeholder="e.g. EARLYBIRD" style={{ ...iSt, fontSize: 16, fontWeight: 700, letterSpacing: "0.05em" }} /></div>
+                      <div><label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(0,0,0,0.5)", display: "block", marginBottom: 8 }}>Discount Amount (₹) *</label><input type="number" className="admin-input" value={promoForm.discountAmount} onChange={e => setPromoForm({ ...promoForm, discountAmount: parseInt(e.target.value) || 0 })} placeholder="500" style={{ ...iSt, fontSize: 16, fontWeight: 700 }} /></div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "0.5rem" }}>
+                        <input type="checkbox" checked={promoForm.isActive} onChange={e => setPromoForm({ ...promoForm, isActive: e.target.checked })} style={{ width: 20, height: 20, cursor: "pointer" }} id="promoActive" />
+                        <label htmlFor="promoActive" style={{ fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", cursor: "pointer" }}>Promo is Active</label>
+                      </div>
+                    </div>
+                    <button type="button" onClick={savePromo} disabled={saving} style={{ width: "100%", background: saving ? "#666" : "#111", color: "#fff", border: `3px solid ${saving ? "#666" : "#111"}`, padding: "16px", fontSize: 12, fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", marginTop: "2.5rem" }}>{saving ? "Saving…" : "Save Promo Code"}</button>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -1953,11 +2581,11 @@
       const minTimeRef = useRef(false);
 
       const BOOT_SEQUENCE = [
-        { p: 15,  t: 0,    s: "INITIALIZING SYSTEM..." },
-        { p: 35,  t: 420,  s: "CONNECTING TO DATABASE..." },
-        { p: 55,  t: 820,  s: "FETCHING COLLECTION 001..." },
-        { p: 75,  t: 1300, s: "AUTHENTICATING SESSION..." },
-        { p: 90,  t: 1700, s: "LOADING ASSETS..." },
+        { p: 15, t: 0, s: "INITIALIZING SYSTEM..." },
+        { p: 35, t: 420, s: "CONNECTING TO DATABASE..." },
+        { p: 55, t: 820, s: "FETCHING COLLECTION 001..." },
+        { p: 75, t: 1300, s: "AUTHENTICATING SESSION..." },
+        { p: 90, t: 1700, s: "LOADING ASSETS..." },
         { p: 100, t: 2100, s: "READY." },
       ];
 
@@ -2012,7 +2640,7 @@
         return () => window.removeEventListener("keydown", handler);
       }, []);
 
-      useEffect(() => { try { localStorage.setItem('splotch_cart_v1', JSON.stringify(cart)); } catch {} }, [cart]);
+      useEffect(() => { try { localStorage.setItem('splotch_cart_v1', JSON.stringify(cart)); } catch { } }, [cart]);
 
       useEffect(() => {
         const initData = async () => {
@@ -2024,7 +2652,7 @@
           try {
             const snap = await window.fbGetDocs(window.fbCollection(window.fbDb, "products"));
             if (snap.empty) {
-              DEFAULT_PRODUCTS.forEach(p => window.fbSetDoc(window.fbDoc(window.fbDb, "products", p.id), p).catch(() => {}));
+              DEFAULT_PRODUCTS.forEach(p => window.fbSetDoc(window.fbDoc(window.fbDb, "products", p.id), p).catch(() => { }));
               setProducts(DEFAULT_PRODUCTS);
             } else {
               const fetched = [];
@@ -2033,7 +2661,7 @@
             }
             const portSnap = await window.fbGetDocs(window.fbCollection(window.fbDb, "portfolio"));
             if (portSnap.empty) {
-              DEFAULT_PORTFOLIO.forEach(p => window.fbSetDoc(window.fbDoc(window.fbDb, "portfolio", p.id), p).catch(() => {}));
+              DEFAULT_PORTFOLIO.forEach(p => window.fbSetDoc(window.fbDoc(window.fbDb, "portfolio", p.id), p).catch(() => { }));
               setPortfolio(DEFAULT_PORTFOLIO);
             } else {
               const fetchedPort = [];
@@ -2164,4 +2792,5 @@
     })();
   </script>
 </body>
+
 </html>
