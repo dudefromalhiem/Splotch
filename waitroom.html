@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Splotch | The Archive</title>
   <link rel="icon" type="image/png" href="favicon.png">
-  <meta name="description" content="Welcome to the official Splotch website. Splotch is an independent streetwear clothing brand engineered in Bangalore, India. Created in 2026 by 3 guys. Shop premium oversized t-shirts, limited drops, and contemporary fashion.">
-  <meta name="keywords" content="splotch, splotch website, splotch clothing, streetwear, clothes in india, streetwear india, oversized t-shirts, contemporary fashion, bangalore clothing brand">
+  <meta name="description"
+    content="Welcome to the official Splotch website. Splotch is an independent streetwear clothing brand engineered in Bangalore, India. Created in 2026 by 3 guys. Shop premium oversized t-shirts, limited drops, and contemporary fashion.">
+  <meta name="keywords"
+    content="splotch, splotch website, splotch clothing, streetwear, clothes in india, streetwear india, oversized t-shirts, contemporary fashion, bangalore clothing brand">
   <meta name="robots" content="index, follow">
   <meta name="author" content="Splotch">
   <style>
@@ -23,30 +26,39 @@
       padding: 0;
       box-sizing: border-box;
     }
-    
-    body, html { 
+
+    body,
+    html {
       width: 100vw;
       height: 100vh;
-      overflow: hidden; 
-      background: var(--ash); 
+      overflow: hidden;
+      background: var(--ash);
       font-family: 'Inter', sans-serif;
-      touch-action: none; /* Prevents mobile pull-to-refresh while dragging 3D */
+      touch-action: none;
+      /* Prevents mobile pull-to-refresh while dragging 3D */
     }
 
     /* DESKTOP: Hide default cursor, show liquid canvas */
     @media (pointer: fine) {
-      body, html, * { 
-        cursor: none !important; 
+
+      body,
+      html,
+      * {
+        cursor: none !important;
       }
     }
 
     /* MOBILE/TOUCH: Restore default touch behavior, hide liquid canvas */
     @media (pointer: coarse) {
-      body, html, * { 
-        cursor: default !important; 
+
+      body,
+      html,
+      * {
+        cursor: default !important;
       }
-      #liquid-cursor-canvas { 
-        display: none !important; 
+
+      #liquid-cursor-canvas {
+        display: none !important;
       }
     }
 
@@ -72,13 +84,13 @@
       perspective: 1000px;
       overflow: hidden;
     }
-    
+
     #grid-plane {
       position: absolute;
       inset: -50%;
-      background-image: 
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
       background-size: 40px 40px;
       transform-origin: center center;
       will-change: transform;
@@ -94,23 +106,29 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 65vmin; /* Takes up > 50% of the screen */
+      width: 65vmin;
+      /* Takes up > 50% of the screen */
       height: auto;
-      opacity: 0.04; /* Very subtle and ominous */
-      filter: invert(1); /* Turns it white to contrast ash background */
+      opacity: 0.04;
+      /* Very subtle and ominous */
+      filter: invert(1);
+      /* Turns it white to contrast ash background */
       z-index: 1;
       pointer-events: none;
     }
 
     /* ==========================================
-       5. CYBERSIGILISM ART CANVAS
+       5. CYBERSIGILISM -> BACKGROUND PATHS SVG
        ========================================== */
-    #sigil-canvas {
+    #background-paths-container {
       position: absolute;
       inset: 0;
-      z-index: 2; /* Sits above logo, below 3D text */
+      z-index: 2;
+      /* Sits above logo, below 3D text */
       pointer-events: none;
+      overflow: hidden;
     }
+
 
     /* ==========================================
        6. THREE.JS & LIQUID CURSOR
@@ -166,10 +184,11 @@
     }
   </style>
 </head>
+
 <body>
 
   <div class="grain"></div>
-  
+
   <div id="grid-wrapper">
     <div id="grid-plane"></div>
   </div>
@@ -188,7 +207,7 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  
+
   <script>
     // =========================================================================
     // 1. GLOBAL MOUSE STATE & DRAG LOGIC
@@ -196,19 +215,19 @@
     let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     let isClicking = false;
     let isDragging = false;
-    
+
     let lastDrag = { x: 0, y: 0 };
     let targetDragRot = { x: -0.15, y: 0 };
-    let currentDragRot = { x: -0.15, y: 0 }; 
+    let currentDragRot = { x: -0.15, y: 0 };
     let autoSpinY = 0; // The continuous 360 spin variable
-    
+
     window.addEventListener('mousemove', (e) => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
-      
+
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2;
-      
+
       // Calculate Parallax for Grid and UI
       const rotX = (mouse.y - centerY) * -0.015;
       const rotY = (mouse.x - centerX) * 0.015;
@@ -221,10 +240,10 @@
         let dy = e.clientY - lastDrag.y;
         targetDragRot.y += dx * 0.008;
         targetDragRot.x += dy * 0.008;
-        
+
         // Limit vertical tilt so it doesn't flip upside down completely
         targetDragRot.x = Math.max(-0.6, Math.min(0.6, targetDragRot.x));
-        
+
         lastDrag.x = e.clientX;
         lastDrag.y = e.clientY;
       }
@@ -252,25 +271,25 @@
       lastDrag.y = touch.clientY;
       mouse.x = touch.clientX;
       mouse.y = touch.clientY;
-    }, {passive: false});
+    }, { passive: false });
 
     window.addEventListener('touchmove', (e) => {
       let touch = e.touches[0];
       mouse.x = touch.clientX;
       mouse.y = touch.clientY;
-      
+
       if (isDragging) {
         let dx = touch.clientX - lastDrag.x;
         let dy = touch.clientY - lastDrag.y;
         targetDragRot.y += dx * 0.012;
         targetDragRot.x += dy * 0.012;
-        
+
         targetDragRot.x = Math.max(-0.6, Math.min(0.6, targetDragRot.x));
-        
+
         lastDrag.x = touch.clientX;
         lastDrag.y = touch.clientY;
       }
-    }, {passive: false});
+    }, { passive: false });
 
     window.addEventListener('touchend', () => {
       isClicking = false;
@@ -278,133 +297,108 @@
     });
 
     // =========================================================================
-    // 2. PROCEDURAL CYBERSIGILISM ARTWORK
+    // 2. FLOATING BACKGROUND PATHS
     // =========================================================================
-    const sigilCanvas = document.getElementById('sigil-canvas');
-    const sCtx = sigilCanvas.getContext('2d');
-    let sigilTime = 0;
+    function initBackgroundPaths() {
+      const container = document.getElementById('background-paths-container');
+      if (!container) return;
 
-    function resizeSigil() {
-      sigilCanvas.width = window.innerWidth;
-      sigilCanvas.height = window.innerHeight;
-    }
-    resizeSigil();
-    window.addEventListener('resize', resizeSigil);
+      const svgNS = "http://www.w3.org/2000/svg";
 
-    function drawCybersigil() {
-      sCtx.clearRect(0, 0, sigilCanvas.width, sigilCanvas.height);
-      const cx = sigilCanvas.width / 2;
-      const cy = sigilCanvas.height / 2;
+      function renderPaths(position) {
+        const svg = document.createElementNS(svgNS, "svg");
+        svg.style.width = "100%";
+        svg.style.height = "100%";
+        svg.style.position = "absolute";
+        svg.style.inset = "0";
+        svg.style.color = "#DC1C1C"; // Match cybersigilism color
+        svg.setAttribute("viewBox", "0 0 696 316");
+        svg.setAttribute("fill", "none");
 
-      // Make the entire sigil pulse dynamically
-      const pulse = Math.sin(sigilTime * 2) * 0.3 + 0.7; // Fluctuates opacity
+        for (let i = 0; i < 36; i++) {
+          const path = document.createElementNS(svgNS, "path");
+          const d = `M-${380 - i * 5 * position} -${189 + i * 6}C-${380 - i * 5 * position} -${189 + i * 6} -${312 - i * 5 * position} ${216 - i * 6} ${152 - i * 5 * position} ${343 - i * 6}C${616 - i * 5 * position} ${470 - i * 6} ${684 - i * 5 * position} ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 6}`;
 
-      sCtx.shadowColor = '#DC1C1C';
-      sCtx.shadowBlur = 18;
-      sCtx.strokeStyle = `rgba(220, 28, 28, ${0.4 * pulse})`;
-      sCtx.lineWidth = 1.5;
-      
-      // Draw 6 symmetrical sharp thorny branches
-      for (let i = 0; i < 6; i++) {
-        sCtx.save();
-        sCtx.translate(cx, cy);
-        sCtx.rotate((Math.PI * 2 / 6) * i + Math.sin(sigilTime * 0.5) * 0.1); // Slow subtle rotation
+          path.setAttribute("d", d);
+          path.setAttribute("stroke", "currentColor");
+          path.setAttribute("stroke-width", 0.5 + i * 0.03);
+          path.setAttribute("stroke-opacity", (0.1 + i * 0.03));
 
-        // Main primary razor stroke
-        sCtx.beginPath();
-        sCtx.moveTo(0, 0);
-        sCtx.lineTo(-10, -50);
-        sCtx.lineTo(-5, -80);
-        sCtx.lineTo(-30, -120);
-        sCtx.lineTo(-15, -170);
-        sCtx.lineTo(-45, -250);
-        sCtx.stroke();
+          svg.appendChild(path);
 
-        // Inner intersecting branches
-        sCtx.beginPath();
-        sCtx.moveTo(-5, -80);
-        sCtx.lineTo(25, -110);
-        sCtx.lineTo(10, -150);
-        sCtx.stroke();
+          // Animate using Web Animations API
+          requestAnimationFrame(() => {
+            const length = path.getTotalLength();
+            path.style.strokeDasharray = `${length} ${length}`;
+            path.style.strokeDashoffset = `${length}`;
 
-        // Mirror the exact stroke to create perfect bilateral symmetry per branch
-        sCtx.scale(-1, 1);
-        sCtx.beginPath();
-        sCtx.moveTo(0, 0);
-        sCtx.lineTo(-10, -50);
-        sCtx.lineTo(-5, -80);
-        sCtx.lineTo(-30, -120);
-        sCtx.lineTo(-15, -170);
-        sCtx.lineTo(-45, -250);
-        sCtx.stroke();
-        
-        sCtx.beginPath();
-        sCtx.moveTo(-5, -80);
-        sCtx.lineTo(25, -110);
-        sCtx.lineTo(10, -150);
-        sCtx.stroke();
+            path.animate([
+              { strokeDashoffset: length * 0.7, strokeOpacity: 0.3 },
+              { strokeDashoffset: 0, strokeOpacity: 0.6, offset: 0.5 },
+              { strokeDashoffset: length * 0.7, strokeOpacity: 0.3 }
+            ], {
+              duration: (20 + Math.random() * 10) * 1000,
+              iterations: Infinity,
+              easing: "linear"
+            });
+          });
+        }
 
-        sCtx.restore();
+        container.appendChild(svg);
       }
 
-      // Center glowing aura ring
-      sCtx.beginPath();
-      sCtx.arc(cx, cy, 30 + Math.sin(sigilTime * 4) * 5, 0, Math.PI * 2);
-      sCtx.strokeStyle = `rgba(220, 28, 28, ${0.8 * pulse})`;
-      sCtx.stroke();
-
-      sigilTime += 0.01;
-      requestAnimationFrame(drawCybersigil);
+      renderPaths(1);
+      renderPaths(-1);
     }
-    drawCybersigil();
+    initBackgroundPaths();
 
     // =========================================================================
     // 3. LIQUID PAINT CURSOR PHYSICS ENGINE
     // =========================================================================
     const cursorCanvas = document.getElementById('liquid-cursor-canvas');
     const ctx = cursorCanvas.getContext('2d');
-    
+
     function resizeCursorCanvas() {
       cursorCanvas.width = window.innerWidth;
       cursorCanvas.height = window.innerHeight;
     }
     resizeCursorCanvas();
-    
+
     let drop = { x: mouse.x, y: mouse.y };
-    const BASE_R = 8; 
+    const BASE_R = 8;
     let currentR = BASE_R;
 
     function animateLiquidCursor() {
       ctx.clearRect(0, 0, cursorCanvas.width, cursorCanvas.height);
 
       let targetR = isClicking ? BASE_R * 0.35 : BASE_R;
-      currentR += (targetR - currentR) * 0.4; 
+      currentR += (targetR - currentR) * 0.4;
 
       let dx = mouse.x - drop.x;
       let dy = mouse.y - drop.y;
       drop.x += dx * 0.35;
       drop.y += dy * 0.35;
-      
+
       let speed = Math.sqrt(dx * dx + dy * dy);
       let angle = Math.atan2(dy, dx);
-      
-      let stretch = isClicking ? 0 : Math.min(speed * 0.40, 26); 
+
+      let stretch = isClicking ? 0 : Math.min(speed * 0.40, 26);
       let majorR = currentR + stretch * 0.5;
-      let minorR = Math.max(currentR - speed * 0.10, 3); 
+      let minorR = Math.max(currentR - speed * 0.10, 3);
 
       ctx.save();
       ctx.translate(drop.x, drop.y);
       ctx.rotate(angle);
-      
+
       ctx.beginPath();
       ctx.ellipse(-(stretch * 0.5), 0, majorR, minorR, 0, 0, Math.PI * 2);
-      ctx.fillStyle = isClicking ? '#DC1C1C' : '#ffffff'; 
+      ctx.fillStyle = isClicking ? '#DC1C1C' : '#ffffff';
       ctx.fill();
-      
+
       ctx.restore();
       requestAnimationFrame(animateLiquidCursor);
     }
-    
+
     if (window.matchMedia("(pointer: fine)").matches) {
       animateLiquidCursor();
     }
@@ -415,7 +409,7 @@
     const container = document.getElementById('three-canvas');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);
-    
+
     // Scale for Mobile vs Desktop
     function updateCameraZ() {
       camera.position.z = window.innerWidth < 768 ? 140 : 70;
@@ -429,25 +423,25 @@
 
     // --- Procedural Studio Light Map (For Realistic Chrome Reflections) ---
     const envCanvas = document.createElement('canvas');
-    envCanvas.width = 1024; 
+    envCanvas.width = 1024;
     envCanvas.height = 512;
     const envCtx = envCanvas.getContext('2d');
-    envCtx.fillStyle = '#0a0a0a'; 
+    envCtx.fillStyle = '#0a0a0a';
     envCtx.fillRect(0, 0, 1024, 512);
-    
+
     // Paint Fake "Studio Softboxes"
     envCtx.fillStyle = '#ffffff';
-    envCtx.fillRect(100, 50, 400, 80);  
-    envCtx.fillRect(800, 150, 50, 300); 
-    envCtx.fillRect(200, 450, 500, 20); 
-    envCtx.filter = 'blur(12px)'; 
-    
+    envCtx.fillRect(100, 50, 400, 80);
+    envCtx.fillRect(800, 150, 50, 300);
+    envCtx.fillRect(200, 450, 500, 20);
+    envCtx.filter = 'blur(12px)';
+
     const envTexture = new THREE.CanvasTexture(envCanvas);
     envTexture.mapping = THREE.EquirectangularReflectionMapping;
 
     // --- Physical Lighting ---
     scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-    
+
     // Frontal Studio Highlight
     const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
     dirLight.position.set(10, 20, 30);
@@ -463,26 +457,26 @@
     let textMesh;
     const loader = new THREE.FontLoader();
     loader.load('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/fonts/helvetiker_bold.typeface.json', function (font) {
-      
+
       const geo = new THREE.TextGeometry('SPLOTCH', {
-        font: font, 
-        size: 9, 
-        height: 3.5, 
+        font: font,
+        size: 9,
+        height: 3.5,
         curveSegments: 8,
-        bevelEnabled: true, 
-        bevelThickness: 0.2, 
-        bevelSize: 0.15, 
+        bevelEnabled: true,
+        bevelThickness: 0.2,
+        bevelSize: 0.15,
         bevelSegments: 5
       });
-      geo.center(); 
+      geo.center();
 
       // Flawless Chrome Material
       const chromeMat = new THREE.MeshStandardMaterial({
-        color: 0xffffff, 
-        metalness: 1.0,  
+        color: 0xffffff,
+        metalness: 1.0,
         roughness: 0.05, // Highly polished surface
-        envMap: envTexture, 
-        envMapIntensity: 2.5      
+        envMap: envTexture,
+        envMapIntensity: 2.5
       });
 
       textMesh = new THREE.Mesh(geo, chromeMat);
@@ -495,16 +489,16 @@
 
       if (textMesh) {
         autoSpinY += 0.005; // Independent continuous 360 rotation
-        
+
         // Smoothly ease the drag inputs
         currentDragRot.y += (targetDragRot.y - currentDragRot.y) * 0.1;
         currentDragRot.x += (targetDragRot.x - currentDragRot.x) * 0.1;
-        
+
         // Final Rotation = Auto Spin + User Drag Influence
         textMesh.rotation.y = autoSpinY + currentDragRot.y;
         textMesh.rotation.x = currentDragRot.x;
       }
-      
+
       renderer.render(scene, camera);
     }
     animate3D();
@@ -518,4 +512,5 @@
     });
   </script>
 </body>
+
 </html>
