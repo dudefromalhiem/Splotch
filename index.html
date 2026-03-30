@@ -56,7 +56,7 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="apple-touch-icon" href="favicon.png">
 
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Abril+Fatface&display=swap" rel="stylesheet">
 
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -91,8 +91,8 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Inter','sans-serif'],
-            serif: ['Playfair Display','serif']
+            sans: ['Space Mono','monospace'],
+            serif: ['Space Mono','monospace']
           }
         }
       }
@@ -119,7 +119,7 @@
     body {
       background: var(--B);
       color: var(--W);
-      font-family: 'Inter', sans-serif;
+      font-family: 'Space Mono', monospace;
       overflow-x: hidden;
     }
     
@@ -284,8 +284,8 @@
     }
     
     .hero-h1 {
-      font-family: 'Inter', sans-serif;
-      font-weight: 900;
+      font-family: 'Abril Fatface', display;
+      font-weight: 400;
       font-size: clamp(70px, 16vw, 240px);
       color: #fff;
       text-transform: uppercase;
@@ -567,7 +567,7 @@
     }
     
     .strip-num {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Space Mono', monospace;
       font-style: italic;
       font-size: clamp(36px,5vw,64px);
       font-weight: 700;
@@ -593,7 +593,7 @@
     }
     
     .manifesto-q {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Space Mono', monospace;
       font-style: italic;
       font-size: clamp(32px, 5.5vw, 72px);
       font-weight: 700;
@@ -623,7 +623,7 @@
     
     .scroll-band-item {
       font-size: clamp(24px, 5vw, 56px);
-      font-family: 'Playfair Display', serif;
+      font-family: 'Space Mono', monospace;
       font-style: italic;
       font-weight: 700;
       color: transparent;
@@ -1126,7 +1126,7 @@
               <div key={i} className={`strip-item reveal reveal-d${i + 1}`} style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
                   <span className="strip-num">{s.num}</span>
-                  <span style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontSize: 22, color: 'rgba(255, 255, 255, 0.25)', fontWeight: 700 }}>{s.unit}</span>
+                  <span style={{ fontFamily: 'Space Mono', fontStyle: 'italic', fontSize: 22, color: 'rgba(255, 255, 255, 0.25)', fontWeight: 700 }}>{s.unit}</span>
                 </div>
                 <span className="strip-label">{s.label}</span>
               </div>
@@ -1249,7 +1249,7 @@
           <canvas ref={ref} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }} />
           <div style={{ position: 'relative', zIndex: 1 }}>
             <span className="section-label reveal" style={{ margin: '0 auto 2rem', display: 'table' }}>Enter The Store</span>
-            <h2 className="dyn-title chrome-effect reveal reveal-d1" style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(40px,8vw,110px)', letterSpacing: '-0.03em', lineHeight: 1.1, marginBottom: '3rem' }}>
+            <h2 className="dyn-title chrome-effect reveal reveal-d1" style={{ fontFamily: 'Space Mono', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(40px,8vw,110px)', letterSpacing: '-0.03em', lineHeight: 1.1, marginBottom: '3rem' }}>
               Ready to upgrade<br />your wardrobe?
             </h2>
             <br />
@@ -1292,7 +1292,7 @@
     }
 
     function MobMenu({ open, setOpen }) {
-      const btnSt = { background: 'none', border: 'none', textAlign: 'left', fontFamily: 'Inter', fontWeight: 900, fontSize: 'clamp(40px,11vw,64px)', letterSpacing: '-0.04em', textTransform: 'uppercase', color: '#fff', lineHeight: 1.1, borderBottom: '1px solid rgba(255,255,255,0.07)', padding: '0.6rem 0', textDecoration: 'none', display: 'block', width: '100%' };
+      const btnSt = { background: 'none', border: 'none', textAlign: 'left', fontFamily: 'Space Mono', fontWeight: 900, fontSize: 'clamp(40px,11vw,64px)', letterSpacing: '-0.04em', textTransform: 'uppercase', color: '#fff', lineHeight: 1.1, borderBottom: '1px solid rgba(255,255,255,0.07)', padding: '0.6rem 0', textDecoration: 'none', display: 'block', width: '100%' };
       
       return (
         <div className="mob-menu" style={{ position: 'fixed', inset: 0, zIndex: 600, background: '#0a0a0a', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '3rem 2rem', transform: open ? 'translateX(0)' : 'translateX(100%)', transition: 'transform .4s cubic-bezier(.76,0,.24,1)' }}>
@@ -1313,7 +1313,7 @@
         <div className="modal-overlay" onClick={onClose} style={{ animation: "fadeIn .2s ease" }}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={onClose}>✕</button>
-            <h2 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 28, marginBottom: "1rem" }}>Terms & Conditions</h2>
+            <h2 style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 28, marginBottom: "1rem" }}>Terms & Conditions</h2>
             <div style={{ fontSize: 12, lineHeight: 1.8, color: "rgba(0,0,0,0.7)" }}>
               <p style={{ marginBottom: "1rem" }}><strong>1. General Conditions</strong><br/>By visiting our site and/or purchasing something from us, you engage in our "Service" and agree to be bound by the following terms and conditions. Splotch reserves the right to refuse service to anyone for any reason at any time.</p>
               <p style={{ marginBottom: "1rem" }}><strong>2. Products & Exclusivity</strong><br/>All Splotch runs are strictly limited. We do not mass produce. Once an item is sold out, it is permanently archived.</p>
@@ -1348,13 +1348,13 @@
         } finally { setLoading(false); }
       };
       
-      const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", padding: "12px", fontSize: 12, fontFamily: "Inter", marginBottom: "1rem" };
+      const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", padding: "12px", fontSize: 12, fontFamily: "Space Mono", marginBottom: "1rem" };
       
       return (
         <div className="modal-overlay" onClick={onClose}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={onClose}>✕</button>
-            <h2 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 28, marginBottom: "0.5rem" }}>Request Return.</h2>
+            <h2 style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 28, marginBottom: "0.5rem" }}>Request Return.</h2>
             <p style={{ fontSize: 12, color: "rgba(0,0,0,0.5)", marginBottom: "2rem" }}>Returns are only accepted within 7 days of delivery.</p>
             {errMsg && <div style={{ background: "#c00", color: "#fff", padding: "10px", fontSize: 10, fontWeight: 700, marginBottom: "1.5rem" }}>{errMsg}</div>}
             {sent ? (
@@ -1382,7 +1382,7 @@
       const [returnOpen, setReturnOpen] = useState(false);
       
       useEffect(() => {
-        console.log("%c[SYSTEM_ROOT] ACCESS GRANTED\n%c // ENGINEERED BY DUDEFROMALHIEM \n%c WELCOME TO THE NEXT FRONTIER OF STREETWEAR. Z E R O  C O M P R O M I S E.","color: #c00; font-size: 20px; font-weight: 900;","color: #fff; font-size: 13px; font-weight: 700; background: #111; padding: 4px;","color: #666; font-size: 11px; font-style: italic;");
+        console.log("%c[SYSTEM_ROOT] ACCESS GRANTED\n%c // ENGINEERED BY SPLOTCH \n%c WELCOME TO THE NEXT FRONTIER OF STREETWEAR. Z E R O  C O M P R O M I S E.","color: #c00; font-size: 20px; font-weight: 900;","color: #fff; font-size: 13px; font-weight: 700; background: #111; padding: 4px;","color: #666; font-size: 11px; font-style: italic;");
       }, []);
 
       useEffect(() => {
@@ -1413,8 +1413,8 @@
               titleComponent={
                 <div style={{ marginBottom: '2rem' }}>
                   <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', display: 'block', marginBottom: '1.2rem' }}>Engineered in Bangalore</span>
-                  <h2 style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(36px,6vw,80px)', color: '#fff', lineHeight: 1, letterSpacing: '-0.03em', marginBottom: '0.5rem' }}>Pure Form. Strict Utility.</h2>
-                  <span style={{ fontFamily: 'Inter', fontWeight: 900, fontSize: 'clamp(52px,10vw,130px)', letterSpacing: '-0.05em', textTransform: 'uppercase', color: '#fff', lineHeight: 0.85, display: 'block' }}>THE ARCHIVE.</span>
+                  <h2 style={{ fontFamily: 'Space Mono', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(36px,6vw,80px)', color: '#fff', lineHeight: 1, letterSpacing: '-0.03em', marginBottom: '0.5rem' }}>Pure Form. Strict Utility.</h2>
+                  <span style={{ fontFamily: 'Space Mono', fontWeight: 900, fontSize: 'clamp(52px,10vw,130px)', letterSpacing: '-0.05em', textTransform: 'uppercase', color: '#fff', lineHeight: 0.85, display: 'block' }}>THE ARCHIVE.</span>
                 </div>
               }
             >
@@ -1436,7 +1436,7 @@
               <a href="https://x.com/splotchglobal" target="_blank">Twitter</a>
             </div>
             <div style={{display: 'flex', alignItems: 'center'}}>
-              <span className="ghost-credit" style={{marginRight: "10px"}}>// Engineered by Dudefromalhiem</span>
+              <span className="ghost-credit" style={{marginRight: "10px"}}>// Engineered by Splotch</span>
               <span>© 2026 Splotch.</span>
             </div>
           </footer>
