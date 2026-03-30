@@ -1424,7 +1424,7 @@
 
       return (
         <header className={scrolled ? 'scrolled' : ''}>
-          <button className="logo-btn" onClick={(e) => { e.preventDefault(); window.location.href = '/'; }} title="Splotch">
+          <button className="logo-btn" onClick={(e) => { e.preventDefault(); onLogoClick && onLogoClick(); }} title="Splotch">
             <img src={LOGO_SRC} alt="Splotch" style={{ height: 32, width: 'auto', display: 'block', transform: 'scale(2.2)', transformOrigin: 'left center', filter: 'invert(1)' }} />
           </button>
           <nav className="desk-nav" style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
