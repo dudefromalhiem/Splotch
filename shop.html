@@ -12,11 +12,11 @@
     }
   </script>
 
-  <title>Shop | Splotch — Premium Streetwear Collection</title>
+  <title>Shop | Splotch — Premium Y2K Collection</title>
   <meta name="description"
-    content="Shop the latest limited drops from Splotch. Contemporary streetwear, premium oversized t-shirts, and urban wear engineered in Bangalore, India. Created in 2026.">
+    content="Shop the latest limited drops from Splotch. Contemporary Y2K, premium oversized t-shirts, and urban wear engineered in Bangalore, India. Created in 2026.">
   <meta name="keywords"
-    content="shop splotch, splotch clothing store, streetwear india, buy streetwear online, oversized t-shirts india, modern fashion, clothes in india,splotch,streetwear, street wear, street-wear">
+    content="shop splotch, splotch clothing store, Y2K india, buy Y2K online, oversized t-shirts india, modern fashion, clothes in india,splotch,Y2K, street wear, street-wear">
 
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="apple-touch-icon" href="favicon.png">
@@ -29,7 +29,7 @@
     "alternateName": "Splotch Clothing Store",
     "url": "https://splotch.in/shop.html",
     "logo": "https://splotch.in/favicon.png",
-    "description": "Shop the official Splotch streetwear collection. Premium apparel and oversized t-shirts engineered in Bangalore, India.",
+    "description": "Shop the official Splotch Y2K collection. Premium apparel and oversized t-shirts engineered in Bangalore, India.",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Bangalore",
@@ -38,15 +38,13 @@
   }
   </script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bodoni+Moda:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    @font-face {
-      font-family: 'TAN-Nightingale';
-      src: url('./fonts/TAN-Nightingale.woff2') format('woff2'),
-           url('./fonts/TAN-Nightingale.ttf') format('truetype');
+    .splotch-brand {
+      font-family: 'Bodoni Moda', serif;
       font-weight: 700;
-      font-style: normal;
-      font-display: swap;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
     }
   </style>
 
@@ -292,10 +290,10 @@
     }
 
     .loader-brand {
-      font-family: 'TAN-Nightingale', sans-serif;
-      font-weight: 700;
+      font-family: 'Fredoka One', sans-serif;
+      font-weight: 400;
       font-size: clamp(42px, 8vw, 88px);
-      letter-spacing: -0.05em;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
       color: #fff;
       line-height: 1;
@@ -355,23 +353,82 @@
       }
     }
 
-    /* Progress bar at bottom */
-    .loader-progress-track {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: rgba(255, 255, 255, 0.06);
-      z-index: 3;
+    .toast-stack {
+      position: fixed;
+      top: 72px;
+      right: 16px;
+      z-index: 120000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: min(360px, calc(100vw - 24px));
+      pointer-events: none;
     }
 
-    .loader-progress-fill {
-      height: 100%;
-      background: var(--R);
-      width: 0%;
-      transition: width 0.25s ease;
-      box-shadow: 0 0 8px rgba(220, 28, 28, 0.7);
+    .toast-card {
+      pointer-events: auto;
+      background: #111;
+      color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      animation: toastIn 0.24s ease;
+    }
+
+    .toast-card.info {
+      border-left: 4px solid rgba(255, 255, 255, 0.7);
+    }
+
+    .toast-card.success {
+      border-left: 4px solid #48b56f;
+    }
+
+    .toast-card.error {
+      border-left: 4px solid #dc1c1c;
+    }
+
+    .toast-text {
+      font-size: 11px;
+      line-height: 1.45;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+      font-family: 'Space Mono', monospace;
+      color: rgba(255, 255, 255, 0.95);
+    }
+
+    .toast-close {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: rgba(255, 255, 255, 0.8);
+      width: 24px;
+      height: 24px;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .toast-close:hover {
+      border-color: rgba(255, 255, 255, 0.75);
+      color: #fff;
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateX(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
 
     /* Horizontal divider line across center */
@@ -400,7 +457,7 @@
       z-index: 0;
       opacity: 0.08;
       pointer-events: none;
-      background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E');
+      background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="2.8" numOctaves="4" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E');
     }
 
     /* Corner coords */
@@ -724,7 +781,7 @@
       pointer-events: none;
       z-index: 9998;
       opacity: 0.12;
-      background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E');
+      background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="2.8" numOctaves="4" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E');
     }
 
     .topo-parallax-wrap {
@@ -1177,22 +1234,19 @@
           <div className="shutter-bottom" />
           <div className="loader-divider" />
 
-          <div className="loader-corner tl">SPLOTCH.IN</div>
+          <div className="loader-corner tl"><span className="splotch-brand">SPLOTCH</span>.IN</div>
           <div className="loader-corner tr">COLLECTION 001</div>
           <div className="loader-corner bl">BANGALORE, IN</div>
           <div className="loader-corner br">© 2026</div>
 
           <div className="loader-center">
             <img src={LOGO_SRC} alt="Splotch" className="loader-logo" />
-            <div className="loader-brand">SPLOTCH</div>
+            <div className="loader-brand"><span className="splotch-brand">SPLOTCH</span></div>
             <div className="loader-terminal">
               <span className="t-line">{status}<span className="t-cursor" /></span>
             </div>
           </div>
 
-          <div className="loader-progress-track">
-            <div className="loader-progress-fill" style={{ width: progress + '%' }} />
-          </div>
         </div>
       );
     }
@@ -1228,7 +1282,7 @@
             <h2 style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 28, marginBottom: "1rem" }}>Terms & Conditions</h2>
             <div style={{ fontSize: 12, lineHeight: 1.8, color: "rgba(0,0,0,0.7)" }}>
               <p style={{ marginBottom: "1rem" }}><strong>1. General Conditions</strong><br />By visiting our site and/or purchasing something from us, you engage in our "Service" and agree to be bound by the following terms and conditions.</p>
-              <p style={{ marginBottom: "1rem" }}><strong>2. Products & Exclusivity</strong><br />All Splotch runs are strictly limited. We do not mass produce. Once an item is sold out, it is permanently archived.</p>
+              <p style={{ marginBottom: "1rem" }}><strong>2. Products & Exclusivity</strong><br />All <span className="splotch-brand">SPLOTCH</span> runs are strictly limited. We do not mass produce. Once an item is sold out, it is permanently archived.</p>
               <p style={{ marginBottom: "1rem" }}><strong>3. Billing & Accuracy</strong><br />You agree to provide current, complete and accurate purchase and account information for all purchases made at our store.</p>
               <p style={{ marginBottom: "1rem" }}><strong>4. Returns & Refunds</strong><br />We maintain a strict 7-day return policy. Items must be unworn, unwashed, and in original packaging.</p>
             </div>
@@ -1323,7 +1377,7 @@
         <div style={{ position: "fixed", inset: 0, zIndex: 1000, background: "rgba(17,17,17,0.85)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn .2s ease" }}>
           <div style={{ background: "#fff", border: "3px solid #111", width: "100%", maxWidth: 400, position: "relative", padding: "2.5rem" }}>
             <button onClick={onClose} style={{ position: "absolute", top: 14, right: 14, background: "none", border: "1.5px solid #111", width: 34, height: 34, fontSize: 14, fontWeight: 700 }}>✕</button>
-            <h2 style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 28, marginBottom: "0.5rem" }}>{isLogin ? "Welcome Back." : "Join Splotch."}</h2>
+            <h2 style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 28, marginBottom: "0.5rem" }}>{isLogin ? "Welcome Back." : <>Join <span className="splotch-brand">SPLOTCH</span>.</>}</h2>
             <p style={{ fontSize: 12, color: "rgba(0,0,0,0.5)", marginBottom: "2rem" }}>Secure your access to exclusive drops.</p>
             {err && <div style={{ background: "#c00", color: "#fff", padding: "10px", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "1.5rem" }}>{err}</div>}
             <form onSubmit={handleEmailAuth}>
@@ -1486,7 +1540,7 @@
       );
     }
 
-    function CartSidebar({ cart, setCart, onClose, user, onAuthClick, setProducts }) {
+    function CartSidebar({ cart, setCart, onClose, user, onAuthClick, setProducts, notify }) {
       const ENABLE_OTP_VERIFICATION = true;
       const [loading, setLoading] = useState(false);
       const [step, setStep] = useState('cart');
@@ -1539,7 +1593,7 @@
       const removePromo = () => { setAppliedPromo(null); setPromoErr(""); };
 
       const initiateCheckout = () => {
-        if (selectedCartItems.length === 0) { alert("Please select at least one item to checkout."); return; }
+        if (selectedCartItems.length === 0) { notify("Please select at least one item to checkout.", "error"); return; }
         if (!user) { onAuthClick(); return; }
         setStep('shipping');
       };
@@ -1553,14 +1607,14 @@
         let sState = sanitizeInput(shipping.state);
         let sPincode = sanitizeInput(shipping.pincode);
 
-        if (sName.length < 2 || sName.length > 200) { alert("Invalid name length."); return; }
-        if (sPhone.length !== 10) { alert("Ensure phone number is exactly 10 digits."); return; }
-        if (!sAddress || !sCity || !sState || !sPincode) { alert("Please fill in all shipping details."); return; }
-        if (selectedCartItems.length < 1 || selectedCartItems.length > 10) { alert("Maximum 10 items allowed per checkout."); return; }
+        if (sName.length < 2 || sName.length > 200) { notify("Invalid name length.", "error"); return; }
+        if (sPhone.length !== 10) { notify("Ensure phone number is exactly 10 digits.", "error"); return; }
+        if (!sAddress || !sCity || !sState || !sPincode) { notify("Please fill in all shipping details.", "error"); return; }
+        if (selectedCartItems.length < 1 || selectedCartItems.length > 10) { notify("Maximum 10 items allowed per checkout.", "error"); return; }
 
         const lastSubmit = sessionStorage.getItem("lastSubmit_order");
         if (lastSubmit && (Date.now() - parseInt(lastSubmit) < 30000)) {
-          alert("Please wait before trying again."); return;
+          notify("Please wait before trying again.", "info"); return;
         }
         
         setShipping({ name: sName, phone: sPhone, address: sAddress, city: sCity, state: sState, pincode: sPincode });
@@ -1572,22 +1626,22 @@
           const confResult = await window.fbLinkWithPhoneNumber(user, "+91" + sPhone, window.recaptchaVerifier);
           setConfirmationResult(confResult);
           setStep('otp');
-          alert("OTP sent to +91" + sPhone);
+          notify("OTP sent to +91" + sPhone, "success");
         } catch (error) {
-          if (error.code === 'auth/credential-already-in-use') { alert("Phone number recognized. Proceeding to secure gateway..."); processPayment(); }
-          else { alert("Phone verification skipped. Proceeding directly to secure gateway..."); processPayment(); }
+          if (error.code === 'auth/credential-already-in-use') { notify("Phone number recognized. Proceeding to secure gateway...", "info"); processPayment(); }
+          else { notify("Phone verification skipped. Proceeding directly to secure gateway...", "info"); processPayment(); }
         }
         setLoading(false);
       };
 
       const verifyOTP = async () => {
-        if (otp.length < 6) { alert("Enter a valid 6-digit OTP"); return; }
+        if (otp.length < 6) { notify("Enter a valid 6-digit OTP", "error"); return; }
         setLoading(true);
         try {
           await confirmationResult.confirm(otp);
-          alert("Phone verified! Proceeding to payment...");
+          notify("Phone verified! Proceeding to payment...", "success");
           processPayment();
-        } catch (error) { alert("Invalid OTP. Please try again."); setLoading(false); }
+        } catch (error) { notify("Invalid OTP. Please try again.", "error"); setLoading(false); }
       };
 
       const processPayment = async () => {
@@ -1630,16 +1684,16 @@
                     });
                   } catch (emailErr) { console.warn("Receipt email failed.", emailErr); }
                 }
-                alert("Payment successful! Order placed.");
+                notify("Payment successful! Order placed.", "success");
                 setCart(prev => prev.filter(item => !selectedIds.includes(item.cartItemId)));
                 onClose();
-              } catch (dbErr) { alert("Paid but order save failed. Contact support."); }
+              } catch (dbErr) { notify("Paid but order save failed. Contact support.", "error"); }
             },
             prefill: { email: user.email, contact: "+91" + shipping.phone, name: shipping.name },
             theme: { color: "#111111" }
           };
           new window.Razorpay(options).open();
-        } catch (err) { alert("Checkout error: " + err.message); }
+        } catch (err) { notify("Checkout error: " + err.message, "error"); }
         finally { setLoading(false); }
       };
 
@@ -1917,7 +1971,7 @@
       );
     }
 
-    function AdminPanel({ products, setProducts, portfolio, setPortfolio, onClose }) {
+    function AdminPanel({ products, setProducts, portfolio, setPortfolio, onClose, notify }) {
       const [authed, setAuthed] = useState(false);
       const [email, setEmail] = useState("");
       const [pw, setPw] = useState("");
@@ -1941,7 +1995,7 @@
       useEffect(() => {
         if (!window.fbAuth) return;
         const unsubscribe = window.fbOnAuthStateChanged(window.fbAuth, (user) => {
-          if (user && user.email === "YOUR_ADMIN_EMAIL") {
+          if (user && user.email === "splotchglobal@gmail.com") {
             setAuthed(true);
           } else {
             setAuthed(false);
@@ -2009,7 +2063,7 @@
       };
 
       const saveProduct = async () => {
-        if (!form.name || !form.price) { alert("Name & price required."); return; }
+        if (!form.name || !form.price) { notify("Name & price required.", "error"); return; }
         setSaving(true);
         const newId = editId === "new" ? "prod-" + Date.now() : editId;
         const updated = { ...form, id: newId };
@@ -2018,13 +2072,13 @@
           await withTimeout(window.fbSetDoc(window.fbDoc(window.fbDb, "products", newId), updated, { merge: true }));
           setProducts(editId === "new" ? [...products, updated] : products.map(p => p.id === editId ? updated : p));
           setEditId(null); setForm(blankProduct);
-          alert("✓ Product saved!");
-        } catch (err) { alert("Save failed:\n" + err.message); }
+          notify("Product saved.", "success");
+        } catch (err) { notify("Save failed: " + err.message, "error"); }
         setSaving(false);
       };
 
       const savePortItem = async () => {
-        if (!portForm.label) { alert("Title required."); return; }
+        if (!portForm.label) { notify("Title required.", "error"); return; }
         setSaving(true);
         const newId = portEditId === "new" ? "port-" + Date.now() : portEditId;
         const updated = { ...portForm, id: newId };
@@ -2033,8 +2087,8 @@
           await withTimeout(window.fbSetDoc(window.fbDoc(window.fbDb, "portfolio", newId), updated, { merge: true }));
           setPortfolio(portEditId === "new" ? [...portfolio, updated] : portfolio.map(p => p.id === portEditId ? updated : p));
           setPortEditId(null); setPortForm(blankPort);
-          alert("✓ Portfolio item saved!");
-        } catch (err) { alert("Save failed:\n" + err.message); }
+          notify("Portfolio item saved.", "success");
+        } catch (err) { notify("Save failed: " + err.message, "error"); }
         setSaving(false);
       };
 
@@ -2044,7 +2098,7 @@
           await window.fbDeleteDoc(window.fbDoc(window.fbDb, "products", id));
           setProducts(products.filter(p => p.id !== id));
           if (editId === id) { setEditId(null); setForm(blankProduct); }
-        } catch (err) { alert("Delete failed: " + err.message); }
+        } catch (err) { notify("Delete failed: " + err.message, "error"); }
       };
 
       const removePortItem = async (id) => {
@@ -2053,7 +2107,7 @@
           await window.fbDeleteDoc(window.fbDoc(window.fbDb, "portfolio", id));
           setPortfolio(portfolio.filter(p => p.id !== id));
           if (portEditId === id) { setPortEditId(null); setPortForm(blankPort); }
-        } catch (err) { alert("Delete failed: " + err.message); }
+        } catch (err) { notify("Delete failed: " + err.message, "error"); }
       };
 
       const removeMessage = async (id) => {
@@ -2061,11 +2115,11 @@
         try {
           await window.fbDeleteDoc(window.fbDoc(window.fbDb, "messages", id));
           setMessages(messages.filter(m => m.id !== id));
-        } catch (err) { alert("Delete failed: " + err.message); }
+        } catch (err) { notify("Delete failed: " + err.message, "error"); }
       };
 
       const savePromo = async () => {
-        if (!promoForm.code || !promoForm.discountAmount) { alert("Code and discount required."); return; }
+        if (!promoForm.code || !promoForm.discountAmount) { notify("Code and discount required.", "error"); return; }
         setSaving(true);
         const codeUpper = promoForm.code.toUpperCase().trim();
         const newId = promoEditId === "new" ? "promo-" + Date.now() : promoEditId;
@@ -2075,8 +2129,8 @@
           await withTimeout(window.fbSetDoc(window.fbDoc(window.fbDb, "promos", newId), updated, { merge: true }));
           setPromos(promoEditId === "new" ? [...promos, updated] : promos.map(p => p.id === promoEditId ? updated : p));
           setPromoEditId(null); setPromoForm(blankPromo);
-          alert("✓ Promo code saved!");
-        } catch (err) { alert("Save failed:\n" + err.message); }
+          notify("Promo code saved.", "success");
+        } catch (err) { notify("Save failed: " + err.message, "error"); }
         setSaving(false);
       };
 
@@ -2086,7 +2140,7 @@
           await window.fbDeleteDoc(window.fbDoc(window.fbDb, "promos", id));
           setPromos(promos.filter(p => p.id !== id));
           if (promoEditId === id) { setPromoEditId(null); setPromoForm(blankPromo); }
-        } catch (err) { alert("Delete failed: " + err.message); }
+        } catch (err) { notify("Delete failed: " + err.message, "error"); }
       };
 
       const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", background: "#fff", padding: "10px 12px", fontSize: 13, fontFamily: "Space Mono" };
@@ -2277,8 +2331,8 @@
                             if (ns === "Delivered") updatePayload.deliveredAt = new Date();
                             await window.fbUpdateDoc(window.fbDoc(window.fbDb, "orders", o.id), updatePayload);
                             setOrders(orders.map(order => order.id === o.id ? { ...order, status: ns, deliveredAt: updatePayload.deliveredAt || order.deliveredAt } : order));
-                            alert("Status updated to " + ns);
-                          } catch (err) { alert("Failed to update status."); }
+                            notify("Status updated to " + ns, "success");
+                          } catch (err) { notify("Failed to update status.", "error"); }
                         }}>
                           <option value="Processing">Processing</option>
                           <option value="Preorder — Awaiting Stock">Preorder — Awaiting Stock</option>
@@ -2364,12 +2418,12 @@
               <h2 className="dyn-title" style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: "clamp(54px,9vw,120px)", letterSpacing: "-0.04em", color: "#fff", lineHeight: 0.9, fontStyle: "italic" }}>The Collection.</h2>
             </div>
           </div>
-          <div style={{ borderBottom: "2px solid #111", display: "flex", alignItems: "center", overflowX: "auto", paddingLeft: "1rem" }}>
-            <span style={{ fontWeight: 900, fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', marginRight: '1rem', color: '#111' }}>Filters:</span>
+          <div style={{ borderBottom: "1px solid rgba(17,17,17,0.12)", display: "flex", alignItems: "center", overflowX: "auto", padding: "0.45rem 1rem" }}>
+            <span style={{ fontWeight: 700, fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', marginRight: '0.7rem', color: 'rgba(0,0,0,0.5)' }}>Filter</span>
             {cats.map(c => (
-              <button key={c} onClick={() => setFilter(c)} style={{ background: filter === c ? "#111" : "transparent", color: filter === c ? "#fff" : "rgba(0,0,0,0.4)", border: "none", borderRight: "1px solid rgba(0,0,0,0.08)", padding: "13px 18px", fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{c}</button>
+              <button key={c} onClick={() => setFilter(c)} style={{ background: "transparent", color: filter === c ? "#111" : "rgba(0,0,0,0.42)", border: "none", borderBottom: filter === c ? "1.5px solid #111" : "1.5px solid transparent", padding: "8px 10px", marginRight: "4px", fontSize: 10, fontWeight: filter === c ? 700 : 600, letterSpacing: "0.14em", textTransform: "uppercase", whiteSpace: "nowrap", transition: "color .18s ease, border-color .18s ease", cursor: "none" }}>{c}</button>
             ))}
-            <div style={{ marginLeft: "auto", padding: "0 1rem", fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(0,0,0,0.25)", textTransform: "uppercase", whiteSpace: "nowrap" }}>{filtered.length} item{filtered.length !== 1 ? "s" : ""}</div>
+            <div style={{ marginLeft: "auto", paddingLeft: "0.75rem", fontSize: 9, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(0,0,0,0.32)", textTransform: "uppercase", whiteSpace: "nowrap" }}>{filtered.length} item{filtered.length !== 1 ? "s" : ""}</div>
           </div>
           <div style={{ padding: "2.5rem 2rem" }}>
             {filtered.length === 0 ? (
@@ -2597,7 +2651,7 @@
             </div>
             <div style={{ maxWidth: "600px", margin: "4rem auto", padding: "2rem 0", borderTop: "1px solid rgba(255,255,255,0.08)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
               <p style={{ fontSize: "9px", fontWeight: 600, color: "rgba(255,255,255,0.35)", lineHeight: 1.8, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-                Splotch is an independent streetwear brand engineered in Bangalore, India. Developing premium oversized t-shirts, limited-drop techwear, and utility clothing for the modern urban environment. Zero mass production. Pure aesthetic conviction.
+                Splotch is an independent Y2K brand engineered in Bangalore, India. Developing premium oversized t-shirts, limited-drop techwear, and utility clothing for the modern urban environment. Zero mass production. Pure aesthetic conviction.
               </p>
             </div>
             <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "2rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1.5rem" }}>
@@ -2635,7 +2689,20 @@
       const [filter, setFilter] = useState("All");
       const [logoClicks, setLogoClicks] = useState(0);
       const [user, setUser] = useState(null);
+      const [toasts, setToasts] = useState([]);
       const logoTimerRef = useRef(null);
+
+      const dismissToast = useCallback((id) => {
+        setToasts(prev => prev.filter(t => t.id !== id));
+      }, []);
+
+      const notify = useCallback((message, type = "info") => {
+        const id = Date.now() + Math.random();
+        setToasts(prev => [...prev, { id, message, type }]);
+        setTimeout(() => {
+          setToasts(prev => prev.filter(t => t.id !== id));
+        }, 5000);
+      }, []);
 
       // ── Loader state ──
       const [loaderProgress, setLoaderProgress] = useState(0);
@@ -2794,10 +2861,19 @@
           <Footer />
 
           {qv && <QuickView product={qv} onClose={() => setQV(null)} onAdd={addToCart} />}
-          {cartOpen && <CartSidebar cart={cart} setCart={setCart} onClose={() => setCartOpen(false)} user={user} onAuthClick={() => setAuthOpen(true)} setProducts={setProducts} />}
-          {adminOpen && <AdminPanel products={products} setProducts={setProducts} portfolio={portfolio} setPortfolio={setPortfolio} onClose={() => setAdminOpen(false)} />}
+          {cartOpen && <CartSidebar cart={cart} setCart={setCart} onClose={() => setCartOpen(false)} user={user} onAuthClick={() => setAuthOpen(true)} setProducts={setProducts} notify={notify} />}
+          {adminOpen && <AdminPanel products={products} setProducts={setProducts} portfolio={portfolio} setPortfolio={setPortfolio} onClose={() => setAdminOpen(false)} notify={notify} />}
           {authOpen && <AuthModal onClose={() => setAuthOpen(false)} onSuccess={() => setAuthOpen(false)} />}
           {ordersOpen && user && <UserOrdersModal user={user} onClose={() => setOrdersOpen(false)} />}
+
+          <div className="toast-stack">
+            {toasts.map(t => (
+              <div key={t.id} className={`toast-card ${t.type || "info"}`}>
+                <div className="toast-text">{t.message}</div>
+                <button className="toast-close" onClick={() => dismissToast(t.id)} aria-label="Dismiss notification">✕</button>
+              </div>
+            ))}
+          </div>
         </div>
       );
     }

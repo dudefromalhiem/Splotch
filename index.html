@@ -12,24 +12,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <meta name="google-site-verification" content="O_5PvbzTUcfIR6BAsC8lE8vyy0nEluGbPNQgihyIveg" />
-  <title>Splotch | Premium Streetwear & Clothing in India</title>
-  <meta name="title" content="Splotch | Premium Streetwear & Clothing in India">
-  <meta name="description" content="Welcome to the official Splotch website. Splotch is an independent streetwear clothing brand engineered in Bangalore, India. Created in 2026 by 3 guys. Shop premium oversized t-shirts, limited drops, and contemporary fashion.">
-  <meta name="keywords" content="splotch, splotch website, splotch clothing, streetwear, clothes in india, streetwear india, oversized t-shirts, contemporary fashion, bangalore clothing brand">
+  <title>Splotch | Premium Y2K & Clothing in India</title>
+  <meta name="title" content="Splotch | Premium Y2K & Clothing in India">
+  <meta name="description" content="Welcome to the official Splotch website. Splotch is an independent Y2K clothing brand engineered in Bangalore, India. Created in 2026 by 3 guys. Shop premium oversized t-shirts, limited drops, and contemporary fashion.">
+  <meta name="keywords" content="splotch, splotch website, splotch clothing, Y2K, clothes in india, Y2K india, oversized t-shirts, contemporary fashion, bangalore clothing brand">
   <meta name="robots" content="index, follow">
   <meta name="author" content="Splotch">
   <link rel="canonical" href="https://splotch.in/">
 
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://splotch.in/">
-  <meta property="og:title" content="Splotch | Premium Streetwear India">
-  <meta property="og:description" content="Shop Splotch streetwear. The new standard of modern clothing in India. Limited drops. Zero mass production.">
+  <meta property="og:title" content="Splotch | Premium Y2K India">
+  <meta property="og:description" content="Shop Splotch Y2K. The new standard of modern clothing in India. Limited drops. Zero mass production.">
   <meta property="og:image" content="https://splotch.vercel.app/splotch-og-image.jpg">
   <meta property="og:site_name" content="Splotch">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Splotch | Premium Streetwear India">
-  <meta name="twitter:description" content="Shop Splotch streetwear. The new standard of modern clothing in India.">
+  <meta name="twitter:title" content="Splotch | Premium Y2K India">
+  <meta name="twitter:description" content="Shop Splotch Y2K. The new standard of modern clothing in India.">
   <meta name="twitter:image" content="https://splotch.vercel.app/splotch-og-image.jpg">
 
   <script type="application/ld+json">
@@ -40,7 +40,7 @@
     "alternateName": "Splotch Clothing",
     "url": "https://splotch.in/",
     "logo": "https://splotch.in/favicon.png",
-    "description": "Splotch is a premium contemporary streetwear and clothing brand based in Bangalore, India, specializing in limited-run apparel.",
+    "description": "Splotch is a premium contemporary Y2K and clothing brand based in Bangalore, India, specializing in limited-run apparel.",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Bangalore",
@@ -56,7 +56,15 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="apple-touch-icon" href="favicon.png">
 
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Abril+Fatface&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Abril+Fatface&family=Bodoni+Moda:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    .splotch-brand {
+      font-family: 'Bodoni Moda', serif;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+  </style>
 
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -325,6 +333,14 @@
       flex-direction: column;
       align-items: center;
       gap: 10px;
+      border: 1.5px solid rgba(255,255,255,0.4);
+      padding: 14px 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .scroll-ind:hover {
+      border-color: rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.05);
     }
     
     .scroll-ind span {
@@ -332,19 +348,16 @@
       font-weight: 700;
       letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.4);
+      transition: color 0.3s ease;
+    }
+    
+    .scroll-ind:hover span {
+      color: rgba(255,255,255,0.9);
     }
     
     .scroll-line {
-      width: 1px;
-      height: 50px;
-      background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent);
-      animation: scrollDrop 1.8s ease-in-out infinite;
-    }
-    
-    @keyframes scrollDrop {
-      0%, 100% { transform: scaleY(0); transform-origin: top; }
-      50% { transform: scaleY(1); transform-origin: top; }
+      display: none;
     }
     
     .hero-corner {
@@ -791,8 +804,8 @@
   <!-- Liquid Paint Cursor Canvas -->
   <canvas id="liquid-cursor-canvas"></canvas>
   <div id="root">
-  <h1 style="display:none;">Splotch | Premium Streetwear in India</h1>
-  <p style="display:none;">Welcome to the official Splotch website. Splotch is an independent streetwear clothing brand engineered in Bangalore, India. Shop premium oversized t-shirts, limited drops, and contemporary fashion.</p>
+  <h1 style="display:none;">Splotch | Premium Y2K in India</h1>
+  <p style="display:none;">Welcome to the official Splotch website. Splotch is an independent Y2K clothing brand engineered in Bangalore, India. Shop premium oversized t-shirts, limited drops, and contemporary fashion.</p>
   </div>
 
   <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
@@ -958,19 +971,18 @@
           <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.75) 100%)', zIndex: 2, pointerEvents: 'none' }} />
           
           <div className="hero-corner tl">BANGALORE<br />COLLECTION 001</div>
-          <div className="hero-corner tr">CONTEMPORARY<br />STREETWEAR<br />INDIA</div>
+          <div className="hero-corner tr">CONTEMPORARY<br />Y2K<br />INDIA</div>
           <div className="hero-corner bl">LIMITED DROPS</div>
-          <div className="hero-corner br">SPLOTCH.IN</div>
+          <div className="hero-corner br"><span className="splotch-brand">SPLOTCH</span>.IN</div>
           
-          <div className="hero-center" style={{ transform: `translate(${smooth.x * 8}px, ${smooth.y * 8}px)` }}>
-            <h1 className="hero-h1" style={{ textShadow: buildAggressive3D(smooth.x, smooth.y) }}>SPLOTCH</h1>
+          <div className="hero-center" style={{ transform: `translate(${smooth.x * 2}px, ${smooth.y * 2}px)` }}>
+            <h1 className="hero-h1" style={{ textShadow: buildAggressive3D(smooth.x, smooth.y) }}><span className="splotch-brand">SPLOTCH</span></h1>
             <p className="hero-sub-text">STYLE BEYOND SEASONS</p>
           </div>
           
-          <div className="scroll-ind">
-            <span>ENTER THE ARCHIVE</span>
-            <div className="scroll-line" />
-          </div>
+          <button className="scroll-ind" onClick={() => window.location.href = '/shop.html'} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+            <span>ENTER THE SHOP</span>
+          </button>
         </section>
       );
     }
@@ -1315,8 +1327,8 @@
             <button className="modal-close" onClick={onClose}>✕</button>
             <h2 style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 28, marginBottom: "1rem" }}>Terms & Conditions</h2>
             <div style={{ fontSize: 12, lineHeight: 1.8, color: "rgba(0,0,0,0.7)" }}>
-              <p style={{ marginBottom: "1rem" }}><strong>1. General Conditions</strong><br/>By visiting our site and/or purchasing something from us, you engage in our "Service" and agree to be bound by the following terms and conditions. Splotch reserves the right to refuse service to anyone for any reason at any time.</p>
-              <p style={{ marginBottom: "1rem" }}><strong>2. Products & Exclusivity</strong><br/>All Splotch runs are strictly limited. We do not mass produce. Once an item is sold out, it is permanently archived.</p>
+              <p style={{ marginBottom: "1rem" }}><strong>1. General Conditions</strong><br/>By visiting our site and/or purchasing something from us, you engage in our "Service" and agree to be bound by the following terms and conditions. <span className="splotch-brand">SPLOTCH</span> reserves the right to refuse service to anyone for any reason at any time.</p>
+              <p style={{ marginBottom: "1rem" }}><strong>2. Products & Exclusivity</strong><br/>All <span className="splotch-brand">SPLOTCH</span> runs are strictly limited. We do not mass produce. Once an item is sold out, it is permanently archived.</p>
               <p style={{ marginBottom: "1rem" }}><strong>3. Billing & Accuracy</strong><br/>You agree to provide current, complete and accurate purchase and account information for all purchases made at our store.</p>
               <p style={{ marginBottom: "1rem" }}><strong>4. Returns & Refunds</strong><br/>We maintain a strict 7-day return policy. Items must be unworn, unwashed, and in original packaging.</p>
             </div>
@@ -1382,7 +1394,7 @@
       const [returnOpen, setReturnOpen] = useState(false);
       
       useEffect(() => {
-        console.log("%c[SUP?]\n%c // ENGINEERED BY AlHiem \n%c WELCOME TO THE NEXT FRONTIER OF STREETWEAR. Z E R O  C O M P R O M I S E.","color: #c00; font-size: 20px; font-weight: 900;","color: #fff; font-size: 13px; font-weight: 700; background: #111; padding: 4px;","color: #666; font-size: 11px; font-style: italic;");
+        console.log("%c[SUP?]\n%c // ENGINEERED BY AlHiem \n%c WELCOME TO THE NEXT FRONTIER OF Y2K. Z E R O  C O M P R O M I S E.","color: #c00; font-size: 20px; font-weight: 900;","color: #fff; font-size: 13px; font-weight: 700; background: #111; padding: 4px;","color: #666; font-size: 11px; font-style: italic;");
       }, []);
 
       useEffect(() => {
@@ -1444,7 +1456,7 @@
           <div style={{ background: '#050505', padding: '2rem', borderTop: '1px solid rgba(255,255,255,0.03)' }}>
             <p style={{ maxWidth: 800, margin: '0 auto', fontSize: 9, lineHeight: 2, color: 'rgba(255,255,255,0.12)', fontWeight: 500, letterSpacing: '0.12em', textAlign: 'center', textTransform: 'uppercase' }}>
               Every order includes premium packaging, custom stickers, and a personalized handwritten note.<br/><br/>
-              Splotch is an independent streetwear clothing brand engineered in Bangalore, India. Premium oversized t-shirts, limited-drop techwear, and urban utility clothing. Zero mass production. Every run limited to 200 units. Explore Collection 001. Style beyond seasons. Created in 2026.
+              Splotch is an independent Y2K clothing brand engineered in Bangalore, India. Premium oversized t-shirts, limited-drop techwear, and urban utility clothing. Zero mass production. Every run limited to 200 units. Explore Collection 001. Style beyond seasons. Created in 2026.
             </p>
           </div>
           
