@@ -43,10 +43,10 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="apple-touch-icon" href="favicon.png">
   
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bodoni+Moda:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
     .splotch-brand {
-      font-family: 'Bodoni Moda', serif;
+      font-family: 'Inter', sans-serif;
       font-weight: 700;
       letter-spacing: 0.02em;
       text-transform: uppercase;
@@ -99,7 +99,7 @@
     body {
       background: var(--W);
       color: var(--B);
-      font-family: 'Space Mono', monospace;
+      font-family: 'Playfair Display', serif;
       position: relative;
     }
     
@@ -276,7 +276,7 @@
     }
     
     .about-h1 {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Playfair Display', serif;
       font-style: italic;
       font-weight: 700;
       font-size: clamp(56px, 12vw, 170px);
@@ -390,7 +390,7 @@
     }
     
     .num-big {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Playfair Display', serif;
       font-style: italic;
       font-size: clamp(48px, 7vw, 88px);
       font-weight: 700;
@@ -441,7 +441,7 @@
     .prin-card:hover .prin-desc { color: rgba(255, 255, 255, 0.5); }
     
     .prin-num {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Playfair Display', serif;
       font-style: italic;
       font-size: 64px;
       font-weight: 700;
@@ -498,7 +498,7 @@
     }
     
     .tl-year {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Playfair Display', serif;
       font-style: italic;
       font-size: 40px;
       font-weight: 700;
@@ -717,7 +717,7 @@
     }
 
     function MobMenu({ open, setOpen }) {
-      const btnSt = { background: 'none', border: 'none', textAlign: 'left', fontFamily: 'Space Mono', fontWeight: 900, fontSize: 'clamp(40px,11vw,64px)', letterSpacing: '-0.04em', textTransform: 'uppercase', color: '#fff', lineHeight: 1.1, borderBottom: '1px solid rgba(255,255,255,0.07)', padding: '0.6rem 0', textDecoration: 'none', display: 'block', width: '100%' };
+      const btnSt = { background: 'none', border: 'none', textAlign: 'left', fontFamily: 'Playfair Display', fontWeight: 900, fontSize: 'clamp(40px,11vw,64px)', letterSpacing: '-0.04em', textTransform: 'uppercase', color: '#fff', lineHeight: 1.1, borderBottom: '1px solid rgba(255,255,255,0.07)', padding: '0.6rem 0', textDecoration: 'none', display: 'block', width: '100%' };
       
       return (
         <div className="mob-menu" style={{ position: 'fixed', inset: 0, zIndex: 600, background: '#0a0a0a', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '3rem 2rem', transform: open ? 'translateX(0)' : 'translateX(100%)', transition: 'transform .4s cubic-bezier(.76,0,.24,1)' }}>
@@ -804,7 +804,7 @@
           <div className="origin-grid">
             <div>
               <span className="slabel reveal">The Origin</span>
-              <h2 className="dyn-title reveal reveal-d1" style={{ fontFamily: 'Space Mono', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(40px,5.5vw,68px)', letterSpacing: '-0.03em', lineHeight: 0.9, marginBottom: '2rem' }}>
+              <h2 className="dyn-title reveal reveal-d1" style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(40px,5.5vw,68px)', letterSpacing: '-0.03em', lineHeight: 0.9, marginBottom: '2rem' }}>
                 Utility for the<br />Urban Jungle.
               </h2>
               <p className="reveal reveal-d2" style={{ fontSize: 14, lineHeight: 1.85, color: 'rgba(0,0,0,0.55)', marginBottom: '1.5rem' }}>
@@ -816,7 +816,7 @@
               <div className="reveal reveal-d4" style={{ display: 'inline-flex', gap: '2rem', borderTop: '1px solid rgba(0,0,0,0.08)', paddingTop: '1.5rem' }}>
                 {[['200', 'Units per run'], ['100%', 'Organic cotton'], ['3', 'Guys founded it']].map(([n, l]) => (
                   <div key={l} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                    <span style={{ fontFamily: 'Space Mono', fontStyle: 'italic', fontWeight: 700, fontSize: 28, letterSpacing: '-0.02em' }}>{n}</span>
+                    <span style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 28, letterSpacing: '-0.02em' }}>{n}</span>
                     <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(0,0,0,0.3)' }}>{l}</span>
                   </div>
                 ))}
@@ -824,7 +824,7 @@
             </div>
             <div className="reveal reveal-d2">
               <div className="manifesto-box">
-                <p style={{ fontFamily: 'Space Mono', fontStyle: 'italic', fontSize: 'clamp(20px,2.8vw,28px)', lineHeight: 1.55, color: '#111', marginBottom: '2rem' }}>
+                <p style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontSize: 'clamp(20px,2.8vw,28px)', lineHeight: 1.55, color: '#111', marginBottom: '2rem' }}>
                   "Two colors. Zero compromise. Complexity lives in the structure, not the palette. We don't make products — we make statements."
                 </p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem' }}>
@@ -872,7 +872,7 @@
                 <div key={i} className={`num-cell reveal reveal-d${i + 1}`}>
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
                     <span className="num-big">{s.n}</span>
-                    <span style={{ fontFamily: 'Space Mono', fontStyle: 'italic', fontSize: 20, color: 'rgba(255,255,255,0.2)', fontWeight: 700 }}>{s.unit}</span>
+                    <span style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontSize: 20, color: 'rgba(255,255,255,0.2)', fontWeight: 700 }}>{s.unit}</span>
                   </div>
                   <span className="num-lbl">{s.l}</span>
                 </div>
@@ -894,7 +894,7 @@
         <section id="principles">
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
             <span className="slabel reveal">Our Principles</span>
-            <h2 className="dyn-title reveal reveal-d1" style={{ fontFamily: 'Space Mono', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(44px,7vw,96px)', letterSpacing: '-0.03em', lineHeight: 0.88, color: '#111', marginBottom: '3.5rem' }}>
+            <h2 className="dyn-title reveal reveal-d1" style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(44px,7vw,96px)', letterSpacing: '-0.03em', lineHeight: 0.88, color: '#111', marginBottom: '3.5rem' }}>
               The Principles.
             </h2>
             <div className="principles-grid">
@@ -954,13 +954,13 @@
           <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }} />
           <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
             <span className="slabel inv reveal">Our Story</span>
-            <h2 className="dyn-title reveal reveal-d1" style={{ fontFamily: 'Space Mono', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(44px,7vw,96px)', letterSpacing: '-0.03em', lineHeight: 0.88, color: '#fff', marginBottom: '3.5rem' }}>
+            <h2 className="dyn-title reveal reveal-d1" style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(44px,7vw,96px)', letterSpacing: '-0.03em', lineHeight: 0.88, color: '#fff', marginBottom: '3.5rem' }}>
               The Journey.
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
               {events.map((e, i) => (
                 <div key={i} className={`reveal reveal-d${Math.min(i + 1, 4)}`} style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '2rem', borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '2rem 0', alignItems: 'start' }}>
-                  <span style={{ fontFamily: 'Space Mono', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(28px,4vw,48px)', color: 'rgba(255,255,255,0.15)', lineHeight: 1 }}>{e.yr}</span>
+                  <span style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(28px,4vw,48px)', color: 'rgba(255,255,255,0.15)', lineHeight: 1 }}>{e.yr}</span>
                   <div>
                     <div style={{ fontSize: 9, fontWeight: 900, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: 8 }}>{e.t}</div>
                     <p style={{ fontSize: 13, lineHeight: 1.75, color: 'rgba(255,255,255,0.4)' }}>{e.d}</p>
@@ -977,7 +977,7 @@
       return (
         <section id="about-cta">
           <span className="slabel dark reveal" style={{ display: 'table', margin: '0 auto 2rem' }}>Enter The Store</span>
-          <h2 className="dyn-title chrome-effect reveal reveal-d1" style={{ fontFamily: 'Space Mono', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(40px,7vw,96px)', letterSpacing: '-0.03em', color: '#111', lineHeight: 0.9, marginBottom: '3rem' }}>
+          <h2 className="dyn-title chrome-effect reveal reveal-d1" style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(40px,7vw,96px)', letterSpacing: '-0.03em', color: '#111', lineHeight: 0.9, marginBottom: '3rem' }}>
             Ready to upgrade<br />your wardrobe?
           </h2>
           <br/>
@@ -991,7 +991,7 @@
         <div className="modal-overlay" onClick={onClose} style={{ animation: "fadeIn .2s ease" }}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={onClose}>✕</button>
-            <h2 style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 28, marginBottom: "1rem" }}>Terms & Conditions</h2>
+            <h2 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 28, marginBottom: "1rem" }}>Terms & Conditions</h2>
             <div style={{ fontSize: 12, lineHeight: 1.8, color: "rgba(0,0,0,0.7)" }}>
               <p style={{ marginBottom: "1rem" }}><strong>1. General Conditions</strong><br/>By visiting our site and/or purchasing something from us, you engage in our "Service" and agree to be bound by the following terms and conditions.</p>
               <p style={{ marginBottom: "1rem" }}><strong>2. Products & Exclusivity</strong><br/>All Splotch runs are strictly limited. We do not mass produce. Once an item is sold out, it is permanently archived.</p>
@@ -1029,13 +1029,13 @@
         }
       };
       
-      const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", padding: "12px", fontSize: 12, fontFamily: "Space Mono", marginBottom: "1rem" };
+      const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", padding: "12px", fontSize: 12, fontFamily: "Playfair Display", marginBottom: "1rem" };
       
       return (
         <div className="modal-overlay" onClick={onClose} style={{ animation: "fadeIn .2s ease" }}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={onClose}>✕</button>
-            <h2 style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 28, marginBottom: "0.5rem" }}>Request Return.</h2>
+            <h2 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 28, marginBottom: "0.5rem" }}>Request Return.</h2>
             <p style={{ fontSize: 12, color: "rgba(0,0,0,0.5)", marginBottom: "2rem" }}>Returns are only accepted within 7 days of delivery.</p>
             
             {errMsg && <div style={{ background: "#c00", color: "#fff", padding: "10px", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "1.5rem" }}>{errMsg}</div>}

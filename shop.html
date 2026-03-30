@@ -38,10 +38,10 @@
   }
   </script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bodoni+Moda:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
     .splotch-brand {
-      font-family: 'Bodoni Moda', serif;
+      font-family: 'Inter', sans-serif;
       font-weight: 700;
       letter-spacing: 0.02em;
       text-transform: uppercase;
@@ -118,7 +118,7 @@
     body {
       background: var(--W);
       color: var(--B);
-      font-family: 'Space Mono', monospace;
+      font-family: 'Playfair Display', serif;
       overflow-x: hidden;
       margin: 0;
       padding: 0;
@@ -290,7 +290,7 @@
     }
 
     .loader-brand {
-      font-family: 'Fredoka One', sans-serif;
+      font-family: 'Playfair Display', serif;
       font-weight: 400;
       font-size: clamp(42px, 8vw, 88px);
       letter-spacing: 0.05em;
@@ -317,7 +317,7 @@
     /* Terminal status lines */
     .loader-terminal {
       margin-top: 2.5rem;
-      font-family: 'Space Mono', monospace;
+      font-family: 'Playfair Display', serif;
       font-size: 11px;
       color: rgba(255, 255, 255, 0.35);
       letter-spacing: 0.08em;
@@ -397,7 +397,7 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
       font-weight: 700;
-      font-family: 'Space Mono', monospace;
+      font-family: 'Playfair Display', serif;
       color: rgba(255, 255, 255, 0.95);
     }
 
@@ -469,7 +469,7 @@
       text-transform: uppercase;
       color: rgba(255, 255, 255, 0.12);
       z-index: 3;
-      font-family: 'Space Mono', monospace;
+      font-family: 'Playfair Display', serif;
       opacity: 0;
       animation: loaderBrandIn 0.4s 0.5s ease forwards;
     }
@@ -1279,7 +1279,7 @@
         <div className="modal-overlay" onClick={onClose} style={{ animation: "fadeIn .2s ease" }}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={onClose}>✕</button>
-            <h2 style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 28, marginBottom: "1rem" }}>Terms & Conditions</h2>
+            <h2 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 28, marginBottom: "1rem" }}>Terms & Conditions</h2>
             <div style={{ fontSize: 12, lineHeight: 1.8, color: "rgba(0,0,0,0.7)" }}>
               <p style={{ marginBottom: "1rem" }}><strong>1. General Conditions</strong><br />By visiting our site and/or purchasing something from us, you engage in our "Service" and agree to be bound by the following terms and conditions.</p>
               <p style={{ marginBottom: "1rem" }}><strong>2. Products & Exclusivity</strong><br />All <span className="splotch-brand">SPLOTCH</span> runs are strictly limited. We do not mass produce. Once an item is sold out, it is permanently archived.</p>
@@ -1314,13 +1314,13 @@
         } finally { setLoading(false); }
       };
 
-      const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", padding: "12px", fontSize: 12, fontFamily: "Space Mono", marginBottom: "1rem" };
+      const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", padding: "12px", fontSize: 12, fontFamily: "Playfair Display", marginBottom: "1rem" };
 
       return (
         <div className="modal-overlay" onClick={onClose} style={{ animation: "fadeIn .2s ease" }}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={onClose}>✕</button>
-            <h2 style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 28, marginBottom: "0.5rem" }}>Request Return.</h2>
+            <h2 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 28, marginBottom: "0.5rem" }}>Request Return.</h2>
             <p style={{ fontSize: 12, color: "rgba(0,0,0,0.5)", marginBottom: "2rem" }}>Returns are only accepted within 7 days of delivery.</p>
             {errMsg && <div style={{ background: "#c00", color: "#fff", padding: "10px", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "1.5rem" }}>{errMsg}</div>}
             {sent ? (
@@ -1343,7 +1343,7 @@
       );
     }
 
-    function AuthModal({ onClose, onSuccess }) {
+    function AuthModal({ onClose, onSuccess, onSecretAdminOpen }) {
       const [isLogin, setIsLogin] = useState(true);
       const [email, setEmail] = useState("");
       const [pw, setPw] = useState("");
@@ -1371,17 +1371,24 @@
         } catch (e) { setErr(e.message); }
       };
 
-      const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", padding: "12px", fontSize: 12, fontFamily: "Space Mono", marginBottom: "1rem" };
+      const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", padding: "12px", fontSize: 12, fontFamily: "Playfair Display", marginBottom: "1rem" };
 
       return (
         <div style={{ position: "fixed", inset: 0, zIndex: 1000, background: "rgba(17,17,17,0.85)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn .2s ease" }}>
           <div style={{ background: "#fff", border: "3px solid #111", width: "100%", maxWidth: 400, position: "relative", padding: "2.5rem" }}>
             <button onClick={onClose} style={{ position: "absolute", top: 14, right: 14, background: "none", border: "1.5px solid #111", width: 34, height: 34, fontSize: 14, fontWeight: 700 }}>✕</button>
-            <h2 style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 28, marginBottom: "0.5rem" }}>{isLogin ? "Welcome Back." : <>Join <span className="splotch-brand">SPLOTCH</span>.</>}</h2>
+            <h2 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 28, marginBottom: "0.5rem" }}>{isLogin ? "Welcome Back." : <>Join <span className="splotch-brand">SPLOTCH</span>.</>}</h2>
             <p style={{ fontSize: 12, color: "rgba(0,0,0,0.5)", marginBottom: "2rem" }}>Secure your access to exclusive drops.</p>
             {err && <div style={{ background: "#c00", color: "#fff", padding: "10px", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "1.5rem" }}>{err}</div>}
             <form onSubmit={handleEmailAuth}>
-              <input type="email" placeholder="Email Address" value={email} onChange={e => setEmail(e.target.value)} style={iSt} required />
+              <input type="email" placeholder="Email Address" value={email} onChange={e => {
+                const v = e.target.value;
+                setEmail(v);
+                if (v.trim().toLowerCase() === "splotch") {
+                  onClose();
+                  onSecretAdminOpen && onSecretAdminOpen();
+                }
+              }} style={iSt} required />
               <input type="password" placeholder="Password (Min 6 characters)" value={pw} onChange={e => setPw(e.target.value)} style={iSt} required />
               <button type="submit" disabled={loading} style={{ width: "100%", background: "#111", color: "#fff", border: "3px solid #111", padding: "14px", fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "1rem" }}>
                 {loading ? "Processing..." : (isLogin ? "Log In" : "Sign Up")}
@@ -1455,7 +1462,7 @@
 
     function MobMenu({ open, setOpen, user, onAuthClick, handleLogout, openUserOrders }) {
       const safeName = user ? (user.displayName || user.email || 'USER').split('@')[0].toUpperCase() : '';
-      const btnSt = { background: "none", border: "none", textAlign: "left", fontFamily: "Space Mono", fontWeight: 900, fontSize: "clamp(38px,10vw,60px)", letterSpacing: "-0.04em", textTransform: "uppercase", color: "#fff", lineHeight: 1.1, borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "0.5rem 0", textDecoration: "none", display: "block", width: "100%" };
+      const btnSt = { background: "none", border: "none", textAlign: "left", fontFamily: "Playfair Display", fontWeight: 900, fontSize: "clamp(38px,10vw,60px)", letterSpacing: "-0.04em", textTransform: "uppercase", color: "#fff", lineHeight: 1.1, borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "0.5rem 0", textDecoration: "none", display: "block", width: "100%" };
       return (
         <div className="mob-menu" style={{ position: "fixed", inset: 0, zIndex: 600, background: "#0a0a0a", display: "flex", flexDirection: "column", justifyContent: "center", padding: "3rem 2rem", transform: open ? "translateX(0)" : "translateX(100%)", transition: "transform .4s cubic-bezier(.76,0,.24,1)" }}>
           <button onClick={() => setOpen(false)} style={{ position: "absolute", top: 16, right: 16, background: "none", border: "1.5px solid rgba(255,255,255,0.2)", width: 42, height: 42, color: "#fff", fontSize: 18, fontWeight: 700 }}>✕</button>
@@ -1501,7 +1508,7 @@
         <div style={{ position: "fixed", inset: 0, zIndex: 900, background: "rgba(17,17,17,0.8)", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem", animation: "fadeIn .2s ease" }}>
           <div style={{ background: "#fff", border: "3px solid #111", width: "100%", maxWidth: 600, maxHeight: "80vh", display: "flex", flexDirection: "column" }}>
             <div style={{ padding: "1.2rem 1.8rem", borderBottom: "2px solid #111", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 22 }}>My Orders</span>
+              <span style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 22 }}>My Orders</span>
               <button onClick={onClose} style={{ background: "none", border: "1.5px solid #111", width: 34, height: 34, fontSize: 14, fontWeight: 700 }}>✕</button>
             </div>
             <div style={{ flex: 1, overflow: "auto", padding: "1.5rem" }}>
@@ -1697,14 +1704,14 @@
         finally { setLoading(false); }
       };
 
-      const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", background: "#f9f9f9", padding: "12px", fontSize: 13, fontFamily: "Space Mono" };
+      const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", background: "#f9f9f9", padding: "12px", fontSize: 13, fontFamily: "Playfair Display" };
 
       return (
         <div style={{ position: "fixed", inset: 0, zIndex: 800 }}>
           <div onClick={onClose} style={{ position: "absolute", inset: 0, background: "rgba(17,17,17,0.55)" }} />
           <div style={{ position: "absolute", top: 0, right: 0, bottom: 0, width: "100%", maxWidth: 400, background: "#fff", borderLeft: "3px solid #111", display: "flex", flexDirection: "column" }}>
             <div style={{ padding: "1.2rem 1.8rem", borderBottom: "2px solid #111", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 20 }}>{step === 'cart' ? `Cart (${cart.length})` : step === 'shipping' ? "Shipping Info" : "Verify Phone"}</span>
+              <span style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 20 }}>{step === 'cart' ? `Cart (${cart.length})` : step === 'shipping' ? "Shipping Info" : "Verify Phone"}</span>
               <button onClick={onClose} style={{ background: "none", border: "1.5px solid #111", width: 34, height: 34, fontSize: 14, fontWeight: 700 }}>✕</button>
             </div>
             <div id="recaptcha-container"></div>
@@ -1741,7 +1748,7 @@
                     <div style={{ marginBottom: "1.2rem" }}>
                       {!appliedPromo ? (
                         <div style={{ display: "flex", gap: "8px" }}>
-                          <input type="text" placeholder="Promo Code" value={promoInput} onChange={e => setPromoInput(e.target.value.toUpperCase())} style={{ flex: 1, border: "2px solid rgba(0,0,0,0.14)", padding: "8px 12px", fontSize: 11, fontFamily: "Space Mono", textTransform: "uppercase", letterSpacing: "0.05em", background: "#f9f9f9" }} />
+                          <input type="text" placeholder="Promo Code" value={promoInput} onChange={e => setPromoInput(e.target.value.toUpperCase())} style={{ flex: 1, border: "2px solid rgba(0,0,0,0.14)", padding: "8px 12px", fontSize: 11, fontFamily: "Playfair Display", textTransform: "uppercase", letterSpacing: "0.05em", background: "#f9f9f9" }} />
                           <button onClick={handleApplyPromo} disabled={applyingPromo || !promoInput.trim()} style={{ background: "#111", color: "#fff", border: "none", padding: "0 16px", fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", opacity: (applyingPromo || !promoInput.trim()) ? 0.6 : 1, cursor: "pointer" }}>{applyingPromo ? "..." : "Apply"}</button>
                         </div>
                       ) : (
@@ -1783,7 +1790,7 @@
                   <input type="text" placeholder="John Doe" value={shipping.name} onChange={e => setShipping(s => ({ ...s, name: e.target.value }))} style={{ ...iSt, marginBottom: "1rem" }} />
                   <label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.5)", display: "block", marginBottom: 6 }}>Phone Number *</label>
                   <div style={{ display: "flex", marginBottom: "1.5rem" }}>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "12px", background: "#eee", border: "2px solid rgba(0,0,0,0.14)", borderRight: "none", fontSize: 13, fontFamily: "Space Mono", fontWeight: 600 }}>+91</div>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "12px", background: "#eee", border: "2px solid rgba(0,0,0,0.14)", borderRight: "none", fontSize: 13, fontFamily: "Playfair Display", fontWeight: 600 }}>+91</div>
                     <input type="tel" placeholder="10-digit mobile" value={shipping.phone} onChange={e => setShipping(s => ({ ...s, phone: e.target.value.replace(/\D/g, '').slice(0, 10) }))} style={{ ...iSt, marginBottom: 0, flex: 1 }} />
                   </div>
                   <label style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.5)", display: "block", marginBottom: 6 }}>House/Flat No. & Street *</label>
@@ -1858,7 +1865,7 @@
               <div>
                 <button onClick={onClose} style={{ float: "right", background: "none", border: "1.5px solid #111", width: 34, height: 34, fontSize: 14, fontWeight: 700 }}>✕</button>
                 <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(0,0,0,0.3)", marginBottom: 6, clear: "both" }}>{product.category}</div>
-                <h2 style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 26, letterSpacing: "-0.02em", marginBottom: "0.6rem" }}>{product.name}</h2>
+                <h2 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 26, letterSpacing: "-0.02em", marginBottom: "0.6rem" }}>{product.name}</h2>
                 <div style={{ fontWeight: 700, fontSize: 19, marginBottom: "1.2rem" }}>
                   {product.compareAtPrice && <span style={{ textDecoration: "line-through", opacity: 0.5, marginRight: "10px", fontSize: "16px" }}>{product.compareAtPrice}</span>}
                   <span style={{ color: product.compareAtPrice ? "#c00" : "#111" }}>{product.price}</span>
@@ -2143,14 +2150,14 @@
         } catch (err) { notify("Delete failed: " + err.message, "error"); }
       };
 
-      const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", background: "#fff", padding: "10px 12px", fontSize: 13, fontFamily: "Space Mono" };
+      const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", background: "#fff", padding: "10px 12px", fontSize: 13, fontFamily: "Playfair Display" };
 
       if (!authed) return (
         <div style={{ position: "fixed", inset: 0, zIndex: 1000, background: "#111", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn .2s" }}>
           <div style={{ background: "#fff", border: "3px solid #111", padding: "2.5rem", width: "100%", maxWidth: 380, position: "relative" }}>
             <button onClick={onClose} style={{ position: "absolute", top: 14, right: 14, background: "none", border: "1.5px solid #111", width: 34, height: 34, fontSize: 14, fontWeight: 700 }}>✕</button>
             <img src={LOGO_SRC} alt="Splotch" style={{ height: 44, marginBottom: "1.5rem" }} />
-            <h2 style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 26, marginBottom: "0.4rem" }}>Admin Portal</h2>
+            <h2 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 26, marginBottom: "0.4rem" }}>Admin Portal</h2>
             <p style={{ fontSize: 12, color: "rgba(0,0,0,0.4)", marginBottom: "1.8rem" }}>Authenticate to access the global backend.</p>
             <input className="admin-input" type="email" placeholder="Admin Email" value={email} onChange={e => setEmail(e.target.value)} style={{ ...iSt, marginBottom: "0.5rem" }} />
             <input className="admin-input" type="password" placeholder="Password" value={pw} onChange={e => setPw(e.target.value)} onKeyDown={e => e.key === "Enter" && login()} style={{ ...iSt, marginBottom: "0.9rem" }} />
@@ -2167,7 +2174,7 @@
           <div style={{ background: "#111", padding: "0 1.5rem", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, borderBottom: "2px solid #333" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <img src={LOGO_SRC} alt="" style={{ height: 30, filter: "invert(1)", opacity: .85 }} />
-              <span style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(255,255,255,0.5)" }} className="desk-nav">/ Admin</span>
+              <span style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(255,255,255,0.5)" }} className="desk-nav">/ Admin</span>
             </div>
             <div style={{ display: "flex", gap: "0.6rem" }}>
               {["products", "portfolio", "promos", "orders", "messages"].map(t => (
@@ -2203,7 +2210,7 @@
                 {editId && (
                   <div style={{ padding: "2rem", background: "#fafafa", border: "2px solid #111" }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.8rem" }}>
-                      <h3 style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 22 }}>{editId === "new" ? "New Product" : "Edit Product"}</h3>
+                      <h3 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 22 }}>{editId === "new" ? "New Product" : "Edit Product"}</h3>
                       <button onClick={() => { setEditId(null); setForm(blankProduct); }} style={{ background: "none", border: "1.5px solid #111", width: 34, height: 34, fontSize: 13, fontWeight: 700 }}>✕</button>
                     </div>
                     <div className="admin-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1.3rem" }}>
@@ -2272,7 +2279,7 @@
                 {portEditId && (
                   <div style={{ padding: "2rem", background: "#fafafa", border: "2px solid #111" }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.8rem" }}>
-                      <h3 style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 22 }}>{portEditId === "new" ? "New Portfolio Item" : "Edit Portfolio Item"}</h3>
+                      <h3 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 22 }}>{portEditId === "new" ? "New Portfolio Item" : "Edit Portfolio Item"}</h3>
                       <button onClick={() => { setPortEditId(null); setPortForm(blankPort); }} style={{ background: "none", border: "1.5px solid #111", width: 34, height: 34, fontSize: 13, fontWeight: 700 }}>✕</button>
                     </div>
                     <div style={{ display: "grid", gap: "1.3rem" }}>
@@ -2301,7 +2308,7 @@
             )}
             {tab === "orders" && (
               <div>
-                <h2 style={{ fontFamily: "Space Mono", marginBottom: "1rem" }}>Order Dashboard</h2>
+                <h2 style={{ fontFamily: "Playfair Display", marginBottom: "1rem" }}>Order Dashboard</h2>
                 <div style={{ display: "flex", gap: "0", borderBottom: "2px solid #111", marginBottom: "1.5rem", overflowX: "auto" }}>
                   {["All", "Processing", "Preorder", "Shipped", "Delivered"].map(f => (
                     <button key={f} onClick={() => setOrderFilter(f)} style={{ background: orderFilter === f ? "#111" : "transparent", color: orderFilter === f ? "#fff" : "rgba(0,0,0,0.4)", border: "none", borderRight: "1px solid rgba(0,0,0,0.08)", padding: "10px 18px", fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{f} ({f === "All" ? orders.length : orders.filter(o => f === "Preorder" ? (o.orderType === "preorder" || (o.status || "").includes("Preorder")) : (o.status || "Processing") === f).length})</button>
@@ -2347,7 +2354,7 @@
             )}
             {tab === "messages" && (
               <div>
-                <h2 style={{ fontFamily: "Space Mono", marginBottom: "2rem" }}>Customer Messages</h2>
+                <h2 style={{ fontFamily: "Playfair Display", marginBottom: "2rem" }}>Customer Messages</h2>
                 {messages.length === 0 ? <p style={{ color: "rgba(0,0,0,0.4)" }}>No messages yet.</p> : messages.map(m => {
                   const date = m.timestamp ? new Date(m.timestamp.seconds * 1000).toLocaleString() : "Unknown Date";
                   return (
@@ -2385,7 +2392,7 @@
                 {promoEditId && (
                   <div style={{ padding: "2rem", background: "#fafafa", border: "2px solid #111" }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2rem" }}>
-                      <h3 style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 24 }}>{promoEditId === "new" ? "New Promo Code" : "Edit Promo Code"}</h3>
+                      <h3 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 24 }}>{promoEditId === "new" ? "New Promo Code" : "Edit Promo Code"}</h3>
                       <button onClick={() => { setPromoEditId(null); setPromoForm(blankPromo); }} style={{ background: "none", border: "2px solid #111", width: 34, height: 34, fontSize: 13, fontWeight: 900 }}>✕</button>
                     </div>
                     <div style={{ display: "grid", gap: "1.5rem" }}>
@@ -2415,7 +2422,7 @@
             <div className="topo-parallax-wrap" style={{ opacity: 0.07 }}><TopoSVG color="#fff" /></div>
             <div style={{ position: "relative", zIndex: 1 }}>
               <SLabel inv>Collection 001 — Limited Run</SLabel>
-              <h2 className="dyn-title" style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: "clamp(54px,9vw,120px)", letterSpacing: "-0.04em", color: "#fff", lineHeight: 0.9, fontStyle: "italic" }}>The Collection.</h2>
+              <h2 className="dyn-title" style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: "clamp(54px,9vw,120px)", letterSpacing: "-0.04em", color: "#fff", lineHeight: 0.9, fontStyle: "italic" }}>The Collection.</h2>
             </div>
           </div>
           <div style={{ borderBottom: "1px solid rgba(17,17,17,0.12)", display: "flex", alignItems: "center", overflowX: "auto", padding: "0.45rem 1rem" }}>
@@ -2477,10 +2484,10 @@
               </svg>
             </div>
           )}
-          <div style={{ position: "absolute", top: "1rem", left: "1rem", fontFamily: "Space Mono", fontWeight: 900, fontSize: 32, color: "rgba(255,255,255,0.06)", letterSpacing: "-0.05em", lineHeight: 1, zIndex: 10 }}>0{idxBase + 1}</div>
+          <div style={{ position: "absolute", top: "1rem", left: "1rem", fontFamily: "Playfair Display", fontWeight: 900, fontSize: 32, color: "rgba(255,255,255,0.06)", letterSpacing: "-0.05em", lineHeight: 1, zIndex: 10 }}>0{idxBase + 1}</div>
           <div className="port-overlay" style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.78)", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "1.5rem", pointerEvents: "none" }}>
             <span className="port-text" style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(255,255,255,0.5)", marginBottom: 5 }}>{w.cat}</span>
-            <p className="port-text" style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 18, color: "#fff" }}>{w.label}</p>
+            <p className="port-text" style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 18, color: "#fff" }}>{w.label}</p>
           </div>
         </div>
       );
@@ -2491,7 +2498,7 @@
       return (
         <section id="work" style={{ background: "#f9f9f9", borderBottom: "3px solid #111", padding: "6rem 2rem" }}>
           <SLabel>Portfolio — The Work</SLabel>
-          <h2 className="dyn-title" style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: "clamp(50px,9vw,120px)", letterSpacing: "-0.04em", lineHeight: 0.88, marginBottom: "3.5rem", fontStyle: "italic" }}>The Work.</h2>
+          <h2 className="dyn-title" style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: "clamp(50px,9vw,120px)", letterSpacing: "-0.04em", lineHeight: 0.88, marginBottom: "3.5rem", fontStyle: "italic" }}>The Work.</h2>
           <div className="port-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "10px" }}>
             {sorted.map((w, i) => <PortCard key={w.id} w={w} idxBase={i} />)}
           </div>
@@ -2512,7 +2519,7 @@
           <div style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem", alignItems: "start" }} className="two-col">
             <div>
               <SLabel inv>Why Choose Us</SLabel>
-              <h2 className="dyn-title" style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: "clamp(50px,9vw,120px)", letterSpacing: "-0.04em", lineHeight: 0.88, color: "#fff", fontStyle: "italic" }}>Why Splotch.</h2>
+              <h2 className="dyn-title" style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: "clamp(50px,9vw,120px)", letterSpacing: "-0.04em", lineHeight: 0.88, color: "#fff", fontStyle: "italic" }}>Why Splotch.</h2>
             </div>
             <div style={{ paddingTop: "0.5rem" }}>
               {pts.map((p, i) => (
@@ -2543,7 +2550,7 @@
           <div className="testi-grid">
             {items.map((t, i) => (
               <div key={i} className={`testi-card reveal reveal-d${i + 1}`}>
-                <div className="testi-quote-mark" style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 36, color: "#111", marginBottom: "1.2rem", lineHeight: 1, transition: "color 0.25s" }}>"</div>
+                <div className="testi-quote-mark" style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 36, color: "#111", marginBottom: "1.2rem", lineHeight: 1, transition: "color 0.25s" }}>"</div>
                 <p className="testi-q" style={{ fontSize: 14, lineHeight: 1.8, color: "rgba(0,0,0,0.62)", marginBottom: "1.8rem", fontStyle: "italic", transition: "color 0.25s" }}>{t.q}</p>
                 <div style={{ borderTop: "1px solid rgba(128,128,128,0.2)", paddingTop: "1rem" }}>
                   <p className="testi-name" style={{ fontWeight: 700, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.08em", transition: "color 0.25s" }}>{t.name}</p>
@@ -2598,7 +2605,7 @@
           setErrMsg(err.code === "permission-denied" ? "Firebase permission denied." : "Failed to send: " + err.message);
         } finally { setLoading(false); }
       };
-      const iSt = { display: "block", width: "100%", background: "transparent", border: "none", borderBottom: "2px solid #333", color: "#fff", padding: "15px", fontFamily: "Space Mono", marginBottom: "1rem" };
+      const iSt = { display: "block", width: "100%", background: "transparent", border: "none", borderBottom: "2px solid #333", color: "#fff", padding: "15px", fontFamily: "Playfair Display", marginBottom: "1rem" };
       return (
         <section id="contact" style={{ background: "#111", borderBottom: "3px solid #111", padding: "6rem 2rem", position: "relative", overflow: "hidden" }}>
           <div className="topo-parallax-wrap" style={{ opacity: 0.07 }}><TopoSVG color="#fff" /></div>
@@ -2606,7 +2613,7 @@
             <SLabel inv>Contact — Get In Touch</SLabel>
             <div className="contact-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5rem", alignItems: "start" }}>
               <div className="reveal">
-                <h2 className="dyn-title" style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: "clamp(54px,9vw,120px)", lineHeight: 0.88, color: "#fff", marginBottom: "2.5rem", fontStyle: "italic" }}>Contact Us.</h2>
+                <h2 className="dyn-title" style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: "clamp(54px,9vw,120px)", lineHeight: 0.88, color: "#fff", marginBottom: "2.5rem", fontStyle: "italic" }}>Contact Us.</h2>
                 {errMsg && <div style={{ background: "#c00", color: "#fff", padding: "12px 16px", fontSize: 11, fontWeight: 700, marginBottom: "1.5rem", lineHeight: 1.5 }}>{errMsg}</div>}
                 {sent ? (
                   <div style={{ border: "2px solid rgba(255,255,255,0.2)", padding: "2rem", textAlign: "center" }}>
@@ -2645,7 +2652,7 @@
             <img src={LOGO_SRC} alt="Splotch" style={{ height: 140, width: "auto", filter: "invert(1)", opacity: 0.8, marginBottom: "3rem", display: "inline-block" }} />
             <br />
             <div className="cyber-text-container">
-              <h2 className="cyber-text" style={{ fontFamily: "Space Mono", fontWeight: 700, fontStyle: "italic", fontSize: "clamp(40px,7vw,96px)", letterSpacing: "-0.04em", lineHeight: 1.1, marginBottom: "4rem", margin: "0" }}>
+              <h2 className="cyber-text" style={{ fontFamily: "Playfair Display", fontWeight: 700, fontStyle: "italic", fontSize: "clamp(40px,7vw,96px)", letterSpacing: "-0.04em", lineHeight: 1.1, marginBottom: "4rem", margin: "0" }}>
                 Predict the future,<br />you didn't come<br />this far to stop.
               </h2>
             </div>
@@ -2759,7 +2766,7 @@
           "  │  ▸ splotch.in                                           │\n" +
           "  │  ▸ zero mass production                                 │\n" +
           "  ╰─────────────────────────────────────────────────────────╯",
-          "color: #d4863a; font-family: 'Courier New', monospace; font-size: 11px; line-height: 1.4;"
+          "color: #d4863a; font-family: 'Playfair Display', serif; font-size: 11px; line-height: 1.4;"
         );
       }, []);
 
@@ -2863,7 +2870,7 @@
           {qv && <QuickView product={qv} onClose={() => setQV(null)} onAdd={addToCart} />}
           {cartOpen && <CartSidebar cart={cart} setCart={setCart} onClose={() => setCartOpen(false)} user={user} onAuthClick={() => setAuthOpen(true)} setProducts={setProducts} notify={notify} />}
           {adminOpen && <AdminPanel products={products} setProducts={setProducts} portfolio={portfolio} setPortfolio={setPortfolio} onClose={() => setAdminOpen(false)} notify={notify} />}
-          {authOpen && <AuthModal onClose={() => setAuthOpen(false)} onSuccess={() => setAuthOpen(false)} />}
+          {authOpen && <AuthModal onClose={() => setAuthOpen(false)} onSuccess={() => setAuthOpen(false)} onSecretAdminOpen={() => { setAuthOpen(false); setAdminOpen(true); }} />}
           {ordersOpen && user && <UserOrdersModal user={user} onClose={() => setOrdersOpen(false)} />}
 
           <div className="toast-stack">
@@ -2926,3 +2933,4 @@
 </body>
 
 </html>
+

@@ -56,10 +56,10 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="apple-touch-icon" href="favicon.png">
 
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Abril+Fatface&family=Bodoni+Moda:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
     .splotch-brand {
-      font-family: 'Bodoni Moda', serif;
+      font-family: 'Inter', sans-serif;
       font-weight: 700;
       letter-spacing: 0.02em;
       text-transform: uppercase;
@@ -99,8 +99,8 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Space Mono','monospace'],
-            serif: ['Space Mono','monospace']
+            sans: ['Playfair Display','serif'],
+            serif: ['Playfair Display','serif']
           }
         }
       }
@@ -127,7 +127,7 @@
     body {
       background: var(--B);
       color: var(--W);
-      font-family: 'Space Mono', monospace;
+      font-family: 'Playfair Display', serif;
       overflow-x: hidden;
     }
     
@@ -292,7 +292,7 @@
     }
     
     .hero-h1 {
-      font-family: 'Abril Fatface', display;
+      font-family: 'Playfair Display', serif;
       font-weight: 400;
       font-size: clamp(70px, 16vw, 240px);
       color: #fff;
@@ -580,7 +580,7 @@
     }
     
     .strip-num {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Playfair Display', serif;
       font-style: italic;
       font-size: clamp(36px,5vw,64px);
       font-weight: 700;
@@ -606,7 +606,7 @@
     }
     
     .manifesto-q {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Playfair Display', serif;
       font-style: italic;
       font-size: clamp(32px, 5.5vw, 72px);
       font-weight: 700;
@@ -636,7 +636,7 @@
     
     .scroll-band-item {
       font-size: clamp(24px, 5vw, 56px);
-      font-family: 'Space Mono', monospace;
+      font-family: 'Playfair Display', serif;
       font-style: italic;
       font-weight: 700;
       color: transparent;
@@ -1138,7 +1138,7 @@
               <div key={i} className={`strip-item reveal reveal-d${i + 1}`} style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
                   <span className="strip-num">{s.num}</span>
-                  <span style={{ fontFamily: 'Space Mono', fontStyle: 'italic', fontSize: 22, color: 'rgba(255, 255, 255, 0.25)', fontWeight: 700 }}>{s.unit}</span>
+                  <span style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontSize: 22, color: 'rgba(255, 255, 255, 0.25)', fontWeight: 700 }}>{s.unit}</span>
                 </div>
                 <span className="strip-label">{s.label}</span>
               </div>
@@ -1261,7 +1261,7 @@
           <canvas ref={ref} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }} />
           <div style={{ position: 'relative', zIndex: 1 }}>
             <span className="section-label reveal" style={{ margin: '0 auto 2rem', display: 'table' }}>Enter The Store</span>
-            <h2 className="dyn-title chrome-effect reveal reveal-d1" style={{ fontFamily: 'Space Mono', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(40px,8vw,110px)', letterSpacing: '-0.03em', lineHeight: 1.1, marginBottom: '3rem' }}>
+            <h2 className="dyn-title chrome-effect reveal reveal-d1" style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(40px,8vw,110px)', letterSpacing: '-0.03em', lineHeight: 1.1, marginBottom: '3rem' }}>
               Ready to upgrade<br />your wardrobe?
             </h2>
             <br />
@@ -1304,7 +1304,7 @@
     }
 
     function MobMenu({ open, setOpen }) {
-      const btnSt = { background: 'none', border: 'none', textAlign: 'left', fontFamily: 'Space Mono', fontWeight: 900, fontSize: 'clamp(40px,11vw,64px)', letterSpacing: '-0.04em', textTransform: 'uppercase', color: '#fff', lineHeight: 1.1, borderBottom: '1px solid rgba(255,255,255,0.07)', padding: '0.6rem 0', textDecoration: 'none', display: 'block', width: '100%' };
+      const btnSt = { background: 'none', border: 'none', textAlign: 'left', fontFamily: 'Playfair Display', fontWeight: 900, fontSize: 'clamp(40px,11vw,64px)', letterSpacing: '-0.04em', textTransform: 'uppercase', color: '#fff', lineHeight: 1.1, borderBottom: '1px solid rgba(255,255,255,0.07)', padding: '0.6rem 0', textDecoration: 'none', display: 'block', width: '100%' };
       
       return (
         <div className="mob-menu" style={{ position: 'fixed', inset: 0, zIndex: 600, background: '#0a0a0a', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '3rem 2rem', transform: open ? 'translateX(0)' : 'translateX(100%)', transition: 'transform .4s cubic-bezier(.76,0,.24,1)' }}>
@@ -1325,7 +1325,7 @@
         <div className="modal-overlay" onClick={onClose} style={{ animation: "fadeIn .2s ease" }}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={onClose}>✕</button>
-            <h2 style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 28, marginBottom: "1rem" }}>Terms & Conditions</h2>
+            <h2 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 28, marginBottom: "1rem" }}>Terms & Conditions</h2>
             <div style={{ fontSize: 12, lineHeight: 1.8, color: "rgba(0,0,0,0.7)" }}>
               <p style={{ marginBottom: "1rem" }}><strong>1. General Conditions</strong><br/>By visiting our site and/or purchasing something from us, you engage in our "Service" and agree to be bound by the following terms and conditions. <span className="splotch-brand">SPLOTCH</span> reserves the right to refuse service to anyone for any reason at any time.</p>
               <p style={{ marginBottom: "1rem" }}><strong>2. Products & Exclusivity</strong><br/>All <span className="splotch-brand">SPLOTCH</span> runs are strictly limited. We do not mass produce. Once an item is sold out, it is permanently archived.</p>
@@ -1360,13 +1360,13 @@
         } finally { setLoading(false); }
       };
       
-      const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", padding: "12px", fontSize: 12, fontFamily: "Space Mono", marginBottom: "1rem" };
+      const iSt = { display: "block", width: "100%", border: "2px solid rgba(0,0,0,0.14)", padding: "12px", fontSize: 12, fontFamily: "Playfair Display", marginBottom: "1rem" };
       
       return (
         <div className="modal-overlay" onClick={onClose}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={onClose}>✕</button>
-            <h2 style={{ fontFamily: "Space Mono", fontWeight: 700, fontSize: 28, marginBottom: "0.5rem" }}>Request Return.</h2>
+            <h2 style={{ fontFamily: "Playfair Display", fontWeight: 700, fontSize: 28, marginBottom: "0.5rem" }}>Request Return.</h2>
             <p style={{ fontSize: 12, color: "rgba(0,0,0,0.5)", marginBottom: "2rem" }}>Returns are only accepted within 7 days of delivery.</p>
             {errMsg && <div style={{ background: "#c00", color: "#fff", padding: "10px", fontSize: 10, fontWeight: 700, marginBottom: "1.5rem" }}>{errMsg}</div>}
             {sent ? (
@@ -1425,8 +1425,8 @@
               titleComponent={
                 <div style={{ marginBottom: '2rem' }}>
                   <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', display: 'block', marginBottom: '1.2rem' }}>Engineered in Bangalore</span>
-                  <h2 style={{ fontFamily: 'Space Mono', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(36px,6vw,80px)', color: '#fff', lineHeight: 1, letterSpacing: '-0.03em', marginBottom: '0.5rem' }}>Pure Form. Strict Utility.</h2>
-                  <span style={{ fontFamily: 'Space Mono', fontWeight: 900, fontSize: 'clamp(52px,10vw,130px)', letterSpacing: '-0.05em', textTransform: 'uppercase', color: '#fff', lineHeight: 0.85, display: 'block' }}>THE ARCHIVE.</span>
+                  <h2 style={{ fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 700, fontSize: 'clamp(36px,6vw,80px)', color: '#fff', lineHeight: 1, letterSpacing: '-0.03em', marginBottom: '0.5rem' }}>Pure Form. Strict Utility.</h2>
+                  <span style={{ fontFamily: 'Playfair Display', fontWeight: 900, fontSize: 'clamp(52px,10vw,130px)', letterSpacing: '-0.05em', textTransform: 'uppercase', color: '#fff', lineHeight: 0.85, display: 'block' }}>THE ARCHIVE.</span>
                 </div>
               }
             >
