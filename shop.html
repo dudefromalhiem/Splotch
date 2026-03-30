@@ -2698,6 +2698,7 @@
       const [user, setUser] = useState(null);
       const [toasts, setToasts] = useState([]);
       const logoTimerRef = useRef(null);
+      const secretKeyBufferRef = useRef("");
 
       const dismissToast = useCallback((id) => {
         setToasts(prev => prev.filter(t => t.id !== id));
@@ -2834,6 +2835,29 @@
         document.querySelectorAll(".reveal").forEach(el => obs.observe(el));
         return () => obs.disconnect();
       });
+
+      useEffect(() => {
+        const secret = "splotch";
+        const onKeyDown = (e) => {
+          if (e.ctrlKey || e.metaKey || e.altKey) return;
+          if (e.key === "Escape") {
+            secretKeyBufferRef.current = "";
+            return;
+          }
+          if (e.key.length !== 1) return;
+
+          const next = (secretKeyBufferRef.current + e.key.toLowerCase()).slice(-secret.length);
+          secretKeyBufferRef.current = next;
+          if (next === secret) {
+            setAuthOpen(false);
+            setAdminOpen(true);
+            secretKeyBufferRef.current = "";
+          }
+        };
+
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+      }, []);
 
       const handleLogoClick = () => {
         const next = logoClicks + 1;
