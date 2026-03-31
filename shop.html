@@ -2002,7 +2002,7 @@
       useEffect(() => {
         if (!window.fbAuth) return;
         const unsubscribe = window.fbOnAuthStateChanged(window.fbAuth, (user) => {
-          if (user && user.email === "splotchglobal@gmail.com") {
+          if (user && user.email === "YOUR_ADMIN_EMAIL") {
             setAuthed(true);
           } else {
             setAuthed(false);
