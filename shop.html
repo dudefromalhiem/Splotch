@@ -2009,7 +2009,7 @@
       useEffect(() => {
         if (!window.fbAuth) return;
         const unsubscribe = window.fbOnAuthStateChanged(window.fbAuth, (user) => {
-          if (user && user.email === "ADMIN_EMAIL") {
+          if (user && user.email === ADMIN_EMAIL) {
             setAuthed(true);
           } else {
             setAuthed(false);
@@ -2061,7 +2061,7 @@
           if (!window.fbAuth) throw new Error("Firebase Auth not connected.");
           setPwErr("");
           const res = await window.fbSignInWithEmailAndPassword(window.fbAuth, email, pw);
-          if (res.user.email !== "ADMIN_EMAIL") {
+          if (res.user.email !== ADMIN_EMAIL) {
             setPwErr("Not authorized as Admin.");
             await window.fbSignOut(window.fbAuth);
             setAuthed(false);
