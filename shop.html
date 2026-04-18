@@ -1274,6 +1274,7 @@
       );
     }
 
+    /*
     function InterestModal({ onClose, product, notify }) {
       const [email, setEmail] = useState("");
       const [loading, setLoading] = useState(false);
@@ -1315,6 +1316,7 @@
         </div>
       );
     }
+    */
 
     function TermsModal({ onClose }) {
       return (
@@ -1932,9 +1934,9 @@
               <button disabled={(!isPreorder && (isSoldOut || currentSizeSoldOut))} onClick={() => { onAdd({ ...product, selectedSize: selSize, isPreorderItem: isPreorder }); setAdded(true); setTimeout(() => setAdded(false), 2000); }} className={isPreorder ? 'preorder-cta' : ''} style={{ background: added ? "#444" : (isPreorder ? "#d4a017" : "#111"), color: "#fff", border: "3px solid " + (isPreorder ? "#d4a017" : "#111"), padding: "15px", fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginTop: "1.5rem", transition: "background .2s", opacity: (!isPreorder && (isSoldOut || currentSizeSoldOut)) ? 0.5 : 1 }}>
                 {(!isPreorder && (isSoldOut || currentSizeSoldOut)) ? "Sold Out" : (added ? "✓ Added to Cart" : (isPreorder ? (product.preorderLabel || "Pre-order") : "Add to Cart"))}
               </button>
-              <button onClick={() => onInterest(product)} style={{ width: "100%", background: "transparent", color: "#111", border: "2px solid rgba(0,0,0,0.12)", padding: "15px", fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", marginTop: "0.8rem", transition: "all .2s", cursor: "pointer" }}>
+              {/* <button onClick={() => onInterest(product)} style={{ width: "100%", background: "transparent", color: "#111", border: "2px solid rgba(0,0,0,0.12)", padding: "15px", fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", marginTop: "0.8rem", transition: "all .2s", cursor: "pointer" }}>
                 INTERESTED / NOTIFY ME
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -1983,12 +1985,12 @@
             <button className={`prod-cta-btn${isPreorder ? ' preorder-cta' : ''}`} disabled={(!isPreorder && (isSoldOut || isSizeSoldOut(selSize)))} onClick={doAdd} style={{ marginTop: "auto", display: "block", width: "100%", background: added ? "#111" : (isPreorder ? "#d4a017" : "#fff"), color: added ? "#fff" : (isPreorder ? "#fff" : "#111"), border: "2px solid " + (isPreorder ? "#d4a017" : "#111"), padding: "10px", fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", opacity: (!isPreorder && (isSoldOut || isSizeSoldOut(selSize))) ? 0.5 : 1 }}>
               {added ? "✓ Added" : (isPreorder ? (product.preorderLabel || "Pre-order") : (isSoldOut || isSizeSoldOut(selSize)) ? "Sold Out" : "Add to Cart")}
             </button>
-            <button 
+            {/* <button 
               onClick={(e) => { e.stopPropagation(); onInterest(product); }} 
               style={{ width: "100%", background: "transparent", color: "#111", border: "1px solid rgba(0,0,0,0.15)", padding: "10px", fontSize: 9, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", marginTop: "8px", transition: "all .2s", cursor: "pointer" }}
             >
               Interested
-            </button>
+            </button> */}
           </div>
         </div>
       );
@@ -2404,6 +2406,23 @@
                             await window.fbUpdateDoc(window.fbDoc(window.fbDb, "orders", o.id), updatePayload);
                             setOrders(orders.map(order => order.id === o.id ? { ...order, status: ns, deliveredAt: updatePayload.deliveredAt || order.deliveredAt } : order));
                             notify("Status updated to " + ns, "success");
+                            
+                            // EmailJS Notification for Status Update
+                            if (window.emailjs && (ns === "Shipped" || ns === "Delivered")) {
+                              try {
+                                await window.emailjs.send("service_wm633dr", "YOUR_DELIVERY_TEMPLATE_ID", {
+                                  name: o.userName,
+                                  email: o.userEmail,
+                                  order_id: o.orderId || o.id,
+                                  status: ns,
+                                  message: `Your order ${o.orderId || o.id} is now ${ns}.`
+                                });
+                                notify("Customer notified via email!", "success");
+                              } catch (emailErr) {
+                                console.warn("Status update email failed.", emailErr);
+                                notify("Status updated, but email failed.", "error");
+                              }
+                            }
                           } catch (err) { notify("Failed to update status.", "error"); }
                         }}>
                           <option value="Processing">Processing</option>
@@ -2766,24 +2785,25 @@
       const logoTimerRef = useRef(null);
       const secretKeyBufferRef = useRef("");
 
-      const handleInterest = async (product) => {
-        if (user && user.email) {
-          try {
-            if (!window.fbDb || !window.fbAddDoc) throw new Error("Firebase not connected.");
-            await window.fbAddDoc(window.fbCollection(window.fbDb, "interested_users"), {
-              productId: product.id,
-              productName: product.name,
-              email: user.email,
-              timestamp: new Date(),
-            });
-            notify(`We'll notify ${user.email} when this is available!`, "success");
-          } catch(err) {
-            notify("Failed to save interest.", "error");
-          }
-        } else {
-          setInterestProduct(product);
-        }
-      };
+      // const handleInterest = async (product) => {
+      //   if (user && user.email) {
+      //     try {
+      //       if (!window.fbDb || !window.fbAddDoc) throw new Error("Firebase not connected.");
+      //       await window.fbAddDoc(window.fbCollection(window.fbDb, "interested_users"), {
+      //         productId: product.id,
+      //         productName: product.name,
+      //         email: user.email,
+      //         timestamp: new Date(),
+      //       });
+      //       notify(`We'll notify ${user.email} when this is available!`, "success");
+      //     } catch(err) {
+      //       notify("Failed to save interest.", "error");
+      //     }
+      //   } else {
+      //     setInterestProduct(product);
+      //   }
+      // };
+      const handleInterest = async (product) => {};
 
       const dismissToast = useCallback((id) => {
         setToasts(prev => prev.filter(t => t.id !== id));
@@ -2981,7 +3001,7 @@
           {adminOpen && <AdminPanel products={products} setProducts={setProducts} portfolio={portfolio} setPortfolio={setPortfolio} onClose={() => setAdminOpen(false)} notify={notify} />}
           {authOpen && <AuthModal onClose={() => setAuthOpen(false)} onSuccess={() => setAuthOpen(false)} onSecretAdminOpen={() => { setAuthOpen(false); setAdminOpen(true); }} />}
           {ordersOpen && user && <UserOrdersModal user={user} onClose={() => setOrdersOpen(false)} />}
-          {interestProduct && <InterestModal product={interestProduct} onClose={() => setInterestProduct(null)} notify={notify} />}
+          {/* {interestProduct && <InterestModal product={interestProduct} onClose={() => setInterestProduct(null)} notify={notify} />} */}
 
           <div className="toast-stack">
             {toasts.map(t => (
